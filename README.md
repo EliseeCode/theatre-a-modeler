@@ -1,4 +1,4 @@
-# exolingo
+# Exolingo
 flashCard system optimised for languages acquisition in classroom.
 ## Exolingo's description
 Today, ExoLingo is a fun online platform for learning foreign language vocabulary for teachers and learners at level A1, A2 and B1.
@@ -30,15 +30,10 @@ The platform is based on certain principles.
 * A word must be learned in its context.
 * The creation of content by the learner promotes his learning.
 * People learn better through play.
-
-
 ## Goal of this repo##
 This repo's goal is to renovate the code of the web site www.exolingo.com with a laravel or AdonisJs framework.
 The original website is writen with PHP and mysql.It is a personal project made without any framework and needs structure to be maintained and developed.
 ## Steps in the developpement of the project
-### Step 1:
-Importing the code of the actual website
-### Step 2:
-Choosing a stack for the developpement of the new version
-### Step 3:
-Start to code.
+- [ ] Importing the code of the actual website
+- [ ] Choosing a stack for the developpement of the new version
+- [ ] Start to code.
