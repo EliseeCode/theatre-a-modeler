@@ -30,7 +30,7 @@ The platform is based on certain principles.
 * A word must be learned in its context.
 * The creation of content by the learner promotes his learning.
 * People learn better through play.
-## Goal of this repo##
+## Goal of this repo
 This repo's goal is to renovate the code of the web site www.exolingo.com with a laravel or AdonisJs framework.
 The original website is writen with PHP and mysql.It is a personal project made without any framework and needs structure to be maintained and developed.
 ## Steps in the developpement of the project
