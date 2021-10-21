@@ -1,0 +1,213 @@
+
+#action_content_qrcode{background-size:cover;}
+
+#action_content_cadenas{background-size:cover;}
+#content_reconpense_text{background-image:url(../img/scifi/screenvideo.png);background-size:100% 100vh;;}
+#content_reconpense_video{pointer-events:none;background-image:url(../img/scifi/screenvideo.png);background-size:100% 100vh;z-index:2;}
+@font-face {
+    font-family: secret;
+    src: url(../fonts/secret.ttf);
+}
+@font-face {
+    font-family: army;
+    src: url(../fonts/army.ttf);
+}
+@font-face {
+    font-family: code;
+    src: url(../fonts/Code.ttf);
+}
+@font-face {
+    font-family: digit;
+    src: url(../fonts/digit.TTF);
+}
+@font-face {
+    font-family: font1942;
+    src: url(../fonts/font1942.ttf);
+}
+.recompense{position:fixed;top:0;bottom:0;left:0;right:0;text-align:center;}
+.action{position:relative;top:0;left:0;text-align:center;}
+.vis{position:fixed;width:30px;height:30px; border-radius:15px;background-image:url(../img/scifi/vis.png); background-size:cover;box-shadow:0 0 5px black;}
+#vis_1{top:50px; left:50px;}
+#vis_2{top:50px; right:50px;}
+#vis_3{bottom:50px; left:50px;}
+#vis_4{bottom:50px; right:50px;}
+.conteneur_centre{width:100%;height:100vh;text-align:center;vertical-align:middle;display:inline-block;line-height:100vh;}
+.lamp{position:relative;width:40px;height:40px; border-radius:30px;background-size:cover;box-shadow:0 0 5px black;margin:10px 10px;display:inline-block;}
+.green_off{background-image:url(../img/scifi/lampe_green_off.png);}
+.green_on{background-image:url(../img/scifi/lampe_green_on.png);}
+.red_off{background-image:url(../img/scifi/lampe_red_off.png);}
+.red_on{background-image:url(../img/scifi/lampe_red_on.png);}
+.block_lamp{text-align:center; border-radius:10px;display:inline-block;}
+.lamp_container{position:relative; margin:15px;}
+.blink {
+  animation: blink-animation 3s infinite;
+  -webkit-animation: blink-animation 3s infinite;
+}
+@keyframes blink-animation {
+  0% {
+    border : 3px transparent solid;
+  }
+  50% {
+    border : 3px lime solid;
+  }
+  100% {
+    border : 3px transparent solid;
+  }
+}
+@-webkit-keyframes blink-animation {
+   0% {
+    border : 3px transparent solid;
+  }
+  50% {
+    border : 3px lime solid;
+  }
+  100% {
+    border : 3px transparent solid;
+  }
+}
+
+@keyframes blink2-animation {
+  0% {
+    filter : brightness(1);
+  }
+  50% {
+    filter : brightness(1.5);
+  }
+  100% {
+    filter : brightness(1);
+  }
+}
+@-webkit-keyframes blink2-animation {
+   0% {
+    filter : brightness(1);
+  }
+  50% {
+    filter : brightness(1.5);
+  }
+  100% {
+    filter : brightness(1);
+  }
+}
+.code_input_text{text-transform:uppercase;width:70%;padding:20px 40px; background-color:transparent;color:lime;font-size:1em;font-family:code;margin:20px;text-align:center;}
+.text_ecran{font-family:code;}
+
+
+
+#window{
+	background-image:url(../img/bord_ecran.png), url(../img/scifi/texture4.jpg);background-size:100% 100%;
+	line-height:normal; vertical-align:center; position:relative;display:inline-block; border-radius:10px;padding:10px;text-align:center;}
+.input_container{
+	vertical-align:middle;
+	background-image:url(../img/bord_ecran.png), url(../img/scifi/texture4.jpg);background-size:100% 100%;
+	line-height:normal; vertical-align:center; position:relative;display:inline-block; border-radius:10px;padding:10px;text-align:center;}
+.input_container_web{
+	vertical-align:middle;
+	line-height:normal; 
+	vertical-align:center; 
+	position:relative;
+	display:inline-block; text-align:center;}
+	iframe{border:none;}	
+.door-right{position:fixed;top:0;bottom:0;right:0;width:100%;text-align:center;background-image:url(../img/scifi/doorright.png);background-size:100% 100vh;transition:4s}
+.door-left{position:fixed;top:0;bottom:0;left:0;width:100%;text-align:center;background-image:url(../img/scifi/doorleft.png);background-size:100% 100vh;transition:4s}
+
+#recompense{position:fixed;top:0;bottom:0;left:0;right:0;text-align:center; display:none;background-size:100% 100vh; color:lime; padding:20vh 15%;font-size:4vh;}
+/*POUR LE QRcode*/
+#lens{margin:25px;display:inline-block;background-image:url(../img/scifi/lens4.png);width:40vh;height:30vh; background-size:100%;}
+#lens>video{display:inline-block;width:100%;height:30vh; background-size:contain;border-radius:10%;position:relative;opacity:0.3;}
+
+/*POUR LE cadenas*/
+.touche{background-color:#FFFFFF02; border:solid 1px lightblue;box-shadow:0px 0px 3px blue;border-radius:3px; 
+width:50px;height:50px; line-height:50px;position:relative;font-size:1.6em; font-family:digit;
+margin:3px;display:inline-block;text-align:center;color:lightblue; text-shadow: 0px 0px 4px blue;}
+.touche:active{border:solid 1px lime;box-shadow:0px 0px 3px green;color:lime};
+
+.keypad{background-color: darkgrey;border: inset black 3px; text-align:center;background-image:url(../img/scifi/texture10.jpg);width:98%;margin:0 45px 30px 45px;}
+.alpha{display:block;font-size: 0.5em;position:absolute; top:0px; width:100%;text-align:center;height: 25px;
+    line-height: 16px;}
+#affichage_cadenas{overflow:hidden;margin:25px 45px 5px 45px;width:155px;display:inline-block; color:black;padding:10px;height:1em;line-height:1em;font-size:1.6em; font-family:digit;border:solid 1px lightblue;box-shadow:0px 0px 3px blue;border-radius:3px;color:lightblue; text-shadow: 0px 0px 4px blue; }
+
+#area_number{
+	position:absolute;
+	top:10px;
+	right:10px;
+	width: 25%;
+    display: inline-block;
+	text-align:right;
+    
+	font-family:army;
+	font-size:1.5em;
+	color:black;}
+.play_icon{
+	position:absolute; background-image: url(../img/play_icon.png);background-size: 6vw;
+    padding: 3vw;
+    left: 50vw;
+    top: 36vh;
+}
+.back_icon{
+	position:absolute; background-image: url(../img/back_icon.png);background-size: 6vw;
+    padding: 3vw;
+    left: 40vw;
+    top: 36vh;
+	display:none;
+}
+
+/* loader */
+.cover{position:fixed;top:0;bottom:0;left:0;right:0;background-color:#322F40;text-align:center;}
+.loader_container{line-height:50vh;}
+.loader {
+  border: 16px solid #524F60;
+  border-radius: 50%;
+  border-top: 16px solid #08A7AA;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  display:inline-block;
+  vertical-align:middle;
+}
+#icon_container{ position:absolute; top:0px;left:0px;margin:15px;}
+.iconbottom{margin:10px;}
+.fullscreen_icon{padding:20px; background-color:#00000080;background-image:url(../img/fullscreen_icon.png);background-size:30px;background-repeat:no-repeat;background-position:center center;}
+.panneau_icon{width:75px; box-shadow: 5px 5px 14px -1px black;}
+.panneau_icon:hover{filter: brightness(1.3);}
+
+/*Carte*/
+.carte_body{background-image:url(../img/scifi/fond_carte.png);background-size:75% 300px;height:100vh;width:100%;text-align:center;}
+#carte{margin-top:22px;}
+.e_container{color:white;padding:30px 20px 50px 20px;position:relative;display:inline-block; width:300px; height:100px;text-align:center;margin:60px 40px; box-shadow:0px 0px 5px black;transition:1s;}
+.e_container:hover{    filter: brightness(1.5);}
+.enigme_door{background-size:100% 100%;width:100%;height:100%;display:inline-block;}
+.solved{background-image:url(../img/scifi/minidoors_solved.png);}
+.open{background-image:url(../img/scifi/minidoors_open.png);}
+.locked{background-image:url(../img/scifi/minidoors_locked.png);}
+.titre_enigme{position:absolute; width:90%; bottom:5px;text-align:center;font-size:1em;}
+
+.doortaken:after {    
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+    z-index: -1;   
+    background-image:  url(../img/scifi/perso.png);
+    background-repeat:no-repeat;        
+    background-position:25% center;
+	background-size: 31% 42%;
+	z-index:0;
+}
+.emptyRoom
+{animation: blink2-animation 1s linear infinite;}
+
+#message_box{position:fixed; top:48%;left:10%;
+right:10%; background-color:rgb(250, 235, 215); color:black;padding:30px;display: none;text-align:center;}
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}	

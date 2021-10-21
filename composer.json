@@ -1,0 +1,7 @@
+{
+    "require": {
+        "google/apiclient": "^2.11",
+        "google/cloud-translate": "^1.11",
+        "vlucas/phpdotenv": "^5.3"
+    }
+}

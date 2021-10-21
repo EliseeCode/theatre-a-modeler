@@ -1,0 +1,37 @@
+{
+  "name": "vocaquiz",
+  "version": "1.0.0",
+  "description": "Generateur de quizz en classe",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "elisee",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "client-sessions": "^0.8.0",
+    "cookie-parser": "^1.4.4",
+    "dialogflow": "^0.10.3",
+    "ejs": "^2.5.8",
+    "express": "^4.17.1",
+    "https": "^1.0.0",
+    "jquery": "^3.4.1",
+    "mysql": "^2.15.0",
+    "php-unserialize": "0.0.1",
+    "socket.io": "^2.1.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elisee-nds/Vocabulaire.git"
+  },
+  "keywords": [
+    "edu"
+  ],
+  "bugs": {
+    "url": "https://github.com/elisee-nds/Vocabulaire/issues"
+  },
+  "homepage": "https://github.com/elisee-nds/Vocabulaire#readme"
+}

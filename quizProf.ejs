@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, user-scalable=no,initial-scale=1">
+    <title>Quiz Eleve</title>
+    <link rel="icon" type="image/png" href="../img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="../img/favicon-16x16.png" sizes="16x16" />
+  <link rel="stylesheet" href="../css/myStyle.css">
+  <link href="../css/navStyle.css" rel="stylesheet">
+  <link href="../css/styleEntete.css" rel="stylesheet">
+  <link href="../css/main.css" rel="stylesheet">
+  <link href="../css/quiz.css" rel="stylesheet">
+  <script src='../js/cookiesManager.js'></script>
+	<script src='../js/jquery-3.3.1.min.js'></script>
+	<script src="../socket.io/socket.io.js"></script>
+   </head>
+<body class="fond">
+
+  <nav id="navbar">
+        <div class="menu">
+          <ul class="desktop" onclick="$('.mobile').removeClass('open');">
+            <!--<li style="float:left;"><a id="back_btn" href="https://www.vocabulaire.ovh/decks.php">Retour</a></li>-->
+            <li style="float:left;"><a id="back_btn" href="../decks.php">Retour aux listes</a></li>
+            <li style="float:left"><a href="#"><span id="mini_code"  style="position:relative;top:-5px;display:none;color:white;border:2px white solid;font-size:1.5em;padding:0 20px;"></span></a></li>
+            <li><a href="#">Quiz en classe</a></li>
+            <li style="float:right;"><a id="audio_btn" href="#" onClick="toogleVolume();"><img src="../img/haut_parleur_mute.png"></a></li>
+          </ul>
+          <ul class="mobile"  onclick="$('.mobile').removeClass('open');">
+            <li><a href="https://www.vocabulaire.ovh/">Retour</a></li>
+          </ul>
+        </div>
+        <div id="openMenu">VocaSion - MENU </div>
+        <div class="progressbarDeck"></div>
+      </nav>
+      <div class="overlay"></div>
+
+      <script type="text/javascript" src="../js/menu-breaker.js"></script>
+      <script>
+
+      $('.desktop').menuBreaker();
+  $(window).on('load resize', function () {
+  $('.mobile').height($(window).height() - $('nav').height());
+  });
+
+      </script>
+
+      <audio class="music_fond" loop preload="auto">
+        <source src="../audio/VocaSionMusic.ogg" type="audio/ogg">
+        <source src="../audio/VocaSionMusic.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+      </audio>
+<style>
+#navbar{border-bottom:8px solid var(--mycolor2fonce);}
+#listPlayerContainer{
+  float:left;
+  width:300px;
+  background-color:white;
+  box-shadow:0 0 4px grey;
+  padding:10px;
+  position:relative;
+  padding-top:30px;
+}
+#noStudentInfo{color:grey;text-align:center;}
+.online{color:black;}
+.offline{color:grey;}
+#infoSurDeck{border-bottom:8px solid var(--mycolor2);background-color:white;padding:10px;display:inline-block;box-shadow:0 0 4px grey;}
+#infoSurDeck > img{width:100px;display:inline-block;float:left;vertical-align:middle;}
+#titreDeck{margin-left:20px;display:inline-flex;height:100px;}
+#titreDeck > *{margin:auto;}
+#goodAnswer{background-color:white;padding:10px; min-width:200px;border-bottom:grey solid 3px;display:inline-block;height: 2em;}
+#sentence{font-size:2em;margin:20px 0 40px 0;}
+.badUser{color:red;}
+.goodUser{color:lime;}
+.msg{position:fixed,left:0;bottom:0;width:50px;height:50px;background-color:lime;color:black;}
+.loading{position:fixed;top:0;left:0;right:0;bottom:0;background-color:#ffffffA0;color:black;text-align:center;display:flex;}
+
+</style>
+<div class="msg"></div>
+<div class="center">
+  <div id="listPlayerContainer">
+    <div style="background-color:grey;padding:10px;" onclick="ResendTO=setTimeout(function(){socket.emit('answeredReceived',user_idAnswerReceived);},500);">Renvoyer les réponses</div>
+    <h2>Liste des apprenants</h2>
+    <div id="noStudentInfo">Aucun élève inscrit</div>
+    <div id="listPlayer"></div>
+    <div id="nbrePlayer" style="color:grey;margin:20px;"></div>
+  </div>
+  <figure class="chart" data-percent="100">
+       <div class="rebours_num">15</div>
+       <div class="rebours_pause">pause</div>
+      <svg width="190" height="190">
+        <circle id="rebours" class="outer" cx="95" cy="95" r="85" transform="rotate(-90, 95, 95)"/>
+      </svg>
+  </figure>
+  <div id="StartingPoint">
+
+
+    <div class="colonneQuiz1">
+      <div class="btn_start btn_quiz" onclick="mode='quiz';start();">Commencer le carte par carte</div>
+      <div class="btn_start btn_Interro" onclick="mode='interro';start();">Commencer l'intérro </div>
+      <div class="clock"><img src="../img/clock.png" class="clock_img"><input type="number" class="rebours_ini" onchange="changeRebours(1);" value="15" placeholder="nombre de secondes">secondes/question</div>
+    </div>
+    <div class="colonneQuiz2">
+      <div class="flexContaine">
+        <div>
+      <h2 id="infoSurDeck" style="color:black;">Pas d'info</h2>
+      <br>
+      <div class="consigneQuiz">Connectez-vous sur VocaSion<br> puis sur "REJOINDRE UN QUIZ" puis taper le code ci-dessous.
+      </div>
+    <!--<img src="../img/classroom.png" class="imgfusee" style='max-width:40%;'>-->
+    <p class="codeLine"><span class="code"></span><span onclick="newSession();" style="position:absolute;bottom:0;"><img src="../img/flip.png" width="40px"></span></p>
+  </div>
+</div>
+
+
+    </div>
+
+
+  </div>
+
+
+  <div id="question">
+
+
+    <div id="nbreQuestion">0 question</div>
+<div class="flexContaine">
+  <div>
+    <div id="card"></div>
+    <div id="sentence"></div>
+
+    <div id="answers"></div>
+  </div>
+</div>
+    <div class="btn_quiz_container">
+      <div id="btn_showAnswer" class="btn_start" onclick="showAnswer();">Montrer les réponses</div>
+      <div id="btn_suivant" class="btn_start" onclick="if(mode=='quiz'){sendNextQuestion();}else{showAnswer();}">Carte suivante</div>
+      <div id="btn_fin" class="btn_quiz2" onclick="fin_quiz();">Arrêter le quiz</div>
+    </div>
+    <div id="resultat">
+    </div>
+  </div>
+
+  <div id="fin">
+    <h1>Classement final :</h1>
+      <div class="colonneQuiz2">
+        <img src="../img/podium.png" style="width:30%;max-width:300px;">
+          <div id="classement">
+          </div>
+      </div>
+      <div class="btn_quiz_container">
+        <div id="download_results">télécharger les scores</div>
+        <div id="btn_fin" class="btn_quiz2" onclick="window.location='../../decks.php';">Retour aux listes</div>
+      </div>
+  </div>
+</div>
+<div class="loading"><span style="margin:auto;" class="message">Chargement en cours</span></div>
+
+<script>
+new_game_id=<%= game_id %>;
+if(readCookie("game_id")!=null){game_id=readCookie("game_id");}else{game_id=new_game_id;createCookie('game_id',game_id,1/24);}
+deck_id=<%= deck_id %>;
+
+console.log("DECK_ID",deck_id);
+var mode='';//interro ou quiz
+var fin=false;
+var answerShown=false;
+var interro=false;
+var state="rassemblement";
+var card_id;
+//$("#back_btn").attr("href","https://www.vocabulaire.ovh/cards.php?deck_id="+deck_id);
+$("#back_btn").attr("href","../../cards.php?deck_id="+deck_id);
+$('#question').hide();
+
+$(".code").html(game_id);
+
+var cards=[];
+var rang=0;
+var players=[];
+var nbrePlayer=0;
+var nbreReponse=0;
+var answers=[];
+var answersEff=[];
+var user_idAnswerReceived=[];
+var selectedIdToWork;
+var socket = io.connect();
+var ResendTO;
+//======================================Socket
+socket.on('connect', function() {
+  $('.loading').hide();
+	socket.emit('game', game_id, function(result){if(result=="game_done"){
+    socket.emit('whoIsThere', game_id);
+    }
+    else {
+    alert("probleme avec la connection au groupe : "+result);
+    }
+  }
+  );
+});
+
+socket.on('disconnect', function() {
+	socket.emit('ProfOut', game_id);
+  $(".message").html("disconnected");
+  $('.loading').show();
+});
+
+socket.emit('getDeckInfo', deck_id ,function(result){
+  console.log(result);
+  $("#infoSurDeck").html("<div id='titreDeck'><span>"+result.deck_name+"</span></div>");
+  if(result.hasImage){$("#infoSurDeck").prepend("<img src='../deck_img/deck_"+deck_id+".png'>");}
+  else{$("#infoSurDeck").prepend("<img src='../img/default_deck.png'>");}
+});
+//Lorsqu'un joueur se connect, on affiche le nom et prenom
+//On met a jour le nbre de joueur et la variable Player
+
+socket.on('playerJoin', function(user_id) {
+  console.log("playerJoin:",user_id);
+  player_id=user_id;
+  socket.emit('getPlayerInfo', user_id ,function(data){
+    pseudo=data.first_name+" "+data.last_name;
+    pseudo=capitalizeFirstLetterEachWordSplitBySpace(pseudo);
+    if($("#player_"+player_id).length==0)
+    {$("#listPlayer").append("<div id='player_"+player_id+"' class='player_item online'>"+pseudo+"</div>");}
+    else{$("#player_"+player_id).removeClass("offline").addClass("online");}
+
+    players["player_"+player_id]={id:player_id,pseudo:pseudo,connecte:1,cartes:[]};
+    nbrePlayer=len(players);
+    console.log(nbrePlayer);
+    $("#nbrePlayer").show();
+    if(nbrePlayer<2){$("#nbrePlayer").html(nbrePlayer+' participant');}
+    else{$("#nbrePlayer").html(nbrePlayer+' participants');}
+    if(state=="questionSentInterro")
+    {socket.emit('state', {state:"questionSentInterro",data:cards});}
+    else if(state=="questionSentQuiz")
+    {socket.emit('state', {state:"questionSentQuiz",data:[cards[rk_to_send]]});}
+    else if(state=="correction")
+    {sendGoodUser(card_id);}
+    else
+    {socket.emit('state', {state:state});}
+  });
+  $("#noStudentInfo").hide();
+
+});
+
+socket.on('playerLeave', function(result) {
+  player_id=result.user_id;
+  if(players["player_"+player_id]!=undefined)
+  {players["player_"+player_id].connecte=0;}
+  $("#player_"+player_id).remove();
+  nbrePlayer=len(players);
+  if(nbrePlayer<2){$("#nbrePlayer").html(nbrePlayer+' participant');}
+  else{$("#nbrePlayer").html(nbrePlayer+' participants');}
+  if(nbrePlayer==0){$("#noStudentInfo").show();$("#nbrePlayer").hide();}
+});
+socket.on('playerAway', function(result) {
+  player_id=result.user_id;
+	$("#player_"+player_id).removeClass("online").addClass("offline");
+});
+socket.on('playerInAgain', function(result) {
+  player_id=result.user_id;
+  $("#player_"+player_id).addClass("online").removeClass("offline");
+});
+
+function newSession()
+{
+  socket.emit('NewSession',function(result){
+    game_id=result;
+    createCookie('game_id',game_id,1/24);
+    $("#mini_code").html(game_id);
+    $(".code").html(game_id);
+    $("#noStudentInfo").show();
+    $("#nbrePlayer").hide();
+    $(".player_item").remove();
+    players=Array();
+  });
+}
+function len(obj)
+{
+  socket.emit('nbrePlayer', game_id,function(result){console.log("nbre de joueur",result-1);});
+  nbre=0;
+  for(k in obj)
+  { if(obj[k].connecte)
+    {nbre++;}
+  }
+  return nbre;
+}
+var reboursInterval;
+function start()
+{
+  $('#StartingPoint').hide();
+  $('.loading').show();
+  getCards();
+  $('#question').show();
+  $('.chart').show();
+  $('#mini_code').show().html(game_id);
+  reboursInterval=setInterval(updateRebours,1000);
+}
+
+function filterInSelect(rk)
+{
+  //console.log(selectedIdToWork,selectedIdToWork.indexOf(rk.card_id)!=-1);
+  return selectedIdToWork.indexOf(rk.card_id)!=-1;
+}
+function filterToBeSent(rk)
+{
+  return rk.status=="toBeSent";
+}
+function filterCorrected(rk)
+{
+  return rk.status=="corrected";
+}
+function getCards()
+{
+  cardIdToWork=[];
+    socket.emit('getDeckData',deck_id, function(data){
+    	for(k in data){
+        cards[k]=data[k];
+        sentence=rand_parmi(data[k].sentence);
+        cards[k].sentence=sentence;
+        cards[k].answers=Array();
+        cards[k].status="toBeSent";
+      }
+
+      if(readCookie("selected_card")){
+        json_str=readCookie("selected_card");
+        selectedIdToWork=JSON.parse(json_str);
+        cards=cards.filter(filterInSelect);
+      }
+
+      $('.loading').hide();
+      if(mode=='interro'){changeRebours(cards.length);}
+      sendNextQuestion();
+    });
+}
+
+function sendNextQuestion()
+{
+clearTimeout(ResendTO);
+$('.chart').show();
+kToCorrect=-1;
+$('.player_item').removeClass("repReceived").removeClass("goodUser").removeClass("badUser");
+user_idAnswerReceived=[];
+//music_fond=$('.music_fond')[0].play();
+answerShown=false;
+restartAnimation();
+$('.rebours').removeClass('outer').addClass('outer');
+nbrePlayer=len(players);
+nbreReponse=0;
+nbreQuestionRepondu=cards.length-cards.filter(filterToBeSent).length;
+pcentProgress=Math.floor(100*nbreQuestionRepondu/cards.length)+"%";
+$(".progressbarDeck").css("width",pcentProgress);
+//$("#nbreQuestion").html(nbreQuestionRepondu+'/'+cards.length+" questions répondus");
+$('#nbreQuestion').hide();
+$("#answers").html('');
+$("#answers").hide();
+$("#btn_showAnswer").show();
+$("#btn_suivant").hide();
+if(cards.filter(filterToBeSent).length!=0)
+{
+if(mode=='quiz')
+  {
+    card_to_send=rand_parmi(cards.filter(filterToBeSent));
+    card_to_send.status="pending";
+    socket.emit('start',[card_to_send]);
+    //Affichage de la question pour le quiz
+    card_id=card_to_send.card_id;
+    showCard(card_id);
+    $('.chart').css({zoom:1,position:"relative",right:"200px",top:"45px"});
+    state="questionSentQuiz";
+  }
+  else if(mode=="interro")
+  { $('.chart').css({zoom:2,position:"absolute",right:"50%",top:"16vh"});
+    $('#card').hide();
+    $('#sentence').hide();
+    $('.btn_quiz').hide();
+    $('.answers').hide();
+    for(k in cards){cards[k].status="pending";}
+    socket.emit('start',cards);
+    state="questionSentInterro";
+  }
+}
+else {
+  fin_quiz();
+  }
+}
+
+function showCard(card_id)
+{
+  for(rk in cards)
+  {if(cards[rk].card_id==card_id){myCard=cards[rk];}}
+  console.log("show card",card_id,myCard);
+  mot_trad=myCard.mot_trad;
+  hasImage=myCard.hasImage;
+  hasAudio=myCard.hasAudio;
+  sentenceQuestion=myCard.sentence;
+  repCloze=sentenceQuestion.match(/\*(.*?)\*/)[0];
+  repCloze=repCloze.replace('*','');
+  repCloze=repCloze.replace('*','');
+  sentenceQuestion=sentenceQuestion.replace("*"+repCloze+"*","<span id='goodAnswer'><span style='display:none;height:1em;'>"+repCloze+"</span></span>");
+  $("#sentence").html(sentenceQuestion);
+  if(mot_trad!=""){
+  $("#card").html("<span class='mot_trad_card'>"+mot_trad+"</span>");
+  }else {
+    $("#card").html("");
+  }
+  if(hasImage==1){
+  $("#card").css("background-image","url(../card_img/card_"+card_id+".png)");
+  }
+  else {
+  $("#card").css("background-image","url(../img/default_card.png)");
+  }
+  $('#card').show();
+  $('#sentence').show();
+  $('.btn_quiz').show();
+}
+
+
+
+socket.on('oneAnswer', function(result) {
+  console.log("oneAnswer",result);
+  answer=result.answer;
+  user_id=result.user_id;
+  $("#player_"+user_id).addClass("repReceived");
+  if(user_idAnswerReceived.indexOf(user_id)==-1)
+  {
+    user_idAnswerReceived.push(user_id);
+    //answer contient les réponse d'un élèves à 1 ou plusieurs cartes.
+    for(k in answer)
+    {
+      //bascule de toutes les réponses de l'élève dans l'objet cards du prof
+      myCard={};
+      var flagCarteTrouve=false;
+      for(rk in cards)
+      {
+        if(cards[rk].card_id==answer[k].card_id)
+          {myCard=cards[rk];flagCarteTrouve=true;}
+      }
+      if(flagCarteTrouve){
+      myCard.answers.push({answer:answer[k].repEleve,user_id:user_id,point:-1});
+      }
+    }
+    nbreReponse=user_idAnswerReceived.length;
+    nbrePlayer=len(players);
+  if(nbreReponse>=nbrePlayer){showAnswer();}
+  //if(nbreReponse<nbrePlayer){
+  //  clearTimeout(ResendTO);
+  //  ResendTO=setTimeout(function(){socket.emit('answeredReceived',user_idAnswerReceived);console.log("on envoi une demande de réponse",user_idAnswerReceived);},2000);
+  //  }
+  }
+});
+
+
+var idToCorrect=-1;
+var UniqAnswers=[];
+function showAnswer()
+{
+  console.log("state",state);
+if(state=="newCorrection"){idToCorrect=-1;}
+  socket.emit('pause');
+    if(state!='correction' && state!="fin")
+    {$("#answers").html("");
+    }
+    state='correction';
+  //on trouve quelle carte on va corriger (pending dans cardIdToWork)
+  //si on est pas en train de corriger une carte on en choisi une
+    if(idToCorrect==-1){
+      for(k in cards)
+      {
+        if(cards[k].status=="pending")
+        {idToCorrect=k;}
+      }
+    }
+    //il n'y a plus de carte en pending => fin du quiz
+    if(kToCorrect==-1){fin_quiz();}
+    else {
+      cards[kToCorrect].status="corrected";
+      //progress bar
+      nbreQuestionCorrige=cards.filter(filterCorrected).length;
+      pcentProgress=Math.floor(100*nbreQuestionCorrige/cards.length)+"%";
+      $(".progressbarDeck").css("width",pcentProgress);
+      //affichage de la carte
+      card_id=cards[kToCorrect].card_id;
+      showCard(card_id);
+      $("#goodAnswer > span").show();
+      //récupération de la réponse à la phrase.
+      for(k in cards){if(cards[k].card_id==card_id){myCard=cards[k];}}
+      repCloze=myCard.sentence.match(/\*(.*?)\*/)[0];
+      repCloze=repCloze.replace('*','');
+      repCloze=repCloze.replace('*','');
+
+      UniqAnswers=[];
+      console.log("myCardAnswer",myCard.answers);
+      for(k in myCard.answers)
+      {//Si la réponse n'a pas déja été donné (pas d'antécédant dans UniqAnswer=>écriture+inscription dans uniqAnswer)
+        if(UniqAnswers.indexOf(myCard.answers[k].answer.toLowerCase())==-1)
+        {UniqAnswers.push(myCard.answers[k].answer.toLowerCase());}
+
+        if(myCard.answers[k].point==-1){
+          if(myCard.answers[k].answer.toLowerCase()==repCloze.toLowerCase()){classPoint="goodAnswerQuiz";myCard.answers[k].point=1;}else{classPoint="badAnswerQuiz";myCard.answers[k].point=0;}
+        answer=myCard.answers[k].answer;
+        IndexAns=UniqAnswers.indexOf(myCard.answers[k].answer.toLowerCase());
+        if(answer!=""){$("#answers").append("<div class='answer_item answer_"+IndexAns+" "+classPoint+"' onclick='correction("+IndexAns+","+card_id+");'><span id='answer_"+IndexAns+"'>"+answer+"</span></div>");}
+        }
+      }
+      sendGoodUser(card_id);
+
+      music_fond=$('.music_fond')[0].pause();
+      $("#btn_showAnswer").hide();
+      $("#btn_suivant").show();
+      $("#answers").show();
+      $(".chart").hide();
+    }
+
+}
+function sendGoodUser(card_id){
+  console.log("sendGoodUser");
+  for(k in cards){if(cards[k].card_id==card_id){myCard=cards[k];}}
+  goodUsers=[];
+  for(k in myCard.answers)
+  {
+    user_id=myCard.answers[k].user_id;
+    if(myCard.answers[k].point==1){goodUsers.push(user_id);$("#player_"+user_id).removeClass("badUser").addClass("goodUser");}else{$("#player_"+user_id).addClass("badUser").removeClass("goodUser");}
+  }
+  console.log(goodUsers)
+  socket.emit('goodUser',{goodUsers:goodUsers,card_id:card_id});
+}
+function correction(answer_id,card_id)
+{
+  console.log("correction");
+for(k in cards){if(cards[k].card_id==card_id){myCard=cards[k];}}
+answer2correct=UniqAnswers[answer_id];
+//la réponse était bad et debien good.
+//repérer tous les user de cette carte et changer point puis sendGoodUser()
+if($("#answer_"+answer_id).parent().hasClass("badAnswerQuiz"))
+{$("#answer_"+answer_id).parent().removeClass("badAnswerQuiz").addClass("goodAnswerQuiz");
+for(k in myCard.answers){if(myCard.answers[k].answer.toLowerCase()==answer2correct){myCard.answers[k].point=1;}}
+}
+else {
+$("#answer_"+answer_id).parent().removeClass("goodAnswerQuiz").addClass("badAnswerQuiz");
+for(k in myCard.answers){if(myCard.answers[k].answer.toLowerCase()==answer2correct){myCard.answers[k].point=0;}}
+}
+sendGoodUser(card_id);
+}
+
+function fin_quiz()
+{
+  $('.chart').hide();
+if(state!='fin'){
+  state="fin";
+  music_fond=$('.music_fond')[0].pause();
+  $(".victory")[0].play();
+  $("#question").hide();
+  ranking();
+  $("#fin").show();
+  socket.emit('fin');
+  }
+}
+
+
+function ranking()
+{
+  $(".player_item").removeClass("goodUser").removeClass("badUser");
+  PlayersScore=[];
+  rankPlayers=[];
+  for(k in user_idAnswerReceived)
+  {player_id=user_idAnswerReceived[k];
+   PlayersScore[player_id]=0;
+  }
+    for(card_rk in cards)
+    {
+      for(ans_rk in cards[card_rk].answers)
+      {
+        myAnswer=cards[card_rk].answers[ans_rk];
+        PlayersScore[cards[card_rk].answers[ans_rk].user_id]+=cards[card_rk].answers[ans_rk].point;
+      }
+    }
+    for(k in user_idAnswerReceived)
+    {player_id=user_idAnswerReceived[k];
+      //players["player_"+player_id]={id:player_id,pseudo:pseudo,connecte:1,cartes:[]};
+      console.log(players);
+     rankPlayers.push({
+       pseudo:players["player_"+player_id].pseudo,
+       player_id:player_id,
+       score:PlayersScore[player_id]});
+    }
+
+  rankPlayers.sort(fonctionComparaison)
+  rg_classement=0;
+  scoreOld=-1;
+
+  $('#classement').html("<table id='classementTable'></table>");
+  $('#classementTable').append("<tr><td class='rgclas' style='font-size:2em;'>1</td><td class='pseudo_1'></td><td class='score_1'></td></tr>");
+  $('#classementTable').append("<tr><td class='rgclas' style='font-size:2em;'>2</td><td class='pseudo_2'></td><td class='score_2'></td></tr>");
+  $('#classementTable').append("<tr><td class='rgclas' style='font-size:2em;'>3</td><td class='pseudo_3'></td><td class='score_3'></td></tr>");
+  csv_data="nom"+'\t'+"score"+'\r\n';
+  victoryArray=[];
+  for(k in rankPlayers)
+  { id=rankPlayers[k].player_id;
+    pseudo=rankPlayers[k].pseudo;
+    score=rankPlayers[k].score;
+    csv_data+=pseudo+'\t'+score+'\r\n';
+    if(scoreOld!=score)
+    {rg_classement++;scoreOld=score;}
+    if(score<2){score+="pt";}else{score+="pts";}
+    if(rg_classement<4){
+      if(rg_classement==1){
+        //$.getJSON("../../ajax.php?action=addQuizTrophy&user_id="+id, function(result){});
+        victoryArray.push(parseInt(id));
+      }
+
+    $('.pseudo_'+rg_classement).append("<div>"+pseudo+"</div>");
+    $('.score_'+rg_classement).html(score);
+    }
+  }
+  socket.emit('victory',victoryArray);
+  eraseCookie("game_id");
+
+  $("#download_results").click(function() {
+  var downloadLink = document.createElement("a");
+  var blob = new Blob(["\ufeff", csv_data]);
+  var url = URL.createObjectURL(blob);
+  downloadLink.href = url;
+  downloadLink.download = "resultat quiz.xls";
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  });
+}
+function fonctionComparaison(a,b)
+{
+if(a.score<b.score){return 1;}
+else{return -1;}
+}
+
+function capitalizeFirstLetterEachWordSplitBySpace(string){
+var words = string.split(" ");
+var output = "";
+for (i = 0 ; i < words.length; i ++){
+lowerWord = words[i].toLowerCase();
+lowerWord = lowerWord.trim();
+capitalizedWord = lowerWord.slice(0,1).toUpperCase() + lowerWord.slice(1);
+output += capitalizedWord;
+if (i != words.length-1){
+output+=" ";
+}
+}//for
+output[output.length-1] = '';
+return output;
+}
+var reboursCountIni=15;
+var reboursCount=15;
+
+function restartAnimation(){
+  $("#rebours").css("animation-play-state","running");
+  $(".rebours_num").css("color","var(--mycolor2)");
+  $("#rebours").css("stroke","var(--mycolor2)");
+  rebours=document.getElementById("rebours");
+  newrebours=rebours.cloneNode(true);
+  rebours.parentNode.replaceChild(newrebours,rebours);
+  $("#rebours").off();
+  $("#rebours").on("mouseover",function(){$(".rebours_pause").html("pause");});
+  $("#rebours").on("click",function(){
+    if($("#rebours").css("animation-play-state")=="paused")
+    {$("#rebours").css("animation-play-state","running");
+    reboursInterval=setInterval(updateRebours,1000);
+    }
+    else {$("#rebours").css("animation-play-state","paused");
+    clearInterval(reboursInterval);}
+  });
+  console.log("done");
+  reboursCount=reboursCountIni;
+  $(".chart").show();
+  $(".rebours_num").html(reboursCount);
+}
+function updateRebours(){
+  reboursCount--;
+  $(".rebours_num").html(reboursCount);
+  if(reboursCount==-1){state='newCorrection';showAnswer();}
+  if(reboursCount==3){$(".rebours_num").css("color","red");$("#rebours").css("stroke","red");}
+  if(reboursCount==7){$(".rebours_num").css("color","orange");$("#rebours").css("stroke","orange");}
+}
+function changeRebours(nbreCarte)
+{
+  reboursCountIni=$(".rebours_ini").val();
+  reboursCountIni*=nbreCarte;
+  $(".outer").css("animation","show100 linear "+reboursCountIni+"s");
+}
+
+function toogleVolume()
+{
+  music_fond=$('.music_fond')[0];
+  music_fond[music_fond.paused ? 'play' : 'pause']();
+  if(music_fond.paused){$("#audio_btn > img").prop("src","../../../img/haut_parleur.png");}
+  else{$("#audio_btn > img").prop("src","../../../img/haut_parleur_mute.png");}
+}
+
+function rand_parmi(liste)
+{
+nbre_elem=liste.length;
+r=Math.floor(nbre_elem*Math.random());
+return liste[r];
+}
+function removeElem(elem,liste)
+{
+	var index = liste.indexOf(elem);
+	if(index > -1){
+	liste.splice(index,1);
+	}
+}
+
+</script>
+
+<audio class="nextAudio" preload="auto">
+    <source src="../../../audio/next.mp3" type="audio/mpeg">
+    <source src="../../../audio/next.ogg" type="audio/ogg">
+</audio>
+<audio class="victory" preload="auto">
+    <source src="../../../audio/victory.mp3" type="audio/mpeg">
+    <source src="../../../audio/victory.ogg" type="audio/ogg">
+</audio>
+</body>
+</html>

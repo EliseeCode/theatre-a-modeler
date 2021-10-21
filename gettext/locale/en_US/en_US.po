@@ -1,0 +1,2368 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: exolingo\n"
+"POT-Creation-Date: 2020-01-31 10:40+0300\n"
+"PO-Revision-Date: 2020-01-31 10:41+0300\n"
+"Last-Translator: \n"
+"Language-Team: Elisée RECLUS\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.4\n"
+"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: gettext\n"
+"X-Poedit-SearchPathExcluded-1: backups\n"
+"X-Poedit-SearchPathExcluded-2: bot-ui\n"
+"X-Poedit-SearchPathExcluded-3: gettext\n"
+"X-Poedit-SearchPathExcluded-4: nodejs-dialogflow-master\n"
+"X-Poedit-SearchPathExcluded-5: stripe-php-7.14.1\n"
+"X-Poedit-SearchPathExcluded-6: vendor\n"
+"X-Poedit-SearchPathExcluded-7: wordpress\n"
+"X-Poedit-SearchPathExcluded-8: scss\n"
+
+#: Payments/index.php:10 index.php:27 pricing.php:26
+msgid "Se connecter"
+msgstr "Log in"
+
+#: Payments/index.php:11 index.php:28 pricing.php:27
+msgid "Salut"
+msgstr "Hi"
+
+#: Payments/index.php:11 index.php:28
+msgid "! Clique ici"
+msgstr "! Welcome back"
+
+#: Payments/index.php:106 index.php:141 pricing.php:178
+msgid "Menu"
+msgstr "Menu"
+
+#: Payments/index.php:114 index.php:149 pricing.php:186
+msgid "Communauté"
+msgstr "Community"
+
+#: Payments/index.php:118 index.php:153 index.php:290 pricing.php:190
+msgid "Philosophie"
+msgstr "Philosophy"
+
+#: Payments/index.php:122 index.php:157 index.php:352 pricing.php:194
+msgid "Génèse"
+msgstr "Genesis"
+
+#: Payments/index.php:125 index.php:160
+msgid "Tarifs"
+msgstr "Prices"
+
+#: Payments/index.php:128 index.php:163 pricing.php:197
+msgid "Contact"
+msgstr "Contact"
+
+#: Payments/index.php:136
+msgid "Se déconnecter"
+msgstr "Log out"
+
+#: SAVE decks.php:277 decks.php:358 edit_deck.php:425
+msgid "Thèmes"
+msgstr "Topics"
+
+#: SAVE decks.php:280 classes.php:122
+msgid "Cours"
+msgstr "Course"
+
+#: SAVE decks.php:283 decks.php:364
+msgid "Langues"
+msgstr "Languages"
+
+#: SAVE decks.php:307 decks.php:390
+msgid "Tableau d'honneur de la semaine"
+msgstr "7-days scoreboard"
+
+#: SAVE decks.php:341 decks.php:427 entete.php:256
+msgid "Niveau"
+msgstr "Level"
+
+#: SAVE decks.php:362
+msgid "Nouvelle liste à importer"
+msgstr "New deck to import"
+
+#: SAVE decks.php:373 decks.php:483
+msgid "Aucun filtre Thèmatique"
+msgstr "No topic filter"
+
+#: SAVE decks.php:375 decks.php:485
+msgid "Choisissez une liste pour jouer avec."
+msgstr "Select a deck to start playing."
+
+#: SAVE decks.php:382 decks.php:494 decks.php:501
+msgid "Ma bibliotèque"
+msgstr "My library"
+
+#: SAVE decks.php:444 decks.php:445 decks.php:580 decks.php:581
+msgid "par"
+msgstr "by"
+
+#: SAVE decks.php:467 decks.php:606
+msgid "Consulter la liste"
+msgstr "Look at the deck"
+
+#: SAVE decks.php:469 decks.php:608
+msgid "Déplacer la liste en bas"
+msgstr "Move the deck to the bottom"
+
+#: SAVE decks.php:470 decks.php:609
+msgid "Déplacer la liste en haut"
+msgstr "Move the deck to the top"
+
+#: SAVE decks.php:476 decks.php:482 decks.php:615 decks.php:621
+#: game_memory.php:73
+msgid "Editer la liste"
+msgstr "Edit deck"
+
+#: SAVE decks.php:477
+msgid "Retirer la liste du cours"
+msgstr "Remove deck from the course"
+
+#: SAVE decks.php:482 decks.php:621
+msgid "Créer en coopération"
+msgstr "Build in co-operative mode"
+
+#: SAVE decks.php:483 decks.php:622
+msgid "Refuser la liste"
+msgstr "Reject deck"
+
+#: SAVE decks.php:483 decks.php:622
+msgid "Rejeter"
+msgstr "Reject"
+
+#: SAVE decks.php:484
+msgid "Valider la liste et l'ajouter au cours"
+msgstr "Validate deck and add it to the course"
+
+#: SAVE decks.php:484 boxEleve.php:108 decks.php:623 edit_deck.php:462
+#: edit_deck.php:465 edit_deck.php:473 edit_deck.php:483 entete.php:347
+#: quizEleve.php:164 reset.php:109 windowClass.php:1227
+msgid "Valider"
+msgstr "Confirm"
+
+#: SAVE decks.php:488 decks.php:627
+msgid "personnes aiment cette liste"
+msgstr "persons like this deck"
+
+#: SAVE decks.php:489 decks.php:628
+msgid "Cette liste à récupéré \"+royalties+\" pièces de royalties"
+msgstr "This deck received \"+royalties+\" Bolt"
+
+#: SAVE decks.php:514 decks.php:653
+msgid "En attente de validation"
+msgstr "Waiting for validation"
+
+#: SAVE decks.php:840 cards - Copie.php:193 cards.php:259
+msgid "Cartes à réviser"
+msgstr "Cards to review"
+
+#: SAVE decks.php:850
+msgid "Nombre de mots en mémoire"
+msgstr "Number of known words"
+
+#: SAVE decks.php:882
+msgid "Choisissez des listes à importer"
+msgstr "Choose decks to import"
+
+#: SAVE decks.php:883 decks.php:1146 windowClass.php:222
+msgid "Importer dans "
+msgstr "Import in "
+
+#: SAVE decks.php:884 classes.php:318 windowClass.php:1110
+msgid "Créer"
+msgstr "Create"
+
+#: SAVE decks.php:894 decks.php:1161 windowClass.php:233
+msgid "Créer une nouvelle liste vierge"
+msgstr "Create a new blank deck"
+
+#: SAVE decks.php:926 decks.php:1283
+msgid ""
+"Etes-vous sure de vouloir supprimer cette liste ? La totalité des cartes et "
+"des mémorisations associées seront définitivement supprimées."
+msgstr ""
+"Are you sure to delete this deck ? All content and progresses associated "
+"will be deleted."
+
+#: base.php:147
+msgid "Aucune erreur trouvée."
+msgstr "No error found."
+
+#: base.php:152
+msgid "Plus d’informations…"
+msgstr "More informations..."
+
+#: base.php:158
+msgid "Ignorer ce type d’erreur"
+msgstr "Ignore this type of error"
+
+#: base.php:163
+msgid "Ignorer l’erreur pour ce mot"
+msgstr "Ignore this error for this word"
+
+#: base.php:176 base.php:181
+msgid "Suggerer un mot pour le dictionnaire…"
+msgstr "Suggest a word for the dictionaty..."
+
+#: base.php:289
+msgid ""
+"Écrivez votre texte ici puis cliquez sur 'Vérifier' pour détecter les "
+"erreurs."
+msgstr "Write here your text and click on 'Check' to detect mistakes."
+
+#: boxEleve.php:63 boxProf.php:121
+msgid "retour aux listes"
+msgstr "Back to decks"
+
+#: boxEleve.php:105
+msgid "Entrer le code de la session"
+msgstr "Enter session code"
+
+#: boxEleve.php:115 quizEleve.php:153
+msgid "En attente ..."
+msgstr "Waiting ..."
+
+#: boxEleve.php:123
+msgid "Mettre les objets dans les bonnes boîtes"
+msgstr "Place objects in the right box"
+
+#: boxProf.php:196 quizProf.php:191
+msgid "Liste des apprenants"
+msgstr "Users list"
+
+#: boxProf.php:197 quizProf.php:192
+msgid "Aucun élève inscrit"
+msgstr "No users"
+
+#: boxProf.php:204
+msgid "Commencer la mise en boite"
+msgstr "Start Boxing"
+
+#: boxProf.php:210 quizProf.php:223 quizProf.php:246 quizProf.php:278
+#: quizProf.php:317
+msgid "Pas d'info"
+msgstr "No information"
+
+#: boxProf.php:212
+msgid ""
+"Connectez-vous sur ExoLingo<br> puis cliquez sur <br>'REJOINDRE UNE Mise en "
+"Boite'."
+msgstr "Join ExoLingo <br> Click on <br> \"Activity\" > \"Join BoxGame\"."
+
+#: boxProf.php:221
+msgid "Créer des boîtes et glisser-déposer les cartes à l'intérieur"
+msgstr "Create boxes and drag'n drop cards inside"
+
+#: boxProf.php:222
+msgid "Créer une nouvelle boîte"
+msgstr "Create a new box"
+
+#: boxProf.php:222
+msgid "Envoyer la correction aux élèves"
+msgstr "Send correction to students"
+
+#: boxProf.php:289
+msgid "cliquez pour voir les cartes mal placé"
+msgstr "Click to see misplaced objects"
+
+#: boxProf.php:296 quizProf.php:447 quizProf.php:461
+msgid "participant"
+msgstr "user"
+
+#: boxProf.php:297 quizProf.php:448 quizProf.php:462
+msgid "participants"
+msgstr "users"
+
+#: boxProf.php:347
+msgid "Attribut"
+msgstr "Tag"
+
+#: cards - Copie.php:131
+msgid "Edition"
+msgstr "Edit"
+
+#: cards - Copie.php:135 cards.php:192
+msgid "Selectionnez plus de carte pour générer les exercices"
+msgstr "Select more cards to generate games"
+
+#: cards - Copie.php:301 Copie.php:302 cards.php:182 cards.php:183
+msgid "QCM"
+msgstr "Multiple choice question"
+
+#: cards - Copie.php:301 cards.php:182
+msgid "Trouver l'image"
+msgstr "Find image"
+
+#: cards - Copie.php:302 cards.php:183
+msgid "Trouver le mot"
+msgstr "Find words"
+
+#: cards - Copie.php:303 cards.php:184 windowClass.php:646
+msgid "Dictée"
+msgstr "Dictation"
+
+#: cards - Copie.php:304 cards.php:185
+msgid "Bazar de lettres"
+msgstr "Mixed letters"
+
+#: cards - Copie.php:305 cards.php:186
+msgid "Bazar de mots"
+msgstr "Mixed words"
+
+#: cards - Copie.php:306 cards.php:187
+msgid "Mots croisés"
+msgstr "Crossword"
+
+#: cards - Copie.php:307 cards.php:188 windowClass.php:647
+msgid "Grille de lettres"
+msgstr "Word search grid"
+
+#: cards - Copie.php:308
+msgid "Méli-mélo"
+msgstr "Mix"
+
+#: cards - Copie.php:308
+msgid "aléatoire"
+msgstr "random"
+
+#: cards - Copie.php:309 cards.php:189 windowClass.php:648
+msgid "Prononciation"
+msgstr "Prononciation"
+
+#: cards - Copie.php:310
+msgid "text à trous"
+msgstr "blank in a text"
+
+#: cards - Copie.php:334 cards.php:380 edit_deck.php:2049
+msgid "Quel est le problème avec cette liste ?"
+msgstr "What is the issue with this list ?"
+
+#: cards.php:170
+msgid "Jeux"
+msgstr "Games"
+
+#: cards.php:171
+msgid "2) Selectionner un type de jeu"
+msgstr "2) Select a game"
+
+#: cards.php:177 index.php:327 quizEleve.php:27 quizProf.php:108
+msgid "Quiz en classe"
+msgstr "Classroom quiz"
+
+#: cards.php:179
+msgid "Reconstitution du dialogue"
+msgstr "Speech reconstruction"
+
+#: cards.php:181
+msgid "Quiz Lettres folles"
+msgstr "Mixed letter quiz"
+
+#: cards.php:190
+msgid "Texte à trou"
+msgstr "Blank in a text"
+
+#: check_decks.php:456 edit_deck.php:1429 edit_deck.php:1446
+msgid "Recherche"
+msgstr "Search"
+
+#: check_decks.php:460 edit_deck.php:479 edit_deck.php:1433 edit_deck.php:1450
+msgid "Importer un fichier"
+msgstr "Browse file"
+
+#: check_decks.php:461 edit_deck.php:1434 edit_deck.php:1451
+msgid "Depuis url"
+msgstr "From URL"
+
+#: check_decks.php:514 edit_deck.php:1531
+msgid "Ajouter une phrase manuellement"
+msgstr "Manually add a sentence"
+
+#: check_decks.php:515
+msgid "Nouvelle phrase avec `+mot+` entre * ou bien sa définition"
+msgstr "New sentence with '+mot+' entre * OR its definition"
+
+#: check_decks.php:517
+msgid "Rechercher des phrases avec : "
+msgstr "Search for sentences containing : "
+
+#: check_decks.php:566 edit_deck.php:1608
+msgid "Aucun résultat pour :"
+msgstr "No result for :"
+
+#: check_decks.php:682 edit_deck.php:1723
+msgid "Rechercher"
+msgstr "Search"
+
+#: check_decks.php:761 edit_deck.php:1802 game_memory - Copie.php:510
+#: game_memory.php:504
+msgid "Quel est le problème avec cette carte ?"
+msgstr "What is the issue with this card ?"
+
+#: classes.php:130 decks.php:361
+msgid "Classes"
+msgstr "Classes"
+
+#: classes.php:146 classes.php:223
+msgid "Cours privé"
+msgstr "Locked course"
+
+#: classes.php:149 classes.php:226 windowClass.php:371
+msgid "Rejoindre"
+msgstr "Join"
+
+#: classes.php:158 decks.php:401 entete.php:416 windowClass.php:324
+msgid "Ma bibliothèque"
+msgstr "My library"
+
+#: classes.php:164
+msgid "Mes cours"
+msgstr "My courses"
+
+#: classes.php:165
+msgid "Cours disponible"
+msgstr "Available courses"
+
+#: classes.php:166 windowClass.php:337
+msgid "Afficher/Cacher les classes archivées"
+msgstr "Display/Hide archived courses"
+
+#: classes.php:227 windowClass.php:372
+msgid "Ouvrir"
+msgstr "Open"
+
+#: classes.php:312
+msgid "Nouveau cours"
+msgstr "New course"
+
+#: classes.php:314
+msgid "Nom du cours"
+msgstr "Course name"
+
+#: classes.php:316 windowClass.php:1108
+msgid "Langue enseignée"
+msgstr "Target language"
+
+#: cookiePolicyPopUp.php:3
+msgid "Ce site internet utilise des cookies."
+msgstr "This website uses cookies"
+
+#: cookiePolicyPopUp.php:3
+msgid "Plus d'informations"
+msgstr "More informations"
+
+#: cookiePolicyPopUp.php:3
+msgid "C'est bon"
+msgstr "That's good"
+
+#: decks.php:444 decks.php:548
+msgid "Importer une liste existante"
+msgstr "Import a deck"
+
+#: decks.php:446
+msgid "Créer un liste"
+msgstr "Create a deck"
+
+#: decks.php:461 edit_deck.php:775 windowClass.php:1124
+msgid "plus de langues"
+msgstr "More languages"
+
+#: decks.php:461 edit_deck.php:775
+msgid "plus"
+msgstr "More"
+
+#: decks.php:543
+msgid "Ajouter des listes de vocabulaire"
+msgstr "Add decks"
+
+#: decks.php:546
+msgid "La classe "
+msgstr "Classroom"
+
+#: decks.php:546
+msgid " n'a aucune liste."
+msgstr "has no deck."
+
+#: decks.php:547
+msgid ""
+"Vous pouvez créer vos propres listes ou bien importer des listes déjà créées "
+"parmi les listes publiques d'ExoLingo ou bien celles que vous avez déjà "
+"créées"
+msgstr ""
+"You can create your own decks or import already created decks among the one "
+"created by ExoLingo or those you have already created. "
+
+#: decks.php:548
+msgid "Créer une liste"
+msgstr "Create a deck"
+
+#: decks.php:616
+msgid "Retirer la liste de la classe"
+msgstr "Remove deck from the classroom"
+
+#: decks.php:623
+msgid "Valider la liste et l'ajouter à la classe"
+msgstr "Validate deck and add it to the classroom"
+
+#: decks.php:982
+msgid "Invitation des élèves"
+msgstr "Invitation"
+
+#: decks.php:985
+msgid "Aucun élève inscrit dans cette classe."
+msgstr "No users in this classroom"
+
+#: decks.php:986
+msgid "Pour ajouter des élèves, envoyez-leurs le lien suivant par email :"
+msgstr "To add your student, send them the following link by mail :"
+
+#: decks.php:991
+msgid ""
+"Vous pouvez également leurs demander de rejoindre la classe avec le code "
+"suivant :"
+msgstr "You can also ask them to join in with the code :"
+
+#: decks.php:1001 windowClass.php:100
+msgid "Rapport de classe"
+msgstr "Class report"
+
+#: decks.php:1004
+msgid ""
+"Consultez le rapport de classe pour vérifier les acquis et la progression de "
+"vos élèves."
+msgstr "Consult the class report to check on your students progresses."
+
+#: decks.php:1005
+msgid "Consulter"
+msgstr "Consult"
+
+#: decks.php:1020
+msgid "Création d'une classe"
+msgstr "Create a new classroom"
+
+#: decks.php:1024
+msgid "Vous n'avez pour le moment aucune classe."
+msgstr "You have no Classroom for now."
+
+#: decks.php:1025
+msgid ""
+"Une classe vous permet de rassembler vos élèves et de leurs donner accées "
+"aux listes que vous avez sélectionnées et créées pour eux."
+msgstr ""
+"A Classroom is made to gather students and to give them access to the listes "
+"you selected/created for them."
+
+#: decks.php:1026
+msgid ""
+"Vos élèves pourront dans un deuxième temps partager (avec votre "
+"autorisation) leurs listes avec les membres de la classe."
+msgstr ""
+"Your student will be able to share their decks (Under your control) with "
+"their classmate."
+
+#: decks.php:1027 windowClass.php:299
+msgid "Créer une classe"
+msgstr "Create a course"
+
+#: decks.php:1043 entete.php:343
+msgid "Rejoindre une classe"
+msgstr "Join a classroom"
+
+#: decks.php:1047
+msgid "Vous n'êtes inscrit dans aucune classe."
+msgstr "You are in no classroom."
+
+#: decks.php:1048
+msgid ""
+"Demander à votre professeur de créer une classe et de vous donner le code "
+"correspondant"
+msgstr ""
+"Ask your teacher to create a classroom and to give you the corresponding "
+"code."
+
+#: decks.php:1050
+msgid ""
+"En rejoignant la classe d'un professeur, vous accéderez aux listes de cette "
+"classe et serez en relation avec les élèves et les professeurs de cette "
+"classe."
+msgstr ""
+"By joining a classroom you will access decks made for you and will be in "
+"relation with your classmates and teachers."
+
+#: decks.php:1055 windowClass.php:315
+msgid "Rejoindre la classe"
+msgstr "Join the classroom "
+
+#: decks.php:1082 decks.php:1097
+msgid "Répétitions espacées"
+msgstr "Spaced repetitions"
+
+#: decks.php:1085
+msgid "Actuellement "
+msgstr "Right now "
+
+#: decks.php:1085
+msgid " cartes sont sur le point d'être oubliés."
+msgstr " cards need to be reviewed."
+
+#: decks.php:1086 decks.php:1101
+msgid ""
+"L'algorithme de ExoLingo prédit quand les cartes doivent être retravaillé "
+"pour s'inscrire dans votre mémoire à long terme."
+msgstr ""
+"ExoLingo's algorithms figure out when you should practice words to get them "
+"into your long-term memory."
+
+#: decks.php:1087
+msgid "Réviser"
+msgstr "Review"
+
+#: decks.php:1100
+msgid ""
+"Aucune carte n'est à réviser pour le moment. Choissisez une liste et "
+"apprenez de nouveaux mots en vous amusant."
+msgstr ""
+"No card need to be review for now. Choose a deck and learn new words with "
+"fun !"
+
+#: decks.php:1144 windowClass.php:220
+msgid "Choisissez des listes à importer dans "
+msgstr "Choose decks to import in "
+
+#: decks.php:1150 windowClass.php:225
+msgid "métier, ..."
+msgstr "Verbs, ..."
+
+#: decks.php:1151 windowClass.php:226
+msgid "Aucune liste n'a été trouvé"
+msgstr "No deck has been found."
+
+#: edit_deck.php:371
+msgid "Couverture de la liste"
+msgstr "Deck cover"
+
+#: edit_deck.php:395
+msgid "Langue de la liste"
+msgstr "Deck language"
+
+#: edit_deck.php:405
+msgid "Diffusion de la liste"
+msgstr "Deck broadcast"
+
+#: edit_deck.php:409
+msgid "Aucune classe dans cette langue."
+msgstr "No classroom found in this language"
+
+#: edit_deck.php:432
+msgid "Selectionner un thème"
+msgstr "Select a topic"
+
+#: edit_deck.php:433
+msgid "Ajouter un thème"
+msgstr "Add a topic"
+
+#: edit_deck.php:445
+msgid "Contenu global de la liste"
+msgstr "Global content"
+
+#: edit_deck.php:450
+msgid "Ajouter une vidéo Youtube"
+msgstr "Add a YouTube video"
+
+#: edit_deck.php:451
+msgid "Ajouter un fichier audio"
+msgstr "Add an audio file"
+
+#: edit_deck.php:452
+msgid "Ajouter une image"
+msgstr "Add an image"
+
+#: edit_deck.php:453
+msgid "Ajouter un texte"
+msgstr "Add a text"
+
+#: edit_deck.php:458
+msgid "Texte"
+msgstr "Text"
+
+#: edit_deck.php:462 edit_deck.php:465 edit_deck.php:473 edit_deck.php:483
+#: windowClass.php:1228
+msgid "Annuler"
+msgstr "Cancel"
+
+#: edit_deck.php:464
+msgid "Image"
+msgstr "Image"
+
+#: edit_deck.php:469
+msgid "Vidéo (youtube)"
+msgstr "Youtube video"
+
+#: edit_deck.php:470
+msgid "indiquer l'URL de la vidéo youtube"
+msgstr "Write Youtube video URL"
+
+#: edit_deck.php:477
+msgid "Audio"
+msgstr "Audio"
+
+#: edit_deck.php:494
+msgid "Ajouter une nouvelle carte"
+msgstr "Add a new card"
+
+#: edit_deck.php:497
+msgid "Mot sur la carte"
+msgstr "Word to memorize"
+
+#: edit_deck.php:498
+msgid "Nouveau mot"
+msgstr "New word"
+
+#: edit_deck.php:513
+msgid ""
+"Veuillez attendre quelques instants... nous essayons de vous reconnecter."
+msgstr "Please wait few moment... we are working hard to connect you."
+
+#: edit_deck.php:816
+msgid "Partage de la liste"
+msgstr "Share the deck"
+
+#: edit_deck.php:817
+msgid "adresse mail"
+msgstr "Mail adress"
+
+#: edit_deck.php:817 edit_deck.php:1118
+msgid "Partager"
+msgstr "Share"
+
+#: edit_deck.php:819 edit_deck.php:1118
+msgid "Modification"
+msgstr "Edition"
+
+#: edit_deck.php:820 edit_deck.php:1118
+msgid "Propriété"
+msgstr "Ownership"
+
+#: edit_deck.php:830
+msgid "Déjà partagé avec "
+msgstr "Already shared with "
+
+#: edit_deck.php:984
+msgid "visualiser la liste"
+msgstr "Look at the deck"
+
+#: edit_deck.php:990 game_memory.php:71
+msgid "Signaler un problème sur la liste"
+msgstr "Indicate an issue about this deck"
+
+#: edit_deck.php:993
+msgid "Partager la liste"
+msgstr "Share this deck"
+
+#: edit_deck.php:1062 edit_deck.php:1068
+msgid "Liste cachée"
+msgstr "Hidden deck"
+
+#: edit_deck.php:1063
+msgid "Liste visible"
+msgstr "Visible deck"
+
+#: edit_deck.php:1065
+msgid "Liste en construction coopérative"
+msgstr "Co-operative deck"
+
+#: edit_deck.php:1069
+msgid "Liste en attente de validation par un maître"
+msgstr "Waiting for validation by a master"
+
+#: edit_deck.php:1117
+msgid "Droit de partage avec les maîtres de cette classe"
+msgstr "Share with this classroom's masters"
+
+#: edit_deck.php:1118
+msgid "Consultation"
+msgstr "Read only"
+
+#: edit_deck.php:1182
+msgid "Etes-vous sur de vouloir supprimer cette liste de vocabulaire ?"
+msgstr "Are you sure to delete this deck ?"
+
+#: edit_deck.php:1346
+msgid ""
+"Une carte similaire existe déjà. Voulez-vous tout de même créer cette carte ?"
+msgstr "A similar card already exist. Would you like to create it again ?"
+
+#: edit_deck.php:1518
+msgid "supprimer la carte"
+msgstr "Delete card"
+
+#: edit_deck.php:1531
+msgid "Nouvelle phrase avec '+mot+' entre * ou bien sa définition"
+msgstr "New sentence with '+mot+' entre * OR its definition"
+
+#: edit_deck.php:1531
+msgid "Rechercher des phrases avec :'+mot+'."
+msgstr "Search for sentences containing : '+mot+'."
+
+#: edit_deck.php:1915
+msgid "nom du nouveau thème :"
+msgstr "New topic name :"
+
+#: edit_deck.php:1918
+msgid "Un thème ne peut contenir d'apostrophe."
+msgstr "A topic cannot contain quote sign."
+
+#: entete.php:72
+msgid "Autre"
+msgstr "Other"
+
+#: entete.php:77 entete.php:183 entete.php:200 myclasses.php:84
+#: windowClass.php:90 windowClass.php:336
+msgid "Mes classes"
+msgstr "My classrooms "
+
+#: entete.php:81
+msgid "Rejoindre la classe d'un professeur"
+msgstr "Join my teacher's classroom "
+
+#: entete.php:84 windowClass.php:295
+msgid "Créer une nouvelle classe"
+msgstr "Create a new classroom "
+
+#: entete.php:90
+msgid "Rejoindre une classe ExoLingo"
+msgstr "Join an ExoLingo classroom "
+
+#: entete.php:107 entete.php:194
+msgid "Rapports et actions"
+msgstr "Reports and actions"
+
+#: entete.php:137
+msgid "Activités"
+msgstr "Activities"
+
+#: entete.php:139 entete.php:196
+msgid "Rejoindre un quiz"
+msgstr "Join a quiz"
+
+#: entete.php:141
+msgid "Rédaction"
+msgstr "Writing"
+
+#: entete.php:142
+msgid "Enregistrement"
+msgstr "Recording"
+
+#: entete.php:160 windowClass.php:104
+msgid "Paramètres"
+msgstr "Settings"
+
+#: entete.php:161 entete.php:211
+msgid "Déconnexion"
+msgstr "Logout"
+
+#: entete.php:168 entete.php:208
+msgid "Mes statistiques et trophées"
+msgstr "Stats and trophies"
+
+#: entete.php:193 windowClass.php:88
+msgid "Accueil"
+msgstr "Home"
+
+#: entete.php:209
+msgid "Mon profil"
+msgstr "My profile"
+
+#: entete.php:330
+msgid "Il y a aucune classe avec ce code."
+msgstr "No classroom with this code."
+
+#: entete.php:334
+msgid "Le code est composé de quatre lettres."
+msgstr "Code is 4 letters long."
+
+#: entete.php:344
+msgid "Ecrire le code de la classe (donné par votre professeur)"
+msgstr "Write classroom's access code (given by your teacher)"
+
+#: entete.php:442
+msgid "Retirer des archives"
+msgstr "Remove from archive"
+
+#: entete.php:474
+msgid "Quiz en classe !"
+msgstr "Classroom quiz !"
+
+#: entete.php:477
+msgid ""
+"Votre professeur `+quiz_prof_name+` de `+quiz_class_name+` vous invite à "
+"rejoindre un quiz en classe sur :"
+msgstr ""
+"Your teacher `+quiz_prof_name+` of `+quiz_class_name+` invite you to join a "
+"classroom quiz about :"
+
+#: entete.php:479
+msgid "Rejoindre le quiz"
+msgstr "Join quiz"
+
+#: entete.php:492
+msgid "Inviter des participants"
+msgstr "Invite users"
+
+#: entete.php:492 windowClass.php:605 windowClass.php:1182
+msgid "Le code pour rejoindre la classe est"
+msgstr "The code to join this classroom is"
+
+#: entete.php:493
+msgid ""
+"Le lien pour rejoindre la classe (à envoyer par mail aux élèves/professeurs)"
+msgstr ""
+"Link to join the classroom (to send to user by mail or to be used as a "
+"QRcode)"
+
+#: entete.php:493 windowClass.php:1183
+msgid "Copier"
+msgstr "Copy"
+
+#: error.php:50 reset.php:70 success.php:48
+msgid "retour"
+msgstr "Back"
+
+#: error.php:76 forgot.php:157 quizProf.php:112 success.php:72
+msgid "Retour"
+msgstr "Back"
+
+#: forgot.php:15
+msgid "Aucun utilisateur inscrit avec cette adresse email"
+msgstr "No user found with this mail adress"
+
+#: forgot.php:28
+msgid "<p>Veuillez consulter votre boîte mail  <span>"
+msgstr "<p>Please consult your mailbox  <span>"
+
+#: forgot.php:28
+msgid "</span> pour confirmer la réinitialisation de votre mot de passe!</p>"
+msgstr "</span> to confirm your password reseting !</p>"
+
+#: forgot.php:43
+msgid "Reinitialisation du mot de passe ( ExoLingo )"
+msgstr "Password reseting (ExoLingo)"
+
+#: forgot.php:44 forgot.php:50 register.php:74 register.php:80
+#: resendMail.php:32 resendMail.php:38
+msgid "Bonjour "
+msgstr "Hello "
+
+#: forgot.php:45
+msgid ""
+"Vous avez demander la réinitialisation de votre mot de passe ! Cliquez sur "
+"le lien suivant pour réinitialiser votre mot de passe"
+msgstr ""
+"You asked to reset your password. Please click on the following link to do so"
+
+#: forgot.php:51
+msgid ""
+"Vous avez demander la réinitialisation de votre mot de passe !<br>Cliquez "
+"sur le lien suivant pour réinitialiser votre mot de passe"
+msgstr ""
+"You asked to reset your password. <br>Please click on the following link to "
+"do so"
+
+#: forgot.php:93
+msgid ""
+"Le mail de réinitialisation de votre mot de passe n'a pas pu être envoyé. "
+"Merci de contacter l'administrateur du site (M Elisée)."
+msgstr "We haven't been able to send you the password reinitialisation ."
+
+#: forgot.php:116 forgot.php:145
+msgid "Réinitialisation de votre mot de passe"
+msgstr "Password reseting"
+
+#: forgot.php:150 index.php:407
+msgid "Adresse email"
+msgstr "Mail adress"
+
+#: forgot.php:154
+msgid "Réinitialisation"
+msgstr "Reseting"
+
+#: game_memory - Copie.php:18 game_memory.php:26
+msgid ""
+"Etes-vous sûr de vouloir effacer ce mot de votre mémoire ? Tous les progrés "
+"enregistrés pour cette carte seront effacés."
+msgstr "Are you sure you want to erase all progress made with this card ?"
+
+#: game_memory - Copie.php:48
+msgid "Un problème sur la liste ?"
+msgstr "A issue with this deck ?"
+
+#: game_memory - Copie.php:75
+msgid "Selectionnez les cartes à réviser"
+msgstr "Select cards to review"
+
+#: game_memory - Copie.php:107 game_memory.php:132
+msgid "En mémoire pour un peu plus de \"+DeltaJ+\" jour"
+msgstr "Known for more than \"+DeltaJ+\" day"
+
+#: game_memory - Copie.php:108 game_memory.php:133
+msgid "En mémoire pour un peu plus de \"+DeltaJ+\" jours"
+msgstr "Known for more than \"+DeltaJ+\" days"
+
+#: game_memory - Copie.php:109 game_memory.php:134
+msgid "En mémoire pour un peu plus de \"+DeltaS+\" semaine"
+msgstr "Known for more than \"+DeltaS+\" week"
+
+#: game_memory - Copie.php:110 game_memory.php:135
+msgid "En mémoire pour un peu plus de \"+DeltaS+\" semaines"
+msgstr "Known for more than \"+DeltaS+\" weeks"
+
+#: game_memory - Copie.php:111 game_memory.php:136
+msgid "En mémoire pour un peu plus de \"+DeltaM+\" mois"
+msgstr "Known for more than \"+DeltaM+\" months"
+
+#: game_memory - Copie.php:112 game_memory.php:137
+msgid "En mémoire pour un peu plus de \"+DeltaY+\" ans"
+msgstr "Known for more than \"+DeltaY+\" years"
+
+#: game_memory - Copie.php:122 game_memory.php:147
+msgid "Ne plus travailler ce mot"
+msgstr "Stop working with this card"
+
+#: game_memory - Copie.php:126 game_memory.php:151
+msgid "Rechercher les images sur internet"
+msgstr "Search for images online"
+
+#: game_memory - Copie.php:127 game_memory.php:152
+msgid "Signaler un problème sur cette carte"
+msgstr "Indicate an issue on this card"
+
+#: game_memory.php:100
+msgid "1) Selectionnez les cartes à réviser"
+msgstr "1) Select cards to review"
+
+#: games.php:198
+msgid "Passer à la carte suivante"
+msgstr "Next card"
+
+#: games.php:198
+msgid "Suivant"
+msgstr "Next"
+
+#: games.php:199
+msgid "Montrer la réponse"
+msgstr "Show answer"
+
+#: games.php:199
+msgid "Je donne ma langue au chat"
+msgstr "Show answer"
+
+#: games.php:218
+msgid "Remplir la grille de mots croisés"
+msgstr "Fill in the crosswords"
+
+#: games.php:227
+msgid "Trouver les mots dans la grille."
+msgstr "Find words in the grid."
+
+#: games.php:235
+msgid "Selectionnez la bonne réponse."
+msgstr "Select the good answer"
+
+#: games.php:266
+msgid "Selectionnez la carte qui correspont à l'image au centre."
+msgstr "Click on the card linked with the image in the center."
+
+#: games.php:314
+msgid "Selectionnez la carte qui correspont au mot écrit au centre."
+msgstr "Click on the image linked with the word written in the center."
+
+#: games.php:367
+msgid "Ecrire le mot après l'avoir entendu."
+msgstr "Write the word after listening to it."
+
+#: games.php:369 games.php:539 index.php:423
+msgid "Envoyer"
+msgstr "Send"
+
+#: games.php:399
+msgid "Remettre les lettres du mot dans l'ordre."
+msgstr "Set letters in the good order."
+
+#: games.php:479
+msgid "Remettre les éléments de la phrase dans l'ordre."
+msgstr "Set words in the good order to form a sentence."
+
+#: games.php:516
+msgid "Cliquez sur le microphone et lisez le mot."
+msgstr "Click on the microphone and read the word."
+
+#: games.php:537
+msgid "Ecrire le mot correspondant à la carte"
+msgstr "Write the word link to this card."
+
+#: games.php:671 games.php:674 games.php:677 games.php:683 games.php:686
+#: games.php:689 games.php:692
+msgid "Waow"
+msgstr "Waow"
+
+#: games.php:671 games.php:674 games.php:677
+msgid "Trop Lent"
+msgstr "Too slow"
+
+#: games.php:683 games.php:689 games.php:692
+msgid "Pas assez rapide"
+msgstr "Not fast enough"
+
+#: games.php:707 letterGrid.php:116 xword.php:169
+msgid "Limite quotidienne atteinte"
+msgstr "Daily limit reached"
+
+#: games.php:726 letterGrid.php:130 xword.php:183
+msgid "En mémoire pendant un peu plus de \"+DeltaJ+\" jour"
+msgstr "Known for more than \"+DeltaJ+\" day"
+
+#: games.php:727 letterGrid.php:131 xword.php:184
+msgid "En mémoire pendant un peu plus de \"+DeltaJ+\" jours"
+msgstr "Known for more than \"+DeltaJ+\" days"
+
+#: games.php:728 letterGrid.php:132 xword.php:185
+msgid "En mémoire pendant un peu plus de \"+DeltaS+\" semaine"
+msgstr "Known for more than \"+DeltaS+\" week"
+
+#: games.php:729 letterGrid.php:133 xword.php:186
+msgid "En mémoire pendant un peu plus de \"+DeltaS+\" semaines"
+msgstr "Known for more than \"+DeltaS+\" weeks"
+
+#: games.php:730 letterGrid.php:134 xword.php:187
+msgid "En mémoire pendant un peu plus de \"+DeltaM+\" mois"
+msgstr "Known for more than \"+DeltaM+\" months"
+
+#: games.php:731 letterGrid.php:135 xword.php:188
+msgid "En mémoire pendant un peu plus de \"+DeltaY+\" ans"
+msgstr "Known for more than \"+DeltaY+\" years"
+
+#: games.php:760 quizEleve.php:171
+msgid "Bravo !"
+msgstr "Congrats !"
+
+#: games.php:761
+msgid "Continuer"
+msgstr "Go on"
+
+#: index.php:198
+msgid "Vocabulaire en classe et à la maison"
+msgstr "Funny vocabulary games in the classroom and at home"
+
+#: index.php:201
+msgid "Gardez le contrôle avec ExoLingo. Choisissez quoi et comment apprendre."
+msgstr ""
+"Keep your Learning under control with ExoLingo. Choose how and what to learn."
+
+#: index.php:203
+msgid "Commencer gratuitement !"
+msgstr "Get started for free !"
+
+#: index.php:212
+msgid "Je m'amuse avec ..."
+msgstr "I have fun with ..."
+
+#: index.php:214
+msgid "le français"
+msgstr "french"
+
+#: index.php:215
+msgid "l'anglais"
+msgstr "english"
+
+#: index.php:216
+msgid "l'allemand"
+msgstr "german"
+
+#: index.php:217
+msgid "l'italien"
+msgstr "italian"
+
+#: index.php:218
+msgid "le lituanien"
+msgstr "lituanian"
+
+#: index.php:219
+msgid "l'espagnol"
+msgstr "spanish"
+
+#: index.php:220
+msgid "le polonais"
+msgstr "polish"
+
+#: index.php:221
+msgid "le portugais"
+msgstr "portugese"
+
+#: index.php:222
+msgid "le russe"
+msgstr "russian"
+
+#: index.php:223
+msgid "le slovaque"
+msgstr "slovak"
+
+#: index.php:224
+msgid "le turc"
+msgstr "turkish"
+
+#: index.php:246
+msgid "Rejoignez la communauté"
+msgstr "Join us"
+
+#: index.php:252
+msgid "exercices"
+msgstr "exercices"
+
+#: index.php:258
+msgid "élèves et professeurs"
+msgstr "students and teachers"
+
+#: index.php:264
+msgid "cartes"
+msgstr "cards"
+
+#: index.php:299
+msgid "L'apprenant garde le contrôle"
+msgstr "Learners keep control"
+
+#: index.php:300
+msgid ""
+"L'apprenant garde le contrôle de ce qu'il souhaite apprendre et comment "
+"l'apprendre en choisissant ses cartes puis un type de jeu."
+msgstr ""
+"Learners keep control over what they learn and how to learn it by choosing "
+"cards and a game style."
+
+#: index.php:306
+msgid "Collaboratif"
+msgstr "Collaborative"
+
+#: index.php:307
+msgid "La création de contenu peut se faire à plusieurs simultanément. "
+msgstr "Several users can edit and create one deck simultaneously. "
+
+#: index.php:307
+msgid "Créer de super listes et gagner des points si vos amis les utilisent."
+msgstr "Create awesome decks and earn points it's used by others."
+
+#: index.php:313
+msgid "Ludique"
+msgstr "Fun"
+
+#: index.php:314
+msgid ""
+"En plus des révisions sous forme de jeu, gagnez des points et passez des "
+"niveaux. Soyez le premier de votre classe dans le tableau d'avancement "
+"hebdomadaire."
+msgstr ""
+"More that vocabulary games, earn points and pass levels. Be the first in the "
+"weekly hall of fame."
+
+#: index.php:320
+msgid "Apprendre pour toujours"
+msgstr "Learn forever"
+
+#: index.php:321
+msgid ""
+"On sait que la méthode la plus efficace est de travailler en espacant les "
+"révisions."
+msgstr "The most efficent way to memorise is to space your revision."
+
+#: index.php:321
+msgid ""
+"ExoLingo vous proposera de revoir les cartes que vous êtes sur le point "
+"d'oublier."
+msgstr "ExoLingo suggest you to review cards on the point to be forgotten."
+
+#: index.php:328
+msgid ""
+"Une activité que les élèves adorent avec ExoLingo. Faite votre évaluation en "
+"classe avec les smartphones ou les ordinateurs des élèves. 15 seconde par "
+"question... Qui sera le champion ?"
+msgstr ""
+"Make your exam with ExoLingo on smartphone or computers. Students loves it. "
+"15s per question... who will be champion ?"
+
+#: index.php:334
+msgid "Dans la classe"
+msgstr "Inside the classroom"
+
+#: index.php:335
+msgid ""
+"ExoLingo s'intègre parfaitement en classe avec les évaluations et un suivi "
+"individualisé des élèves par leurs professeurs."
+msgstr ""
+"ExoLingo has been developped with the student-teacher relation in the center "
+"of it's system. "
+
+#: index.php:341
+msgid "Commencer maintenant !"
+msgstr "Start Now !"
+
+#: index.php:357
+msgid ""
+"L'histoire de ce site commence en 2014. Tombé amoureux en Lituanie, j'ai "
+"voulu apprendre cette langue mais les ressource trouvées n'étaient pas "
+"satisfaisantes."
+msgstr ""
+"Everything starts in 2014. I fell in love in Lithuania and I tried to learn "
+"this language. Lithuanian is spoken by 4 million people and vocabulary "
+"ressources is hard to find."
+
+#: index.php:358
+msgid ""
+"C'est pour cela que cette plateforme a été créée. Elle permet à l'apprenant "
+"de choisir les mots les plus pertinents pour constituer son vocabulaire,\n"
+"          de gardez la maîtrise de ce qu'il mémorise et la façon dont il "
+"l'apprend. L'algorithme se charge de lui rappeler quand réviser."
+msgstr ""
+"This is why this platform has been created. It allow the learner to choose "
+"the most relevant words to build his vocabulary, to keep the control over "
+"what he memorise and the way to learn it. The algorithme is in charge of "
+"reminding the learner when to review it."
+
+#: index.php:360
+msgid ""
+"L'algorithme espace les révisions et vous proposera de revoir les cartes de "
+"moins en moins souvent en fonction des paramètres suivants :"
+msgstr ""
+"The algorithme spaces the revisions and suggest you to review cards less and "
+"less often according to the Following parameters :"
+
+#: index.php:362
+msgid "Assiduité de l'apprenant"
+msgstr "User's attendance"
+
+#: index.php:363
+msgid "Type d'exercice réalisé"
+msgstr "Games types done"
+
+#: index.php:364
+msgid "Temps écoulé depuis la dernière révision"
+msgstr "Duration since last review"
+
+#: index.php:365
+msgid "Succés et échecs précédents"
+msgstr "Past success and mistakes"
+
+#: index.php:366
+msgid "Difficulté de la carte"
+msgstr "Cards difficulty"
+
+#: index.php:369
+msgid ""
+"ExoLingo est utilisé au lycée Notre-Dame de Sion à Istanbul pour "
+"l'enseignement du français et a été rapidement plébicité par ses élèves et "
+"ses professeurs."
+msgstr ""
+"Exolingo is used in Notre-Dame de Sion High School in Istanbul to teach "
+"French. Students and teachers love it."
+
+#: index.php:370
+msgid ""
+"Encouragé par leurs enthousiasme, je souhaite diffuser cet outil au plus "
+"grand nombre."
+msgstr ""
+"Pushed by this local enthusiasm, I wish to spread it to bring joy to "
+"vocabulary learning."
+
+#: index.php:387
+msgid "Pour me contacter"
+msgstr "In order to contact me"
+
+#: index.php:400 loginPage.php:227
+msgid "Prénom"
+msgstr "First name"
+
+#: index.php:415
+msgid "Message"
+msgstr "Message"
+
+#: joinClass.php:12
+msgid "Code d'activation non indiqué"
+msgstr "Activation code missing"
+
+#: joinClass.php:21
+msgid "Code d'activation inconnu"
+msgstr "Unknown activation code"
+
+#: joinClass.php:47
+msgid "Vous êtes déjà dans la classe"
+msgstr "You are already in this class"
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "none()"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "Edge"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "Chrome"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "IE"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "Opera"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "Safari"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "iOS"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "Linux"
+msgstr ""
+
+#: js/tinymce/plugins/lists/plugin.min.js:9
+msgid "OSX"
+msgstr ""
+
+#: lang.php:85
+msgid "Quelle langue apprenez-vous ?"
+msgstr "Which language are you Learning ?"
+
+#: lang.php:87
+msgid "Quelle Langue enseignez-vous ?"
+msgstr "Which language are you teaching ?"
+
+#: licences.php:62
+msgid "Plan"
+msgstr "Plan"
+
+#: login.php:13 loginCookie.php:14 loginSession.php:11
+msgid "Aucun utilisateur inscrit avec cette adresse email !"
+msgstr "No user found with this mail adress !"
+
+#: login.php:34 loginCookie.php:34
+msgid ""
+"Votre compte n'a pas été validé. Veuillez vérifier vos mails. Si vous n'avez "
+"pas reçu de mail, <a href='resendMail.php'>Cliquez ici</a>"
+msgstr ""
+"Your account hasn't been validated. Please check you mailbox. To resend a "
+"mail, <a href='resendMail.php'>click here</a>"
+
+#: login.php:37 loginCookie.php:36
+msgid "Vous avez taper un mauvais mot de passe ! Essayez encore."
+msgstr "Wrong password, Try again."
+
+#: loginGoogle.php:55
+msgid "l'API ne repond pas"
+msgstr "API doesn't reply"
+
+#: loginGoogle.php:73 storeauthcode.php:30
+msgid "Votre adresse mail Google n'a pas été vérifié."
+msgstr "Your Google adress hasn't been verified."
+
+#: loginGoogle.php:153 storeauthcode.php:146
+msgid "Votre identification a échoué."
+msgstr "identification failed"
+
+#: loginPage.php:180 loginPage.php:281 loginPage.php:288
+msgid "Connexion à ExoLingo"
+msgstr "Log in"
+
+#: loginPage.php:188
+msgid "Se connecter ou s'inscrire avec Google"
+msgstr "Sign in or log in with Google"
+
+#: loginPage.php:202 loginPage.php:236 profile.php:113
+msgid "Adresse mail"
+msgstr "Mail adress"
+
+#: loginPage.php:205 loginPage.php:240
+msgid "Mot de passe"
+msgstr "Password"
+
+#: loginPage.php:208
+msgid "Mot de passe oublié ?"
+msgstr "Forgotten password ?"
+
+#: loginPage.php:210 loginPage.php:252
+msgid "Connexion"
+msgstr "Log in"
+
+#: loginPage.php:212
+msgid "Si vous n'avez pas encore de compte"
+msgstr "Not have an account yet"
+
+#: loginPage.php:212
+msgid "Inscription"
+msgstr "Sign in"
+
+#: loginPage.php:231
+msgid "Nom"
+msgstr "Last name"
+
+#: loginPage.php:243
+msgid ""
+"J'accepte <a href='CGV.php'>les CGU et les CGV</a> et <a "
+"href='TermsAndConditions.php'>les termes et conditions d'utilisation</a>"
+msgstr ""
+"I agree on <a href='CGV.php'>usage condition</a> and <a "
+"href='TermsAndConditions.php'>terms</a>"
+
+#: loginPage.php:252
+msgid "Vous avez déjà un compte"
+msgstr "Already have an account"
+
+#: loginPage.php:268
+msgid ""
+"Voici quelques articles et sites internets lié à l'apprentissage utilisé sur "
+"ExoLingo:"
+msgstr "Here are some article used on ExoLingo :"
+
+#: loginPage.php:269
+msgid "SuperMemo, l'algorithme d'apprentissage espacé"
+msgstr ""
+
+#: loginPage.php:271
+msgid "Police de caractère 'sans Forgetica'"
+msgstr ""
+
+#: loginPage.php:282 loginPage.php:289
+msgid "Inscription à ExoLingo"
+msgstr "Sign in"
+
+#: myclasses.php:145
+msgid "nombre d\\'élèves"
+msgstr "number of students"
+
+#: myclasses.php:165
+msgid "Sortir de l'archive"
+msgstr "Remove from archive"
+
+#: mystats.php:68
+msgid "Objectif du jour"
+msgstr "Daily goal"
+
+#: mystats.php:73
+msgid "Types d'exercices"
+msgstr "Game type"
+
+#: mystats.php:79 windowClass.php:699
+msgid "Nombre de mot en mémoire en fonction du temps"
+msgstr "Number of known words with time"
+
+#: mystats.php:253 windowClass.php:963 windowClass.php:1620
+msgid "Nbre de mots en mémoire"
+msgstr "Number of known words"
+
+#: mystats.php:261 windowClass.php:1628
+msgid "Nbre de mots vue"
+msgstr "Number of seen words"
+
+#: mystats.php:277 windowClass.php:971 windowClass.php:1644
+msgid "Prédiction mots en mémoire sans travailler"
+msgstr "Number of known words forcast"
+
+#: mystats.php:531
+msgid "exercices faits"
+msgstr "exercices done"
+
+#: onlineRecorder.php:139
+msgid "Record"
+msgstr "Record"
+
+#: onlineRecorder.php:140
+msgid "Pause"
+msgstr "Pause"
+
+#: onlineRecorder.php:141
+msgid "Stop"
+msgstr "Stop"
+
+#: onlineRecorder.php:145
+msgid "Enregistrements :"
+msgstr "Recordings :"
+
+#: onlineRecorder.php:283
+msgid "Télécharger"
+msgstr "Download"
+
+#: pricing.php:27
+msgid "! Clique ici !"
+msgstr "! Welcome back."
+
+#: pricing.php:216
+msgid "Tarif"
+msgstr "Prices"
+
+#: profile.php:114
+msgid "Mon rôle"
+msgstr "My role"
+
+#: profile.php:116 userType.php:74
+msgid "Autodidacte"
+msgstr "Self-learner"
+
+#: profile.php:117 userType.php:75
+msgid "Elève"
+msgstr "Student"
+
+#: profile.php:118 userType.php:76
+msgid "Professeur"
+msgstr "Teacher"
+
+#: profile.php:121
+msgid "Recevoir des emails de rappel"
+msgstr "Notification by mail every week"
+
+#: profile.php:122
+msgid "Apparaitre dans le tableau d'honneur"
+msgstr "Display your score in the scoreboard"
+
+#: profile.php:123
+msgid "Langue"
+msgstr "Language"
+
+#: profile.php:134
+msgid "Reinitialiser le mot de passe"
+msgstr "Reset password"
+
+#: profile.php:135
+msgid "Deconnexion"
+msgstr "Logout"
+
+#: profile.php:138
+msgid "Danger"
+msgstr "Danger zone"
+
+#: profile.php:139
+msgid "Supprimer le compte"
+msgstr "Delete this account"
+
+#: profile.php:240 windowClass.php:1259
+msgid "Etes-vous sur de vouloir quitter cette classe ?"
+msgstr "Do you want to leave this course ?"
+
+#: quizEleve.php:52 quizEleve.php:70
+msgid "Quiz en Classe"
+msgstr "Classroom quiz"
+
+#: quizEleve.php:147
+msgid "Plusieurs quiz on été trouvé, Sélectionnez votre classe."
+msgstr "Several quiz has been found. Select the good one."
+
+#: quizEleve.php:160 quizProf.php:275
+msgid "0 question"
+msgstr "0 question"
+
+#: quizEleve.php:161
+msgid "Compléter"
+msgstr "Fill in"
+
+#: quizEleve.php:177
+msgid "C'est pas ça !"
+msgstr "Not yet correct !"
+
+#: quizEleve.php:183
+msgid "Victoire"
+msgstr "Victory !"
+
+#: quizEleve.php:185
+msgid "Votre score :"
+msgstr "Your score :"
+
+#: quizEleve.php:188
+msgid "Liste des mots à réviser"
+msgstr "Words to review"
+
+#: quizEleve.php:192
+msgid "Veuillez attendre quelques instants... problème de connection"
+msgstr "Please wait few moment... connection problem"
+
+#: quizEleve.php:572
+msgid "Aucun quiz n'a été trouvé."
+msgstr "No quiz has been found."
+
+#: quizEleve.php:573
+msgid "Sélectionnez le quiz de votre professeur"
+msgstr "Select your teacher's quiz"
+
+#: quizProf.php:106 quizProf.php:298
+msgid "Retour aux listes"
+msgstr "Back to decks"
+
+#: quizProf.php:199 quizProf.php:239
+msgid "Commencer le carte par carte"
+msgstr "Start One by One"
+
+#: quizProf.php:200 quizProf.php:240
+msgid "Commencer l'intérro "
+msgstr "Start quiz "
+
+#: quizProf.php:201 quizProf.php:241
+msgid "secondes par question"
+msgstr "seconds per question"
+
+#: quizProf.php:202 quizProf.php:262
+msgid "Montrer les réponses"
+msgstr "Show answers"
+
+#: quizProf.php:203 quizProf.php:264
+msgid "Arrêter le quiz"
+msgstr "Stop quiz"
+
+#: quizProf.php:208 quizProf.php:267
+msgid "pause"
+msgstr "pause"
+
+#: quizProf.php:218 quizProf.php:238
+msgid "Imprimer l'interro"
+msgstr "Print quiz"
+
+#: quizProf.php:226
+msgid "Selectionnez votre classe"
+msgstr "Select your class"
+
+#: quizProf.php:249
+msgid "Elèves, Connectez-vous sur ExoLingo et rejoignez le quiz"
+msgstr "Connect to ExoLingo<br> then click on "
+
+#: quizProf.php:263
+msgid "Carte suivante"
+msgstr "Next card"
+
+#: quizProf.php:294
+msgid "Classement final :"
+msgstr "Final ranking :"
+
+#: quizProf.php:297
+msgid "Télécharger les scores"
+msgstr "Download scores"
+
+#: quizProf.php:308
+msgid "Veuillez attendre quelques instants..."
+msgstr "Please wait a few moment..."
+
+#: quizProf.php:312
+msgid "Prénom Nom :"
+msgstr "Name :"
+
+#: quizProf.php:313
+msgid "Num :"
+msgstr "School ID :"
+
+#: quizProf.php:314
+msgid "Classe :"
+msgstr "Class :"
+
+#: quizProf.php:315
+msgid "Date :"
+msgstr "Date :"
+
+#: quizProf.php:873
+msgid "nom"
+msgstr "name"
+
+#: quizProf.php:873
+msgid "score"
+msgstr "score"
+
+#: quizProf.php:873
+msgid "nbre de question"
+msgstr "Number of questions"
+
+#: reconstitution.php:21
+msgid "Ecouter le dialogue puis reconstruisez-le en cliquant sur le microphone"
+msgstr "Listen to the audio and rebuild it using the microphone"
+
+#: reconstitution.php:21
+msgid "mots"
+msgstr "words"
+
+#: reconstitution.php:21
+msgid "phrases"
+msgstr "sentences"
+
+#: reconstitution.php:21
+msgid "Remise à zéro"
+msgstr "Reset"
+
+#: register.php:34
+msgid "Un utilisateur avec cette adresse email existe déjà !"
+msgstr "This mail adress has already an account !"
+
+#: register.php:75
+msgid "Veuillez suivre le lien suivant pour valider votre inscription"
+msgstr "Please follow the link to validate your registration"
+
+#: register.php:81
+msgid "Veuillez cliquer sur le lien suivant pour valider votre inscription"
+msgstr "Please follow the link to validate your registration"
+
+#: register.php:124 resendMail.php:81
+msgid ""
+"Le mail de confirmation n'a pas pu être envoyé. Merci de contacter "
+"l'administrateur du site."
+msgstr "We havn't been able to send you the confirmation mail."
+
+#: register.php:131 resendMail.php:87
+msgid "Le mail de conf a été envoyé"
+msgstr "confirmation mail has been sent"
+
+#: register.php:138
+msgid "L'enregistrement a échoué!"
+msgstr "Recording failed !"
+
+#: resendMail.php:33
+msgid "Veuillez suivre le lien suivant pour valider votre inscription : "
+msgstr "Please click on the following link to validate your account : "
+
+#: resendMail.php:39
+msgid ""
+"Merci pour votre intérêt !<br>Veuillez cliquer sur le lien suivant pour "
+"valider votre inscription :<br>"
+msgstr ""
+"Thanks for your interest !<br>Please click on the following link to validate "
+"your account :<br>"
+
+#: reset.php:20
+msgid "L'URL pour la réinitialisation du mot de passe est erronée !"
+msgstr "Wrong URL"
+
+#: reset.php:25
+msgid "Veuillez essayer à nouveau, la vérification a échoué !"
+msgstr "Please try again."
+
+#: reset.php:87
+msgid "Choisissez votre nouveau mot de passe"
+msgstr "Chose a new password"
+
+#: reset.php:93
+msgid "Nouveau mot de passe"
+msgstr "New password"
+
+#: reset.php:100
+msgid "Confirmez votre mot de passe"
+msgstr "Confirm your password"
+
+#: reset_password.php:23
+msgid "Votre mot de passe a été réinitialisé correctement!"
+msgstr "Your password has been reset."
+
+#: reset_password.php:30
+msgid "Les deux mots de passe ne sont pas similaires. Veuillez réessayer!"
+msgstr "The two password are not the same."
+
+#: storeauthcode.php:152
+msgid "Un problème est survenu, contactez M Elisée."
+msgstr "Something wrong happend."
+
+#: userType.php:72
+msgid "Qui êtes vous ?"
+msgstr "Who are you ?"
+
+#: verify.php:18
+msgid "Le compte a déjà été validé !"
+msgstr "Account has already been checked !"
+
+#: verify.php:25
+msgid "Félicitation, votre compte a été validé!"
+msgstr "Congratulation, your accound has been checked !"
+
+#: windowClass.php:92 windowClass.php:340
+msgid "Classes ExoLingo"
+msgstr "ExoLingo classroom "
+
+#: windowClass.php:96
+msgid "Notes des quizs"
+msgstr "Quiz's marks"
+
+#: windowClass.php:98
+msgid "Avancement par liste"
+msgstr "Decks progress"
+
+#: windowClass.php:102
+msgid "Invitation"
+msgstr "Invitation"
+
+#: windowClass.php:106
+msgid "Mes résultats"
+msgstr "My report"
+
+#: windowClass.php:108
+msgid "Importer des listes"
+msgstr "Import decks"
+
+#: windowClass.php:208
+msgid "1 semaine"
+msgstr "1 week"
+
+#: windowClass.php:209
+msgid "1 mois"
+msgstr "1 month"
+
+#: windowClass.php:210
+msgid "1 trimestre"
+msgstr "1 trimester"
+
+#: windowClass.php:211
+msgid "1 an"
+msgstr "1 year"
+
+#: windowClass.php:296
+msgid ""
+"Une classe est un espace regroupant vos élèves, des collègues et des listes "
+"de vocabulaire."
+msgstr ""
+"A classroom is a space gathering students, co-teachers and vocabulary decks."
+
+#: windowClass.php:308
+msgid "Rejoindre la classe de votre professeur"
+msgstr "Join my teacher classroom "
+
+#: windowClass.php:309
+msgid ""
+"En rejoignant la classe de votre professeur, vous accéderez aux listes de "
+"cette classe et serez en relation avec les élèves et les professeurs."
+msgstr ""
+"By joining a classroom you will access decks made for you and will be in "
+"relation with your classmates and teachers."
+
+#: windowClass.php:325
+msgid ""
+"Retrouvez toutes vos listes de vocabulaire, celle que vous avez importé, "
+"ainsi que toutes celle avec lesquelles vous avez joué."
+msgstr "Find all the decks you studied and those you created."
+
+#: windowClass.php:328
+msgid "Aller à ma bibliothèque"
+msgstr "Visit my library"
+
+#: windowClass.php:367
+msgid "Classes privé"
+msgstr "Private classroom "
+
+#: windowClass.php:399
+msgid "Rapports de Classe"
+msgstr "Class report"
+
+#: windowClass.php:401
+msgid "cette semaine"
+msgstr "this week"
+
+#: windowClass.php:402
+msgid "ce mois"
+msgstr "this month"
+
+#: windowClass.php:403
+msgid "ce trimestre"
+msgstr "this trimester"
+
+#: windowClass.php:404
+msgid "cette année"
+msgstr "this year"
+
+#: windowClass.php:452
+msgid "Toute la classe"
+msgstr "All students"
+
+#: windowClass.php:470 windowClass.php:1327
+msgid "Moyenne sur 100"
+msgstr "Average over 100"
+
+#: windowClass.php:493 windowClass.php:1337
+msgid "supprimer ce quiz definitivement"
+msgstr "delete this quiz"
+
+#: windowClass.php:495 windowClass.php:1337
+msgid "selectionner ce quiz pour le calcul de la moyenne"
+msgstr "select this quiz for the average mark"
+
+#: windowClass.php:605
+msgid "Inviter des participants à rejoindre la classe "
+msgstr "Invite student to join the classroom "
+
+#: windowClass.php:606 windowClass.php:1183
+msgid "Vous pouvez également envoyer le lien suivant par mail"
+msgstr "You can also send the following link by mail"
+
+#: windowClass.php:612
+msgid "Actions :"
+msgstr "Actions :"
+
+#: windowClass.php:613
+msgid "Professeur(s) de cette classe :"
+msgstr "Teacher of this course :"
+
+#: windowClass.php:615 windowClass.php:1063
+msgid "Editer la classe"
+msgstr "Edit classroom "
+
+#: windowClass.php:617
+msgid "Quitter cette classe"
+msgstr "Leave this classroom "
+
+#: windowClass.php:619 windowClass.php:1067
+msgid "Archiver cette classe"
+msgstr "Archive this classroom "
+
+#: windowClass.php:621
+msgid "Supprimer cette classe "
+msgstr "Delete this classroom "
+
+#: windowClass.php:642
+msgid "QCM retrouver l'image"
+msgstr "Find image"
+
+#: windowClass.php:643
+msgid "QCM retrouver le mot"
+msgstr "Find words"
+
+#: windowClass.php:644
+msgid "Bazar de lettre"
+msgstr "Mixed letters"
+
+#: windowClass.php:645
+msgid "Mots dans le désordre"
+msgstr "Mixed words"
+
+#: windowClass.php:649
+msgid "Orthographe"
+msgstr "Good writing"
+
+#: windowClass.php:650
+msgid "Mots croisées"
+msgstr "Crossword"
+
+#: windowClass.php:651
+msgid "Texte à trous"
+msgstr "Blank in a text"
+
+#: windowClass.php:678
+msgid "Rapport de "
+msgstr "Reports of "
+
+#: windowClass.php:680
+msgid "Nombre d'exercices réalisés dans cette classe"
+msgstr "Number of exercices done in this class"
+
+#: windowClass.php:681
+msgid "Nombre total de mots en mémoire (toutes classes confondues)"
+msgstr "Number of known words with time"
+
+#: windowClass.php:682
+msgid "Nombre total de mots oubliés  (toutes classes confondues)"
+msgstr "Number of forgeting words"
+
+#: windowClass.php:683
+msgid "obtenus par exercices"
+msgstr "got with exercices"
+
+#: windowClass.php:684
+msgid "obtenus par"
+msgstr "got by"
+
+#: windowClass.php:684
+msgid ""
+"chaque exercice fait par n'importe quel utilisateur sur une de vos listes "
+"vous rapporte 1 points."
+msgstr "any exercice done on one of your decks bring you 1 point."
+
+#: windowClass.php:685
+msgid "total"
+msgstr "total"
+
+#: windowClass.php:689
+msgid "Exercices réalisés en fonction du temps"
+msgstr "Exercices done with time"
+
+#: windowClass.php:694
+msgid "Répartition des exercices faits sur la durée sélectionnée"
+msgstr "Repartition of exercices done over the selected period"
+
+#: windowClass.php:787
+msgid "Nombre d'exercices total"
+msgstr "Total number of exercices"
+
+#: windowClass.php:837 windowClass.php:1022 windowClass.php:1710
+msgid "Nombre de mots"
+msgstr "Number of words"
+
+#: windowClass.php:881
+msgid "Répartitions exercices faits sur la période"
+msgstr "Repartition of exercices done over the selected period"
+
+#: windowClass.php:1065
+msgid "Quitter ce cours"
+msgstr "Leave this course"
+
+#: windowClass.php:1069
+msgid "Supprimer cette classe"
+msgstr "Delete this classroom"
+
+#: windowClass.php:1080
+msgid "Liste des maitres"
+msgstr "Masters"
+
+#: windowClass.php:1104
+msgid "Nouvelle classe"
+msgstr "New classroom"
+
+#: windowClass.php:1106 windowClass.php:1223
+msgid "Nom de la classe"
+msgstr "Classroom name"
+
+#: windowClass.php:1152
+msgid "classe sans nom"
+msgstr "Classroom without name"
+
+#: windowClass.php:1182
+msgid "Inviter des participants à rejoindre la classe"
+msgstr "Invite users to join the classroom"
+
+#: windowClass.php:1221
+msgid "Renommer la classe"
+msgstr "Rename classroom"
+
+#: windowClass.php:1225
+msgid "Langue à apprendre"
+msgstr "Language to learn"
+
+#: windowClass.php:1271
+msgid "Etes-vous sur de vouloir supprimer cette classe ?"
+msgstr "Do you want to leaelete this classroom ?"
+
+#: windowClass.php:1317
+msgid "Nbre de mot en mémoire"
+msgstr "Number of cards known"
+
+#: windowClass.php:1317
+msgid "Créateur"
+msgstr "Creator"
+
+#: windowClass.php:1317
+msgid "Nombres de mots"
+msgstr "Number of words"
+
+#: windowClass.php:1317
+msgid "Champion en quiz"
+msgstr "Quiz champion"
+
+#: windowClass.php:1317
+msgid "Note de Perf"
+msgstr "Performance mark"
+
+#: windowClass.php:1361
+msgid "Création d'une liste validée par le prof"
+msgstr "Creation of validated decks"
+
+#: windowClass.php:1362
+msgid "Création de 3 listes validées par le prof"
+msgstr "Creation of 3 validated decks"
+
+#: windowClass.php:1363
+msgid "Création de 10 listes validées par le prof"
+msgstr "Creation of 10 validated decks"
+
+#: windowClass.php:1364
+msgid "1 victoire en quiz de classe"
+msgstr "1 quiz victory in class"
+
+#: windowClass.php:1365
+msgid "3 victoires en quiz de classe"
+msgstr "3 quiz victories in class"
+
+#: windowClass.php:1366
+msgid "10 victoires en quiz de classe"
+msgstr "10 quiz victories in class"
+
+#: windowClass.php:1367
+msgid "100 mots en mémoire"
+msgstr "100 words known"
+
+#: windowClass.php:1368
+msgid "250 mots en mémoire"
+msgstr "250 words known"
+
+#: windowClass.php:1369
+msgid "500 mots en mémoire"
+msgstr "500 words known"
+
+#: windowClass.php:1370
+msgid "1000 mots en mémoire"
+msgstr "1000 words known"
+
+#: windowClass.php:1371
+msgid "1500 mots en mémoire"
+msgstr "1500 words known"
+
+#: windowClass.php:1511
+msgid "Donner à cet élève le rôle de prof"
+msgstr "Upgrade this user to master"
+
+#: windowClass.php:1512
+msgid "Sortir cette élève de la classe"
+msgstr "Take this student out"
+
+#: windowClass.php:1558
+msgid "Voulez-vous supprimer ce quiz définitivement ?"
+msgstr "Would you like to delete this quiz ?"
+
+#: windowClass.php:1567
+msgid "Voulez-vous sortir cet élève de la classe ?"
+msgstr "Would you like to take this user out of this classroom ?"
+
+#: windowClass.php:1575
+msgid "Voulez-vous donner à cet utilisateur le rôle de prof ?"
+msgstr "Would you like to upgrade this user to master ?"
+
+#~ msgid "le cours "
+#~ msgstr "this course"
+
+#~ msgid "Créer un cours"
+#~ msgstr "Create a new course"
+
+#~ msgid "Créer un nouveau cours"
+#~ msgstr "Create a new course"
+
+#~ msgid "Editer le cours"
+#~ msgstr "Edit this course"
+
+#~ msgid "Etes-vous sur de vouloir quitter ce cours ?"
+#~ msgstr "Are you sure to leave this course ?"
+
+#~ msgid "Etes-vous sur de vouloir supprimer ce cours ?"
+#~ msgstr "Are you sure you want to delete this course ?"
+
+#~ msgid "C'est parti !"
+#~ msgstr "Let's go !"
+
+#~ msgid ""
+#~ "Connectez-vous sur ExoLingo<br> puis cliquez sur \"REJOINDRE UN QUIZ\"."
+#~ msgstr "Join ExoLingo <br> Click on <br> \"Activity\" > \"Join BoxGame\"."
+
+#~ msgid "Rejoindre le cours d'un collègue"
+#~ msgstr "Join a co-teacher course"
+
+#~ msgid "... et bien d'autres !"
+#~ msgstr "... and much more"
+
+#~ msgid "Paramètre"
+#~ msgstr "Settings"
+
+#~ msgid ">1 semaine"
+#~ msgstr ">1 week"
+
+#~ msgid ""
+#~ " parmi vos listes, les listes publiques et les listes qui ont été partagé "
+#~ "avec vous."
+#~ msgstr "among your decks, public decks and decks shared with you."
+
+#~ msgid "Période du rapport :"
+#~ msgstr "Report period :"
+
+#~ msgid "Prénom Nom"
+#~ msgstr "Name :"
+
+#~ msgid "Nombre d'exercices"
+#~ msgstr "Number of exercices"
+
+#~ msgid "récupérés aujourd'hui en jouant"
+#~ msgstr "got today by playing exercices"
+
+#~ msgid "Rapports & actions"
+#~ msgstr "Reports and actions"
+
+#~ msgid "Notes"
+#~ msgstr "Marks"
+
+#~ msgid "Listes"
+#~ msgstr "Decks"
+
+#~ msgid "Maîtres"
+#~ msgstr "Masters"
+
+#~ msgid "Continuer en tant que ..."
+#~ msgstr "Go on as a ..."
+
+#~ msgid "Langues à apprendre ..."
+#~ msgstr "Language to learn"
+
+#~ msgid "Langues à enseigner ..."
+#~ msgstr "Language to teach"
+
+#~ msgid "Ecriture directe"
+#~ msgstr "Direct writing"
+
+#~ msgid "Mon lexique"
+#~ msgstr "My lexicon"
+
+#~ msgid "Cours archivés"
+#~ msgstr "Archived courses"
+
+#~ msgid "Aucun utilisateur inscrit avec cette adresse email !Yolo"
+#~ msgstr "No user found with this mail adress !"
+
+#~ msgid "Renommer"
+#~ msgstr "Rename"
+
+#~ msgid "Dupliquer la liste"
+#~ msgstr "Duplicate"
+
+#~ msgid "Importer les listes sélectionnées"
+#~ msgstr "Import selected decks"
+
+#~ msgid "Langue cible"
+#~ msgstr "Target language"
+
+#~ msgid "traduire la liste"
+#~ msgstr "Edit deck"
+
+#~ msgid "Veuillez écrire un ou plusieurs mots."
+#~ msgstr "Please write one or several words"
+
+#~ msgid "Mes Listes"
+#~ msgstr "My decks"
+
+#~ msgid "carte"
+#~ msgstr "card"
+
+#~ msgid "Mise en boîte"
+#~ msgstr "Classroom Box game"
+
+#~ msgid "1 jour"
+#~ msgstr "1 day"
+
+#~ msgid "depuis le début"
+#~ msgstr "from the begining"
+
+#~ msgid "Mise en Boîte"
+#~ msgstr "Box game"
+
+#~ msgid "Rejoindre une Mise en boîte"
+#~ msgstr "Join a Box game"
+
+#~ msgid "Se souvenir de moi"
+#~ msgstr "Remember me"
+
+#~ msgid "Sign in with:"
+#~ msgstr "Sign in with:"
+
+#~ msgid ""
+#~ "(Vous avez la possibilité de modifier votre enregistrement en 5 touches)"
+#~ msgstr " "
+
+#~ msgid "Cartes"
+#~ msgstr "Cards"

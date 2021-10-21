@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, user-scalable=no,initial-scale=1">
+    <title>Quiz en classe</title>
+    <link rel="icon" type="image/png" href="../../img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="../../img/favicon-16x16.png" sizes="16x16" />
+  <link rel="stylesheet" href="../../css/myStyle.css">
+  <link href="../../css/navStyle.css" rel="stylesheet">
+  <link href="../../css/styleEntete.css" rel="stylesheet">
+  <link href="../../css/main.css" rel="stylesheet">
+  <link href="../../css/quiz.css" rel="stylesheet">
+
+	<script src='../../js/jquery-3.3.1.min.js'></script>
+	<script src="/socket.io/socket.io.js"></script>
+  <script src="../../js/cookiesManager.js"></script>
+   </head>
+<body class="fond">
+
+  <nav id="navbar">
+        <div class="menu">
+          <ul class="desktop" onclick="$('.mobile').removeClass('open');">
+            <li style="float:left;"><a href="../../decks.php">retour aux listes</a></li>
+            <li><a href="#">Quiz en Classe</a></li>
+            <!--<li><a href="#" onclick='getPage("attente");'>attente</a></li>
+            <li><a href="#" onclick='getPage("goodAnswerEleve");'>good</a></li>
+            <li><a href="#" onclick='getPage("badAnswerEleve");'>bad</a></li>-->
+
+            <li style="float:right;"><a href="#" onclick='getPage("formCode");'>nouveau code</a></li>
+            <!--<li style="float:right;"><a href="#" onclick='logout();'>changer de session</a></li>-->
+            <!--<li><a href="#" onclick='getPage("fin");'>fin</a></li>-->
+          </ul>
+          <ul class="mobile"  onclick="$('.mobile').removeClass('open');">
+          </ul>
+        </div>
+        <div id="openMenu">VocaSion - MENU</div>
+        <div class="progressbarDeck"></div>
+      </nav>
+      <div class="message">test</div>
+
+      <script type="text/javascript" src="../../js/menu-breaker.js"></script>
+      <script>
+
+      $('.desktop').menuBreaker();
+  $(window).on('load resize', function () {
+  $('.mobile').height($(window).height() - $('nav').height());
+  });
+
+      </script>
+
+
+<style>
+.message{position:fixed;background-color:red; color:white;bottom:30px;padding:10px;}
+#formCode{padding-top:100px;}
+#navbar{border-bottom:gold;}
+
+</style>
+
+
+<div class="center">
+  <div id="formCode" class="page">
+    <div class="consigneCarte">Entrer le code de la session</div>
+    <img src="../../img/classroom.png" class="imgfusee" style="margin-top:0px;width:50%; max-width:200px;">
+    <div id="inputCodeEleve"><input type="number" class="repCodeEleve" placeholder="Code"><br>
+      <div class="envoyerCode" onclick='sendCode();'>Valider</div><br>
+
+
+    </div>
+  </div>
+
+  <div id="attente" class="page">
+    <h2 style="margin:10vh;">En attente ...</h2>
+    <img src="../../img/classroom.png" class="imgfusee" style="width:50%; max-width:400px;">
+    <br>
+    <div class="codeAttente"></div>
+  </div>
+
+  <div id="form" class="page">
+    <div>
+      <div id="nbreQuestion">0 question</div>
+      <div class="consigneCarte" style="margin:10px 0;">Compléter</div>
+      <div id="card" style="margin:10px 0;"></div>
+      <div id="sentence" style="margin:10px 0;"></div>
+      <div id="btn_next" class="envoyer" onclick='next();'>Valider</div>
+    </div>
+  </div>
+
+  </div>
+
+  <div id="goodAnswerEleve" class="page">
+    <div class="consigneCarte">Bravo !</div>
+    <img src="../../img/check2.png" style="width:80%; max-width:300px;margin-top:20vh;">
+    <div class="myGoodAnswer" style="margin-top:20px;"></div>
+  </div>
+
+  <div id="badAnswerEleve" class="page">
+    <div class="consigneCarte">C'est pas ça !</div>
+    <img src="../../img/fail.png" style="width:80%; max-width:300px;margin-top:20vh;">
+    <div class="myBadAnswer" style="margin-top:20px;"></div>
+  </div>
+
+  <div id="fin" class="page" style="text-align:center;">
+    <h1 class="victory_titre" style="display:none;">Victoire</h1>
+    <img class="victory_img" src="../../img/trophy.png" style="width:60%; max-width:300px;display:none;">
+    <h2>Votre score :</h2>
+    <div id="score"></div>
+    <div id="errorList">
+      <h2>Liste des mots à réviser</h2>
+    </div>
+    <h2 class="nbreVictory"></h2>
+</div>
+
+
+<script>
+data=[];
+status="wait";
+numQuestion=0;
+game_id=0;
+user_id=<%= user_id %>;
+$(".repEleve").on("keypress", function(e){if(e.which==13){next();}});
+$(".repCodeEleve").on("keypress", function(e){if(e.which==13){sendCode();}})
+
+var socket = io.connect();
+window.addEventListener("blur",function(){socket.emit('playerAway',{user_id:user_id, game_id:game_id});});
+window.addEventListener("focus",function(){socket.emit('playerInAgain',{user_id:user_id, game_id:game_id});});
+socket.on('connect', function() {
+  $(".message").html("Connected");
+  $('.message').show();
+});
+socket.on('disconnect', function() {
+  $(".message").html("Disconnected");
+  $('.message').show();
+});
+
+socket.on('whoIsThere', function(){
+  socket.emit('playerJoin', {user_id:user_id,game_id:game_id});
+});
+
+socket.on('state', function(result){
+  $('.message').html(result);
+  console.log("STATE",result);//result.state can be : rassemblement,newSessionProf
+  switch(result.state){
+
+  case 'rassemblement':
+    getPage("attente");status="wait";
+  break;
+
+  case 'newSessionProf':
+    status="formcode";
+    getPage("formCode");
+  break;
+
+  case 'questionSentQuiz':
+    status="formQuiz";
+    startQuestion(result.data);
+  break;
+  case 'questionSentInterro':
+    status="formInterro";
+    startQuestion(result.data);
+  break;
+  case 'start':
+    status="start";
+    if(readCookie("cards_"+game_id)!=null)
+    {cards=JSON.parse(readCookie("cards_"+game_id));}
+    getPage("form");
+    status="form";
+  break;
+  case 'fin':
+    fin();
+    //getPage("form");
+  break;
+  }
+});
+
+var card_id;
+var cards=[];
+var dataQuestion=[];
+var question;
+
+socket.on('start', function(dataQuestion) {
+    status="start";
+    startQuestion(dataQuestion);
+});
+
+function startQuestion(data)
+{
+  console.log("startQuestionData",data);
+  cards=[];
+  //on ajoute les cartes qu'il n'a pas encore recu (cas du quiz ou les cartes arrivent les une apres les autres)
+  for(k in data)
+  {
+    thisCardId=data[k].card_id;
+    flag=true;
+    for(rk in cards){if(cards[rk].card_id==thisCardId){flag=false;}}
+    //on ajoute la card dans cards.
+    if(flag){cards.push(data[k]);data[k].status="pending";data[k].repEleve="";}
+  }
+  //on enregistre toutes les cartes avec le status "answered" ou "pending" dans cards_#game_id
+  createCookie("cards_"+game_id,JSON.stringify(cards),1/12);
+  pcentProgress=Math.floor(100*(cards.length-cards.filter(NotYetAnswerd).length)/cards.length)+"%";
+  $(".progressbarDeck").css("width",pcentProgress);
+  //$('#nbreQuestion').html(cards.filter(NotYetAnswerd).length+"/"+cards.length+" questions");
+  $('#nbreQuestion').hide();
+  //choisir une carte au hazard parmi celles qui reste à repondre
+  question=rand_parmi(cards.filter(NotYetAnswerd));
+  showQuestion(question);
+  myAnswer="";
+  $(".repEleve").val("").focus();
+  getPage("form");
+}
+
+var myAnswer='';
+function showQuestion(question)
+{
+  console.log("showQuestion",question);
+  if(question!=false)
+  {
+    status="showQuestion";
+    console.log(question);
+    question.status='pending';
+    card_id=question.card_id;
+    sentenceQuestion=question.sentence;
+    mot_trad=question.mot_trad;
+    hasImage=question.hasImage;
+    repCloze=sentenceQuestion.match(/\*(.*?)\*/)[0];
+    //console.log(repCloze);
+    repCloze=repCloze.replace('*','');
+    repCloze=repCloze.replace('*','');
+    sentenceQuestion=sentenceQuestion.replace("*"+repCloze+"*","<span id='Answer'><input type='text' class='repEleve'></span>");
+    $("#sentence").html(sentenceQuestion);
+    $(".repEleve").off();
+    $(".repEleve").on("keypress", function(e){if(e.which==13){next();}});
+    //afficher une premiere question
+    if(mot_trad!=""){
+    $("#card").html("<span class='mot_trad_card'>"+mot_trad+"</span>");
+    }else {
+      $("#card").html("");
+    }
+    if(hasImage==1){
+    $("#card").css("background-image","url(../card_img/card_"+card_id+".png)");
+    }
+    else {
+    $("#card").css("background-image","url(../img/default_card.png)");
+    }
+  }
+  else{
+    if(status!="wait"){getPage("attente");status="wait";console.log("Answered Sent",cards);socket.emit('answer', cards);}
+  }
+}
+function next()
+{
+  //card_id contient le num de la carte en cours.
+  console.log(cards,card_id);
+  for(k in cards){if(cards[k].card_id==card_id){myCard=cards[k];}}
+  repEleve=$(".repEleve").val();
+  myCard.repEleve=repEleve;
+  myCard.status="answered";
+  question=rand_parmi(cards.filter(NotYetAnswerd));
+  showQuestion(question);
+  $(".repEleve").val("");
+  createCookie('cards_'+game_id,JSON.stringify(cards),1/12);
+  //createCookie('question'_game_id,JSON.stringify(cards),1/12);
+}
+
+socket.on('pause', function() {
+  if(status!="wait"){
+    getPage("attente");
+    status="wait";
+    console.log("Answered Sent",cards);
+    socket.emit('answer', cards);
+  }
+  //socket.emit('answer', dataQuestion);
+});
+
+socket.on('answeredReceived', function(data){
+  console.log("answeredReceived");
+  if(data.indexOf(user_id)==-1){console.log("answeredResent");socket.emit('answer', cards);}
+})
+
+//correction
+scores=[];
+socket.on('goodUser', function(data){
+  console.log(data);
+  goodUsers(data);
+});
+function goodUsers(data)
+{
+  if(readCookie("cards_"+game_id)!=null)
+  {cards=JSON.parse(readCookie("cards_"+game_id));}
+
+  card_id=data.data.card_id;
+  for(k in cards){if(cards[k].card_id==card_id){myCard=cards[k];}}
+
+  if(data.data.goodUsers.indexOf(user_id)!=-1)
+  {
+    if(scores[card_id]!=1){
+       scores[card_id]=1;
+       myCard.point=1;
+       getPage("goodAnswerEleve");
+       $(".myGoodAnswer").html(myCard[repEleve]);
+       playAudio("success");
+      }
+  }
+  else {
+    if(scores[card_id]!=0){
+      scores[card_id]=0;
+      myCard.point=0;
+      getPage("badAnswerEleve");
+      $(".myBadAnswer").html(myCard[repEleve]);
+      playAudio("success");
+      }
+  }
+  createCookie('cards_'+game_id,JSON.stringify(cards),1/12);
+}
+
+socket.on('victory', function(victoryArray) {
+  console.log(victoryArray);
+  fin();
+  if(victoryArray.indexOf(user_id)!=-1)
+  {
+  playAudio("victory");
+  $(".victory_titre").show();
+  $(".victory_img").show();
+  $.getJSON("../ajax.php?action=getQuizTrophyNumber&user_id="+user_id, function(result){
+    //if(result<=1){$('.nbreVictory').html(result+" victoire au total");}
+    //if(result>1){$('.nbreVictory').html(result+" victoires au total");}
+  });
+  }
+});
+
+
+socket.on('fin', function() {
+	fin();
+});
+
+function fin()
+{getPage("fin");
+$('#errorList').html("");
+console.log(cards);
+score=0;
+errorExist=false;
+for(k in cards)
+{score+=cards[k].point;
+  if(cards[k].point==0)
+  {
+    sentence=cards[k].sentence;
+    repCloze=sentence.match(/\*(.*?)\*/)[0];
+    repCloze=repCloze.replace('*','');
+    repCloze=repCloze.replace('*','');
+    sentence=sentence.replace("*"+repCloze+"*","<span style='display:inline-block;vertical-align:middle;'><span style='color:lime;'>"+repCloze+"</span><br><span style='color:red;text-decoration: line-through;'>"+cards[k].repEleve+"</span></span>");
+    imageHTML="<img style='float:left;' src='../img/default_card.png' width='50px' height='50px'>";
+    if(cards[k].hasImage){imageHTML="<img style='float:left;' src='../card_img/card_"+cards[k].card_id+".png' width='50px' height='50px'>";}
+
+    $('#errorList').append('<div class="erreur_item">'+imageHTML+sentence+'</div>');
+    errorExist=true;
+  }
+}
+if(!errorExist){$('#errorList').hide();}
+
+if(score<2){$("#score").html(score+" point");}
+else{$("#score").html(score+" points");}
+}
+
+
+
+
+
+
+function playAudio(filename)
+{console.log("on demande l'écoute de "+filename);
+$("."+filename)[0].play();
+/*if(!$("#audio_"+filename).length){
+	console.log("creation de l'élem Audio");
+  soundFile="../../audio/"+filename+".wav";
+	$("body").append('<audio id="audio_'+filename+'" src="'+soundFile+'">');
+	}
+$("#audio_"+filename).get(0).play();*/
+}
+function rand_parmi(liste)
+{
+nbre_elem=liste.length;
+rang=Math.floor(nbre_elem*Math.random());
+if(nbre_elem!=0){return liste[rang];}else{return false;}
+}
+
+function getPage(pageName)
+{$('.page').hide();
+$('#'+pageName).show();
+if(pageName=="form"){$(".repEleve").focus();}}
+
+function sendCode()
+{
+game_id=$('.repCodeEleve').val();
+//createCookie("game_id",game_id,1/24);
+socket.emit('game', game_id ,function(result){if(result=="game_done"){
+    socket.emit('playerJoin',{user_id:user_id, game_id:game_id});
+    $('.codeAttente').html(game_id);
+    getPage('attente');
+    createCookie('game_id',game_id,1/24);
+    }
+    else {
+    alert("probleme avec la connection au groupe : "+result);
+    }
+  }
+);
+
+}
+function connectDirect()
+{
+getPage("formCode");
+if(readCookie("game_id")!=null){
+  console.log(readCookie("game_id"));
+  game_id=readCookie("game_id");
+  $('.repCodeEleve').val(game_id);
+//$('.codeAttente').html(game_id);
+//socket.emit('game', game_id);
+//socket.emit('playerJoin',{user_id:user_id, game_id:game_id});
+//getPage('attente');
+  }
+}
+
+function NotYetAnswerd(rk)
+{
+  return rk.status!="answered";//pending or answered
+}
+
+
+
+connectDirect();
+
+
+</script>
+<audio class="fail" preload="auto">
+    <source src="../../audio/fail.mp3" type="audio/mpeg">
+    <source src="../../audio/fail.ogg" type="audio/ogg">
+</audio>
+<audio class="success" preload="auto">
+    <source src="../../audio/success.mp3" type="audio/mpeg">
+    <source src="../../audio/success.ogg" type="audio/ogg">
+</audio>
+<audio class="victory" preload="auto">
+    <source src="../../audio/victory.mp3" type="audio/mpeg">
+    <source src="../../audio/victory.ogg" type="audio/ogg">
+</audio>
+</body>
+</html>

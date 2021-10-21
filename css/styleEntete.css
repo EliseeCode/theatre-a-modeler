@@ -1,0 +1,12 @@
+.entete{
+  background-color: var(--mycolor1);
+  border: 8px solid var(--mycolor3);
+  color:var(--mycolor4);
+  padding: 0 0 0 30px;
+  height:56px;
+}
+
+.float-right{float:right;}
+.float-left{float:left;}
+.titreEntete{color:var(--mycolor2);display:inline-block;margin:10px 2%;font-weight:100;float:left;}
+.active{color:white;background-color:#f0f0f0;}

@@ -1,0 +1,374 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NoriMoki\n"
+"POT-Creation-Date: 2016-08-17 15:25+0300\n"
+"PO-Revision-Date: 2016-08-19 01:10+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-Basepath: ../../../..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: _;gettext;__\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: ID/footer.php:2
+msgid ""
+"For more information or suggestions, please contact <i>wikibubbleteam@gmail."
+"com </i>"
+msgstr ""
+"Pour plus d'information ou pour des suggestions, vous pouvez contacter "
+"<i>wikibubbleteam@gmail.com </i>"
+
+#: ID/id_user.php:88 ID/inscription.php:110 id_user.php:88
+msgid "Sign in :"
+msgstr "Connection :"
+
+#: ID/id_user.php:90 ID/inscription.php:108 id_user.php:90
+msgid "Sign in using Facebook"
+msgstr "Connection via facebook"
+
+#: ID/id_user.php:92 ID/inscription.php:111 id_user.php:92
+msgid "Name or email"
+msgstr "Pseudo ou adresse mail"
+
+#: ID/id_user.php:94 ID/inscription.php:98 ID/inscription.php:113
+#: id_user.php:94
+msgid "Password"
+msgstr "Mot de passe"
+
+#: ID/id_user.php:97 ID/inscription.php:116 id_user.php:97
+msgid "Sign in"
+msgstr "Valider"
+
+#: ID/id_user.php:99 id_user.php:99
+msgid "I am not a member yet"
+msgstr "Je n'ai pas encore de compte"
+
+#: ID/inscription.php:91
+msgid "Sign up using Facebook"
+msgstr "Inscription via Facebook"
+
+#: ID/inscription.php:93
+msgid "Sign up : "
+msgstr "Inscription :"
+
+#: ID/inscription.php:94
+msgid "Name"
+msgstr "Pseudo"
+
+#: ID/inscription.php:96
+msgid "Email"
+msgstr "Adresse mail"
+
+#: ID/inscription.php:100
+msgid "Create account"
+msgstr "Devenir membre"
+
+#: choix_langue.php:60 choix_langue2.php:43
+msgid "Choose languages"
+msgstr "Choix des langues"
+
+#: choix_langue.php:84
+msgid "Let's learn"
+msgstr "Valider"
+
+#: choix_langue.php:92 menu_group_id.php:279
+msgid "Spanish"
+msgstr "Espagnol"
+
+#: choix_langue.php:93 menu_group_id.php:280
+msgid "English"
+msgstr "Anglais"
+
+#: choix_langue.php:94 menu_group_id.php:281
+msgid "Deutch"
+msgstr "Allemand"
+
+#: choix_langue.php:95 menu_group_id.php:282
+msgid "French"
+msgstr "Français"
+
+#: choix_langue.php:96 menu_group_id.php:283
+msgid "Italian"
+msgstr "Italien"
+
+#: choix_langue.php:97 menu_group_id.php:284
+msgid "Lithuanian"
+msgstr "Lituanien"
+
+#: choix_langue.php:98 menu_group_id.php:285
+msgid "Russian"
+msgstr "Russe"
+
+#: choix_langue.php:99 menu_group_id.php:286
+msgid "Korean"
+msgstr "Coréen"
+
+#: choix_langue.php:100 menu_group_id.php:287
+msgid "Japanese"
+msgstr "Japonais"
+
+#: choix_langue.php:101 menu_group_id.php:288
+msgid "Arabic"
+msgstr "Arabe"
+
+#: choix_langue.php:102 menu_group_id.php:289
+msgid "Turkish"
+msgstr "Turc"
+
+#: choix_langue.php:103 menu_group_id.php:290
+msgid "Chinese"
+msgstr "Chinois"
+
+#: choix_langue.php:104 menu_group_id.php:291
+msgid "Finnish"
+msgstr "Finnois"
+
+#: choix_langue.php:105 menu_group_id.php:292
+msgid "Shi Maore"
+msgstr ""
+
+#: choix_langue2.php:71
+msgid "Autres Langues"
+msgstr ""
+
+#: coin.php:52
+msgid "Medals and rewards"
+msgstr "Médailles et récompenses"
+
+#: coin.php:54
+msgid "3 days in a row"
+msgstr "3 jours de suite"
+
+#: coin.php:55
+msgid "5 days in a row"
+msgstr "5 jours de suite"
+
+#: coin.php:56
+msgid "10 days in a row"
+msgstr "10 jours de suite"
+
+#: coin.php:57
+msgid "30 days in a row"
+msgstr "30 jours de suite"
+
+#: coin.php:59
+msgid "3 days progression"
+msgstr "3 sessions en progression"
+
+#: coin.php:60
+msgid "5 days progression"
+msgstr "5 sessions en progression"
+
+#: coin.php:61
+msgid "10 days progression"
+msgstr "10 sessions en progression"
+
+#: coin.php:62
+msgid "30 days progression"
+msgstr "30 sessions en progression"
+
+#: coin.php:64
+msgid "3 connexions"
+msgstr "3 sessions"
+
+#: coin.php:65
+msgid "5 connexions"
+msgstr "5 sessions"
+
+#: coin.php:66
+msgid "10 connexions"
+msgstr "10 sessions"
+
+#: coin.php:67
+msgid "30 connexions"
+msgstr "30 sessions"
+
+#: coin.php:69
+msgid "100 words"
+msgstr "100 mots"
+
+#: coin.php:70
+msgid "250 words"
+msgstr "250 mots"
+
+#: coin.php:71
+msgid "1000 words"
+msgstr "1000 mots"
+
+#: coin.php:72
+msgid "2000 words"
+msgstr "2000 mots"
+
+#: coin.php:74
+msgid "Level 5"
+msgstr "Niveau 5"
+
+#: coin.php:75
+msgid "Level 10"
+msgstr "Niveau 10"
+
+#: coin.php:76
+msgid "Level 15"
+msgstr "Niveau 15"
+
+#: coin.php:77
+msgid "Level 20"
+msgstr "Niveau 20"
+
+#: coin.php:84
+msgid "Words from 3 menus"
+msgstr "Mots de 3 menus"
+
+#: coin.php:85
+msgid "Words from 10 menus"
+msgstr "Mots de 10 menus"
+
+#: coin.php:86
+msgid "Words from 25 menus"
+msgstr "Mots de 25 menus"
+
+#: coin.php:87
+msgid "Words from 50 menus"
+msgstr "Mots de 50 menus"
+
+#: coin.php:89
+msgid "Creator"
+msgstr "Créateur"
+
+#: coin.php:90
+msgid "Super Creator"
+msgstr "Super Créateur"
+
+#: coin.php:91
+msgid "Mega Creator"
+msgstr "Méga Créateur"
+
+#: coin.php:92
+msgid "Big Brother Creator"
+msgstr "Créateur BigBrother"
+
+#: flash_revision_2.php:41 flash_revision_2save.php:32 flash_revision_3.php:135
+msgid "Learning list"
+msgstr "Liste des mots à apprendre"
+
+#: flash_revision_2save.php:70
+msgid "Selectable words"
+msgstr "Liste des mots selectionables"
+
+#: importation_flash.php:209
+msgid "Modif"
+msgstr ""
+
+#: menu_group_id.php:293
+msgid "Other"
+msgstr ""
+
+#: menu_group_id.php:294
+msgid "all"
+msgstr ""
+
+#: menu_group_id.php:310 stat.php:165
+msgid "words"
+msgstr "mots"
+
+#: menu_group_id.php:329
+msgid "Forgotten list"
+msgstr "Liste des mots oubliés"
+
+#: menu_group_id.php:332
+msgid "Forgotten words"
+msgstr "Mots oubliés"
+
+#: menu_group_id.php:392
+msgid "verbs food ..."
+msgstr "verbe ..."
+
+#: menu_group_id.php:393
+msgid "Research"
+msgstr "Rechercher"
+
+#: menu_group_id.php:410
+msgid "my lists"
+msgstr "mes listes"
+
+#: menu_group_id.php:413
+msgid "Pinned lists"
+msgstr "Listes épinglées"
+
+#: menu_group_id.php:416
+msgid "Untouched lists"
+msgstr "Listes inconnues"
+
+#: menu_group_id.php:525
+msgid "Are you sure to delete that deck of words ?"
+msgstr "Etes-vous sure de vouloir supprimer cette liste de vocabulaire"
+
+#: play.php:64
+msgid "Choosing"
+msgstr "Choisir"
+
+#: play.php:65
+msgid "Learning"
+msgstr "Apprendre"
+
+#: play.php:66
+msgid "Expression"
+msgstr "Expression"
+
+#: play.php:67
+msgid "Comprehension"
+msgstr "Compréhension"
+
+#: play.php:68
+msgid "Validation"
+msgstr "Validation"
+
+#: stat.php:129
+msgid "Statistics"
+msgstr "Statistiques"
+
+#: stat.php:133
+msgid "Words seen and mastered"
+msgstr "Mots vus et maitrisés"
+
+#: stat.php:135
+msgid "Time spent to learn"
+msgstr "Temps passé à apprendre"
+
+#: stat.php:140
+msgid "How long before you forget the words you know"
+msgstr "Combien de temps vous garder en mémoire les mots que vous avez en tête"
+
+#: stat.php:142
+msgid "Learning speed"
+msgstr "Vitesse d'apprentissage"
+
+#: stat.php:165
+msgid "word"
+msgstr "mot"
+
+#: stat.php:174 stat.php:195
+msgid "day"
+msgstr "jour"
+
+#: stat.php:193
+msgid "minutes of learning"
+msgstr "minute d'apprentissage"
+
+#~ msgid "I already got an account"
+#~ msgstr "J'ai déjà un compte"
+
+#~ msgid "Decks of words"
+#~ msgstr "Listes de vocabulaire"
+
+#~ msgid "Review"
+#~ msgstr "Révision"
+
+#~ msgid "Espagnol"
+#~ msgstr "Espagnol"

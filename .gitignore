@@ -1,0 +1,16 @@
+.env
+phpmyadmin
+card_audio/**
+card_img/**
+deck_audio/**
+deck_img/**
+deck_poster/**
+!card_audio/.gitkeep
+!card_img/.gitkeep
+!deck_audio/.gitkeep
+!deck_img/.gitkeep
+!deck_poster/.gitkeep
+phpmyadmin/
+vendor
+node_modules
+StripePayments
