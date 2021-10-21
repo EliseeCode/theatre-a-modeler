@@ -343,7 +343,7 @@ case 'addMagicNewCard':
   require_once '../../vendor/autoload.php';
   //Traduction
   $translate = new TranslateClient([
-      'key' => 'AIzaSyAp-1HnRE7jz1aSM4OvtyjMrffxbsJxT8g'
+      'key' => $_ENV['GOOGLE_API_KEY_TRANSLATION']
   ]);
   $result = $translate->translate($mot, [
       'target' => 'tr','source' => 'fr','format'=>'text'
