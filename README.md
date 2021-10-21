@@ -34,6 +34,6 @@ The platform is based on certain principles.
 This repo's goal is to renovate the code of the web site www.exolingo.com with a laravel or AdonisJs framework and to propose a way for school to setup to have their own version of exoLingo on their server.
 The original website is writen with PHP and mysql. It is a personal project made without any framework and needs structure to be maintained and developed.
 ## Steps in the developpement of the project
-- [ ] Importing the code of the actual website
+- [x] Importing the code of the actual website
 - [ ] Choosing a stack for the developpement of the new version
 - [ ] Start to code.
