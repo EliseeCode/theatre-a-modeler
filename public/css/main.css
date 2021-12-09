@@ -1,0 +1,144 @@
+:root {
+
+/*--mycolor1: #322F40;
+--mycolor1light: #524F60;
+--fond : #39b0f2;
+--mycolor2: #08A7AA;
+--mycolor2bis: #078386;
+--mycolor3: #ffdd4d;
+--mycolor4: white;*/
+
+
+
+/*--mycolor1: #4c6ca9;
+--mycolor1light: #524F60;
+--fond: #eaeced;
+--mycolor2: #f3f3f3;
+--mycolor2bis: #b9bed2;
+--mycolor3: #becefc;
+--mycolor4: white;*/
+--shadow: #00000080;
+--lightshadow: #00000020;
+--black:#4a4848;
+--mycolor1: white;
+--mycolor1light: #ffffff;
+--fond: #f4f4f4;
+--mycolor2: #34ac95;
+--mycolor2bis: #3ee6a4;
+--mycolor2fonce: #2f8675;
+--mycolor3: white;
+--mycolor4: #556370;
+--mydeckcolor:#aa28f5;
+--mycolor5:#85abff;
+--rouge:#f66c6c;
+}
+html{background: var(--fond);}
+@font-face {
+    font-family: "roboto";
+    src: url('../fonts/roboto.ttf');
+}
+@font-face {
+    font-family: "exolingoTitre";
+    src: url('../fonts/GROBOLD.ttf');
+}
+@font-face {
+    font-family: "caviar";
+    src: url('../fonts/caviar.ttf');
+}
+@font-face {
+    font-family: "ecolier";
+    src: url('../fonts/ecolier.ttf');
+}
+@font-face {
+    font-family: "forgetica";
+    src: url('../fonts/SansForgetica-Regular.otf');
+}
+@font-face {
+    font-family: "OpenDyslexic";
+    src: url('../fonts/OpenDyslexic.otf');
+}
+@-webkit-keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: .5;
+  }
+  100% {
+    width: 150px;
+    height: 150px;
+    opacity: 0;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: .5;
+  }
+  100% {
+    width: 150px;
+    height: 150px;
+    opacity: 0;
+  }
+}
+.ripple:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: currentColor;
+  visibility: hidden;
+  z-index: 2;
+}
+.ripple:not(:active):before {
+  -webkit-animation: ripple 0.4s cubic-bezier(0, 0, 0.2, 1);
+          animation: ripple 0.4s cubic-bezier(0, 0, 0.2, 1);
+  -webkit-transition: visibility .4s step-end;
+  transition: visibility .4s step-end;
+}
+.ripple:active:before {
+  visibility: visible;
+}
+body{margin:0;padding:0; font-family:caviar;min-height:100vh;}
+.jumbotron
+{background-color:var(--mycolor1);
+ color:var(--mycolor4);
+ border-bottom: 8px solid var(--mycolor3);
+}
+.border_jaune{border-bottom: 8px solid var(--mycolor3);}
+.fond{background-color:var(--fond);}
+/* .fondDeck{
+  background-image: url(../img/fond2.svg);
+      background-repeat: no-repeat;
+      background-position: top right;
+      background-size: max(200px,20%);}
+.fondDeck:before{content:"";position:absolute;
+      background-image:url(../img/fond3.svg);
+      background-repeat:no-repeat;
+      background-position:200px left;
+      background-size:15%;
+      width:100%;
+      top:63%;
+      left:0;
+      bottom:0;} */
+input{color:black;}
+.titre1{color:var(--mycolor2);}
+.btn-primary{background-color:var(--mycolor2);}
+.btn-primary:hover{background-color:var(--mycolor2bis);}
+
+input:invalid{
+	border-bottom:2px #ff3090 solid;
+}
+textarea{color:black;}
+
+.clickable
+{cursor:pointer;
+background-color: #F8F8F8;}
+.clickable:hover
+{background-color:#F0F0F0;}

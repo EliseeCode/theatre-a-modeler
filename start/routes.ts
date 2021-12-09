@@ -36,7 +36,7 @@ Route.post('language/:locale', async ({ session, response, params }) => {
   response.redirect().back()
 }).as('language.update')
 
-Route.on('/').render('welcome')
+Route.on('/').render('index')
 
 
 Route.resource('formation','FormationsController').middleware({
@@ -46,6 +46,7 @@ Route.resource('formation','FormationsController').middleware({
 })
 Route.resource('users','UsersController').middleware({  
 })
+Route.resource('classes','ClassesController');
 Route.post('/user/:id/admin','UsersController.giveAdminRole');
 Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
 

@@ -1,0 +1,62 @@
+#parametre_enigme{
+margin-top: 50px;	
+border-bottom: 8px #D24D48 solid;
+min-width:40%;}
+#container_head_editeur{
+background-color:#322F40;
+border-bottom: 8px #D24D48 solid;	
+}
+#addBubble{margin-bottom:10px;}
+
+.select_form{
+margin-bottom:10px;
+}
+textarea{
+margin-bottom:10px;
+}
+#game_info{width:50%;}
+
+.onTop
+{position:absolute;
+top:0;
+bottom:0;
+background-color:#00000070;
+width:100%;
+z-index:11;
+padding-top:100px;}
+
+input[type=checkbox]{
+	height:15px;
+	width:15px;
+	margin:10px;
+	display:inline-block;}
+	
+.file_input_hidden
+{display:none;}	
+.colonne
+{width:49%;
+padding:10px;
+display:inline-block;
+vertical-align:top;}
+.preview_enigma
+{background-color:grey;
+padding:100px;
+}
+#preview_indice
+{margin:10px;
+background-color:var(--mycolor1light);
+padding:5px;
+text-align:center;
+position:relative;}
+.delFile
+{
+background-image:url('../img/trash.png');
+background-size:contain;
+padding:15px;
+position:absolute;
+bottom:10px;
+right:10px;
+
+}
+#qrcode
+{border:5px white solid;}
