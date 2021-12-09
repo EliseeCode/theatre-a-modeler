@@ -148,37 +148,69 @@ left:0;
 
         <ul class="navbar-nav ml-auto">
 
-					<li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="quizEleve.php"><?php echo __("Quiz");?></a>
-          </li>
-
           <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#conteur"><?php echo __("Communauté");?></a>
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#kesako">Philosophie</a>
           </li>
-
-          <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#kesako"><?php echo __("Philosophie");?></a>
-          </li>
-
-					<!--<li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="./Payments"><?php echo __("Tarifs");?></a>
-          </li>-->
-          <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact"><?php echo __("Contact");?></a>
-          </li>
-
-
 
         </ul>
-				<a class="nav-link py-3 px-0 px-rg-0 rounded js-scroll-trigger" href="loginPage.php" style="float:right;margin-left:2rem;"><?php echo $connextButtonText;?></a>
+				<a class="nav-link py-3 px-0 px-rg-0 rounded js-scroll-trigger" href="/login" style="float:right;margin-left:2rem;">Se connecter</a>
       </div>
 			<div class="tiretteLang">
 				<div class="choixLangue" onclick="$('.selectLang').slideToggle();">
-					<div class="interfaceLangActive"></div>
+					<div class="interfaceLangActive">
+            <div class='choixLang_item choixLang_itemActive'>
+              <span class='tinyFlag flag_fr'></span><span class='lang_name'>fr</span></div>
+          </div>
 					<div class="selectLang" style="display:none;">
 						<ul class="interfaceLangChoice">
+              
+                <li class="interfaceLangChoice_es choixLang_item">
+                  <a href="index.php?lang=es">
+                  <span class="tinyFlag flag_es"></span>
+                  <span class="lang_name">es</span>
+                  </a>
+                </li>
+                <li class="interfaceLangChoice_en choixLang_item">
+                  <a href="index.php?lang=en">
+                  <span class="tinyFlag flag_en"></span>
+                  <span class="lang_name">en</span>
+                  </a>
+                </li>
 						<ul>
 					</div>
+
+
+          <div class="dropdown-item" x-data="{ open: false }" @click.outside="open = false">
+            <a href="#" @click.prevent="open = !open" :class="{ opened: open }">
+              <span>
+                {{ t(`messages.languages.${i18n.locale}`) }} ({{ i18n.locale }})
+              </span>
+
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </a>
+
+            <div class="dropdown" x-show="open">
+              @each(locale in getSupportedLocales())
+                @if(locale !== i18n.locale)
+                  <form
+                    method="POST"
+                    action="{{ route('language.update', [locale]) }}"
+                  >
+                    <button type="submit">
+                      {{ t(`messages.languages.${locale}`) }} ({{ locale }})
+                    </button>
+                  </form>
+                @end
+              @end
+            </div>
+          </div>
+
+
+
+
 			</div>
 			</div>
     </div>
@@ -188,22 +220,15 @@ left:0;
 <!-- <canvas id="canvasConfeti"></canvas> -->
   <!-- Masthead -->
   <header class="masthead text-black text-center fondTache">
-		<!-- <div class="infoNews"><?php echo __("+ de 1.000.000 d'exercices faits depuis septembre 2019 !");?><img src="img/close.png" style="width:30px;float:right;" onclick="$(this).parent().slideUp();"></div> -->
 		<div class="container">
 			<div class="row">
 				<div class="col-md" style="text-align:left;margin-top:40px;">
-					<!-- <div class="container d-flex align-items-center flex-column" > -->
-
-			      <!-- Masthead Avatar Image -->
-			      <!--<img src="img/logo1.svg" alt="" style="width:200px;max-width:90%;margin:30px 0 50px;">-->
-
-			      <!-- Masthead Heading -->
-			      <!--<h1 class="heading mb-0"><?php //echo __("Apprentissage ludique du vocabulaire en classe et à la maison");?></h1>-->
-
-
-						<h1 class="heading mb-0" style="font-size:3.3rem;"><?php echo __("Vocabulaire en classe et à la maison");?></h1>
-			      <!-- Icon Divider -->
-			            <!-- Masthead Subheading -->
+					
+						<h1 class="heading mb-0" style="font-size:3.3rem;">
+              {{ t('messages.homepage.subtitle', { locale: i18n.locale }) }}
+              Vocabulaire en classe et à la maison
+            </h1>
+			      
 			      <p class="masthead-subheading font-weight-light mb-0" style="margin:30px 0;font-size:1.3em;opacity:0.7;">Gardez le contrôle avec ExoLingo. Choisissez quoi et comment apprendre.</p>
 			      <div style="text-align:center;">
 			      	<a href="loginPage.php" class="btnStartNow" style="margin-bottom:10px;">Commencer maintenant<img src="img/right.png" class="arrowright"></a>
@@ -216,268 +241,107 @@ left:0;
 		</div>
 	</div>
 	<div class="container" style="margin-top:50px;">
-		<h3 style="padding-bottom:10px;text-align:left;"><?php echo __("Je m'amuse avec ...");?></h3>
+		<h3 style="padding-bottom:10px;text-align:left;">Je m'amuse avec ...</h3>
 		<div>
-				<a href="setLang.php?target_lang=1" class="lang_item scaleOver" ><div class="flagStd flag_fr"></div><div><?php echo __("le français");?></div></a>
-				<a href="setLang.php?target_lang=21" class="lang_item scaleOver" ><div class="flagStd flag_en"></div><div><?php echo __("l'anglais");?></div></a>
-				<a href="setLang.php?target_lang=28" class="lang_item scaleOver" ><div class="flagStd flag_de"></div><div><?php echo __("l'allemand");?></div></a>
-				<a href="setLang.php?target_lang=42" class="lang_item scaleOver" ><div class="flagStd flag_it"></div><div><?php echo __("l'italien");?></div></a>
-				<a href="setLang.php?target_lang=20" class="lang_item scaleOver" ><div class="flagStd flag_nl"></div><div><?php echo __("le néerlandais");?></div></a>
-				<a href="setLang.php?target_lang=54" class="lang_item scaleOver" ><div class="flagStd flag_lt"></div><div><?php echo __("le lituanien");?></div></a>
-				<a href="setLang.php?target_lang=85" class="lang_item scaleOver" ><div class="flagStd flag_es"></div><div><?php echo __("l'espagnol");?></div></a>
-				<a href="setLang.php?target_lang=70" class="lang_item scaleOver" ><div class="flagStd flag_pl"></div><div><?php echo __("le polonais");?></div></a>
-				<a href="setLang.php?target_lang=71" class="lang_item scaleOver" ><div class="flagStd flag_pt"></div><div><?php echo __("le portugais");?></div></a>
-				<a href="setLang.php?target_lang=74" class="lang_item scaleOver" ><div class="flagStd flag_ru"></div><div><?php echo __("le russe");?></div></a>
-				<a href="setLang.php?target_lang=82" class="lang_item scaleOver" ><div class="flagStd flag_sk"></div><div><?php echo __("le slovaque");?></div></a>
-				<a href="setLang.php?target_lang=94" class="lang_item scaleOver" ><div class="flagStd flag_tr"></div><div><?php echo __("le turc");?></div></a>
+				<a href="setLang.php?target_lang=1" class="lang_item scaleOver" ><div class="flagStd flag_fr"></div><div>le français</div></a>
+				<a href="setLang.php?target_lang=21" class="lang_item scaleOver" ><div class="flagStd flag_en"></div><div>l'anglais</div></a>
+				<a href="setLang.php?target_lang=28" class="lang_item scaleOver" ><div class="flagStd flag_de"></div><div>l'allemand</div></a>
+				<a href="setLang.php?target_lang=42" class="lang_item scaleOver" ><div class="flagStd flag_it"></div><div>l'italien</div></a>
+				<a href="setLang.php?target_lang=20" class="lang_item scaleOver" ><div class="flagStd flag_nl"></div><div>le néerlandais</div></a>
+				<a href="setLang.php?target_lang=54" class="lang_item scaleOver" ><div class="flagStd flag_lt"></div><div>le lituanien</div></a>
+				<a href="setLang.php?target_lang=85" class="lang_item scaleOver" ><div class="flagStd flag_es"></div><div>l'espagnol</div></a>
+				<a href="setLang.php?target_lang=70" class="lang_item scaleOver" ><div class="flagStd flag_pl"></div><div>le polonais</div></a>
+				<a href="setLang.php?target_lang=71" class="lang_item scaleOver" ><div class="flagStd flag_pt"></div><div>le portugais</div></a>
+				<a href="setLang.php?target_lang=74" class="lang_item scaleOver" ><div class="flagStd flag_ru"></div><div>le russe</div></a>
+				<a href="setLang.php?target_lang=82" class="lang_item scaleOver" ><div class="flagStd flag_sk"></div><div>le slovaque</div></a>
+				<a href="setLang.php?target_lang=94" class="lang_item scaleOver" ><div class="flagStd flag_tr"></div><div>le turc</div></a>
 		</div>
 		<p style="padding-bottom:10px;text-align:right;">Si vous souhaitez que nous ajoutions une langue,<a href="#contact">contactez-moi</a></p>
 </div>
-					<!--<h3 style="padding-bottom:10px;color:white;text-align:right;"><a href="lang.php" style="color:white;"><?php //echo __("... et bien d'autres !");?></a></h3>-->
-
-
-      <!--<a href="loginPage.php" class="font-weight-light mb-0" style="display:inline-block;font-size:0.8em;text-decoration:underline; color:white;margin:30px 0;font-size:1.3em;opacity:0.7;">Se connecter</a>-->
-
-
-      <!--<div class="divider-custom divider-light">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon">
-          <img src="img/lightWhite.png" width="40px">
-        </div>
-        <div class="divider-custom-line"></div>
-      </div>-->
-
-
-
+		
   </header>
 
-	  <section class="page-section" id="conteur" style="padding-top:0rem;text-align:center;">
-    <h3 class="text-center text-secondary mb-0" style="padding-bottom:40px;"><?php echo __("Rejoignez la communauté");?></h3>
-
-    <div class="container">
-    <div class="row">
-      <div class="col-md-3 ">
-        <div class="feat-item-fo conter">
-          <img class="imgConter" src="img/statW.png"><div class="numconter"><?php echo number_format ( $nbreTotalExo , 0 , "," ,  " " );?></div><div class="labelconter"><?php echo __("exercices");?></div>
-        </div>
-      </div>
-
-      <div class="col-md-3">
-        <div class="feat-item-fo conter">
-          <img class="imgConter" src="img/userProfW.png"><div class="numconter"><?php echo number_format ($nbreTotalUsers['prof'], 0 , "," ,  " ");?></div><div class="labelconter"><?php echo __("professeurs");?></div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="feat-item-fo conter">
-          <img class="imgConter" src="img/usersW.png"><div class="numconter"><?php echo number_format ($nbreTotalUsers['eleve'], 0 , "," ,  " ");?></div><div class="labelconter"><?php echo __("élèves");?></div>
-        </div>
-      </div>
-
-      <div class="col-md-3">
-        <div class="feat-item-fo conter">
-          <img class="imgConter" src="img/cardsW.png"><div class="numconter"><?php echo number_format ($nbreTotalCards, 0 , "," ,  " ");?></div><div class="labelconter"><?php echo __("cartes");?></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </section>
+	  
 
 
-  <!-- Portfolio Section -->
+  
   <section class="page-section portfolio" id="kesako">
     <div class="container">
 
-      <!-- Portfolio Section Heading -->
-      <h3 class="text-center text-secondary mb-0" style="padding-bottom:40px;"><?php echo __("Philosophie");?></h3>
+      
+      <h3 class="text-center text-secondary mb-0" style="padding-bottom:40px;">Philosophie</h3>
 
-
-
-      <!-- Portfolio Grid Items -->
       <div class="row">
         <div class="col-md-4">
           <div class="feat-item-fo">
             <img src="img/iconContext.png">
-            <h4><?php echo __("L'apprenant garde le contrôle");?></h4>
-            <p class="justifyP"><?php echo __("L'apprenant garde le contrôle de ce qu'il souhaite apprendre et comment l'apprendre en choisissant ses cartes puis un type de jeu.");?></p>
+            <h4>L'apprenant garde le contrôle</h4>
+            <p class="justifyP">L'apprenant garde le contrôle de ce qu'il souhaite apprendre et comment l'apprendre en choisissant ses cartes puis un type de jeu.</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feat-item-fo">
             <img src="img/iconColaboration.png">
-            <h4><?php echo __("Collaboratif");?></h4>
-            <p class="justifyP"><?php echo __("La création de contenu peut se faire à plusieurs simultanément. ");?><br><?php echo __("Créer de super listes et gagner des points si vos amis les utilisent.");?></p>
+            <h4>Collaboratif</h4>
+            <p class="justifyP">La création de contenu peut se faire à plusieurs simultanément. <br>Créer de super listes et gagner des points si vos amis les utilisent.</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feat-item-fo">
             <img src="img/iconGame.png">
-            <h4><?php echo __("Ludique");?></h4>
-            <p class="justifyP"><?php echo __("En plus des révisions sous forme de jeu, gagnez des points et passez des niveaux. Soyez le premier de votre classe dans le tableau d'avancement hebdomadaire.");?></p>
+            <h4>Ludique</h4>
+            <p class="justifyP">En plus des révisions sous forme de jeu, gagnez des points et passez des niveaux. Soyez le premier de votre classe dans le tableau d'avancement hebdomadaire.</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feat-item-fo">
             <img src="img/iconLearning.png">
-            <h4><?php echo __("Apprendre pour toujours");?></h4>
-            <p class="justifyP"><?php echo __("On sait que la méthode la plus efficace est de travailler en espacant les révisions.");?> <br><?php echo __("ExoLingo vous proposera de revoir les cartes que vous êtes sur le point d'oublier.");?></p>
+            <h4>Apprendre pour toujours</h4>
+            <p class="justifyP">On sait que la méthode la plus efficace est de travailler en espacant les révisions. <br>ExoLingo vous proposera de revoir les cartes que vous êtes sur le point d'oublier.</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feat-item-fo">
             <img src="img/iconVictory.png">
-            <h4><?php echo __("Quiz en classe");?></h4>
-            <p class="justifyP"><?php echo __("Une activité que les élèves adorent avec ExoLingo. Faite votre évaluation en classe avec les smartphones ou les ordinateurs des élèves. 15 seconde par question... Qui sera le champion ?");?></p>
+            <h4>Quiz en classe</h4>
+            <p class="justifyP">Une activité que les élèves adorent avec ExoLingo. Faite votre évaluation en classe avec les smartphones ou les ordinateurs des élèves. 15 seconde par question... Qui sera le champion ?</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feat-item-fo">
             <img src="img/iconSchool.png">
-            <h4><?php echo __("Dans la classe");?></h4>
-            <p class="justifyP"><?php echo __("ExoLingo s'intègre parfaitement en classe avec les évaluations et un suivi individualisé des élèves par leurs professeurs.");?></p>
+            <h4>Dans la classe</h4>
+            <p class="justifyP">ExoLingo s'intègre parfaitement en classe avec les évaluations et un suivi individualisé des élèves par leurs professeurs.</p>
           </div>
         </div>
 
       </div>
-      <!-- /.row -->
-        <center><a href="loginPage.php" class="btnStartNow" style=""><?php echo __("Commencer maintenant !");?></a></center>
+      
+        <center>
+          <a href="/login" class="btnStartNow" style="">Commencer maintenant !</a>
+        </center>
 
     </div>
 
-  </section>
-
-  <!-- Contact Section -->
-  <section class="page-section" id="contact">
-    <div class="container">
-
-      <!-- Contact Section Heading -->
-      <h3 class="text-center text-secondary mb-0"><?php echo __("Pour me contacter");?></h3>
-
-
-
-      <!-- Contact Section Form -->
-      <div class="row">
-
-
-        <div class="col-lg-8 mx-auto">
-          <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
-          <form name="sentMessage" id="contactForm" novalidate="novalidate">
-            <div class="control-group">
-              <div class="form-group floating-label-form-group controls mb-0 pb-2">
-                <label><?php echo __("Prénom");?></label>
-                <input class="form-control" id="name" type="text" placeholder="<?php echo __("Nom");?>" required="required" data-validation-required-message="<?php echo __("Please enter your name.");?>">
-                <p class="help-block text-danger"></p>
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="form-group floating-label-form-group controls mb-0 pb-2">
-                <label><?php echo __("Adresse email");?></label>
-                <input class="form-control" id="email" type="email" placeholder="<?php echo __("Adresse email");?>" required="required" data-validation-required-message="<?php echo __("Please enter your email address.");?>">
-                <p class="help-block text-danger"></p>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <div class="form-group floating-label-form-group controls mb-0 pb-2">
-                <label><?php echo __("Message");?></label>
-                <textarea class="form-control" id="message" rows="5" placeholder="<?php echo __("Message");?>" required="required" data-validation-required-message="<?php echo __("Please enter a message.");?>"></textarea>
-                <p class="help-block text-danger"></p>
-              </div>
-            </div>
-            <br>
-            <div id="success"></div>
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary btn-xl" id="sendMessageButton"><?php echo __("Envoyer");?></button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-    </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer text-center">
     <div class="container">
-      <div class="row">
-				<ul>
-				<li><a href='CGV.php'>les CGU et les CGV</a></li>
-				<li><a href='TermsAndConditions.php'>les termes et conditions d'utilisation</a></li>
-				</ul>
-				<!--<li><?php //echo $local_lang_cause;?></li>
-				<li><?php //echo substr($_SERVER["HTTP_ACCEPT_LANGUAGE"],0,5);?></li>
-				<li><?php //echo in_array($local_lang, $acceptLang);?></li>
-				<li><?php //echo 'locallang:'.$local_lang;?></li>
-				<li><?php //echo 'langinterface:'.$lang_interface;?></li>
-				<li><?php //echo 'session locallang:'.$_SESSION['local_lang'];?></li>
-				<li><?php //echo 'old session:'.$oldSessionLang;?></li>
-         Footer Location
-        <div class="col-lg-4 mb-5 mb-lg-0">
-          <h4 class="text-uppercase mb-4">Location</h4>
-          <p class="lead mb-0">30 Bld Béranger
-            <br>37000 Tours</p>
-        </div>
-
-        <!-- Footer Social Icons -->
-
-
-        <!-- Footer About Text -->
-
-
-      </div>
+   
     </div>
   </footer>
-  <!-- Copyright Section -->
-  <section class="copyright py-4 text-center text-white">
-    <div class="container">
-      <small>Copyright &copy; ExoLingo 2019</small>
-    </div>
-  </section>
-
+ 
   <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
   <div class="scroll-to-top d-lg-none position-fixed ">
     <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top">
       <i class="fa fa-chevron-up"></i>
     </a>
   </div>
-	<script>
-	function FillInLang(){
-		console.log("fillinlang")
-		$.getJSON("ajax.php?action=getAllLang", function(result)
-		{
-			console.log(result);
-			$(".interfaceLangActive").html("<div class='choixLang_item choixLang_itemActive'><span class='tinyFlag flag_"+lang_interface+"'></span><span class='lang_name'>"+lang_interface+"</span></div>");
-			for(k in result)
-			{
-			lang_code2=result[k].lang_code2;
-			lang_interface_active=result[k].lang_interface;
-			if(lang_interface_active==1 && lang_interface!=lang_code2){
-				lang_name=result[k].lang_name_Origin;
-				if($('interfaceLangChoice_'+lang_code2).length==0)
-					{$(".interfaceLangChoice").append('<a href="index.php?lang='+lang_code2+'"><li class="interfaceLangChoice_'+lang_code2+' choixLang_item"><span class="tinyFlag flag_'+lang_code2+'"></span><span class="lang_name">'+lang_code2+'</span></li></a>');
-					}
-				}
-			}
-		});
-	}
-	FillInLang();
-	</script>
-  <!-- Portfolio Modals -->
-  <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Plugin JavaScript -->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Contact Form JavaScript -->
-  <script src="js/jqBootstrapValidation.js"></script>
-  <script src="js/contact_me.js"></script>
-
-  <!-- Custom scripts for this template -->
+    <!-- Custom scripts for this template -->
   <script src="js/freelancer.min.js"></script>
-	<?php
-	include_once ("cookiePolicyPopUp.php");
-	?>
+	
 </body>
 
 </html>

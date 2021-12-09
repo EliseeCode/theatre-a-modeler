@@ -156,7 +156,6 @@ min-height:50px;}
   background-size:100px 100px;
 background-position:center center;
 vertical-align: top;
-float: left;
 }
 .deck_name{margin:auto 0 auto 10px;}
 #deroulant{
@@ -176,7 +175,7 @@ float: left;
         padding: 7px;
         margin-top: 18px;}
 .one_sentence{text-align:left;padding:5px; margin:0px 0; width:100%;white-space: normal;}
-.modifiedSent{;margin:5px 0;padding:8px;width:80%;}
+.modifiedSent{margin:5px 0;padding:8px;width:80%;}
 .golden{-webkit-filter: sepia(1) hue-rotate(-26deg) saturate(5) brightness(1.4);filter: sepia(1) hue-rotate(-26deg) saturate(5) brightness(1.4);}
 .NetB{-webkit-filter: grayscale(1) brightness(0.9);filter: grayscale(1) brightness(0.9);}
 
@@ -1129,7 +1128,7 @@ margin:auto;}
     margin: 10px 5px;
     border: 1px solid lightgrey;}
 .select_tag,.select_class,.select_lang{margin:5px;padding: 10px;}
-#select_tag_deck,,#select_class_deck{
+#select_tag_deck,#select_class_deck{
 text-align:left;
 margin-left:50px;
   }
@@ -1595,7 +1594,7 @@ left: 0;
 right: 0;
 width:80%;
 filter: drop-shadow(0px 0px 2px #000080);
-}}
+}
 .custo_XS{width:30px;}
 .custo_S{width:50px;}
 .custo_L{width:80px;}
@@ -1683,7 +1682,6 @@ border-radius:0;
 }
 .deck > .deckIconContainer{opacity:0.8;}
 .selectedAvailableDeck {
-    webkit-box-shadow: none !important;
     box-shadow:none !important;
     border: 8px var(--mycolor2bis) solid;}
 .hideBigScreen{display:none;}
