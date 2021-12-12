@@ -1,0 +1,125 @@
+body
+{
+/*position: fixed;*/
+width: 100%;
+margin: 0px;
+padding: 0px;
+overflow-x: hidden;
+overflow-y: hidden;
+font-family: calibri, Arial, Geneva, sans-serif;
+background: #eaeaff;
+
+  -webkit-background-size: cover; /* pour Chrome et Safari */
+  -moz-background-size: cover; /* pour Firefox */
+  -o-background-size: cover; /* pour Opera */
+  background-size: cover; /* version standardisée */
+}
+
+#canvas 
+{ 
+position: absolute;
+top: 0px;
+}
+
+.bubble
+{
+margin: 0px;
+padding: 20px;
+border-radius:50%;
+position: absolute; 
+text-align: center;
+z-index:9;
+background-image:no-repeat;
+cursor:pointer;
+}
+
+.titre_bubble
+{color:white;
+position:absolute;
+top:40px;
+width:150px;
+left:-56px;
+font-size:1.2em;
+text-shadow:0px 0px 3px black;
+pointer-events:none;
+font-size:1em;
+}
+
+.bubble_enigme
+{
+	
+	background-image:url(../img/lock.png);
+	background-size: contain;
+}
+.bubble_start
+{
+	background-image:url(../img/start.png);
+	background-size: contain;
+	padding: 25px;
+}
+.bubble_end
+{
+	
+	background-image:url(../img/end.png);
+	background-size: contain;
+	margin-top:-10px;
+}
+.bubble:hover
+{
+box-shadow:0px 0px 3px white;
+}
+.finalBubble
+{
+	background-image:url(../img/finallock.png);
+	border-radius:0;
+}
+#zone_bubble
+{
+position:absolute;
+}
+.problem
+{border: 2px red solid;}
+.bubble_reachable
+{/*border: lime 2px solid;
+box-shadow:0px 0px 5px lime;*/
+}
+.liaison
+{
+background-color:#f4d742A0;	
+background-image:url(../img/fleche.gif);
+background-size:12px 12px;
+position:absolute;
+heigth:12px;
+display:block;
+padding:6px;
+transform: rotate(20deg);
+transform-origin: center left;
+border-top:white 1px solid;
+	border-bottom:white 1px solid;
+	cursor:pointer;
+}
+.liaison:hover{
+	background-color:darkred;
+	border-top:red 1px solid;
+	border-bottom:red 1px solid;
+}
+#liaison_tmp
+{
+opacity:0.5;
+left:-100px;
+display:none;
+}
+.liaison_final
+{opacity:0.1;}
+.linkable
+{box-shadow:0px 0px 40px white inset;}
+.bubble_selected
+{border:5px white dashed;
+margin:-5px;}
+#titre_jeu
+{text-align:center;
+background-color:#322F40;
+color:#F9E2C5;
+font-size:1.6em;
+padding:10px;}
+#message_alert{text-align:center;}

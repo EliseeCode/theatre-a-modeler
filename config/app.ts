@@ -5,12 +5,14 @@
  * file.
  */
 
-import proxyAddr from 'proxy-addr'
-import Env from '@ioc:Adonis/Core/Env'
-import { ServerConfig } from '@ioc:Adonis/Core/Server'
-import { LoggerConfig } from '@ioc:Adonis/Core/Logger'
-import { ProfilerConfig } from '@ioc:Adonis/Core/Profiler'
-import { ValidatorConfig } from '@ioc:Adonis/Core/Validator'
+import proxyAddr from "proxy-addr";
+import Env from "@ioc:Adonis/Core/Env";
+import Application from "@ioc:Adonis/Core/Application";
+import { ServerConfig } from "@ioc:Adonis/Core/Server";
+import { LoggerConfig } from "@ioc:Adonis/Core/Logger";
+import { ProfilerConfig } from "@ioc:Adonis/Core/Profiler";
+import { ValidatorConfig } from "@ioc:Adonis/Core/Validator";
+import { AssetsManagerConfig } from "@ioc:Adonis/Core/AssetsManager";
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +27,7 @@ import { ValidatorConfig } from '@ioc:Adonis/Core/Validator'
 | be decrypted.
 |
 */
-export const appKey: string = Env.get('APP_KEY')
+export const appKey: string = Env.get("APP_KEY");
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +50,7 @@ export const http: ServerConfig = {
   | so on.
   |
   */
-  allowMethodSpoofing: false,
+  allowMethodSpoofing: true,
 
   /*
   |--------------------------------------------------------------------------
@@ -77,7 +79,7 @@ export const http: ServerConfig = {
   | headers.
   |
   */
-  trustProxy: proxyAddr.compile('loopback'),
+  trustProxy: proxyAddr.compile("loopback"),
 
   /*
   |--------------------------------------------------------------------------
@@ -94,7 +96,7 @@ export const http: ServerConfig = {
   | JSONP Callback
   |--------------------------------------------------------------------------
   */
-  jsonpCallbackName: 'callback',
+  jsonpCallbackName: "callback",
 
   /*
   |--------------------------------------------------------------------------
@@ -102,14 +104,14 @@ export const http: ServerConfig = {
   |--------------------------------------------------------------------------
   */
   cookie: {
-    domain: '',
-    path: '/',
-    maxAge: '2h',
+    domain: "",
+    path: "/",
+    maxAge: "2h",
     httpOnly: true,
     secure: false,
     sameSite: false,
   },
-}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -129,7 +131,7 @@ export const logger: LoggerConfig = {
   | reading the `name` property from the `package.json` file.
   |
   */
-  name: Env.get('APP_NAME'),
+  name: Env.get("APP_NAME"),
 
   /*
   |--------------------------------------------------------------------------
@@ -151,7 +153,7 @@ export const logger: LoggerConfig = {
   | at deployment level and not code level.
   |
   */
-  level: Env.get('LOG_LEVEL', 'info'),
+  level: Env.get("LOG_LEVEL", "info"),
 
   /*
   |--------------------------------------------------------------------------
@@ -162,8 +164,8 @@ export const logger: LoggerConfig = {
   | can have huge impact on performance.
   |
   */
-  prettyPrint: Env.get('NODE_ENV') === 'development',
-}
+  prettyPrint: Env.get("NODE_ENV") === "development",
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -202,7 +204,7 @@ export const profiler: ProfilerConfig = {
   |
   */
   whitelist: [],
-}
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -213,5 +215,62 @@ export const profiler: ProfilerConfig = {
 | to the default config https://git.io/JT0WE
 |
 */
-export const validator: ValidatorConfig = {
-}
+export const validator: ValidatorConfig = {};
+
+/*
+|--------------------------------------------------------------------------
+| Assets
+|--------------------------------------------------------------------------
+|
+| Configure the asset manager you are using to compile the frontend assets
+|
+*/
+export const assets: AssetsManagerConfig = {
+  /*
+  |--------------------------------------------------------------------------
+  | Driver
+  |--------------------------------------------------------------------------
+  |
+  | Currently we only support webpack encore and may introduce more drivers
+  | in the future
+  |
+  */
+  driver: "encore",
+
+  /*
+  |--------------------------------------------------------------------------
+  | Public path
+  |--------------------------------------------------------------------------
+  |
+  | Directory to search for the "manifest.json" and the "entrypoints.json"
+  | files
+  |
+  */
+  publicPath: Application.publicPath("assets"),
+
+  /*
+  |--------------------------------------------------------------------------
+  | Script tag
+  |--------------------------------------------------------------------------
+  |
+  | Define attributes for the entryPointScripts tags
+  |
+  */
+  script: {
+    attributes: {
+      defer: true,
+    },
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Style tag
+  |--------------------------------------------------------------------------
+  |
+  | Define attributes for the entryPointStyles tags
+  |
+  */
+  style: {
+    attributes: {},
+  },
+};

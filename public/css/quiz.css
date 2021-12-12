@@ -1,0 +1,148 @@
+#StartingPont,#question{display:inline-block;}
+#attente{padding-top: 60px;}
+.titre_quiz{margin-bottom:5vh;font-size:2em;}
+.center{text-align:center;margin-top:0px;}
+.codeLine{font-size:1.6em;margin:30px;color:grey;position: relative;}
+.code{font-size:3.5em;color:var(--mycolor2fonce);border:3px solid var(--mycolor2fonce);display:inline-block;min-width:200px;text-align:right; padding:5px 20px;}
+.codeAttente{font-size:1em;color:var(--mycolor2);border:3px solid var(--mycolor2);display:inline-block;text-align:right; padding:5px 10px; text-align:center;margin-top:30px;}
+.btn_start{background-color:var(--mycolor2);vertical-align:middle;color:white; float:right;clear:both;margin:10px 30px 10px 0; width:250px;padding:20px 40px;}
+.btn_start:hover{background-color:var(--mycolor2fonce);}
+.btn_quiz_container{}
+.btn_quiz2{clear:both;margin:10px 0;border:3px solid var(--mycolor2);color:var(--mycolor2); background-color:var(--fond); width:250px; padding:20px 40px;}
+.btn_quiz2:hover{background-color:var(--mycolor2fonce);color:white;}
+#download_results{border:3px solid var(--mycolor2);color:var(--mycolor2); background-color:var(--fond);width:250px; padding:10px;}
+#download_results:hover{background-color:var(--mycolor2fonce);color:white;}
+.consigneQuiz{font-size:1.5em; margin:40px 30px 2vh 30px;color:var(--mycolor4);}
+#StartingPoint{padding-top:40px;}
+.colonneQuiz1{max-width:400px;display:inline-block;vertical-align:middle;float:right;}
+.colonneQuiz2{display:inline;vertical-align:top;}
+.imgfusee{width:50%;}
+.flexContaine{height:70vh;display:flex;}
+.flexContaine>*{margin:auto;}
+.consigneCarte{font-size:1.2em;color:var(--mycolor4);}
+#card{display:inline-block;box-shadow:2px 2px 5px grey; border:5px solid white;margin-top:10px;width:250px;height:250px;background-size:cover;line-height:250px;font-size:2em;}
+#fin{display:none;margin-top:70px;padding-top: 5px;}
+#question{text-align:center;margin-top:70px;}
+#inputEleve,#inputCodeEleve{margin-top:20px;}
+.repEleve,.envoyer{padding:10px;text-align:center;
+  font-size:1.2em;display:inline-block;width:60%;max-width:300px;
+vertical-align:middle;}
+.repCodeEleve,.repPseudoEleve{text-align:center;width:350px;max-width:75%;margin-bottom:10px;font-size:1.5em;padding:10px;border:none;border-bottom:3px solid var(--mycolor2bis);}
+.envoyer{background-color: var(--mycolor2);
+    color: white;
+    display: inline-block;
+    border: 1px grey solid;
+  margin-top:20px;
+vertical-align:middle;}
+.badAnswerQuiz{background-color: red;
+    color: white;font-size:1.3em;}
+.goodAnswerQuiz{background-color: lime;font-size:1.3em;
+    color: white;}
+.repReceived{text-decoration:underline;}
+.envoyer:hover{background-color: var(--mycolor2fonce);}
+#goodAnswerEleve{text-align:center;background-color:lime; position:absolute; top:0;bottom:0;left:0;right:0;}
+#badAnswerEleve{text-align:center;background-color:red; position:absolute; top:0;bottom:0;left:0;right:0;}
+.player_item{display:block; padding:10px;}
+.answer_item{color:white;display:inline-block; padding:10px; width:12%;min-width:200px;margin:10px;font-size:2em;}
+#answers{padding:10px;}
+#classementTable{display:inline-block;}
+#classementTable tr td{ padding:20px 40px;}
+#disconnected{position:fixed;top:0;bottom:0;left:0;right:0;display:flex;z-index:9}
+
+.erreur_item{background-color: white;
+    margin: 10px;min-height:70px}
+#chart_container {
+display: inline-block;
+color: #999;
+font-size: 20px;
+text-align: center;
+position: relative;
+display:none;
+text-align:center;
+margin-top:70px;
+}
+.chart{display:inline-block;position:relative;}
+.rebours_num {
+position: absolute;
+min-width: 190px;
+min-height: 190px;
+line-height: 190px;
+top: 0;
+left: 0;
+font-size: 80px;
+color: var(--mycolor2);
+}
+svg .outer {
+stroke: var(--mycolor2);
+transition:1s;
+}
+.chart svg {
+transition:1s;
+}
+
+.outer {
+fill: transparent;
+stroke: blue;
+stroke-width: 20;
+stroke-dasharray: 534;
+transition: stroke-dashoffset 1s;
+-webkit-animation-play-state: running;
+
+/* firefox bug fix - won't rotate at 90deg angles */
+-moz-transform: rotate(-89deg) translateX(-190px);
+}
+.chart[data-percent='100'] .outer {
+stroke-dashoffset: 0;
+-webkit-animation: show100 15s linear;
+animation: show100 15s linear;
+}
+
+/* END set initial animation values */
+
+/* Keyframes for the initial animation */
+@-webkit-keyframes show100 {
+from {
+stroke-dashoffset: 535;
+}
+
+to {
+stroke-dashoffset: 0;
+}
+}
+
+@keyframes show100 {
+from {
+stroke-dashoffset: 535;
+}
+
+to {
+stroke-dashoffset: 0;
+}
+}
+#form{display:block;height:100vh;padding-top: 80px;
+    flex-direction: column;}
+#form>*{margin:auto;}
+.clock{width:100%;float:left;margin:10px;clear:both; text-align:left;display:inline-block;}
+.clock_img{opacity:0.7;width:30px;vertical-align:middle;}
+.rebours_ini{vertical-align: middle;
+    padding: 10px;
+    width: 70px;
+    background-color:var(--fond);
+    font-size:1em;
+  border:none;}
+.rebours_ini:hover, .rebours_ini:focus{background-color:white;}
+#audio_btn img{width:30px;margin-top:-5px;}
+#print_btn img{width:30px;margin-top:-5px;}
+.rebours_pause{
+  display:none;
+  font-size:20px;
+  position: absolute;
+  min-width: 190px;
+  min-height: 190px;
+  line-height: 190px;
+  top: 0;
+  left: 0;
+  color: grey;}
+.chart:hover  .rebours_num {display:none;}
+.chart:hover  .rebours_pause {display:inline-block;}
+.container_global_eleve{min-height:100vh;}

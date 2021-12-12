@@ -1,0 +1,23 @@
+<svg viewBox="50 40 80 80" preserveAspectRatio="xMidYMid meet" style="width: 50px;height: 26px;filter: drop-shadow(1px 1px 1px black);">
+<g class="MemoryLevel">
+  <path
+     style="fill:#e3e2db;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 19.84375,91.702029 56.50744,81.931546 V 109.90178 L 19.654762,109.77271 Z"
+     class="barre1 barre2 barre3 barre4 barreMemoryIcon"
+     />
+  <path
+     style="fill:#e3e2db;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 60.476189,80.230654 29.293156,-7.9375 V 110.46875 L 60.2872,110.09078 Z"
+     class="barre2 barre3 barre4 barreMemoryIcon"
+     />
+  <path
+     style="fill:#e3e2db;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 93.738095,70.403272 31.561005,-8.504465 0.18899,48.191963 -31.938985,0.18898 z"
+     class="barre3 barre4 barreMemoryIcon"
+     />
+  <path
+     style="fill:#e3e2db;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 129.68363,59.81994 30.61607,-8.458872 v 58.729702 l -30.99405,-0.18898 z"
+     class="barre4 barreMemoryIcon"/>
+</g>
+</svg>

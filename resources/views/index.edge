@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<html translate="no" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+	<meta name="google" content="notranslate">
+	<link rel="icon" type="image/png" href="img/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="img/favicon-16x16.png" sizes="16x16" />
+  <title>ExoLingo</title>
+	<script src="js/jquery-3.3.1.min.js"></script>
+
+  <!-- Custom fonts for this theme -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+  <!-- Theme CSS -->
+	<link href="css/myStyle.css" rel="stylesheet">
+  <link href="css/freelancer.min.css" rel="stylesheet">
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script src="js/cookiesManager.js"></script>
+</head>
+<style>
+.feat-item-fo:hover {
+
+    -webkit-box-shadow: 0px 10px 25px rgba(0,0,0,.1);
+    -moz-box-shadow: 0px 10px 25px rgba(0,0,0,.1);
+    -o-box-shadow: 0px 10px 25px rgba(0,0,0,.1);
+    box-shadow: 0px 10px 25px rgba(0,0,0,.1);
+    position: relative;
+    z-index: 9;
+    transform: translate(0,-5px);
+    border: 0px solid transparent;}
+.feat-item-fo {padding:20px;
+    text-align:center;}
+.feat-item-fo img{width:70px;}
+/*linear-gradient(90deg,#0aff9e,#1eb289)*/
+@keyframes zoom {
+	0%{transform:scale(1);}
+	70%{transform:scale(1.1);}
+	100%{transform:scale(1);}
+}
+.btnStartNow{background: linear-gradient(270deg,var(--primary),var(--info));
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1.3em;
+    padding: 17px 27px;
+    display: inline-block;
+    border-radius:40px;
+  border:none;
+  margin:50px 30px;
+transition:1s;
+text-decoration:none;color:white;
+text-align:center;
+font-size:large-xx;
+-webkit-animation: zoom 2s ease 3 forwards;
+animation: zoom 2s ease 3 forwards;}
+
+.btnStartNow:hover{background: linear-gradient(270deg,var(--info),var(--primary));transform:scale(1.2);color:white;text-decoration:none;}
+.flag{margin:15px;display:inline-block;transition:0.2s;padding:10px;}
+.flag{box-shadow:0px 0 2px #e0e0e0;border-radius:5px;}
+.flag:hover{box-shadow:0px 0 5px grey;}
+.flag img{width:60px; height:40px;box-shadow:0 0 2px grey;}
+.conter{color:#e13e5e;background: #f0f0f0;border-radius:10px;margin:20px;font-size:1em;}
+.imgConter{background: linear-gradient(0deg,#e13e5e,#e918c2);padding:10px;object-fit:contain;height:70px;border-radius:35px;margin:10px;}
+.numconter{font-size:1.5em;font-weight:bold;}
+.labelconter{opacity:0.8;color:grey;}
+.page-section{padding:2rem 0}
+.bg-secondary {
+    background-color: white!important;
+}
+#mainNav .navbar-nav li.nav-item a.nav-link {
+    color: #303030;}
+#mainNav .navbar-brand {
+    color:  #303030;
+}
+.justifyP{text-align: justify;
+  text-justify: inter-word;}
+	#mainNav .navbar-nav li.nav-item a.nav-link:active, #mainNav .navbar-nav li.nav-item a.nav-link:focus {
+	 color: #303030;
+	}
+.nameUser{text-transform:capitalize;}
+.choixLangue{width: 300px;
+    max-width: 100%;
+    text-align: left;min-width:100px;position:relative;top:-5px;display:inline-block; border-radius:0 0 30px 30px;text-align:center;z-index:1031;}
+    .selectLang ul li{list-style-type: none;}
+    .selectLang ul {padding:0;}
+#mainNav{box-shadow:0 0 3px grey;}
+.tiretteLang{background-color:blue;min-width:100px;transition:1s;z-index:1032;overflow:visible;height:0;right:20px;text-align:center;position:absolute;bottom:0;}
+.lang_item{text-decoration:none;color:black;padding:5px; margin:10px;display:inline-block;border-radius:10px;}
+.flagStd {width:80px;height:50px;margin:5px;}
+@keyframes showFromRight {
+	0%{left:200px;opacity:0;}
+	100%{left:0;opacity:1;}
+}
+@keyframes slideRightLeft {
+	0%{left:10px;}
+	50%{left:0;}
+	100%{left:10px;}
+}
+.imageFunQuiz{-webkit-animation: showFromRight 1s ease 1 forwards;
+animation: showFromRight 1s ease 1 forwards;position:relative;}
+.choixLang_item{display:inline-block;width:90px;margin:3px;padding:10px;background-color:white;border-radius:5px;text-align:left;}
+.choixLang_item:hover{transform:scale(1.1);}
+.lang_name{padding-left:10px;text-transform: uppercase;}
+.choixLang_item:not(.choixLang_itemActive){box-shadow:0 0 3px grey;}
+.choixLang_itemActive{box-shadow:0px 2px 1px grey;}
+.arrowright{vertical-align:middle;width:30px;margin:auto 10px;position:relative;
+	-webkit-animation: slideRightLeft 2s linear infinite forwards;
+	animation: slideRightLeft 2s linear infinite forwards;
+animation-delay:3s}
+.fondTache{padding-top:130px;background-image:url(img/fond2.svg);background-repeat:no-repeat;background-position:top right;background-size:30%;}
+.fondTacheLeft:before{content:"";position:absolute;
+padding-top:0px;
+background-image:url(img/fond3.svg);
+background-repeat:no-repeat;
+background-position:200px left;
+background-size:15%;
+width:100%;
+height:100%;
+top:80%;
+left:0;
+}
+#canvasConfeti{pointer-events: none;width:100%;top:0;bottom:0;left:0;position:absolute;}
+.infoNews{background-color: #e624a1;
+    display: block;
+    padding: 15px;
+    color: white;
+    margin-top: -40px;
+		font-size:1.2em;text-align:center;padding-top: 53px;}
+</style>
+<body id="page-top" translate="no">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
+
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top"><img src="img/logo.svg" width="40px" style="margin-right:30px;">ExoLingo</a>
+      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+
+        <ul class="navbar-nav ml-auto">
+
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#kesako">Philosophie</a>
+          </li>
+
+        </ul>
+				<a class="nav-link py-3 px-0 px-rg-0 rounded js-scroll-trigger" href="/login" style="float:right;margin-left:2rem;">Se connecter</a>
+      </div>
+			<div class="tiretteLang">
+				<div class="choixLangue" onclick="$('.selectLang').slideToggle();">
+					<div class="interfaceLangActive">
+            <div class='choixLang_item choixLang_itemActive'>
+              <span class='tinyFlag flag_fr'></span><span class='lang_name'>fr</span></div>
+          </div>
+					<div class="selectLang" style="display:none;">
+						<ul class="interfaceLangChoice">
+              
+                <li class="interfaceLangChoice_es choixLang_item">
+                  <a href="index.php?lang=es">
+                  <span class="tinyFlag flag_es"></span>
+                  <span class="lang_name">es</span>
+                  </a>
+                </li>
+                <li class="interfaceLangChoice_en choixLang_item">
+                  <a href="index.php?lang=en">
+                  <span class="tinyFlag flag_en"></span>
+                  <span class="lang_name">en</span>
+                  </a>
+                </li>
+						<ul>
+					</div>
+
+
+          <div class="dropdown-item" x-data="{ open: false }" @click.outside="open = false">
+            <a href="#" @click.prevent="open = !open" :class="{ opened: open }">
+              <span>
+                {{ t(`messages.languages.${i18n.locale}`) }} ({{ i18n.locale }})
+              </span>
+
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </a>
+
+            <div class="dropdown" x-show="open">
+              @each(locale in getSupportedLocales())
+                @if(locale !== i18n.locale)
+                  <form
+                    method="POST"
+                    action="{{ route('language.update', [locale]) }}"
+                  >
+                    <button type="submit">
+                      {{ t(`messages.languages.${locale}`) }} ({{ locale }})
+                    </button>
+                  </form>
+                @end
+              @end
+            </div>
+          </div>
+
+
+
+
+			</div>
+			</div>
+    </div>
+
+  </nav>
+
+<!-- <canvas id="canvasConfeti"></canvas> -->
+  <!-- Masthead -->
+  <header class="masthead text-black text-center fondTache">
+		<div class="container">
+			<div class="row">
+				<div class="col-md" style="text-align:left;margin-top:40px;">
+					
+						<h1 class="heading mb-0" style="font-size:3.3rem;">
+              {{ t('messages.homepage.subtitle', { locale: i18n.locale }) }}
+              Vocabulaire en classe et à la maison
+            </h1>
+			      
+			      <p class="masthead-subheading font-weight-light mb-0" style="margin:30px 0;font-size:1.3em;opacity:0.7;">Gardez le contrôle avec ExoLingo. Choisissez quoi et comment apprendre.</p>
+			      <div style="text-align:center;">
+			      	<a href="loginPage.php" class="btnStartNow" style="margin-bottom:10px;">Commencer maintenant<img src="img/right.png" class="arrowright"></a>
+							<div style="color:grey;">C'est gratuit</div>
+						</div>
+				</div>
+				<div class="col-md" style="display:flex;">
+						<img src="img/screen.svg" class="imageFunQuiz" style="width:800px;max-width:100%;margin:auto;">
+			</div>
+		</div>
+	</div>
+	<div class="container" style="margin-top:50px;">
+		<h3 style="padding-bottom:10px;text-align:left;">Je m'amuse avec ...</h3>
+		<div>
+				<a href="setLang.php?target_lang=1" class="lang_item scaleOver" ><div class="flagStd flag_fr"></div><div>le français</div></a>
+				<a href="setLang.php?target_lang=21" class="lang_item scaleOver" ><div class="flagStd flag_en"></div><div>l'anglais</div></a>
+				<a href="setLang.php?target_lang=28" class="lang_item scaleOver" ><div class="flagStd flag_de"></div><div>l'allemand</div></a>
+				<a href="setLang.php?target_lang=42" class="lang_item scaleOver" ><div class="flagStd flag_it"></div><div>l'italien</div></a>
+				<a href="setLang.php?target_lang=20" class="lang_item scaleOver" ><div class="flagStd flag_nl"></div><div>le néerlandais</div></a>
+				<a href="setLang.php?target_lang=54" class="lang_item scaleOver" ><div class="flagStd flag_lt"></div><div>le lituanien</div></a>
+				<a href="setLang.php?target_lang=85" class="lang_item scaleOver" ><div class="flagStd flag_es"></div><div>l'espagnol</div></a>
+				<a href="setLang.php?target_lang=70" class="lang_item scaleOver" ><div class="flagStd flag_pl"></div><div>le polonais</div></a>
+				<a href="setLang.php?target_lang=71" class="lang_item scaleOver" ><div class="flagStd flag_pt"></div><div>le portugais</div></a>
+				<a href="setLang.php?target_lang=74" class="lang_item scaleOver" ><div class="flagStd flag_ru"></div><div>le russe</div></a>
+				<a href="setLang.php?target_lang=82" class="lang_item scaleOver" ><div class="flagStd flag_sk"></div><div>le slovaque</div></a>
+				<a href="setLang.php?target_lang=94" class="lang_item scaleOver" ><div class="flagStd flag_tr"></div><div>le turc</div></a>
+		</div>
+		<p style="padding-bottom:10px;text-align:right;">Si vous souhaitez que nous ajoutions une langue,<a href="#contact">contactez-moi</a></p>
+</div>
+		
+  </header>
+
+	  
+
+
+  
+  <section class="page-section portfolio" id="kesako">
+    <div class="container">
+
+      
+      <h3 class="text-center text-secondary mb-0" style="padding-bottom:40px;">Philosophie</h3>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="feat-item-fo">
+            <img src="img/iconContext.png">
+            <h4>L'apprenant garde le contrôle</h4>
+            <p class="justifyP">L'apprenant garde le contrôle de ce qu'il souhaite apprendre et comment l'apprendre en choisissant ses cartes puis un type de jeu.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feat-item-fo">
+            <img src="img/iconColaboration.png">
+            <h4>Collaboratif</h4>
+            <p class="justifyP">La création de contenu peut se faire à plusieurs simultanément. <br>Créer de super listes et gagner des points si vos amis les utilisent.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feat-item-fo">
+            <img src="img/iconGame.png">
+            <h4>Ludique</h4>
+            <p class="justifyP">En plus des révisions sous forme de jeu, gagnez des points et passez des niveaux. Soyez le premier de votre classe dans le tableau d'avancement hebdomadaire.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feat-item-fo">
+            <img src="img/iconLearning.png">
+            <h4>Apprendre pour toujours</h4>
+            <p class="justifyP">On sait que la méthode la plus efficace est de travailler en espacant les révisions. <br>ExoLingo vous proposera de revoir les cartes que vous êtes sur le point d'oublier.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feat-item-fo">
+            <img src="img/iconVictory.png">
+            <h4>Quiz en classe</h4>
+            <p class="justifyP">Une activité que les élèves adorent avec ExoLingo. Faite votre évaluation en classe avec les smartphones ou les ordinateurs des élèves. 15 seconde par question... Qui sera le champion ?</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feat-item-fo">
+            <img src="img/iconSchool.png">
+            <h4>Dans la classe</h4>
+            <p class="justifyP">ExoLingo s'intègre parfaitement en classe avec les évaluations et un suivi individualisé des élèves par leurs professeurs.</p>
+          </div>
+        </div>
+
+      </div>
+      
+        <center>
+          <a href="/login" class="btnStartNow" style="">Commencer maintenant !</a>
+        </center>
+
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+   
+    </div>
+  </footer>
+ 
+  <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+  <div class="scroll-to-top d-lg-none position-fixed ">
+    <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+
+    <!-- Custom scripts for this template -->
+  <script src="js/freelancer.min.js"></script>
+	
+</body>
+
+</html>

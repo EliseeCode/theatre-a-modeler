@@ -1,0 +1,31 @@
+label {
+  position: absolute;
+  left: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  font-size: 22px;
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+}
+label .req {
+  margin: 2px;
+  color: var(--mycolor2);
+}
+
+label.active {
+  -webkit-transform: translateY(30px);
+          transform: translateY(30px);
+  left: 2px;
+  font-size: 14px;
+  color: var(--mycolor4);
+}
+label.active .req {
+  opacity: 0;
+}
+
+label.highlight {
+  color: var(--mycolor4);
+}
