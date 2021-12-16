@@ -1,0 +1,161 @@
+@layout('layouts/master')
+
+@section('content')
+    <link rel="stylesheet" href="/css/googlebutton.css">
+    <section class="is-fullheight is-fullwidth">
+      <div class="tabs is-centered is-boxed is-medium">
+        <ul>
+          <li class="is-active" id="login" for="login_tab">
+            <a>
+              <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
+              <span>Login</span>
+            </a>
+          </li>
+          <li id="register" for="register_tab">
+            <a>
+              <span class="icon is-small"><i class="fas fa-music" aria-hidden="true"></i></span>
+              <span>Register</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="container" id="login_tab">
+        <div class="columns is-centered">
+          <div class="column is-5-tablet is-4-desktop is-3-widescreen is-fullwidth">
+            <form class="box" action="{{ route('auth.login') }}" method="POST">
+              {{ csrfField() }}
+              <div class="field">
+                <label for="" class="label">Email</label>
+                <div class="control has-icons-left">
+                  <input type="email" name="email" placeholder="e.g. bobsmith@gmail.com" class="input" required>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="" class="label">Password</label>
+                <div class="control has-icons-left">
+                  <input type="password" name="password" placeholder="*******" class="input" required>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="" class="checkbox">
+                  <input type="checkbox" name="toRemember">
+                 Remember me
+                </label>
+              </div>
+              <div class="field">
+                <button class="button is-success" value="login">
+                  Login
+                </button>
+              </div>
+              <div class="google-btn">
+                <div class="google-icon-wrapper">
+                  <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                </div>
+                <a href="/auth/google/redirect" class="btn-text"><b>Sign in with google</b></a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="container" id="register_tab" style="display:none">
+          <div class="columns is-centered">
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+              <form class="box" action="{{ route('auth.register') }}" method="POST">
+                {{ csrfField() }}
+                <div class="field">
+                  <label for="" class="label">Full Name</label>
+                  <div class="control has-icons-left">
+                    <input type="text" name="name" placeholder="e.g. Bob Smith" class="input" required>
+                    <span class="icon is-small is-left">
+                      <i class="fa fa-envelope"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="" class="label">Email</label>
+                  <div class="control has-icons-left">
+                    <input type="email" name="email" placeholder="e.g. bobsmith@gmail.com" class="input" required>
+                    <span class="icon is-small is-left">
+                      <i class="fa fa-envelope"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="" class="label">Password</label>
+                  <div class="control has-icons-left">
+                    <input type="password" name="password" placeholder="*******" class="input" required>
+                    <span class="icon is-small is-left">
+                      <i class="fa fa-lock"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="" class="label">Organisation</label>
+                  <div class="control has-icons-left">
+                    <input type="text" name="organisation" placeholder="e.g. Notre Dame de Sion French High School" class="input" required>
+                    <span class="icon is-small is-left">
+                      <i class="fa fa-envelope"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="" class="checkbox">
+                    <input type="checkbox" name="toRemember">
+                   Remember me
+                  </label>
+                </div>
+                <div class="field">
+                  <button class="button is-success" value="register">
+                    Register
+                  </button>
+                </div>
+                <div class="google-btn">
+                  <div class="google-icon-wrapper">
+                    <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                  </div>
+                  <a href="/auth/google/redirect" class="btn-text"><b>Sign in with google</b></a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <script>
+      const li_arr = document.querySelectorAll("li");
+      const def_selec = "li";
+      li_arr.forEach((elem) => {
+        elem.addEventListener("click", (e) => {
+          let elem_path = e.path;
+          elem_path.splice(-2);
+          const parent_li = elem_path.filter((elem) => {
+            if (elem.tagName.toLowerCase().includes(def_selec)) {
+              return elem;
+            }
+          })[0];
+          toggleElem(parent_li.id, li_arr);
+          e.stopPropagation()
+        })
+      })
+      const toggleElem = (toggle_id, arr) => {
+        arr.forEach((elem) => {
+          const content_section = document.getElementById(elem.getAttribute("for"))
+          if (elem.id === toggle_id){
+            elem.classList.add("is-active")
+            content_section.style.display = "block";
+          } else {
+              elem.classList.remove("is-active")
+              content_section.style.display = "none";
+            }
+        })
+      }
+    </script>
+  
+  
+@endsection

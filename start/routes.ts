@@ -17,51 +17,54 @@
 | import './routes/customer''
 |
 */
-import { Response } from '@adonisjs/http-server/build/standalone'
-import I18n from '@ioc:Adonis/Addons/I18n'
-import Route from '@ioc:Adonis/Core/Route'
-import { logger } from 'Config/app'
-import authConfig from 'Config/auth'
+import { Response } from "@adonisjs/http-server/build/standalone";
+import I18n from "@ioc:Adonis/Addons/I18n";
+import Route from "@ioc:Adonis/Core/Route";
+import { logger } from "Config/app";
+import authConfig from "Config/auth";
 
-
-Route.post('language/:locale', async ({ session, response, params }) => {
+Route.post("language/:locale", async ({ session, response, params }) => {
   /**
    * Only update locale when it is part of the supportedLocales
    */
   if (I18n.supportedLocales().includes(params.locale)) {
-    session.put('locale', params.locale)
-    logger.info("inside",params.locale)
+    session.put("locale", params.locale);
+    logger.info("inside", params.locale);
   }
-  logger.info("inside",params.locale)
-  response.redirect().back()
-}).as('language.update')
+  logger.info("inside", params.locale);
+  response.redirect().back();
+}).as("language.update");
 
-Route.on('/').render('index')
+Route.on("/").render("index");
 
+Route.resource("formation", "FormationsController").middleware({
+  "*": ["silentAuth"],
+});
+Route.resource("users", "UsersController").middleware("silentAuth");
+Route.resource("classes", "ClassesController").middleware("silentAuth");
+Route.post("/user/:id/admin", "UsersController.giveAdminRole").middleware(
+  "silentAuth"
+);
+Route.post("/user/:id/notAdmin", "UsersController.removeAdminRole").middleware(
+  "silentAuth"
+);
 
-Route.resource('formation','FormationsController').middleware({
-  create: ['auth'],
-  store: ['auth'],
-  destroy: ['auth'],
-})
-Route.resource('users','UsersController').middleware({  
-})
-Route.resource('classes','ClassesController');
-Route.post('/user/:id/admin','UsersController.giveAdminRole');
-Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
-
-Route.post('/login', 'AuthController.login').as('auth.login')
-Route.post('/register', 'AuthController.register').as('auth.register')
-Route.get('/logout', 'AuthController.logout').as('auth.logout')
-Route.get('/profile','AuthController.profile').middleware("auth");
-Route.get('/login',async({ response, view,auth }) => {
-  if(auth.isGuest){
-  return view.render('auth/login')}
-  else{
+Route.get("/auth/", async ({ request, response, view, auth }) => {
+  if (!request.authorized) {
+    return view.render("auth/auth", { user: request.user });
+  } else {
     response.redirect("/formation");
   }
-}).middleware('silentAuth')
+});
+Route.post("/auth/login", "AuthController.login").as("auth.login");
+Route.post("/auth/register", "AuthController.register").as("auth.register");
+Route.get("/auth/logout", "AuthController.logout").as("auth.logout");
+Route.get("/profile", "AuthController.profile").middleware("silentAuth");
 
-Route.get('/register',async({ view }) => {
-  return view.render('auth/register')
-})
+Route.get("/auth/google/redirect", async ({ ally }) => {
+  return ally.use("google").redirect();
+});
+
+Route.get("/auth/google/callback", "AuthController.googleCallback").as(
+  "auth.googleCallback"
+);

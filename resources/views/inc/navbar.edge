@@ -48,12 +48,12 @@
         <div class="navbar-item">
           <div class="buttons">
 
-        @if(auth.isLoggedIn)
+        @if(request.authorized)
           
-            <a href="/logout" class="button">
+            <a href="/auth/logout" class="button">
              logout
             </a>    
-            <a href="/profile" class="button">{{auth.user.name}}</a>
+            <a href="/profile" class="button">{{request.user.name}}</a>
         @else
         <a class="button is-primary" href="/register">
            <strong>Sign up</strong>

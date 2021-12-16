@@ -9,7 +9,7 @@
 |
 */
 
-import Server from '@ioc:Adonis/Core/Server'
+import Server from "@ioc:Adonis/Core/Server";
 
 /*
 |--------------------------------------------------------------------------
@@ -21,12 +21,11 @@ import Server from '@ioc:Adonis/Core/Server'
 |
 */
 Server.middleware.register([
-  () => import('@ioc:Adonis/Core/BodyParser'),
-  () => import('@ioc:Adonis/Addons/Shield'),
-  () => import('App/Middleware/SilentAuth'),
-  () => import('App/Middleware/DetectUserLocale'),
-  
-])
+  () => import("@ioc:Adonis/Core/BodyParser"),
+  () => import("@ioc:Adonis/Addons/Shield"),
+  () => import("App/Middleware/JWTAuth"),
+  () => import("App/Middleware/DetectUserLocale"),
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +46,5 @@ Server.middleware.register([
 Server.middleware.registerNamed({
   auth: "App/Middleware/Auth",
   silentAuth: "App/Middleware/SilentAuth",
-})
+  jwtAuth: "App/Middleware/JWTAuth",
+});
