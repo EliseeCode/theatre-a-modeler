@@ -7,36 +7,55 @@
     <div class="container">
       <div class="columns is-centered">
         <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-          <form class="box" action="{{ route('auth.login') }}" method="POST">
+          <h1 class="title">Register new account</h1>
+          <form class="box" action="{{ route('auth.register') }}" method="POST">
             {{ csrfField() }}
             <div class="field">
-              <label for="" class="label">Name</label>
+              <label for="" class="label">usename</label>
               <div class="control has-icons-left">
-                <input type="text" name="name" placeholder="e.g. bob" class="input" required>
+                <input type="text" name="username" placeholder="e.g. bob" class="input" value="{{ flashMessages.get('username') || '' }}" required>
                 <span class="icon is-small is-left">
                   <i class="fa fa-user"></i>
                 </span>
               </div>
+              @if(flashMessages.has('errors.username'))
+              <p class="notification is-danger is-light m-1">
+                <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                {{ flashMessages.get('errors.username') || '' }}
+              </p>
+              @end
             </div>
-            <div class="field">
+            {{--  <div class="field">
               <label for="" class="label">Email</label>
               <div class="control has-icons-left">
-                <input type="email" name="email" placeholder="e.g. bobsmith@gmail.com" class="input" required>
+                <input type="email" name="email" placeholder="e.g. bobsmith@gmail.com" class="input" value="{{ flashMessages.get('email') || '' }}">
                 <span class="icon is-small is-left">
                   <i class="fa fa-envelope"></i>
                 </span>
               </div>
-            </div>
+              @if(flashMessages.has('errors.email'))
+              <p class="notification is-danger m-1">
+                <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                {{ flashMessages.get('errors.email') || '' }}
+              </p>
+              @end
+            </div>  --}}
             <div class="field">
               <label for="" class="label">Password</label>
               <div class="control has-icons-left">
-                <input type="password" name="password" placeholder="*******" class="input" required>
+                <input type="password" name="password" placeholder="*******" class="input" value="{{ flashMessages.get('password') || '' }}" required>
                 <span class="icon is-small is-left">
                   <i class="fa fa-lock"></i>
                 </span>
               </div>
+              @if(flashMessages.has('errors.password'))
+              <p class="notification is-danger is-light m-1">
+                <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                {{ flashMessages.get('errors.password') || '' }}
+              </p>
+              @end
             </div>
-           
+            
             <div class="field">
               <button class="button is-success">
                 Register

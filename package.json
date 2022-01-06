@@ -27,6 +27,7 @@
     "@adonisjs/core": "^5.4.0",
     "@adonisjs/i18n": "^1.5.2",
     "@adonisjs/lucid": "^16.2.1",
+    "@adonisjs/mail": "^7.2.4",
     "@adonisjs/repl": "^3.1.6",
     "@adonisjs/session": "^6.1.2",
     "@adonisjs/shield": "^7.0.6",
@@ -35,6 +36,7 @@
     "luxon": "^2.0.2",
     "mysql": "^2.18.1",
     "phc-argon2": "^1.1.2",
+    "phc-bcrypt": "^1.0.7",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.20"

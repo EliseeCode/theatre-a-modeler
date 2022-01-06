@@ -9,25 +9,37 @@
         <div class="container">
           <div class="columns is-centered">
             <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-              <form class="box" action="{{ route('auth.login') }}" method="POST">
+              <form class="box" method="POST">
                 {{ csrfField() }}
                 <div class="field">
-                  <label for="" class="label">Email</label>
+                  <label for="" class="label">Username</label>
                   <div class="control has-icons-left">
-                    <input type="email" name="email" placeholder="e.g. bobsmith@gmail.com" class="input" required>
+                    <input type="text" name="username" placeholder="e.g. bob" class="input">
                     <span class="icon is-small is-left">
-                      <i class="fa fa-envelope"></i>
+                      <i class="fa fa-user"></i>
                     </span>
                   </div>
+                  @if(flashMessages.has('errors.username'))
+                  <p class="notification is-danger">
+                    <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                    {{ flashMessages.get('errors.username') || '' }}
+                  </p>
+                  @end
                 </div>
                 <div class="field">
                   <label for="" class="label">Password</label>
                   <div class="control has-icons-left">
-                    <input type="password" name="password" placeholder="*******" class="input" required>
+                    <input type="password" name="password" placeholder="*******" class="input">
                     <span class="icon is-small is-left">
                       <i class="fa fa-lock"></i>
                     </span>
                   </div>
+                  @if(flashMessages.has('errors.password'))
+                  <p class="notification is-danger">
+                    <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                    {{ flashMessages.get('errors.password') || '' }}
+                  </p>
+                  @end
                 </div>
                 <div class="field">
                   <label for="" class="checkbox">
@@ -35,12 +47,23 @@
                    Remember me
                   </label>
                 </div>
+                @if(flashMessages.has('errors.login'))
+                <p class="notification is-danger">
+                  <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                  {{ flashMessages.get('errors.login') || '' }}
+                </p>
+                @end
                 <div class="field">
-                  <button class="button is-success">
-                    Login
-                  </button>
+                  <input type="submit" class="button is-success" formaction="{{ route('auth.login') }}" value="Login">
+                </div>
+                <div class="field">
+                <input type="submit" class="link" formaction="/auth/recovery" value="Password forgotten">
+                </div>
+                <div class="field">
+                  <input type="submit" class="link" formaction="/usernameForgotten" value="username forgotten">
                 </div>
               </form>
+              {{inspect(flashMessages)}}
             </div>
           </div>
         </div>

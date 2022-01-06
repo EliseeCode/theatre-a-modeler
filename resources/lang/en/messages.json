@@ -5,7 +5,8 @@
   "languages": {
     "en": "English",
     "fr": "French",
-    "es": "Spanish"
+    "es": "Spanish",
+    "tr": "Turkish"
   },
   "homepage": {
     "title": "A fully featured web framework for Node.js",

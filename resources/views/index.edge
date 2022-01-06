@@ -193,18 +193,14 @@ left:0;
             </a>
 
             <div class="dropdown" x-show="open">
-              @each(locale in getSupportedLocales())
-                @if(locale !== i18n.locale)
-                  <form
-                    method="POST"
-                    action="{{ route('language.update', [locale]) }}"
-                  >
-                    <button type="submit">
-                      {{ t(`messages.languages.${locale}`) }} ({{ locale }})
-                    </button>
-                  </form>
+              <form method="POST">
+                {{ csrfField() }}
+                @each(locale in getSupportedLocales())
+                  @if(locale !== i18n.locale)
+                      <input type="submit" formaction="{{ route('language.update', [locale]) }}" value="{{ t(`messages.languages.${locale}`) }} ({{ locale }})">
+                  @end
                 @end
-              @end
+              </form>
             </div>
           </div>
 

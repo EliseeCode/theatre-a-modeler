@@ -1,0 +1,45 @@
+@layout('layouts/master')
+
+@section('content')
+   
+  
+    <section class="hero is-primary is-fullheight">
+      
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+              <h1 class="title">Recover account for {{username}}</h1>
+              <form class="box" action="/checkRecoveryMethod" method="POST">
+                {{ csrfField() }}
+                <div class="field">
+                  <label for="" class="label">username</label>
+                  <div class="control has-icons-left">
+                    <input type="text" name="username" placeholder="your username" class="input" value="{{username || ''}}" required>
+                    <span class="icon is-small is-left">
+                      <i class="fa fa-user"></i>
+                    </span>
+                  </div>
+                  @if(flashMessages.has('errors.username'))
+                  <p class="notification is-danger">
+                    <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                    {{ flashMessages.get('errors.username') || '' }}
+                  </p>
+                  @end
+                </div>
+               
+                <div class="field">
+                  <button class="button is-success">
+                    Recover account
+                  </button>
+                </div>
+              </form>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+  
+@endsection
