@@ -17,19 +17,19 @@
 | import './routes/customer''
 |
 */
-import I18n from '@ioc:Adonis/Addons/I18n'
+//import I18n from '@ioc:Adonis/Addons/I18n'
 import Route from '@ioc:Adonis/Core/Route'
 
 
-Route.post('language/:locale', async ({ session, response, params }) => {
-  /**
-   * Only update locale when it is part of the supportedLocales
-   */
-  if (I18n.supportedLocales().includes(params.locale)) {
-    session.put('locale', params.locale)
-  }
-  response.redirect().back()
-}).as('language.update')
+// Route.post('language/:locale', async ({ session, response, params }) => {
+//   /**
+//    * Only update locale when it is part of the supportedLocales
+//    */
+//   if (I18n.supportedLocales().includes(params.locale)) {
+//     session.put('locale', params.locale)
+//   }
+//   response.redirect().back()
+// }).as('language.update')
 
 Route.on('/').render('index');
 //Route.get('/test',async({request})=>{return {domaine:request.subdomains(),hostname:request.hostname(),host:request.host(),prot:request.protocol()}});
@@ -39,20 +39,21 @@ Route.resource('formation','FormationsController').middleware({
   store: ['auth'],
   destroy: ['auth'],
 })
-Route.resource('users','UsersController').middleware({  
-})
-Route.resource('classes','ClassesController');
-Route.post('/user/:id/admin','UsersController.giveAdminRole');
-Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
+// Route.resource('users','UsersController').middleware({  
+// })
+// Route.resource('classes','ClassesController');
+// Route.post('/user/:id/admin','UsersController.giveAdminRole');
+// Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
 
 
 Route.get('/auth/recovery',async({ view }) => {
   return view.render('auth/recovery')
 })
-Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
-Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
-Route.post('/checkRecoveryMethod', 'AuthController.checkRecoveryMethod');
-Route.get('/verifyResetPassword/:username/', 'AuthController.verifyResetPassword');
+//Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
+// Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
+Route.post('/recoverUsername', 'AuthController.recoverUsername');
+Route.post('/recoverPassword', 'AuthController.recoverPassword');
+// Route.get('/verifyResetPassword/:username/', 'AuthController.verifyResetPassword');
 
 Route.get('/logout', 'AuthController.logout').as('auth.logout')
 Route.get('/profile','AuthController.profile').middleware("auth");
@@ -65,10 +66,11 @@ Route.get('/login',async({ response, view,auth }) => {
     response.redirect("/formation");
   }
 }).middleware('silentAuth').as('login');
+
 Route.post('/login', 'AuthController.login').as('auth.login')
 
 
-Route.get('/register',async({ view }) => {
-  return view.render('auth/register')
-})
+// Route.get('/register',async({ view }) => {
+//   return view.render('auth/login')
+// })
 Route.post('/register', 'AuthController.register').as('auth.register')

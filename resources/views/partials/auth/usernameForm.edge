@@ -1,0 +1,30 @@
+<form class="box" action="/recoverPassword" method="POST">
+    {{ csrfField() }}
+    <div class="field">
+      <label for="" class="label">Identifiant</label>
+      <div class="control has-icons-left">
+        <input type="text" name="username" placeholder="votre identifiant" class="input" value="{{username || ''}}" required>
+        <span class="icon is-small is-left">
+          <i class="fa fa-user"></i>
+        </span>
+      </div>
+      @if(flashMessages.has('errors.username'))
+      <p class="notification is-danger">
+        <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+        {{ flashMessages.get('errors.username') || '' }}
+      </p>
+      @end
+      @if(flashMessages.has('message'))
+      <p class="notification">
+        <span class="info" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+        {{ flashMessages.get('message') || '' }}
+      </p>
+      @end
+    </div>
+   
+    <div class="field">
+      <button class="button is-success">
+        Récuppérer le mot de passe
+      </button>
+    </div>
+  </form>

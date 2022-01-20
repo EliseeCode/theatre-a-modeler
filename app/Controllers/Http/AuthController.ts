@@ -9,10 +9,11 @@ import Route from '@ioc:Adonis/Core/Route'
 import Env from '@ioc:Adonis/Core/Env'
 import {newUserSchema} from 'App/Schemas/newUserSchema'
 import View from "@ioc:Adonis/Core/View";
+import authConfig from "Config/auth";
 
 export default class AuthController {
 
-  public async register({ request,response }: HttpContextContract) {
+  public async register({ view,auth, request }: HttpContextContract) {
     
     const payload=await request.validate({
       schema:newUserSchema,
@@ -23,8 +24,9 @@ export default class AuthController {
       }
     });
     const user = await User.create(payload);
+    auth.login(user);
     Logger.info("user created");
-    return response.json({user});
+    return view.render("app/index",{user});
   }
 
 
@@ -59,21 +61,24 @@ export default class AuthController {
       return view.render("errors/unauthorized");
   }
 
-  public async checkRecoveryMethod({ request, auth,response,view }: HttpContextContract) {
+  public async recoverPassword({ session,response, request,view }: HttpContextContract) {
     const username = request.input("username");
     if(username==null){return view.render('auth/recovery');}
 
     const user = await User.findBy("username",username);
     if(user==null){
-      return "there is no account with that username. Are you sure you have an account?";
+      session.responseFlashMessages.set('errors.username',"Il n'y a pas de compte avec cet identifiant.");
+      response.redirect().back();
+      return;
     }
+
     if(user.email!=null){
       const absolutePathPrefix=request.protocol()+"://"+request.host();
       const username=user.username;
       const signedUrlRecoveryLogin=Route.builder()
                                           .params({username})
                                           .prefixUrl(absolutePathPrefix)
-                                          .makeSigned('loginWithSignedUrl');  
+                                          .makeSigned('loginWithSignedUrl',{ expiresIn: '30m' });  
       Env.get('NODE_ENV');
       const senderEmail = process.env.SENDEREMAIL || "";
       await Mail.send((message) => {
@@ -82,20 +87,55 @@ export default class AuthController {
           .to(user.email)
           .subject('Recover Account!')
           .htmlView('emails/recoveryLogin', { username: user.username,signedUrlRecoveryLogin})
-      })
-      return "Please click in the link sent by e-mail to your recovery electronic address :"+user.email;
+      });
+      session.responseFlashMessages.set('message',"un mail vous a été envoyé pour vous connecter :"+user.email+"<br/>"+signedUrlRecoveryLogin);
+      response.redirect().back();
+      return;
     }
     else{
-      return "there is no recovery methode for "+username+". We can't do anything for you.";
+      session.responseFlashMessages.set('errors.username',"Il n'y a pas d'adresse mail associé à l'identifiant : "+username);
+      response.redirect().back();
+      return;
     }
   }
-    //response.redirect().back();
-  
 
-  
+  public async recoverUsername({ session, request, auth,response,view }: HttpContextContract) {
+    const email = request.input("email");
+    if(email==null){return response.redirect().back();}
 
-  
+    //const users = await User.findMany("email",email);
+    const users= await User.query()
+      .from('users')
+      .where('email', email)
+      .select('username');
 
+    if(users.length==0){
+      session.responseFlashMessages.set('errors.username',"Il n'y a pas de compte associé avec l'adresse mail : "+email);
+      response.redirect().back();
+      return;
+    }
+    if(email!=null){ 
+      Env.get('NODE_ENV');
+      const senderEmail = process.env.SENDEREMAIL || "";
+      await Mail.send((message) => {
+        message
+          .from(senderEmail)
+          .to(email)
+          .subject('Récupération du/des identifiants!')
+          .htmlView('emails/recoveryUsername', { users })
+      })
+      session.responseFlashMessages.set('message',"Un mail vous a été envoyé avec la liste des identifiants associés à :"+email);
+      response.redirect().back();
+      return;
+    }
+    else{
+      session.responseFlashMessages.set('errors.email',"merci de renseigner une adresse mail valide");
+      response.redirect().back();
+      return;
+    }
+  }
+  
+  
   public async logout({ auth,response }: HttpContextContract) {
     await auth.use('web').logout();
     Logger.info("logout");
