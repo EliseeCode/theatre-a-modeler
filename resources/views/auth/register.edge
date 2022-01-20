@@ -1,0 +1,13 @@
+@layout('layouts/auth')
+
+@section('content')   
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-title">Enregistrement</div>
+      </div>
+      <div class="card-content">
+        @include('partials/auth/registerForm')
+        <p>Vous avez déjà un compte ? <a href="/login">cliquez ici.</a></p>
+      </div>  
+    </div>
+@endsection

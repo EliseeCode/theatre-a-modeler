@@ -1,0 +1,16 @@
+@layout('layouts/auth')
+
+@section('content')   
+<div class="card">
+  <div class="card-header">
+    <div class="card-header-title">Récupération des identifiants</div>
+  </div>
+  <div class="card-content">
+    @include('partials/auth/emailForm')
+  </div>  
+  <footer class="card-footer">
+    <a href="/login" class="card-footer-item">Connexion</a>
+    <a href="/register" class="card-footer-item">Enregistrement</a>
+  </footer>  
+</div>
+@endsection

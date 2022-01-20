@@ -1,35 +1,8 @@
 <form action="{{ route('auth.register') }}" method="POST">
     {{ csrfField() }}
-    <div class="field">
-      <label for="" class="label">Identifiant</label>
-      <div class="control has-icons-left">
-        <input type="text" name="username" placeholder="e.g. bob" class="input" value="{{ flashMessages.get('username') || '' }}" required>
-        <span class="icon is-small is-left">
-          <i class="fa fa-user"></i>
-        </span>
-      </div>
-      @if(flashMessages.has('errors.username'))
-      <p class="notification is-danger is-light m-1">
-        <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
-        {{ flashMessages.get('errors.username') || '' }}
-      </p>
-      @end
-    </div>
-    <div class="field">
-      <label for="" class="label">Mot de passe</label>
-      <div class="control has-icons-left">
-        <input type="password" name="password" placeholder="*******" class="input" value="{{ flashMessages.get('password') || '' }}" required>
-        <span class="icon is-small is-left">
-          <i class="fa fa-lock"></i>
-        </span>
-      </div>
-      @if(flashMessages.has('errors.password'))
-      <p class="notification is-danger is-light m-1">
-        <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
-        {{ flashMessages.get('errors.password') || '' }}
-      </p>
-      @end
-    </div>
+    @include('partials/inputs/usernameInput')
+    @include('partials/inputs/passwordInput')
+    
     
     <div class="field">
       <button class="button is-success">

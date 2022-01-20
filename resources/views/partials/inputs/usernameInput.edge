@@ -1,0 +1,15 @@
+<div class="field">
+    <label for="" class="label">Pseudo</label>
+    <div class="control has-icons-left">
+      <input type="text" name="username" placeholder="votre identifiant" class="input" value="{{username || ''}}" required>
+      <span class="icon is-small is-left">
+        <i class="fa fa-user"></i>
+      </span>
+    </div>
+    @if(flashMessages.has('errors.username'))
+    <p class="notification is-danger">
+      <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+      {{ flashMessages.get('errors.username') || '' }}
+    </p>
+    @end
+</div>

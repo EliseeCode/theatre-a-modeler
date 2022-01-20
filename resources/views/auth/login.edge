@@ -1,53 +1,28 @@
 @layout('layouts/auth')
 
-@section('content')   
-<style>
-.tab-content{
-  display: none;
-}
-:target
-{
-  display: block;
-}
-</style> 
-  <div>
-    <div class="tabs is-centered is-boxed m-0">
-      <ul>
-        <li class="" data-tab="login"><a href='#login'>Connexion</a></li>
-        <li data-tab="register"><a href='#register'>Enregistrement</a></li>
-      </ul>
-    </div>
+@section('content')  
+  <div style="max-width:350px;">
     <div class="card">
+      <div class="card-header">
+        <div class="card-header-title">Connexion</div>
+      </div>
       <div class="card-content">
-        <div id="login" class="tab-content" data-content="login">
-          @include('partials/auth/loginForm')
-        </div>
-        <div id="register" class="tab-content" data-content="register">
-          @include('partials/auth/registerForm')
-        </div>
+        @include('partials/auth/loginForm')
+        <p>Vous n'avez pas encore de compte ? <a href="/register">cliquez ici.</a></p>
       </div>  
     </div>
-  </div>   
-
-
-<script type="text/javascript">
-  if (document.location.hash == "" || document.location.hash == "#")
-    document.location.hash = "#login";
-  else{
-    tab=document.location.hash.substr(1);
-    $('.tabs li').removeClass('is-active');
-    $('.tab-content').removeClass('is-active');
-    $('.tab-content[data-content="' + tab + '"]').addClass('is-active');
-    $('.tabs li[data-tab="' + tab + '"]').addClass('is-active');
-  } 
-
-  $(document).ready(function() {
-  $('.tabs li').on('click', function() {
-    $('.tabs li').removeClass('is-active');
-    $(this).addClass('is-active');
-  });
-});
-</script>
-  
-  
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <a href="/recoverPassword" class="link">Mot de passe oublié</a>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <a href="/recoverUsername" class="link">Identifiant oublié</a>
+        </div>
+      </div>
+    </div>
+  </div>
+    
 @endsection

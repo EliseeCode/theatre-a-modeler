@@ -46,13 +46,15 @@ Route.resource('formation','FormationsController').middleware({
 // Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
 
 
-Route.get('/auth/recovery',async({ view }) => {
-  return view.render('auth/recovery')
-})
+// Route.get('/auth/recovery',async({ view }) => {
+//   return view.render('auth/recovery')
+// })
 //Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
 // Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
 Route.post('/recoverUsername', 'AuthController.recoverUsername');
 Route.post('/recoverPassword', 'AuthController.recoverPassword');
+Route.get('/recoverUsername', async({ view }) => {return view.render('auth/recoverUsername');});
+Route.get('/recoverPassword', async({ view }) => {return view.render('auth/recoverPassword');});
 // Route.get('/verifyResetPassword/:username/', 'AuthController.verifyResetPassword');
 
 Route.get('/logout', 'AuthController.logout').as('auth.logout')
@@ -65,12 +67,14 @@ Route.get('/login',async({ response, view,auth }) => {
   else{
     response.redirect("/formation");
   }
-}).middleware('silentAuth').as('login');
+}).middleware('silentAuth');
+Route.get('/register',async({ response, view,auth }) => {
+  if(auth.isGuest){
+  return view.render('auth/register')}
+  else{
+    response.redirect("/formation");
+  }
+}).middleware('silentAuth');
 
 Route.post('/login', 'AuthController.login').as('auth.login')
-
-
-// Route.get('/register',async({ view }) => {
-//   return view.render('auth/login')
-// })
 Route.post('/register', 'AuthController.register').as('auth.register')

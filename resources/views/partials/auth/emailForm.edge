@@ -1,29 +1,9 @@
-<form class="box" action="/recoverUsername" method="POST">
+<form action="/recoverUsername" method="POST">
     {{ csrfField() }}
+    @include('partials/inputs/emailInput')
+    
     <div class="field">
-      <label for="" class="label">email</label>
-      <div class="control has-icons-left">
-        <input type="text" name="email" placeholder="Votre adresse electronique" class="input" value="{{email || ''}}" required>
-        <span class="icon is-small is-left">
-          <i class="fa fa-email"></i>
-        </span>
-      </div>
-      @if(flashMessages.has('errors.email'))
-      <p class="notification is-danger">
-        <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
-        {{ flashMessages.get('errors.email') || '' }}
-      </p>
-      @end
-      @if(flashMessages.has('message'))
-      <p class="notification">
-        <span class="info" onclick="$(this).closest('.notification').fadeOut(300)"></span>
-        {{ flashMessages.get('message') || '' }}
-      </p>
-      @end
-    </div>
-   
-    <div class="field">
-      <button class="button is-success">
+      <button class="button is-primary">
         Récupérer mes identifiants
       </button>
     </div>
