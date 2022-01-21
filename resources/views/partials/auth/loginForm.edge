@@ -1,14 +1,14 @@
 <form method="POST" class="mb-3">
     {{ csrfField() }}
-    @include('partials/inputs/usernameInput')
+    @include('partials/inputs/loginIdInput')
     @include('partials/inputs/passwordInput')
 
-    <div class="field">
+    <!--  <div class="field">
       <label for="" class="checkbox">
-        <input type="checkbox">
+        <input type="checkbox" name="remember">
        Remember me
       </label>
-    </div>
+    </div>  -->
     @if(flashMessages.has('errors.login'))
     <p class="notification is-danger">
       <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>

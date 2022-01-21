@@ -1,11 +1,10 @@
 <form action="{{ route('auth.register') }}" method="POST">
     {{ csrfField() }}
-    @include('partials/inputs/usernameInput')
+    @include('partials/inputs/emailInput')
     @include('partials/inputs/passwordInput')
     
-    
     <div class="field">
-      <button class="button is-success">
+      <button class="button is-primary">
         Valider
       </button>
     </div>

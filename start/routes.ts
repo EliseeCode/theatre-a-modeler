@@ -65,14 +65,14 @@ Route.get('/login',async({ response, view,auth }) => {
   if(auth.isGuest){
   return view.render('auth/login')}
   else{
-    response.redirect("/formation");
+    response.redirect("/profile");
   }
 }).middleware('silentAuth');
 Route.get('/register',async({ response, view,auth }) => {
   if(auth.isGuest){
   return view.render('auth/register')}
   else{
-    response.redirect("/formation");
+    response.redirect("/profile");
   }
 }).middleware('silentAuth');
 

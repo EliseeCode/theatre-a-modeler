@@ -8,6 +8,7 @@ import Mail from '@ioc:Adonis/Addons/Mail'
 import Route from '@ioc:Adonis/Core/Route'
 import Env from '@ioc:Adonis/Core/Env'
 import {newUserSchema} from 'App/Schemas/newUserSchema'
+import {loginUserSchema} from 'App/Schemas/loginUserSchema'
 import View from "@ioc:Adonis/Core/View";
 import authConfig from "Config/auth";
 
@@ -18,27 +19,39 @@ export default class AuthController {
     const payload=await request.validate({
       schema:newUserSchema,
       messages:{
-        'name.required':'Un nom ou pseudo est nécessaire',
-        'name.maxLength':'Le nom est trop long',
+        'email.required':'Une adresse email est nécessaire',
         'password.minLength':'Mot de passe trop court'
       }
     });
     const user = await User.create(payload);
     auth.login(user);
     Logger.info("user created");
-    return view.render("app/index",{user});
+    return view.render("/index",{user});
   }
 
 
 
   public async login({ request, auth,response,session }: HttpContextContract) {
-    const username = request.input("username");
-    const password = request.input("password");
+    
+
+    const payload=await request.validate({
+      schema:loginUserSchema,
+      messages:{
+        'loginId.required':'Un identifiant est nécessaire',
+        'password.minLength':'Mot de passe trop court'
+      }
+    });
+    
+    const loginId = payload.loginId;
+    const password = payload.password;
+    const remember = payload.remember;
+    
     try{
-    await auth.use("web").attempt(username,password);
+    await auth.use("web").attempt(loginId,password,remember);
+    
     }
     catch{
-      session.responseFlashMessages.set('errors.login',"Wrong username or password");
+      session.responseFlashMessages.set('errors.login',"L'identifiant ou le mot de passe ne sont pas correct");
       response.redirect().back();
     }
     //return token.toJSON();
