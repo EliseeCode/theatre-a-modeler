@@ -8,6 +8,9 @@ export default class Character extends BaseModel {
   @column()
   public name: string
 
+  @column()
+  public gender: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

@@ -18,7 +18,7 @@ export default class Group extends BaseModel {
   public lang_id: number
 
   @column()
-  public cretor_id: number
+  public creator_id: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

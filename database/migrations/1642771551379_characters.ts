@@ -7,7 +7,7 @@ export default class Characters extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('name',255).nullable()
-      table.enum("gender",["male","female","other"]).nullable();
+      table.string("gender").nullable();
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
