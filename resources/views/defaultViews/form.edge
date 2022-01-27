@@ -1,0 +1,111 @@
+@layout('layouts/master')
+
+@section('content')
+<h1>Add a data</h1>
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+            <form class="box" action="{{ route('datasController.store') }}" method="POST">
+              {{ csrfField() }}
+              <div class="field">
+                <label class="label">Nom de la data</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input" type="text" placeholder="Super data" value="{{ flashMessages.get('title') || '' }}" name="title">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                  @if(flashMessages.has('errors.title'))
+                  <p class="notification is-danger">
+                    <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                    {{ flashMessages.get('errors.title') || '' }}
+                  </p>
+                  @end
+                </div>
+              </div>
+              
+              <div class="field">
+                <label class="label">Description</label>
+                <div class="control has-icons-left has-icons-right">
+                  <textarea class="textarea" placeholder="Cette data est sur ...." name="description">{{ flashMessages.get('description') || '' }}</textarea>
+                  
+                  @if(flashMessages.has('errors.description'))
+                  <p class="notification is-danger">
+                  <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+                  {{ flashMessages.get('errors.description') || '' }}
+                  </p>
+                  @end
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Image Url</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input" type="text" placeholder="http://votreImage.png" value="" name="imageUrl">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-image"></i>
+                  </span>
+                  
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Lien pour plus d'indatas</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input is-link" type="text" placeholder="www.nds.k12.tr/datas" value="" name="indataUrl">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-link"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Lien pour s'inscrire</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input" type="text" placeholder="www.nds.k12.tr/data/14/inscription" value="" name="inscriptionUrl">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-link"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Date de la data</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input" type="date" name="dataStartingDate">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-calendar-alt"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Langue dans laquelle la data est dispensée</label>
+                <div class="select control has-icons-left has-icons-right">
+                  <select name="dataLang">
+                    <option value="fr">Français</option>
+                    <option value="tr">Turque</option>
+                    <option value="en">Anglais</option>
+                  </select>
+                  
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Modalité</label>
+                <div class="select control has-icons-left has-icons-right">
+                  <select name="modality">
+                    <option value="presence">Présentiel</option>
+                    <option value="online">Online</option>
+                  </select>  
+                  
+                </div>
+              </div>
+
+              
+          
+              <input type="submit" value="Submit" class="button is-primary">
+            </form>
+          </div>
+        </div>
+      </div>        
+@endsection      

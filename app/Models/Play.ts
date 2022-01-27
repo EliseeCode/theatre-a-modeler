@@ -5,19 +5,19 @@ export default class Play extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({meta:{type:'string'}})
   public name: string
 
-  @column()
+  @column({meta:{type:'string'}})
   public description: string
 
-  @column()
+  @column({meta:{type:'string'}})
   public status: string
 
-  @column()
+  @column({meta:{type:'number'}})
   public lang_id: number
 
-  @column()
+  @column({meta:{type:'number'}})
   public creator_id: number
 
   @column.dateTime({ autoCreate: true })

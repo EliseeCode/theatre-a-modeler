@@ -5,10 +5,10 @@ export default class Character extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({meta:{type:'string'}})
   public name: string
 
-  @column()
+  @column({meta:{type:'string'}})
   public gender: string
 
   @column.dateTime({ autoCreate: true })

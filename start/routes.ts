@@ -49,6 +49,9 @@ Route.resource('formation','FormationsController').middleware({
 // Route.get('/auth/recovery',async({ view }) => {
 //   return view.render('auth/recovery')
 // })
+Route.resource('characters','CharactersController');
+Route.resource('plays','PlaysController');
+
 //Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
 // Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
 Route.post('/recoverUsername', 'AuthController.recoverUsername');
