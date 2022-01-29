@@ -46,6 +46,7 @@ Route.resource('formation','FormationsController').middleware({
 // Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
 
 
+
 // Route.get('/auth/recovery',async({ view }) => {
 //   return view.render('auth/recovery')
 // })
@@ -81,3 +82,5 @@ Route.get('/register',async({ response, view,auth }) => {
 
 Route.post('/login', 'AuthController.login').as('auth.login')
 Route.post('/register', 'AuthController.register').as('auth.register')
+
+Route.get('/:objet','DefaultsController.index');

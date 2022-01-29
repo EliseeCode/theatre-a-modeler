@@ -6,9 +6,8 @@ export default class PlaysController {
   public dataName='plays';
 
   public async index ({view}: HttpContextContract) {
-    const datas=await Play.all();
-    const columnsDefinitions=Play.$columnsDefinitions;
-    return view.render("defaultViews/index",{columnsDefinitions,datas,dataName:this.dataName});
+    const plays=await (await Play.query().preload('scenes')).map((e)=>e.serialize());
+    return view.render("play/index",{plays});
   }
 
   public async create ({view}: HttpContextContract) {

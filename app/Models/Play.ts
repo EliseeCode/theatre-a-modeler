@@ -8,7 +8,10 @@ import {
   BelongsTo,
   manyToMany,
   ManyToMany,
+  hasMany,
+  HasMany
 } from "@ioc:Adonis/Lucid/Orm";
+import Scene from "./Scene";
 
 export default class Play extends BaseModel {
   @column({ isPrimary: true })
@@ -31,6 +34,9 @@ export default class Play extends BaseModel {
 
   @manyToMany(() => Group)
   public groups: ManyToMany<typeof Group>;
+
+  @hasMany(() => Scene)
+  public scenes: HasMany<typeof Scene>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

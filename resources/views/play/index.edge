@@ -1,0 +1,39 @@
+@layout('layouts/master')
+
+@section('content')
+  <div class="container">
+    <h1 class="title">Plays</h1>
+      
+          @each((play,index) in plays)
+          <div class="block tile" >
+            <div class="card play_item block">
+                <header class="card-header">
+                <p class="card-header-title">
+                    {{play.name}}
+                </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <div class="block description">
+                        {{play.description}}  
+                        </div>
+                        <div class="block">
+                            @each(scene in play.scenes)
+                            <a href={{ 'scene/'+scene.id }} class="button is-fullwidth">
+                            {{scene.name}}
+                            </a>
+                            @endeach
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+          @else
+            
+            <p>Pas encore de pièce de théâtre</p>
+           
+          @endeach
+        </div>
+
+@endsection

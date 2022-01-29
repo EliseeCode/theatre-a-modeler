@@ -7,8 +7,8 @@ export default class CharactersController {
 
   public async index ({view}: HttpContextContract) {
     const datas=await Character.all();
-    const model=Character.$columnsDefinitions;
-    return view.render("defaultViews/index",{model,datas,dataName:this.dataName});
+    const columnsDefinitions=Character.$columnsDefinitions;
+    return view.render("defaultViews/index",{columnsDefinitions,datas,dataName:this.dataName});
   }
 
   public async create ({view}: HttpContextContract) {

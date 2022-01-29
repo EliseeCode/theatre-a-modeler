@@ -22,11 +22,14 @@ export default class Scene extends BaseModel {
   @column()
   public lang_id: number;
 
+  @column()
+  public playId: number;
+
   @belongsTo(() => User)
   public creator_id: BelongsTo<typeof User>;
 
-  @belongsTo(() => Play)
-  public play_id: BelongsTo<typeof Play>;
+  // @belongsTo(() => Play)
+  // public play_id: BelongsTo<typeof Play>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

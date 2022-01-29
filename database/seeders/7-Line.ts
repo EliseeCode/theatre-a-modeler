@@ -28,7 +28,7 @@ export default class LineSeeder extends BaseSeeder {
       },
       {
         text: 'Dont know',
-        position : 0,
+        position : 1,
         creator_id:1,
         scene_id:4,
         character_id:1
