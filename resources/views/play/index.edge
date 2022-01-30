@@ -3,10 +3,11 @@
 @section('content')
   <div class="container">
     <h1 class="title">Plays</h1>
-      
+    <div class="columns is-multiline is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd">
           @each((play,index) in plays)
-          <div class="block tile" >
-            <div class="card play_item block">
+          @each(k in [1,2,3,4,5])
+          <div class="column">
+            <div style="height:100%;" class="card play_item">
                 <header class="card-header">
                 <p class="card-header-title">
                     {{play.name}}
@@ -29,11 +30,16 @@
                 </div>
             </div>
         </div>
+       @endeach
+
+
+        
           @else
             
             <p>Pas encore de pièce de théâtre</p>
            
           @endeach
         </div>
+    </div>
 
 @endsection
