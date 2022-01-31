@@ -28,8 +28,11 @@ export default class Group extends BaseModel {
   @column()
   public langId: number;
 
-  @belongsTo(() => User)
-  public creatorId: BelongsTo<typeof User>;
+  @column()
+  public creatorId: number;
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  public creator: BelongsTo<typeof User>;
 
   @manyToMany(() => User)
   public users: ManyToMany<typeof User>;

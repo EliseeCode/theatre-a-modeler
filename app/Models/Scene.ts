@@ -23,10 +23,16 @@ export default class Scene extends BaseModel {
   public langId: number;
 
   @column()
+  public creator_id: number;
+
+  @column()
   public playId: number;
 
-  @belongsTo(() => User)
-  public creatorId: BelongsTo<typeof User>;
+  @belongsTo(() => Play, { localKey: "id", foreignKey: "play_id" })
+  public play: BelongsTo<typeof Play>;
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  public creator: BelongsTo<typeof User>;
 
   // @belongsTo(() => Play)
   // public playId: BelongsTo<typeof Play>;

@@ -17,14 +17,23 @@ export default class Line extends BaseModel {
   @column()
   public status: string;
 
-  @belongsTo(() => User)
-  public creatorId: BelongsTo<typeof User>;
+  @column()
+  public creatorId: number;
 
-  @belongsTo(() => Scene)
-  public sceneId: BelongsTo<typeof Scene>;
+  @column()
+  public sceneId: number;
 
-  @belongsTo(() => Character)
-  public characterId: BelongsTo<typeof Character>;
+  @column()
+  public characterId: number;
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  public creator: BelongsTo<typeof User>;
+
+  @belongsTo(() => Scene, { localKey: "id", foreignKey: "scene_id" })
+  public scene: BelongsTo<typeof Scene>;
+
+  @belongsTo(() => Character, { localKey: "id", foreignKey: "character_id" })
+  public character: BelongsTo<typeof Character>;
 
   @column()
   public langId: number;

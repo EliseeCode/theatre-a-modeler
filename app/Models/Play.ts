@@ -29,8 +29,14 @@ export default class Play extends BaseModel {
   @column({ meta: { type: "number" } })
   public langId: number;
 
-  @belongsTo(() => User)
-  public creatorId: BelongsTo<typeof User>;
+  @column({ meta: { type: "number" } })
+  public creatorId: number;
+
+  @column({ meta: { type: "number" } })
+  public sceneId: number;
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  public creator: BelongsTo<typeof User>;
 
   @manyToMany(() => Group)
   public groups: ManyToMany<typeof Group>;
