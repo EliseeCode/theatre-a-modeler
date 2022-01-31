@@ -20,16 +20,16 @@ export default class Scene extends BaseModel {
   public status: string;
 
   @column()
-  public lang_id: number;
+  public langId: number;
 
   @column()
   public playId: number;
 
   @belongsTo(() => User)
-  public creator_id: BelongsTo<typeof User>;
+  public creatorId: BelongsTo<typeof User>;
 
   // @belongsTo(() => Play)
-  // public play_id: BelongsTo<typeof Play>;
+  // public playId: BelongsTo<typeof Play>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

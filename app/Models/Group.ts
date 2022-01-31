@@ -26,10 +26,10 @@ export default class Group extends BaseModel {
   public status: string;
 
   @column()
-  public lang_id: number;
+  public langId: number;
 
   @belongsTo(() => User)
-  public creator_id: BelongsTo<typeof User>;
+  public creatorId: BelongsTo<typeof User>;
 
   @manyToMany(() => User)
   public users: ManyToMany<typeof User>;

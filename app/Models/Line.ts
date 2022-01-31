@@ -18,16 +18,16 @@ export default class Line extends BaseModel {
   public status: string;
 
   @belongsTo(() => User)
-  public creator_id: BelongsTo<typeof User>;
+  public creatorId: BelongsTo<typeof User>;
 
   @belongsTo(() => Scene)
-  public scene_id: BelongsTo<typeof Scene>;
+  public sceneId: BelongsTo<typeof Scene>;
 
   @belongsTo(() => Character)
-  public character_id: BelongsTo<typeof Character>;
+  public characterId: BelongsTo<typeof Character>;
 
   @column()
-  public lang_id: number;
+  public langId: number;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
