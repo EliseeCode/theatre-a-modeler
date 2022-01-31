@@ -34,10 +34,20 @@ export default class Group extends BaseModel {
   @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
   public creator: BelongsTo<typeof User>;
 
-  @manyToMany(() => User)
+  @manyToMany(() => User, {
+    localKey: "id",
+    relatedKey: "id",
+    pivotForeignKey: "group_id",
+    pivotRelatedForeignKey: "user_id",
+  })
   public users: ManyToMany<typeof User>;
 
-  @manyToMany(() => Play)
+  @manyToMany(() => Play, {
+    localKey: "id",
+    relatedKey: "id",
+    pivotForeignKey: "group_id",
+    pivotRelatedForeignKey: "play_id",
+  })
   public plays: ManyToMany<typeof Play>;
 
   @column.dateTime({ autoCreate: true })

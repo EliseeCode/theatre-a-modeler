@@ -37,7 +37,12 @@ export default class User extends BaseModel {
   @column()
   public rememberMeToken?: string;
 
-  @manyToMany(() => Group)
+  @manyToMany(() => Group, {
+    localKey: "id",
+    relatedKey: "id",
+    pivotForeignKey: "user_id",
+    pivotRelatedForeignKey: "group_id",
+  })
   public groups: ManyToMany<typeof Group>;
 
   @column.dateTime({ autoCreate: true })
