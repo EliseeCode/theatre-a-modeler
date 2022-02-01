@@ -18,6 +18,7 @@ export default class Line extends BaseModel {
   public status: string;
 
   @column()
+<<<<<<< HEAD
   public sceneId:number;
 
   @column()
@@ -33,6 +34,23 @@ export default class Line extends BaseModel {
   public scene: BelongsTo<typeof Scene>;
 
   @belongsTo(() => Character)
+=======
+  public creatorId: number;
+
+  @column()
+  public sceneId: number;
+
+  @column()
+  public characterId: number;
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  public creator: BelongsTo<typeof User>;
+
+  @belongsTo(() => Scene, { localKey: "id", foreignKey: "scene_id" })
+  public scene: BelongsTo<typeof Scene>;
+
+  @belongsTo(() => Character, { localKey: "id", foreignKey: "character_id" })
+>>>>>>> ea5f83df5451049e07a5ae8331a400e97eb50ef5
   public character: BelongsTo<typeof Character>;
 
   @column()

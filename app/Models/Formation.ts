@@ -1,39 +1,39 @@
-import { DateTime } from 'luxon'
-import { BaseModel, column, BelongsTo, belongsTo} from '@ioc:Adonis/Lucid/Orm'
-import User from './User'
+import { DateTime } from "luxon";
+import { BaseModel, column, BelongsTo, belongsTo } from "@ioc:Adonis/Lucid/Orm";
+import User from "./User";
 export default class Formation extends BaseModel {
   @column({ isPrimary: true })
-  public id: number
-  
-  @column()
-  public title: string
+  public id: number;
 
   @column()
-  public description: string
+  public title: string;
 
   @column()
-  public image_url: string | null
+  public description: string;
 
   @column()
-  public information_url: string | null
+  public imageUrl: string | null;
 
   @column()
-  public inscription_url: string | null
+  public informationUrl: string | null;
 
   @column()
-  public starting_date: Date | null
+  public inscriptionUrl: string | null;
 
   @column()
-  public finishing_date: Date | null
+  public startingDate: Date | null;
 
   @column()
-  public status: string
+  public finishingDate: Date | null;
 
   @column()
-  public lang: string
+  public status: string;
 
   @column()
-  public modality: string | null
+  public lang: string;
+
+  @column()
+  public modality: string | null;
 
   @column()
   public creatorId: number
@@ -42,10 +42,10 @@ export default class Formation extends BaseModel {
   public validatorId: number | null
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updatedAt: DateTime;
 
   @belongsTo(() => User,{localKey:'id',foreignKey: 'creatorId',})
   public creator: BelongsTo<typeof User>;
