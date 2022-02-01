@@ -11,7 +11,6 @@ import {
 } from "@ioc:Adonis/Lucid/Orm";
 
 export default class Group extends BaseModel {
-
   @column({ isPrimary: true })
   public id: number;
 
@@ -30,22 +29,22 @@ export default class Group extends BaseModel {
   @column()
   public creatorId: number;
 
-  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
   @manyToMany(() => User, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "group_id",
-    pivotRelatedForeignKey: "user_id",
+    pivotForeignKey: "groupId",
+    pivotRelatedForeignKey: "userId",
   })
   public users: ManyToMany<typeof User>;
 
   @manyToMany(() => Play, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "group_id",
-    pivotRelatedForeignKey: "play_id",
+    pivotForeignKey: "groupId",
+    pivotRelatedForeignKey: "playId",
   })
   public plays: ManyToMany<typeof Play>;
 

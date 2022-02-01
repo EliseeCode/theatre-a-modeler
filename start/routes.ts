@@ -18,8 +18,7 @@
 |
 */
 //import I18n from '@ioc:Adonis/Addons/I18n'
-import Route from '@ioc:Adonis/Core/Route'
-
+import Route from "@ioc:Adonis/Core/Route";
 
 // Route.post('language/:locale', async ({ session, response, params }) => {
 //   /**
@@ -31,56 +30,62 @@ import Route from '@ioc:Adonis/Core/Route'
 //   response.redirect().back()
 // }).as('language.update')
 
-Route.on('/').render('index');
+Route.on("/").render("index");
 //Route.get('/test',async({request})=>{return {domaine:request.subdomains(),hostname:request.hostname(),host:request.host(),prot:request.protocol()}});
 
-Route.resource('formation','FormationsController').middleware({
-  create: ['auth'],
-  store: ['auth'],
-  destroy: ['auth'],
-})
-// Route.resource('users','UsersController').middleware({  
+Route.resource("formation", "FormationsController").middleware({
+  create: ["auth"],
+  store: ["auth"],
+  destroy: ["auth"],
+});
+// Route.resource('users','UsersController').middleware({
 // })
 // Route.resource('classes','ClassesController');
 // Route.post('/user/:id/admin','UsersController.giveAdminRole');
 // Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
 
-
-
 // Route.get('/auth/recovery',async({ view }) => {
 //   return view.render('auth/recovery')
 // })
-Route.resource('plays','PlaysController');
-Route.get('play/:play_id/scene/:scene_id','ScenesController.show');
-Route.get('api/play/createNew','PlaysController.createNew');
+
+Route.resource("plays", "PlaysController");
+Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
+Route.get("api/play/createNew", "PlaysController.createNew");
 //Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
 // Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
-Route.post('/recoverUsername', 'AuthController.recoverUsername');
-Route.post('/recoverPassword', 'AuthController.recoverPassword');
-Route.get('/recoverUsername', async({ view }) => {return view.render('auth/recoverUsername');});
-Route.get('/recoverPassword', async({ view }) => {return view.render('auth/recoverPassword');});
+Route.post("/recoverUsername", "AuthController.recoverUsername");
+Route.post("/recoverPassword", "AuthController.recoverPassword");
+Route.get("/recoverUsername", async ({ view }) => {
+  return view.render("auth/recoverUsername");
+});
+Route.get("/recoverPassword", async ({ view }) => {
+  return view.render("auth/recoverPassword");
+});
 // Route.get('/verifyResetPassword/:username/', 'AuthController.verifyResetPassword');
 
-Route.get('/logout', 'AuthController.logout').as('auth.logout')
-Route.get('/profile','AuthController.profile').middleware("auth");
-Route.get('/loginWithSignedUrl/:username','AuthController.loginWithSignedUrl').as('loginWithSignedUrl');
+Route.get("/logout", "AuthController.logout").as("auth.logout");
+Route.get("/profile", "AuthController.profile").middleware("auth");
+Route.get(
+  "/loginWithSignedUrl/:username",
+  "AuthController.loginWithSignedUrl"
+).as("loginWithSignedUrl");
 
-Route.get('/login',async({ response, view,auth }) => {
-  if(auth.isGuest){
-  return view.render('auth/login')}
-  else{
+Route.get("/login", async ({ response, view, auth }) => {
+  if (auth.isGuest) {
+    return view.render("auth/login");
+  } else {
     response.redirect("/profile");
   }
-}).middleware('silentAuth');
-Route.get('/register',async({ response, view,auth }) => {
-  if(auth.isGuest){
-  return view.render('auth/register')}
-  else{
+}).middleware("silentAuth");
+Route.get("/register", async ({ response, view, auth }) => {
+  if (auth.isGuest) {
+    return view.render("auth/register");
+  } else {
     response.redirect("/profile");
   }
-}).middleware('silentAuth');
+}).middleware("silentAuth");
 
-Route.post('/login', 'AuthController.login').as('auth.login')
-Route.post('/register', 'AuthController.register').as('auth.register')
+Route.post("/login", "AuthController.login").as("auth.login");
+Route.post("/register", "AuthController.register").as("auth.register");
 
-Route.get('/:objet','DefaultsController.index');
+Route.get("/:objet", "DefaultsController.index");

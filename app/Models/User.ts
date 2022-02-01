@@ -12,7 +12,6 @@ import {
 //import Formation from "./Formation";
 import Group from "App/Models/Group";
 export default class User extends BaseModel {
-  protected tableName = "users";
   @column({ isPrimary: true })
   public id: number;
 
@@ -40,8 +39,8 @@ export default class User extends BaseModel {
   @manyToMany(() => Group, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "user_id",
-    pivotRelatedForeignKey: "group_id",
+    pivotForeignKey: "userId",
+    pivotRelatedForeignKey: "groupId",
   })
   public groups: ManyToMany<typeof Group>;
 
