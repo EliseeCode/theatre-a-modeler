@@ -3,7 +3,7 @@ import User from "App/Models/User";
 import Line from "App/Models/Line";
 import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
 
-export default class Audio extends BaseModel {
+export default class Audios extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 

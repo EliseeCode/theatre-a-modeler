@@ -49,4 +49,7 @@ export default class Formation extends BaseModel {
 
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "validatorId" })
+  public validator: BelongsTo<typeof User>;
 }

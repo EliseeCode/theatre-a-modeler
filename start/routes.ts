@@ -47,10 +47,10 @@ Route.resource("formation", "FormationsController").middleware({
 // Route.get('/auth/recovery',async({ view }) => {
 //   return view.render('auth/recovery')
 // })
-Route.resource("characters", "CharactersController");
-Route.resource("plays", "PlaysController");
-Route.resource("stage", "AudiosController");
 
+Route.resource("plays", "PlaysController");
+Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
+Route.get("api/play/createNew", "PlaysController.createNew");
 //Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
 // Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
 Route.post("/recoverUsername", "AuthController.recoverUsername");

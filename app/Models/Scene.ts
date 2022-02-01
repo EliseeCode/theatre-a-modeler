@@ -31,7 +31,7 @@ export default class Scene extends BaseModel {
   public langId: number;
 
   @column()
-  public creator_id: number;
+  public creatorId: number;
 
   @column()
   public playId: number;

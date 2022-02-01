@@ -4,7 +4,7 @@ import Character from 'App/Models/Character'
 export default class CharactersController {
 
   public dataName='characters';
-
+  
   public async index ({view}: HttpContextContract) {
     const datas=await Character.all();
     const columnsDefinitions=Character.$columnsDefinitions;
