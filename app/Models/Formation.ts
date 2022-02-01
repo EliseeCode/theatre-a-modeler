@@ -47,6 +47,6 @@ export default class Formation extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
 
-  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 }

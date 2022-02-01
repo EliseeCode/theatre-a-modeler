@@ -39,13 +39,13 @@ export default class Scene extends BaseModel {
   @column({ meta: { type: "number" } })
   public lineId: number;
 
-  @belongsTo(() => Play, { localKey: "id", foreignKey: "play_id" })
+  @belongsTo(() => Play, { localKey: "id", foreignKey: "playId" })
   public play: BelongsTo<typeof Play>;
 
-  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
-  @hasMany(() => Line, { localKey: "id", foreignKey: "scene_id" })
+  @hasMany(() => Line, { localKey: "id", foreignKey: "sceneId" })
   public lines: HasMany<typeof Line>;
 
   @column.dateTime({ autoCreate: true })

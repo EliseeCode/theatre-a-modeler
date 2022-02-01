@@ -26,13 +26,13 @@ export default class Line extends BaseModel {
   @column()
   public characterId: number;
 
-  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
-  @belongsTo(() => Scene, { localKey: "id", foreignKey: "scene_id" })
+  @belongsTo(() => Scene, { localKey: "id", foreignKey: "sceneId" })
   public scene: BelongsTo<typeof Scene>;
 
-  @belongsTo(() => Character, { localKey: "id", foreignKey: "character_id" })
+  @belongsTo(() => Character, { localKey: "id", foreignKey: "characterId" })
   public character: BelongsTo<typeof Character>;
 
   @column()

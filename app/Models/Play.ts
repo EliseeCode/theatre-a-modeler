@@ -35,18 +35,18 @@ export default class Play extends BaseModel {
   @column({ meta: { type: "number" } })
   public sceneId: number;
 
-  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
   @manyToMany(() => Group, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "play_id",
-    pivotRelatedForeignKey: "group_id",
+    pivotForeignKey: "playId",
+    pivotRelatedForeignKey: "groupId",
   })
   public groups: ManyToMany<typeof Group>;
 
-  @hasMany(() => Scene, { localKey: "id", foreignKey: "play_id" })
+  @hasMany(() => Scene, { localKey: "id", foreignKey: "playId" })
   public scenes: HasMany<typeof Scene>;
 
   @column.dateTime({ autoCreate: true })
