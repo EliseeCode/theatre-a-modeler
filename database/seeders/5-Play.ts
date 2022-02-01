@@ -8,17 +8,17 @@ export default class PlaySeeder extends BaseSeeder {
       {
         name: 'Henri IV',
         description: "une piece de célèbre",
-        creator_id:1
+        creatorId:1
       },
       {
         name: 'En attendant Godot',
         description: "l'ennuie eternel",
-        creator_id:1
+        creatorId:1
       },
       {
         name: 'Le Cid',
         description: "une autre piece célèbre",
-        creator_id:2
+        creatorId:2
       }
     ]);
   }

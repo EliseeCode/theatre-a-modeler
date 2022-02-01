@@ -11,7 +11,6 @@ import {
 } from "@ioc:Adonis/Lucid/Orm";
 
 export default class Group extends BaseModel {
-  protected tableName = "groups";
 
   @column({ isPrimary: true })
   public id: number;

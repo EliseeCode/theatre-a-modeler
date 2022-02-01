@@ -6,8 +6,21 @@ export default class PlaysController {
   public dataName='plays';
 
   public async index ({view}: HttpContextContract) {
-    const plays=await (await Play.query().preload('scenes')).map((e)=>e.serialize());
+    const plays=await (await Play.query().preload('scenes').preload('creator')).map((e)=>e.serialize());
     return view.render("play/index",{plays});
+  }
+
+  public async createNew ({view,auth}: HttpContextContract) {
+    const user = await auth.authenticate();
+    //const userId=user.id;
+    const newPlay=await Play.create(
+      {
+        name: 'Nouvelle Pièce',
+        description: "description",
+        userId: 1
+      }
+    );
+    return 'done'
   }
 
   public async create ({view}: HttpContextContract) {

@@ -1,0 +1,25 @@
+@layout('layouts/master')
+
+@section('content')
+  <div class="container">
+    <h1 class="title">
+        {{play.name}}
+        -
+        {{scene.name}}
+    </h1>
+    
+        @each((line,index) in scene.lines)
+       
+        <div class="content">
+                {{line.character.name}}
+                :
+                {{line.text}}        
+        </div>
+       
+        @else          
+            <p>Pas encore de réplique dans cette scene</p>
+        @endeach
+        </div>
+    </div>
+
+@endsection

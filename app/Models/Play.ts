@@ -27,10 +27,13 @@ export default class Play extends BaseModel {
   public status: string;
 
   @column({ meta: { type: "number" } })
-  public lang_id: number;
+  public langId: number;
+
+  @column({ columnName: 'creator_id'})
+  public userId: number;
 
   @belongsTo(() => User)
-  public creator_id: BelongsTo<typeof User>;
+  public creator: BelongsTo<typeof User>;
 
   @manyToMany(() => Group)
   public groups: ManyToMany<typeof Group>;

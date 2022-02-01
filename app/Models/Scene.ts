@@ -1,7 +1,8 @@
 import { DateTime } from "luxon";
 import Play from "App/Models/Play";
 import User from "App/Models/User";
-import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, belongsTo, BelongsTo,hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
+import Line from "App/Models/Line";
 
 export default class Scene extends BaseModel {
   @column({ isPrimary: true })
@@ -20,10 +21,13 @@ export default class Scene extends BaseModel {
   public status: string;
 
   @column()
-  public lang_id: number;
+  public langId: number;
 
   @column()
   public playId: number;
+  
+  @hasMany(()=>Line)
+  public lines: HasMany<typeof Line>;
 
   @belongsTo(() => User)
   public creator_id: BelongsTo<typeof User>;

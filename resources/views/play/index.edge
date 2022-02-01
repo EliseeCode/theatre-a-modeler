@@ -3,6 +3,9 @@
 @section('content')
   <div class="container">
     <h1 class="title">Plays</h1>
+    <div class="container">
+        <button class="button is-primary" onclick="addNewPlay()">Nouvelle pièce</div>
+    </div>
     <div class="columns is-multiline is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd">
           @each((play,index) in plays)
           @each(k in [1,2,3,4,5])
@@ -12,7 +15,10 @@
                 <p class="card-header-title">
                     {{play.name}}
                 </p>
+                <p>par {{play.creator.name}}</p>
+                <p>e {{play.createdAt}}</p>
                 </header>
+                
                 <div class="card-content">
                     <div class="content">
                         <div class="block description">
@@ -20,7 +26,7 @@
                         </div>
                         <div class="block">
                             @each(scene in play.scenes)
-                            <a href={{ 'scene/'+scene.id }} class="button is-fullwidth">
+                            <a href={{ 'play/'+play.id+'/scene/'+scene.id }} class="button is-fullwidth">
                             {{scene.name}}
                             </a>
                             @endeach
@@ -31,15 +37,14 @@
             </div>
         </div>
        @endeach
-
-
-        
-          @else
-            
-            <p>Pas encore de pièce de théâtre</p>
-           
-          @endeach
-        </div>
+    @else       
+        <p>Pas encore de pièce de théâtre</p>  
+    @endeach
     </div>
-
+</div>
+<script>
+    function addNewPlay(){
+        $.get('/api/play/createNew',(resp)=>console.log(resp));
+    }
+</script>
 @endsection

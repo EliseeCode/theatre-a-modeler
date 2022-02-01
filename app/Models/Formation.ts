@@ -36,10 +36,10 @@ export default class Formation extends BaseModel {
   public modality: string | null
 
   @column()
-  public creator_id: number
+  public creatorId: number
 
   @column()
-  public validator_id: number | null
+  public validatorId: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -47,6 +47,9 @@ export default class Formation extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @belongsTo(() => User,{localKey:'id',foreignKey: 'creator_id',})
+  @belongsTo(() => User,{localKey:'id',foreignKey: 'creatorId',})
   public creator: BelongsTo<typeof User>;
+
+  @belongsTo(() => User,{localKey:'id',foreignKey: 'validatorId',})
+  public validator: BelongsTo<typeof User>;
 }
