@@ -1,10 +1,6 @@
 import { DateTime } from "luxon";
 import Play from "App/Models/Play";
 import User from "App/Models/User";
-<<<<<<< HEAD
-import { BaseModel, column, belongsTo, BelongsTo,hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
-import Line from "App/Models/Line";
-=======
 import Line from "App/Models/Line";
 import {
   BaseModel,
@@ -14,7 +10,6 @@ import {
   hasMany,
   HasMany,
 } from "@ioc:Adonis/Lucid/Orm";
->>>>>>> ea5f83df5451049e07a5ae8331a400e97eb50ef5
 
 export default class Scene extends BaseModel {
   @column({ isPrimary: true })
@@ -44,13 +39,13 @@ export default class Scene extends BaseModel {
   @column({ meta: { type: "number" } })
   public lineId: number;
 
-  @belongsTo(() => Play, { localKey: "id", foreignKey: "play_id" })
+  @belongsTo(() => Play, { localKey: "id", foreignKey: "playId" })
   public play: BelongsTo<typeof Play>;
 
-  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
-  @hasMany(() => Line, { localKey: "id", foreignKey: "scene_id" })
+  @hasMany(() => Line, { localKey: "id", foreignKey: "sceneId" })
   public lines: HasMany<typeof Line>;
 
   @column.dateTime({ autoCreate: true })

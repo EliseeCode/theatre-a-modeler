@@ -1,16 +1,11 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import User from "App/Models/User";
 import Logger from "@ioc:Adonis/Core/Logger";
-
-import UsersController from "./UsersController";
-import { Response } from "@adonisjs/http-server/build/standalone";
 import Mail from '@ioc:Adonis/Addons/Mail'
 import Route from '@ioc:Adonis/Core/Route'
 import Env from '@ioc:Adonis/Core/Env'
 import {newUserSchema} from 'App/Schemas/newUserSchema'
 import {loginUserSchema} from 'App/Schemas/loginUserSchema'
-import View from "@ioc:Adonis/Core/View";
-import authConfig from "Config/auth";
 
 export default class AuthController {
 
@@ -33,7 +28,8 @@ export default class AuthController {
 
   public async login({ request, auth,response,session }: HttpContextContract) {
     
-
+    console.log("login attempt");
+    
     const payload=await request.validate({
       schema:loginUserSchema,
       messages:{
@@ -45,12 +41,13 @@ export default class AuthController {
     const loginId = payload.loginId;
     const password = payload.password;
     const remember = payload.remember;
-    
+    console.log("shema ok");
     try{
     await auth.use("web").attempt(loginId,password,remember);
-    
+    console.log("attempt succeed");
     }
     catch{
+      console.log("error");
       session.responseFlashMessages.set('errors.login',"L'identifiant ou le mot de passe ne sont pas correct");
       response.redirect().back();
     }

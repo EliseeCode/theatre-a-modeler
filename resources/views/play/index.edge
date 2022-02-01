@@ -8,15 +8,14 @@
     </div>
     <div class="columns is-multiline is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd">
           @each((play,index) in plays)
-          @each(k in [1,2,3,4,5])
           <div class="column">
             <div style="height:100%;" class="card play_item">
                 <header class="card-header">
                 <p class="card-header-title">
                     {{play.name}}
                 </p>
-                <p>par {{play.creator.name}}</p>
-                <p>e {{play.createdAt}}</p>
+                <p>par {{play.creator.username}}</p>
+                <p>le {{play.created_at}}</p>
                 </header>
                 
                 <div class="card-content">
@@ -36,13 +35,13 @@
                 </div>
             </div>
         </div>
-       @endeach
     @else       
         <p>Pas encore de pièce de théâtre</p>  
     @endeach
     </div>
 </div>
 <script>
+    
     function addNewPlay(){
         $.get('/api/play/createNew',(resp)=>console.log(resp));
     }

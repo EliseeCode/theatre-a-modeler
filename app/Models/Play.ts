@@ -28,22 +28,14 @@ export default class Play extends BaseModel {
 
   @column({ meta: { type: "number" } })
   public langId: number;
-<<<<<<< HEAD
 
-  @column({ columnName: 'creator_id'})
-  public userId: number;
-
-  @belongsTo(() => User)
-=======
-
-  @column({ meta: { type: "number" } })
+  @column()
   public creatorId: number;
 
   @column({ meta: { type: "number" } })
   public sceneId: number;
 
-  @belongsTo(() => User, { localKey: "id", foreignKey: "creator_id" })
->>>>>>> ea5f83df5451049e07a5ae8331a400e97eb50ef5
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
   @manyToMany(() => Group, {
@@ -54,7 +46,7 @@ export default class Play extends BaseModel {
   })
   public groups: ManyToMany<typeof Group>;
 
-  @hasMany(() => Scene, { localKey: "id", foreignKey: "play_id" })
+  @hasMany(() => Scene, { localKey: "id", foreignKey: "playId" })
   public scenes: HasMany<typeof Scene>;
 
   @column.dateTime({ autoCreate: true })

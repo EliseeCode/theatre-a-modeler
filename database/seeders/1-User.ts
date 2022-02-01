@@ -9,6 +9,7 @@ export default class UserSeeder extends BaseSeeder {
       await User.createMany([
         {
           username: 'elisee',
+          loginId:"elisee",
           email: '',
           password: '131313',
           role: 'admin',
@@ -16,6 +17,7 @@ export default class UserSeeder extends BaseSeeder {
         },
         {
           username: 'admin1',
+          loginId:"admin",
           email: '',
           password: 'passwordAdmin',
           role: 'admin',
@@ -23,12 +25,14 @@ export default class UserSeeder extends BaseSeeder {
         },
         {
           username: 'tester1',
+          loginId:"tester1",
           email: 'tester1@test.com',
           password: 'passwordtester',
           organisation: 'SP',
         },
         {
           username: 'tester2',
+          loginId:"tester2",
           email: 'tester2@test.com',
           password: 'passwordtester',
           organisation: 'SJ',

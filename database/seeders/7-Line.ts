@@ -8,30 +8,30 @@ export default class LineSeeder extends BaseSeeder {
       {
         text: 'Hello Sir',
         position : 0,
-        creator_id:1,
-        scene_id:1,
-        character_id:1
+        creatorId:1,
+        sceneId:1,
+        characterId:1
       },
       {
         text: 'Hello Majesty',
         position : 1,
-        creator_id:1,
-        scene_id:1,
-        character_id:2
+        creatorId:1,
+        sceneId:1,
+        characterId:2
       },
       {
         text: 'Where is Godot?',
         position : 0,
-        creator_id:1,
-        scene_id:4,
-        character_id:2
+        creatorId:1,
+        sceneId:4,
+        characterId:2
       },
       {
         text: 'Dont know',
         position : 1,
-        creator_id:1,
-        scene_id:4,
-        character_id:1
+        creatorId:1,
+        sceneId:4,
+        characterId:1
       }
     ]);
   }
