@@ -92,7 +92,17 @@ export default class AudiosController {
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete
-    return Audio.query()
+    const audio = (await Audio.query().where("id", params.id))[0];
+    await Drive.delete(audio.name)
+      .then(() => {
+        let message = `Successfully deleted the file with id of ${params.id} from drive.`;
+        Logger.info(message);
+      })
+      .catch((err) => {
+        let message = `Couldn't delete the file with id of ${params.id} from drive. \n Here's the error log: ${err}`;
+        Logger.error(message);
+      });
+    await Audio.query()
       .where("id", params.id)
       .delete()
       .then((status) => {
