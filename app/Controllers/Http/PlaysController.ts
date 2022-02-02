@@ -13,24 +13,12 @@ export default class PlaysController {
 
   public async createNew({ view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
-<<<<<<< HEAD
-    const newPlay=await Play.create(
-      {
-        name: 'Nouvelle Pièce',
-        description: "description",
-        creatorId: user.id
-      }
-    );
-    return newPlay;
-=======
-    //const userId=user.id;
     const newPlay = await Play.create({
       name: "Nouvelle Pièce",
       description: "description",
-      creatorId: 1,
+      creatorId: user.id,
     });
-    return "done";
->>>>>>> 6adc647fa6097367218086d3a0afce0415c4aa7b
+    return newPlay;
   }
 
   public async create({ view }: HttpContextContract) {
