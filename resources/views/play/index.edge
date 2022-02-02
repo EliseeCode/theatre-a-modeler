@@ -23,14 +23,25 @@
                         <div class="block description">
                         {{play.description}}  
                         </div>
-                        <div class="block">
+                        <div class="block" id="play_item_{{play.id}}">
                             @each(scene in play.scenes)
-                            <a href={{ 'play/'+play.id+'/scene/'+scene.id }} class="button is-fullwidth">
-                            {{scene.name}}
-                            </a>
+                            <div id="scene_item_{{scene.id}}">
+                                <div class="scene_item_display is-fullwidth">
+                                        <span class="scene_name">{{scene.name}}</span>
+                                        <a href={{ 'play/'+play.id+'/scene/'+scene.id }} class="button">
+                                        View
+                                        </a>
+                                        <div class='button' onclick='toggle_scene_display({{scene.id}});'>Edit</div>
+                                        <div class='button' onclick='delete_scene({{scene.id}});'>Delete</div>
+                                </div>
+                                <div class="scene_item_edit" style="display:none;">
+                                    <input type="text" value="{{scene.name}}" class="input" onblur="update_scene_name({{scene.id}});toggle_scene_display({{scene.id}});" class="edit_scene_name">
+                                </div>   
+                            </div>
                             @endeach
+                            
                         </div>
-                        
+                        <div onclick="addNewScene({{play.id}})" class="button is-primary">Nouvelle Scene</div>
                     </div>
                 </div>
             </div>
@@ -40,10 +51,59 @@
     @endeach
     </div>
 </div>
+<div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 <script>
-    
+    function delete_scene(scene_id)
+    {
+        const token = $('.csrfTokenElement').data('csrf-token');
+        const params = { 
+            sceneId: scene_id, 
+            _csrf: token
+        };
+        $.post('/api/scene/delete',params,(resp)=>{
+            $("#scene_item_"+scene_id).remove();
+            }   
+        );
+    }
+    function toggle_scene_display(scene_id)
+    {
+        $("#scene_item_"+scene_id+" .scene_item_display").toggle();
+        $("#scene_item_"+scene_id+" .scene_item_edit").toggle();        
+    }
+    function update_scene_name(scene_id)
+    {   
+        const newSceneName=$("#scene_item_"+scene_id+" .scene_item_edit input").val();
+        $("#scene_item_"+scene_id+" .scene_item_display .scene_name").text(newSceneName);
+        const token = $('.csrfTokenElement').data('csrf-token');
+        const params = { 
+            newSceneName: newSceneName, 
+            _csrf: token
+        };
+        $.post('/api/scene/'+scene_id+'/updateName',params,(resp)=>console.log(resp));
+    }
     function addNewPlay(){
         $.get('/api/play/createNew',(resp)=>console.log(resp));
+    }
+
+   
+    function addNewScene(play_id){
+        $.get('/api/play/'+play_id+'/scene/createNew',(newScene)=>{
+            console.log(newScene);
+            $('#play_item_'+play_id).append(`
+                            <div id="scene_item_${newScene.id}">
+                                <div class="scene_item_display is-fullwidth">
+                                        <span class="scene_name">${newScene.name}</span>
+                                        <a href='play/${play_id}/scene/${newScene.id}' class="button">
+                                        View
+                                        </a>
+                                        <div class='button' onclick='toggle_scene_display(${newScene.id});'>Edit</div>
+                                        <div class='button' onclick='delete_scene(${newScene.id});'>Delete</div>
+                                </div>
+                                <div class="scene_item_edit" style="display:none;">
+                                    <input type="text" value="${newScene.name}" class="input" onblur="update_scene_name(${newScene.id});toggle_scene_display(${newScene.id});" class="edit_scene_name">
+                                </div>   
+                            </div>`)
+        });
     }
 </script>
 @endsection

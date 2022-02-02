@@ -53,10 +53,17 @@ Route.resource("audios", "AudiosController");
 Route.resource("lines", "LinesController");
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
 Route.get("api/play/createNew", "PlaysController.createNew");
+Route.get("api/play/:id/scene/createNew", "ScenesController.createNew");
+Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
+Route.post("api/scene/delete", "ScenesController.destroy");
+
 //Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
 // Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
 Route.post("/recoverUsername", "AuthController.recoverUsername");
 Route.post("/recoverPassword", "AuthController.recoverPassword");
+
+Route.post("/audio/upload", "AudiosController.upload");
+
 Route.get("/recoverUsername", async ({ view }) => {
   return view.render("auth/recoverUsername");
 });
