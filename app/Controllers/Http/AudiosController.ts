@@ -1,96 +1,113 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Audio from "App/Models/Audio";
-import Scene from "App/Models/Scene";
-import Line from "App/Models/Line";
-import {
-  LucidModel,
-  ModelAdapterOptions,
-  ModelQueryBuilderContract,
-} from "@ioc:Adonis/Lucid/Orm";
+import Logger from "@ioc:Adonis/Core/Logger";
+import Drive from "@ioc:Adonis/Core/Drive";
+import { URL } from "url";
+
 export default class AudiosController {
-  /*  protected async preloadExtractor(
-    query: (
-      m?: ModelAdapterOptions
-    ) => ModelQueryBuilderContract<typeof Audio, Audio>,
-    query_args,
-    chain
-  ) {
-    // audios.lines.scene
-    console.log(query());
-    return;
-    return query(query_args).preload("line", (linesQuery) => {
-      linesQuery.preload("scene");
-    });
-  }*/
-
-  protected async preloadSetter(
-    query,
-    preload_arg: any,
-    query_args: ModelAdapterOptions = {}
-  ) {
-    return new Promise(async (resolve) => {
-      return await query(query_args).preload(preload_arg, (preloadedQuery) => {
-        return resolve(preloadedQuery);
-      });
-    });
-  }
-
-  protected async preoladUnchainnerDep(chain: string, query_args = {}) {
-    // audios.lines.scene
-    const preload_args = chain.split(".");
-    let dummy: ModelQueryBuilderContract<any, any> | undefined;
-    return preload_args.reduce(
-      async (acc: ModelQueryBuilderContract<any, any>, curr: string) => {
-        if (acc) {
-          return await this.preloadSetter(acc, curr, query_args);
-        } else {
-          console.log("adşklsfjasdşlfksadş", Audio.query);
-          return await this.preloadSetter(Audio.query, curr, query_args);
-        }
-      },
-      dummy
-    );
-  }
-
-  protected async preoladUnchainner(query, depth, query_args = {}) {
-    // recursion
-    if (!depth) return query;
-  }
-  public async index({ view }: HttpContextContract) {
-    /*const audios = await Audio.query().preload("line", async (linesQuery) => {
-      await linesQuery.preload("scene", async (scenesQuery) => {
-        await scenesQuery.preload("play");
-      });
-    });*/
-    console.log(await Audio.query());
-    // console.log(await this.preoladUnchainnerDep("lines.scene", {}));
-    // Line - One2Many Preloading
-    // audios[].lines[].scene
-    /*
-      .preload("line", async (linesQuery) => {
-        // console.log(await linesQuery); // why do we need to await a function parameter
-        linesQuery.preload("character", async (charactersQuery) => {
-          await charactersQuery;
-          console.log(await charactersQuery.where("gender", "male"));
-        });
-      });
-    */ return;
-    audios.map(async (e) => {
-      await Line.query();
-      const query = await this.promisePreload(e.line.characterId, "scene");
-      console.log(query?.name, query?.description);
+  public dataName = "audios";
+  public async index({ view, auth }: HttpContextContract) {
+    const user = await auth.authenticate(); // FIXME: pass this via silentAuth
+    const audios = await Audio.query()
+      .where("creatorId", user.id) // FIXME: not sure if camelcase
+      .preload("line"); //.map((e) => e.serialize());
+    return view.render("audios/index", {
+      data: audios,
+      columnsDefinitions: Audio.$columnsDefinitions,
+      dataName: this.dataName,
     });
   }
 
   public async create({}: HttpContextContract) {}
 
-  public async store({}: HttpContextContract) {}
+  public async store({ request, response, auth }: HttpContextContract) {
+    const audioFile = await request.file("audio");
 
-  public async show({}: HttpContextContract) {}
+    if (!audioFile)
+      return response.json({
+        status: 0,
+        message: "No audio file specified for upload...",
+      });
+
+    const user = await auth.authenticate();
+    const lineId = request.body().lineId;
+    // Won't use a custom name instead Adonis will auto-generate a random name
+    /*const fileName = `${user.id}_${lineId}_${await Hash.make(
+      new Date().getTime().toString()
+    )}.${audioFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
+    let message: string, status: boolean;
+    try {
+      await audioFile?.moveToDisk(
+        "./",
+        { contentType: request.header("Content-Type") },
+        "local"
+      );
+      status = true;
+      message = `The audio file has been successfully saved!`;
+      Logger.info(message);
+    } catch (err) {
+      status = false;
+      message = `An error occured during save of the audio file.\nHere's the details: ${err} `;
+      Logger.error(message);
+      return response.json({ status: 0, message });
+    }
+
+    if (!audioFile.fileName) {
+      message = `An error occured during save of the audio file.\nHere's the details: audioFile.fileName is not defined.`;
+      Logger.error(message);
+      return response.json({ status: 0, message });
+    }
+
+    const locationOrigin = new URL(request.completeUrl()).origin;
+    const newAudio = await Audio.create({
+      name: audioFile.fileName,
+      publicPath: `${locationOrigin}${await Drive.getUrl(audioFile.fileName)}`,
+      relativePath: `/uploads/${audioFile.fileName}`,
+      langId: 1,
+      creatorId: user.id,
+      lineId: lineId,
+      size: audioFile.size,
+      type: audioFile.extname,
+      // mimeType: request.header("Content-Type"), // It's getting as multipart/form-data
+      mimeType: `${audioFile.fieldName}/${audioFile.extname}`,
+    });
+    return newAudio;
+  }
+
+  public async show({ view, params }: HttpContextContract) {
+    const audio = (await Audio.findBy("id", params.id))?.serialize();
+    if (audio) {
+      return view.render("audios/show", {
+        data: audio,
+        columnNames: Object.keys(audio),
+        columnsDefinitions: Audio.$columnsDefinitions,
+        dataName: this.dataName,
+      });
+    } else return view.render("errors/not-found");
+  }
 
   public async edit({}: HttpContextContract) {}
 
   public async update({}: HttpContextContract) {}
 
-  public async destroy({}: HttpContextContract) {}
+  public async destroy({ response, params }: HttpContextContract) {
+    // Need an authorization (permission) check for delete
+    return Audio.query()
+      .where("id", params.id)
+      .delete()
+      .then((status) => {
+        let message;
+        if (status)
+          message = `Successfully deleted the row with id of ${params.id} from audios table.`;
+        else
+          message = `No records found with id of ${params.id} in audios table. So, the deletion couldn't happen.`;
+        Logger.info(message);
+        response.json({ status, message });
+      })
+      .catch((err) => {
+        let message = `Couldn't delete the row with id of ${params.id} from audios table. \n Here's the error log: ${err}`;
+        Logger.error(message);
+        response.json({ status: 0, message });
+      });
+  }
 }

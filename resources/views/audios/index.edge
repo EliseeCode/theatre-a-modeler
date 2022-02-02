@@ -1,0 +1,82 @@
+@layout('layouts/master')
+
+@section('content')
+{{ csrfField() }}
+  <div class="box">
+    <h1 class="title">{{dataName}} index</h1>
+      <table class="table is-bordered is-striped is-narrow" style="zoom: 75%;">
+        <thead>
+          <tr>
+            @each(field in Object.keys(data[0].$attributes))
+                <th>
+                    {{ field }}
+                </th>
+            @endeach  
+            <th>Show</th>
+            <th>Delete</th>  
+          </tr>
+        </thead>
+        <tbody>
+        <tr> 
+            @each(definition in [...columnsDefinitions.values()])
+            <th>
+                {{ definition.meta?.type || 'no type' }}
+            </th>
+            @endeach  
+        </tr>  
+        @each((data,index) in data)
+            <tr>              
+                @each((field, index) in data.$attributes)
+                <td>
+                 @if(index === "publicPath")
+                 <a href="{{field}}" target="_blank">{{field.slice(0, 20)}}</a>
+                 @else
+                  @if(typeof field === "string")
+                  {{field.slice(0, 25)}}
+                  @else
+                  {{ field }}
+                  @end
+                  @end
+                </td>
+                @endeach
+                <td>
+                    <a href="{{ dataName+'/' + data.id }}">
+                        show
+                    </a>
+                </td>
+                <td>
+                    <button class="btnDelete delete is-large m-1 is-pulled-right" data-audio-id="{{data.$attributes.id}}" style="background-color: red;"></button>
+                </td>
+            </tr>
+          @else
+            <tr>
+              <td colspan="3" class="has-text-centered">Pas encore de data</td>
+            </tr>
+          @endeach
+        </tbody>
+      </table>
+  </div>
+  <script>
+    const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
+    const deleteButtons = Array.from(document.getElementsByClassName("btnDelete"));
+    deleteButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const id = e.target.getAttribute("data-audio-id");
+            fetch(`${window.location.origin}/audios/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-Token": CSRF_TOKEN
+                }
+            }).then(response => {
+                if (!response.ok) throw response;
+                return response.json();
+            }).then((data) => {
+                console.info(data);
+                window.location.reload()
+            }).catch((err) => {
+                console.error(err);
+            })
+        })
+    })
+  </script>
+@endsection

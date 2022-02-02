@@ -1,0 +1,189 @@
+@layout('layouts/master')
+@section('content')
+{{csrfField()}}
+@if(error)
+<p>Sorry, but you don't have any data... yet!</p>
+@else
+<div class="columns">
+    <div class="column is-three-quarters">
+        <table class="table" style="zoom: 75%;">
+            <thead>
+                <tr>
+                    <th></th>
+                    @each(name in columnNames)
+                        <th>{{name}}</th>
+                    @endeach
+                </tr>
+            </thead>
+            <tbody>
+                @each((datum, index) in data)
+                <tr>
+                    <th>{{index}}</th>
+                        @each((value, key) in datum )
+                            <td>
+                            @if(key === "audios")
+                            <div class="list">
+                                <ul>
+                                @each((audio, key) in value)
+                                    <div class="list-item">
+                                        <li>
+                                            <button class="button btnPlayInit is-info m-1" data-public-path="{{audio.public_path}}">Load `{{audio.name.slice(0, 20)}}`</button>
+                                            <button class="btnDelete delete is-large m-1 is-pulled-right" data-audio-id="{{audio.id}}" style="background-color: red;"></button>
+                                        </li>
+        
+                                    </div>
+                                @endeach
+                                <button class="button btnRecordInit is-primary is-fullwidth" data-line-id="{{datum.id}}">Record New</button>
+                                </ul>
+                            </div>
+                            @else
+                            {{value}}
+                            @end
+                        </td>
+                        @endeach
+                </tr>
+                @endeach
+            </tbody>
+        </table>
+
+    </div>
+    <div class="column mr-5">
+        <div class="columns is-centered">
+            <div class="column">
+                <audio id="player" controls></audio>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <button class="button is-success" id="btnStart">Start</button>
+            </div>
+            <div class="column">
+                <button class="button is-danger" id="btnStop">Stop</button>
+            </div>
+            <div class="column">
+                <button class="button is-warning" id="btnReset">Reset</button>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="is-half column">
+                <button class="button is-primary is-fullwidth" id="btnUpload">Upload</button>
+            </div>
+        </div>
+        
+    </div>
+  </div>
+
+<script>
+    const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
+    const deleteButtons = Array.from(document.getElementsByClassName("btnDelete"));
+    deleteButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const id = e.target.getAttribute("data-audio-id");
+            fetch(`${window.location.origin}/audios/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-Token": CSRF_TOKEN
+                }
+            }).then(response => {
+                if (!response.ok) throw response;
+                return response.json();
+            }).then((data) => {
+                console.info(data);
+                window.location.reload()
+            }).catch((err) => {
+                console.error(err);
+            })
+        })
+    })
+
+    const player = document.getElementById("player");
+    const startButton = document.getElementById("btnStart");
+    const stopButton = document.getElementById("btnStop");
+    const resetButton = document.getElementById("btnReset");
+    const uploadButton = document.getElementById("btnUpload");
+    // I'm using this functionality to be able to tackle the mass MediaStream init when the page loads.
+    // In short, it'll load the desired audio only... 
+    const recordInitButton = Array.from(document.getElementsByClassName("btnRecordInit")); // This'll pass only the `line_id` to recorder. 
+    const playInitButton = Array.from(document.getElementsByClassName("btnPlayInit")); // But this'll pass the `public_path` to player.
+
+    recordInitButton.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            uploadButton.setAttribute("data-line-id", e.target.getAttribute("data-line-id"));
+        })
+    });
+
+    playInitButton.forEach((button) => {
+        button.addEventListener("click", (e) => { // FIXME: adapt same function definition!
+            player.src = e.target.getAttribute("data-public-path");
+        })
+    });
+
+    const handleSuccess = function(stream) {
+        const options = {mimeType: "audio/webm"};
+        const recordedChunks = [];
+        let objectURL;
+        const mediaRecorder = new MediaRecorder(stream, options);
+        console.log(mediaRecorder.mimeType);
+        mediaRecorder.addEventListener("dataavailable", function(e) {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        })
+
+        mediaRecorder.addEventListener("stop", async function(e) {
+            console.log("stopped", e);
+            const blob = new Blob(recordedChunks, {type: mediaRecorder.mimeType});
+            objectURL = URL.createObjectURL(blob);
+            console.log(objectURL)
+            player.src = objectURL; 
+
+            uploadButton.addEventListener("click", function(e) {
+            const lineId = e.target.getAttribute("data-line-id");
+            console.log(`Here's the line_id to upload: ${lineId}`);
+            console.log(blob);
+            const form = new FormData();
+            form.append("audio", blob);
+            form.append("lineId", lineId);
+            fetch(`${window.location.origin}/audios`, {
+                method: "POST",
+                headers: {
+                    'X-CSRF-Token': CSRF_TOKEN,
+                    /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+                    'Content-Type': `${blob.type}`,*/ 
+                    'Content-Transfer-Encoding': 'base64'
+                },
+                mode: "cors",
+                body: form
+            }).then(response => {
+                if (!response.ok) throw response;
+                return response.json();
+            }).then((data) => {
+                console.info(data);
+                window.location.reload();
+            }).catch((err) => {
+                console.error(err);
+            })
+        })
+        })
+
+        if (mediaRecorder.state !== "recording") mediaRecorder.start();
+        
+        resetButton.addEventListener("click", function(e) {
+            recordedChunks.length = 0;
+            URL.revokeObjectURL(objectURL);
+            player.src = "";
+            uploadButton.removeAttribute("data-line-id");
+        });
+
+        stopButton.addEventListener("click", function(e) {
+            if (mediaRecorder.state === "recording")
+            mediaRecorder.stop();
+        })
+    }
+
+    startButton.addEventListener("click", function(e) {
+        navigator.mediaDevices.getUserMedia({audio: true, video:false}).then(handleSuccess);  
+    })
+    
+</script>
+@end
+@endsection
+    
