@@ -7,7 +7,9 @@
         -
         {{scene.name}}
     </h1>
-    
+    <div class="container">
+        <button class="button is-primary" onclick="addNewPlay()">Nouvelle pièce</div>
+    </div>
         @each((line,index) in scene.lines)
        
         <div class="content">
@@ -21,5 +23,9 @@
         @endeach
         </div>
     </div>
-
+    <script>
+    function addNewPlay(play_id){
+        $.get('/api/scene/'+play_id+'/createNewLine',(resp)=>console.log(resp));
+    }
+    </script>
 @endsection

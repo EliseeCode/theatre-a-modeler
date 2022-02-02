@@ -82,6 +82,13 @@ export default class AudiosController {
     });
   }
 
+  public async upload({request}: HttpContextContract) {
+    const blob= request.audiofile
+    const user_id=request.user_id
+
+  }
+
+
   public async create({}: HttpContextContract) {}
 
   public async store({}: HttpContextContract) {}

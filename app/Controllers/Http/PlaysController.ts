@@ -11,9 +11,8 @@ export default class PlaysController {
     return view.render("play/index", { plays });
   }
 
-  public async createNew({ view, auth }: HttpContextContract) {
+  public async createNew({ auth }: HttpContextContract) {
     const user = await auth.authenticate();
-<<<<<<< HEAD
     const newPlay=await Play.create(
       {
         name: 'Nouvelle Pièce',
@@ -22,15 +21,6 @@ export default class PlaysController {
       }
     );
     return newPlay;
-=======
-    //const userId=user.id;
-    const newPlay = await Play.create({
-      name: "Nouvelle Pièce",
-      description: "description",
-      creatorId: 1,
-    });
-    return "done";
->>>>>>> 6adc647fa6097367218086d3a0afce0415c4aa7b
   }
 
   public async create({ view }: HttpContextContract) {
