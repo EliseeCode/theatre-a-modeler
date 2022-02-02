@@ -6,7 +6,7 @@
       <table class="table is-bordered is-striped is-narrow is-fullwidth">
         <thead>
           <tr>
-            @each(field in Object.keys(datas[0].$attributes))
+            @each(field in Object.keys(data[0].$attributes))
                 <th>
                     {{ field }}
                 </th>
@@ -23,7 +23,7 @@
             </th>
             @endeach  
         </tr>  
-        @each((data,index) in datas)
+        @each((data,index) in data)
             <tr>              
                 @each(field in data.$attributes)
                 <td>
@@ -49,7 +49,7 @@
             </tr>
           @else
             <tr>
-              <td colspan="3" class="has-text-centered">Pas encore de datas</td>
+              <td colspan="3" class="has-text-centered">Pas encore de data</td>
             </tr>
           @endeach
         </tbody>
