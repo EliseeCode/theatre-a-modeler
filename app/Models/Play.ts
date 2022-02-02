@@ -29,11 +29,7 @@ export default class Play extends BaseModel {
   @column({ meta: { type: "number" } })
   public langId: number;
 
-<<<<<<< HEAD
-  @column()
-=======
   @column({ meta: { type: "number" } })
->>>>>>> 6adc647fa6097367218086d3a0afce0415c4aa7b
   public creatorId: number;
 
   @column({ meta: { type: "number" } })
