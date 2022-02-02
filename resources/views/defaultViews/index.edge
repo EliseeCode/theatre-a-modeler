@@ -31,12 +31,12 @@
                 </td>
                 @endeach
                 <td>
-                    <a href="{{ dataName+'/' + data.id }}">
+                    <a href="/{{ dataName+'/' + data.id }}">
                         show
                     </a>
                 </td>
                 <td>
-                    <form action="{{ dataName+'/' + data.id + '?_method=DELETE' }}" method="POST">
+                    <form action="/{{ dataName+'/' + data.id + '?_method=DELETE' }}" method="POST">
                         {{ csrfField() }}
                         <button type="submit" class="button is-danger is-outlined">
                             <span>DELETE</span>
