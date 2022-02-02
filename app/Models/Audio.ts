@@ -4,28 +4,28 @@ import Line from "App/Models/Line";
 import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
 
 export default class Audios extends BaseModel {
-  @column({ isPrimary: true })
+  @column({ isPrimary: true, meta: { type: "number" } })
   public id: number;
 
-  @column()
+  @column({ meta: { type: "string" } })
   public name: string;
 
-  @column()
+  @column({ meta: { type: "string" } })
   public description: string;
 
-  @column()
+  @column({ meta: { type: "string" } })
   public publicPath: string;
 
-  @column()
+  @column({ meta: { type: "string" } })
   public relativePath: string;
 
-  @column()
+  @column({ meta: { type: "number" } })
   public langId: number;
 
-  @column()
+  @column({ meta: { type: "number" } })
   public creatorId: number;
 
-  @column()
+  @column({ meta: { type: "number" } })
   public lineId: number;
 
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
@@ -34,18 +34,22 @@ export default class Audios extends BaseModel {
   @belongsTo(() => Line, { localKey: "id", foreignKey: "lineId" })
   public line: BelongsTo<typeof Line>;
 
-  @column()
+  @column({ meta: { type: "number" } })
   public size: number;
 
-  @column()
+  @column({ meta: { type: "string" } })
   public type: string;
 
-  @column()
+  @column({ meta: { type: "string" } })
   public mimeType: string;
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, meta: { type: "datetime" } })
   public createdAt: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    meta: { type: "datetime" },
+  })
   public updatedAt: DateTime;
 }

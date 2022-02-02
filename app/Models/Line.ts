@@ -2,7 +2,15 @@ import { DateTime } from "luxon";
 import Scene from "App/Models/Scene";
 import Character from "App/Models/Character";
 import User from "App/Models/User";
-import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
+import Audio from "App/Models/Audio";
+import {
+  BaseModel,
+  column,
+  belongsTo,
+  BelongsTo,
+  hasMany,
+  HasMany,
+} from "@ioc:Adonis/Lucid/Orm";
 
 export default class Line extends BaseModel {
   @column({ isPrimary: true })
@@ -26,6 +34,9 @@ export default class Line extends BaseModel {
   @column()
   public characterId: number;
 
+  @column()
+  public audioId: number;
+
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
@@ -34,6 +45,9 @@ export default class Line extends BaseModel {
 
   @belongsTo(() => Character, { localKey: "id", foreignKey: "characterId" })
   public character: BelongsTo<typeof Character>;
+
+  @hasMany(() => Audio, { localKey: "id", foreignKey: "lineId" })
+  public audios: HasMany<typeof Audio>;
 
   @column()
   public langId: number;
