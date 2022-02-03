@@ -6,7 +6,7 @@ export default class LinesController {
   public async index({ view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
     const lines = (
-      await Line.query().where("creatorId", 1).preload("audios")
+      await Line.query().where("creatorId", user.id).preload("audios")
     ).map((e) => e.serialize());
     if (!lines.length)
       return view.render("lines/index", { error: "No data found..." });
