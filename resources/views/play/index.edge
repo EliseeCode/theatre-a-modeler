@@ -6,6 +6,7 @@
     <div class="container">
         <button class="button is-primary" onclick="addNewPlay()">Nouvelle pièce</div>
     </div>
+    
     <div class="columns is-multiline is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd">
           @each((play,index) in plays)
           <div class="column">
@@ -50,9 +51,18 @@
         <p>Pas encore de pièce de théâtre</p>  
     @endeach
     </div>
+    <div id="like_button_container"></div>
 </div>
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
+
+{{--  <script type="text/babel" src="/js/component/like_button.js"></script>  --}}
+<div id="root"></div>
+<script src="/js/index.js"></script>
 <script>
+
+const domContainer = document.querySelector('#like_button_container');
+ReactDOM.render(<LikeButton />, domContainer);
+
     function delete_scene(scene_id)
     {
         const token = $('.csrfTokenElement').data('csrf-token');
