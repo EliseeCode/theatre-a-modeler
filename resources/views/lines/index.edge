@@ -2,11 +2,11 @@
 @section('content')
 {{csrfField()}}
 @if(error)
-<p>Sorry, but you don't have any data... yet!</p>
+<p class="is-info">No records found...</p>
 @else
 <div class="columns">
     <div class="column is-three-quarters">
-        <table class="table" style="zoom: 75%;">
+        <table class="table" style="zoom: 65%; -ms-zoom: 0.65; -webkit-zoom: 0.65; -moz-transform:  scale(0.65,0.65); -moz-transform-origin: left top;">
             <thead>
                 <tr>
                     <th></th>
