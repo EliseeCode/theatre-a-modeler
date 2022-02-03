@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
-import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
+import User from "App/Models/User";
 
 export default class Image extends BaseModel {
   @column({ isPrimary: true })
@@ -19,6 +20,9 @@ export default class Image extends BaseModel {
 
   @column({ meta: { type: "number" } })
   public creatorId: number;
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
+  public imageId: BelongsTo<typeof User>;
 
   @column({ meta: { type: "number" } })
   public size: number;
