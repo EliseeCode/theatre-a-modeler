@@ -11,6 +11,7 @@ export default class SceneSeeder extends BaseSeeder {
         description: "Une scene d'introduction des personnages",
         creatorId: 1,
         playId: 1,
+        imageId: 1,
       },
       {
         name: "Act 1 Scene 2",
@@ -32,6 +33,7 @@ export default class SceneSeeder extends BaseSeeder {
         description: "Ou est Godot?",
         creatorId: 1,
         playId: 2,
+        imageId: 2,
       },
       {
         name: "2e partie",
