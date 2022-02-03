@@ -11,7 +11,7 @@ import {
   hasMany,
   HasMany,
 } from "@ioc:Adonis/Lucid/Orm";
-import Scene from "./Scene";
+import Scene from "App/Models/Scene";
 
 export default class Play extends BaseModel {
   @column({ isPrimary: true })

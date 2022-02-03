@@ -36,9 +36,6 @@ export default class Scene extends BaseModel {
   @column()
   public playId: number;
 
-  @column({ meta: { type: "number" } })
-  public lineId: number;
-
   @belongsTo(() => Play, { localKey: "id", foreignKey: "playId" })
   public play: BelongsTo<typeof Play>;
 
