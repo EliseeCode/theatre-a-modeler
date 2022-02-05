@@ -1,14 +1,14 @@
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const webpack = require('webpack')
 const mix = require('laravel-mix')
-require('laravel-mix-tailwind')
+//require('laravel-mix-tailwind')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 mix
   .setPublicPath('public')
   .js('resources/client/index.js', 'public/js/')
   .react()
-  .sass('resources/assets/scss/index.scss', 'public/css/')
-  .tailwind()
+  //.sass('resources/assets/scss/index.scss', 'public/css/')
+  //.tailwind()
   .options({
     processCssUrls: false
   })

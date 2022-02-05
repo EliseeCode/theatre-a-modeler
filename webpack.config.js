@@ -45,7 +45,7 @@ Encore.setPublicPath('/assets')
 | entrypoints.
 |
 */
-Encore.addEntry('app', './resources/js/app.js')
+Encore.addEntry('app', './resources/client/index.js')
 
 /*
 |--------------------------------------------------------------------------
@@ -186,7 +186,19 @@ Encore.configureDevServerOptions((options) => {
 //   runtimeCompilerBuild: false,
 //   useJsx: false
 // })
+.configureBabel(function(babelConfig) {
+  // add additional presets
+  babelConfig.presets.push('@babel/preset-react');
 
+  // no plugins are added by default, but you can add some
+  //babelConfig.plugins.push('styled-jsx/babel');
+  babelConfig.plugins.push('@babel/plugin-transform-runtime');
+}, {
+   // or completely control the exclude rule (note that you
+  // can't use both "includeNodeModules" and "exclude" at
+  // the same time)
+  //exclude: /node_modules/
+})
 /*
 |--------------------------------------------------------------------------
 | Configure logging

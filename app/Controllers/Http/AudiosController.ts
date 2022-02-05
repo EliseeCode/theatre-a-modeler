@@ -85,7 +85,8 @@ export default class AudiosController {
   public async upload({request}: HttpContextContract) {
     const blob= request.audiofile
     const user_id=request.user_id
-
+    const line_id=request.line_id
+    
   }
 
 

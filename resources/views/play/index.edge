@@ -51,18 +51,13 @@
         <p>Pas encore de pièce de théâtre</p>  
     @endeach
     </div>
-    <div id="like_button_container"></div>
 </div>
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 
 {{--  <script type="text/babel" src="/js/component/like_button.js"></script>  --}}
 <div id="root"></div>
-<script src="/js/index.js"></script>
+<script src="{{asset('assets/app.js')}}"></script>
 <script>
-
-const domContainer = document.querySelector('#like_button_container');
-ReactDOM.render(<LikeButton />, domContainer);
-
     function delete_scene(scene_id)
     {
         const token = $('.csrfTokenElement').data('csrf-token');
