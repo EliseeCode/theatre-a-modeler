@@ -109,7 +109,7 @@ export default class AuthController {
     }
   }
 
-  public async recoverUsername({ session, request,response }: HttpContextContract) {
+  public async recoverUsername({ session, request, auth,response,view }: HttpContextContract) {
     const email = request.input("email");
     if(email==null){return response.redirect().back();}
 
