@@ -197,7 +197,7 @@ Encore.configureDevServerOptions((options) => {
    // or completely control the exclude rule (note that you
   // can't use both "includeNodeModules" and "exclude" at
   // the same time)
-  //exclude: /node_modules/
+  exclude: /node_modules/
 })
 /*
 |--------------------------------------------------------------------------

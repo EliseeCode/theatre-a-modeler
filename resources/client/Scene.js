@@ -1,10 +1,10 @@
 import React from 'react'
-import { isPropertySignature } from 'typescript'
+//import { isPropertySignature } from 'typescript'
 export default function Scene(props) {
     
   return (
     <div>
-      Hello Scene {props.scene.name}
+      {props.scene.name}
     </div>
   )
 }

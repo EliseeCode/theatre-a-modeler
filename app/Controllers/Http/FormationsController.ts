@@ -1,7 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Formation from 'App/Models/Formation'
 import Logger from "@ioc:Adonis/Core/Logger";
-import { schema,rules } from '@ioc:Adonis/Core/Validator'
+//import { schema,rules } from '@ioc:Adonis/Core/Validator'
 
 export default class FormationsController {
   public async index ({view,auth}: HttpContextContract) {
@@ -43,7 +43,7 @@ export default class FormationsController {
     Logger.info("dans show formation"+params.id);
     try {
       if(auth.isLoggedIn){
-        const user= await auth.authenticate();
+        //const user= await auth.authenticate();
       }
       const formation = await Formation.findOrFail(params.id);
       if(formation){
@@ -82,34 +82,34 @@ export default class FormationsController {
 
   }
 
-  public async store({auth,request,response}:HttpContextContract)
-  {
-    const newFormationSchema = schema.create({
-      title: schema.string({ trim: true },[rules.minLength(3)]),
-      description: schema.string({ escape: true }),
-    })
+  // public async store({auth,request,response}:HttpContextContract)
+  // {
+    // const newFormationSchema = schema.create({
+    //   title: schema.string({ trim: true },[rules.minLength(3)]),
+    //   description: schema.string({ escape: true }),
+    // })
 
-    const messages={
-      'title.minLength':"Il faut un titre d'au moins 3 charactères.",
-      'description.required':"Ajoute une description"
-    }
+    // const messages={
+    //   'title.minLength':"Il faut un titre d'au moins 3 charactères.",
+    //   'description.required':"Ajoute une description"
+    // }
 
-    const user = await auth.authenticate();
-    const payload = await request.validate({
-        schema: newFormationSchema,
-        messages
-      })
+    // const user = await auth.authenticate();
+    // const payload = await request.validate({
+    //     schema: newFormationSchema,
+    //     messages
+    //   })
       
-    const formation = await Formation.create(payload);
+    //const formation = await Formation.create(payload);
 
-    await user.related("formations").save(formation);
-    if (formation) {
-      Logger.info("ok");
-      return response.redirect('back');
-    }
-    Logger.info({ Formation: formation }, `Formation not created`);
-    return response.redirect('back');
-  }
+    // await user.related("formations").save(formation);
+    // if (formation) {
+    //   Logger.info("ok");
+    //   return response.redirect('back');
+    // }
+    // Logger.info({ Formation: formation }, `Formation not created`);
+  //   return response.redirect('back');
+  // }
 
 
 
