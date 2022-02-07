@@ -11,7 +11,8 @@ import {
   hasMany,
   HasMany,
 } from "@ioc:Adonis/Lucid/Orm";
-import Scene from "./Scene";
+import Scene from "App/Models/Scene";
+import Image from "App/Models/Image";
 
 export default class Play extends BaseModel {
   @column({ isPrimary: true })
@@ -33,10 +34,13 @@ export default class Play extends BaseModel {
   public creatorId: number;
 
   @column({ meta: { type: "number" } })
-  public sceneId: number;
+  public imageId: number;
 
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
+
+  @belongsTo(() => Image, { localKey: "id", foreignKey: "imageId" })
+  public image: BelongsTo<typeof Image>;
 
   @manyToMany(() => Group, {
     localKey: "id",

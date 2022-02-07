@@ -3,8 +3,11 @@
 @section('content')
 {{ csrfField() }}
   <div class="box">
+    @if(error)
+    <p class="is-info">No records found...</p>
+    @else
     <h1 class="title">{{dataName}} index</h1>
-      <table class="table is-bordered is-striped is-narrow" style="zoom: 75%;">
+      <table class="table is-bordered is-striped is-narrow" style="zoom: 65%; -ms-zoom: 0.65; -webkit-zoom: 0.65; -moz-transform:  scale(0.65,0.65); -moz-transform-origin: left top;">
         <thead>
           <tr>
             @each(field in Object.keys(data[0].$attributes))
@@ -79,4 +82,5 @@
         })
     })
   </script>
+  @end
 @endsection

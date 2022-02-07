@@ -34,9 +34,6 @@ export default class Line extends BaseModel {
   @column()
   public characterId: number;
 
-  @column()
-  public audioId: number;
-
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 

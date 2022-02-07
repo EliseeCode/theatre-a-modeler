@@ -1,33 +1,29 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Scene from 'App/Models/Scene';
-import Play from 'App/Models/Play';
-
+import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import Scene from "App/Models/Scene";
+import Play from "App/Models/Play";
 
 export default class ScenesController {
-  public async index ({}: HttpContextContract) {
-  }
+  public async index({}: HttpContextContract) {}
 
-  public async create ({}: HttpContextContract) {
-  }
+  public async create({}: HttpContextContract) {}
 
-  public async store ({}: HttpContextContract) {
-  }
+  public async store({}: HttpContextContract) {}
 
-  public async show ({params,view}: HttpContextContract) {
+  public async show({ params, view }: HttpContextContract) {
     const sceneInst = await Scene.query()
-      .where('id',params.sceneId)
-      .preload("lines",(lineQuery)=>{
-        lineQuery.orderBy('position', 'asc').preload('character')
+      .where("id", params.scene_id)
+      .preload("lines", (lineQuery) => {
+        lineQuery.orderBy("position", "asc").preload("character");
       });
-    const scene=sceneInst[0].serialize();
+    const scene = sceneInst[0].serialize();
 
-    const playId=params.playId;
-    const play=await (await Play.findOrFail(playId)).serialize()
-    return view.render("scene/show",{scene,play});
+    const playId = params.play_id;
+    const play = await (await Play.findOrFail(playId)).serialize();
+    return view.render("scene/show", { scene, play });
   }
 
-  public async createNew({ auth,params }: HttpContextContract) {
-    const play=await Play.findOrFail(params.id)
+  public async createNew({ auth, params }: HttpContextContract) {
+    const play = await Play.findOrFail(params.id);
     const user = await auth.authenticate();
     const newScene=await Scene.create(
       {
@@ -42,21 +38,19 @@ export default class ScenesController {
     return newScene;
   }
 
-  public async updateName ({request, params}: HttpContextContract) {
-    const newSceneName=request.all().newSceneName;
-    const scene_id=params.sceneId;
+  public async updateName({ request, params }: HttpContextContract) {
+    const newSceneName = request.all().newSceneName;
+    const scene_id = params.sceneId;
     var scene = await Scene.findOrFail(scene_id);
-    scene.name=newSceneName;
+    scene.name = newSceneName;
     console.log(newSceneName);
     await scene.save();
     return scene;
   }
 
-  public async edit ({}: HttpContextContract) {
-  }
+  public async edit({}: HttpContextContract) {}
 
-  public async update ({}: HttpContextContract) {
-  }
+  public async update({}: HttpContextContract) {}
 
   public async destroy ({response,params}: HttpContextContract) {
     const sceneId=params.id;

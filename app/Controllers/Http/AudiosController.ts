@@ -11,11 +11,14 @@ export default class AudiosController {
     const audios = await Audio.query()
       .where("creatorId", user.id) // FIXME: not sure if camelcase
       .preload("line"); //.map((e) => e.serialize());
-    return view.render("audios/index", {
-      data: audios,
-      columnsDefinitions: Audio.$columnsDefinitions,
-      dataName: this.dataName,
-    });
+    if (!audios.length)
+      return view.render("lines/index", { error: "No data found..." });
+    else
+      return view.render("audios/index", {
+        data: audios,
+        columnsDefinitions: Audio.$columnsDefinitions,
+        dataName: this.dataName,
+      });
   }
 
   public async create({}: HttpContextContract) {}
@@ -38,7 +41,7 @@ export default class AudiosController {
     let message: string, status: boolean;
     try {
       await audioFile?.moveToDisk(
-        "./",
+        "./audios/",
         { contentType: request.header("Content-Type") },
         "local"
       );
@@ -61,8 +64,8 @@ export default class AudiosController {
     const locationOrigin = new URL(request.completeUrl()).origin;
     const newAudio = await Audio.create({
       name: audioFile.fileName,
-      publicPath: `${locationOrigin}${await Drive.getUrl(audioFile.fileName)}`,
-      relativePath: `/uploads/${audioFile.fileName}`,
+      publicPath: `${locationOrigin}/uploads/audios/${audioFile.fileName}`,
+      relativePath: `/uploads/audios/${audioFile.fileName}`,
       langId: 1,
       creatorId: user.id,
       lineId: lineId,
