@@ -13,7 +13,6 @@ export default class PlaysController {
 
   public async createNew({ auth }: HttpContextContract) {
     const user = await auth.authenticate();
-<<<<<<< HEAD
     const newPlay=await Play.create(
       {
         name: 'Nouvelle Pièce',
@@ -21,13 +20,6 @@ export default class PlaysController {
         creatorId: user.id
       }
     );
-=======
-    const newPlay = await Play.create({
-      name: "Nouvelle Pièce",
-      description: "description",
-      creatorId: user.id,
-    });
->>>>>>> 981adabbf9984107dd6f793f930f66ea76b13650
     return newPlay;
   }
 
@@ -50,7 +42,10 @@ export default class PlaysController {
 
   public async update({}: HttpContextContract) {}
 
-  public async destroy({ params }: HttpContextContract) {
-    await Play.query().where("id", params.id).delete();
+  public async destroy({ response,params }: HttpContextContract) {
+    const playId=params.id;
+    var play = await Play.findOrFail(playId);
+    await play.delete();
+    return response.redirect().back();
   }
 }

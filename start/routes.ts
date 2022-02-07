@@ -49,6 +49,7 @@ Route.resource("formation", "FormationsController").middleware({
 // })
 
 Route.resource("plays", "PlaysController");
+Route.resource("scenes", "ScenesController");
 Route.resource("audios", "AudiosController");
 Route.resource("lines", "LinesController");
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");

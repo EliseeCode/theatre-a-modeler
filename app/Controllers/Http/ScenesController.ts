@@ -29,7 +29,7 @@ export default class ScenesController {
   public async createNew({ auth,params }: HttpContextContract) {
     const play=await Play.findOrFail(params.id)
     const user = await auth.authenticate();
-    const newPlay=await Scene.create(
+    const newScene=await Scene.create(
       {
         
           name: 'Nouvelle scène',
@@ -39,7 +39,7 @@ export default class ScenesController {
           playId:play.id
       }
     );
-    return newPlay;
+    return newScene;
   }
 
   public async updateName ({request, params}: HttpContextContract) {
@@ -58,10 +58,10 @@ export default class ScenesController {
   public async update ({}: HttpContextContract) {
   }
 
-  public async destroy ({request}: HttpContextContract) {
-    const scene_id=request.all().sceneId;
-    var scene = await Scene.findOrFail(scene_id);
+  public async destroy ({response,params}: HttpContextContract) {
+    const sceneId=params.id;
+    var scene = await Scene.findOrFail(sceneId);
     await scene.delete();
-    return "ok";
+    return response.redirect().back();
   }
 }

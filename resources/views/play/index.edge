@@ -31,8 +31,11 @@
                                         <a href={{ 'play/'+play.id+'/scene/'+scene.id }} class="button">
                                         View
                                         </a>
-                                        <div class='button' onclick='toggle_scene_display({{scene.id}});'>Edit</div>
-                                        <div class='button' onclick='delete_scene({{scene.id}});'>Delete</div>
+                                        <div class='button' onclick='toggle_scene_display({{scene.id}});' >Edit</div>
+                                        <form action={{ 'scenes/'+scene.id+'?_method=DELETE' }} method="POST">
+                                            {{ csrfField() }}
+                                        <button type="submit" class='delete'></button>
+                                        </form>
                                 </div>
                                 <div class="scene_item_edit" style="display:none;">
                                     <input type="text" value="{{scene.name}}" class="input" onblur="update_scene_name({{scene.id}});toggle_scene_display({{scene.id}});" class="edit_scene_name">
