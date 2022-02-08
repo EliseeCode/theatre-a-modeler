@@ -6,28 +6,18 @@ export default class PlaysController {
 
   public async index({ view }: HttpContextContract) {
     const plays = await (
-      await Play.query().preload("scenes").preload("creator")
+      await Play.query().preload("scenes").preload("creator").preload("image")
     ).map((e) => e.serialize());
     return view.render("play/index", { plays });
   }
 
   public async createNew({ auth }: HttpContextContract) {
     const user = await auth.authenticate();
-<<<<<<< HEAD
-    const newPlay=await Play.create(
-      {
-        name: 'Nouvelle Pièce',
-        description: "description",
-        creatorId: user.id
-      }
-    );
-=======
     const newPlay = await Play.create({
       name: "Nouvelle Pièce",
       description: "description",
       creatorId: user.id,
     });
->>>>>>> 981adabbf9984107dd6f793f930f66ea76b13650
     return newPlay;
   }
 
