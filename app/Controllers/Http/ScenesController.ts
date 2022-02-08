@@ -22,7 +22,7 @@ export default class ScenesController {
     return view.render("scene/show", { scene, play });
   }
 
-  public async createNew({ auth, params }: HttpContextContract) {
+  public async createNew({ response, auth, params }: HttpContextContract) {
     const play = await Play.findOrFail(params.id);
     const user = await auth.authenticate();
     const newScene=await Scene.create(
@@ -35,7 +35,7 @@ export default class ScenesController {
           playId:play.id
       }
     );
-    return newScene;
+    return response.redirect().back();
   }
 
   public async updateName({ request, params }: HttpContextContract) {
