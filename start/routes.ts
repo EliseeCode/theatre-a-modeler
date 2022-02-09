@@ -51,6 +51,7 @@ Route.resource("formation", "FormationsController").middleware({
 Route.resource("plays", "PlaysController");
 Route.resource("audios", "AudiosController");
 Route.resource("lines", "LinesController");
+Route.resource("images", "ImagesController");
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
 Route.get("api/play/createNew", "PlaysController.createNew");
 Route.get("api/play/:id/scene/createNew", "ScenesController.createNew");
