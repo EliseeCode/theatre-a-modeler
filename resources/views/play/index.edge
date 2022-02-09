@@ -34,6 +34,15 @@
                    
                 <div class="card-content">
                     <div class="content">
+                        @if(play.image)
+                                <div class="card-image">
+                                    <figure class="image is-16by9">
+                                      <img src="{{play?.image?.public_path}}" alt="Placeholder image for {{play?.id}}">
+                                    </figure>
+                                  </div>
+                                @else
+                                <button class="button btnUploadInit is-primary is-fullwidth" data-play-id="{{play.id}}">Upload New</button>
+                        @end
                         <div class="block description">
                         {{play.description}}  
                         </div>
@@ -58,12 +67,26 @@
                                         </div>    
                                     </div>
                                 </div>
-                                <div class="scene_item_edit" style="display:none;">
-                                    <input type="text" value="{{scene.name}}" class="input" onblur="update_scene_name({{scene.id}});toggle_scene_display({{scene.id}});" class="edit_scene_name">
-                                </div>   
+                                <div class="block" id="play_item_{{play.id}}">
+                                    @each(scene in play.scenes)
+                                    <div id="scene_item_{{scene.id}}">
+                                        <div class="scene_item_display is-fullwidth">
+                                                <span class="scene_name">{{scene.name}}</span>
+                                                <a href={{ 'play/'+play.id+'/scene/'+scene.id }} class="button">
+                                                View
+                                                </a>
+                                                <div class='button' onclick='toggle_scene_display({{scene.id}});'>Edit</div>
+                                                <div class='button' onclick='delete_scene({{scene.id}});'>Delete</div>
+                                        </div>
+                                        <div class="scene_item_edit" style="display:none;">
+                                            <input type="text" value="{{scene.name}}" class="input" onblur="update_scene_name({{scene.id}});toggle_scene_display({{scene.id}});" class="edit_scene_name">
+                                        </div>   
+                                    </div>
+                                    @endeach
+                                    
+                                </div>
+                                <div onclick="addNewScene({{play.id}})" class="button is-primary">Nouvelle Scene</div>
                             </div>
-                            @endeach
-                            
                         </div>
                         <div class="container">
                             <form action={{ 'play/'+play.id+'/scene/createNew' }} method="POST">
@@ -73,13 +96,30 @@
                         </div>
                     </div>
                 </div>
+            @else       
+                <p>Pas encore de pièce de théâtre</p>  
+            @endeach
+            </div>        
+        </div>
+    </div>
+    <div class="column i mt-5">
+        <div class="columns">
+            <div class="column">
+                <img src="" alt="Placeholder for the image">
             </div>
         </div>
-    @else       
-        <p>Pas encore de pièce de théâtre</p>  
-    @endeach
+        <div class="columns">
+            <div class="column is-centered">
+                <button class="button is-success is-fullwidth" id="btnInsert">Insert</button>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="is-full column">
+                <button class="button is-primary is-fullwidth" id="btnUpload">Upload</button>
+            </div>
+        </div>
     </div>
-</div>
+ </div>
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 <script>
     function delete_scene(scene_id)

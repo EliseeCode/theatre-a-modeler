@@ -37,7 +37,7 @@ export default class AudioSeeder extends BaseSeeder {
           "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
         relativePath: "/uploads/2020/02/Kalimba.mp3",
         langId: 3,
-        creatorId: 1,
+        creatorId: 3,
         lineId: 3,
         size: 22,
         type: "mp3",
