@@ -50,13 +50,13 @@ export default class AudiosController {
       Logger.info(message);
     } catch (err) {
       status = false;
-      message = `An error occured during save of the audio file.\nHere's the details: ${err} `;
+      message = `An error occured during the save of the audio file.\nHere's the details: ${err} `;
       Logger.error(message);
       return response.json({ status: 0, message });
     }
 
     if (!audioFile.fileName) {
-      message = `An error occured during save of the audio file.\nHere's the details: audioFile.fileName is not defined.`;
+      message = `An error occured during the save of the audio file.\nHere's the details: audioFile.fileName is not defined.`;
       Logger.error(message);
       return response.json({ status: 0, message });
     }

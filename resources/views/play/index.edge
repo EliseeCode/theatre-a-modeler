@@ -1,7 +1,8 @@
 @layout('layouts/master')
-
 @section('content')
-<div class="columns" style="zoom: 80%; -ms-zoom: 0.80; -webkit-zoom: 0.80; -moz-transform:  scale(0.80,0.80); -moz-transform-origin: left top;">
+{{csrfField()}}
+<div class="container has-text-centered">
+<div class="columns is-full is-centered" style="-ms-zoom: 0.80; -webkit-zoom: 0.80; -moz-transform:  scale(0.80,0.80); -moz-transform-origin: center top;">
     <div class="column is-full">
         <div class="container">
             <h1 class="title">Plays</h1>
@@ -23,12 +24,16 @@
                             <div class="content">
                                 @if(play.image)
                                 <div class="card-image">
-                                    <figure class="image is-16by9">
-                                      <img src="{{play?.image?.public_path}}" alt="Placeholder image for {{play?.id}}">
-                                    </figure>
+                                    <div class="notification is-success p-1 m-0">
+                                        <button class="delete is-large is-danger" data-image-id="{{play?.image?.id}}" style="z-index: 100;"></button>
+                                        <figure class="image is-vcentered m-1">
+                                            <img src="{{play?.image?.public_path}}" style="border-radius: 1%;" alt="Placeholder image for {{play?.id}}">
+                                          </figure>
+                                      </div>
                                   </div>
                                 @else
-                                <button class="button btnUploadInit is-primary is-fullwidth" data-play-id="{{play.id}}">Upload New</button>
+                                <input id="file_{{play.id}}" type="file" data-type="Play" data-id="{{play.id}}" hidden/>
+                                <label for="file_{{play.id}}" class="is-success has-text-centered button btnUpload is-primary is-fullwidth" >Select file</label>
                                 @end
                                 
                                 <div class="block description mt-5">
@@ -63,26 +68,71 @@
             </div>        
         </div>
     </div>
-    <div class="column i mt-5">
-        <div class="columns">
-            <div class="column">
-                <img src="" alt="Placeholder for the image">
-            </div>
-        </div>
-        <div class="columns">
-            <div class="column is-centered">
-                <button class="button is-success is-fullwidth" id="btnInsert">Insert</button>
-            </div>
-        </div>
-        <div class="columns">
-            <div class="is-full column">
-                <button class="button is-primary is-fullwidth" id="btnUpload">Upload</button>
-            </div>
-        </div>
-    </div>
  </div>
-<div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
+</div>
 <script>
+    const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
+    const deleteButtons = Array.from(document.getElementsByClassName("delete"));
+    const fileInputs = Array.from(document.querySelectorAll("[id^='file_']"));
+    fileInputs.map((elem) => {
+        elem.addEventListener("change", (e) => {
+            const fileInput = e.target;
+            const entityType = fileInput.getAttribute("data-type")
+            const entityId = fileInput.getAttribute("data-id");
+            const file = fileInput.files[0];
+            console.log(file)
+            console.log(`Here's the entity_id to upload: ${entityId}`);
+            const form = new FormData();
+            const reader = new FileReader();
+            reader.addEventListener('load', event => {
+                const buffer = event.target.result;
+                const blob = new Blob([buffer], {type: file.type});
+                form.append("image", blob);
+                form.append("entityId", entityId);
+                form.append("entityType", entityType);
+                fetch(`${window.location.origin}/images`, {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-Token': CSRF_TOKEN,
+                        /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+                        'Content-Type': `${blob.type}`,*/ 
+                        'Content-Transfer-Encoding': 'base64'
+                    },
+                    mode: "cors",
+                    body: form
+                }).then(response => {
+                    if (!response.ok) throw response;
+                    return response.json();
+                }).then((data) => {
+                    console.info(data);
+                    window.location.reload();
+                }).catch((err) => {
+                    console.error(err);
+                })
+            });
+            reader.readAsArrayBuffer(file);
+            
+        })
+    })
+    deleteButtons.map((elem) => {
+        elem.addEventListener("click", (e) => {
+            const id = e.target.getAttribute("data-image-id");
+            fetch(`${window.location.origin}/images/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-Token": CSRF_TOKEN
+                }
+            }).then(response => {
+                if (!response.ok) throw response;
+                return response.json();
+            }).then((data) => {
+                console.info(data);
+                window.location.reload()
+            }).catch((err) => {
+                console.error(err);
+            })
+        })
+    })
     function delete_scene(scene_id)
     {
         const token = $('.csrfTokenElement').data('csrf-token');
