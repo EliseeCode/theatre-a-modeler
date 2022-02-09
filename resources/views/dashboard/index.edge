@@ -8,28 +8,11 @@
     <a href={{ 'groups/create' }} class='button is-primary'>Nouveau groupe</a>
        
     </div>
-    {{inspect(user.groups)}}
+    
     @if(user.groups.length>0)
         <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
             @each((group,index) in user.groups)
-            <div class="column" id={{'group_item_'+group.id}} style="max-width: 500px;min-width:300px;">
-                <div style="height:100%;" class="card play_item">
-                        <div class="card-header p-3">       
-                            {{group.name}}
-                            <p class="level-item">par {{group.creator.name}}</p>
-                            <form action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
-                                {{ csrfField() }}
-                                <button type="submit" class='delete'></button>
-                            </form>
-                        </div>
-                    
-                        <div class="card-content">
-                            <div class="content">
-                                {{group.description}}  
-                            </div>
-                        </div>
-                </div>
-            </div>
+            @include('partials/groupPanel')
             @endeach
         </div>    
     @else   
@@ -37,6 +20,14 @@
         <p>Vous n'avez pas encore rejoins de groupe</p>  
     
     @endif
+
+    <div class="box">
+        <form action="/groups/join">
+            <label for="name">Rejoindre un goupe avec un code</label>
+            <input type="text" name="code" class="input">
+            <input type="submit" class="button is-primary" value="Rejoindre">
+        </form>
+    </div>    
     
 <hr>
     <h1 class="subtitle">Vos pièces de théâtre</h1>
@@ -44,42 +35,12 @@
     @if(user.plays.length>0)
         <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
             @each((play,index) in user.plays)
-                <div class="column" id={{'play_item_'+play.id}} style="max-width: 500px;min-width:300px;">
-                    <div style="height:100%;" class="card play_item">
-                            <div class="card-header p-3">       
-                                {{play.name}}
-                                <form action={{ 'plays/'+play.id+'?_method=DELETE' }} method="POST">
-                                    {{ csrfField() }}
-                                    <button type="submit" class='delete'></button>
-                                </form>
-                            </div>
-                        
-                            <div class="card-content">
-                                <div class="content">
-                                    {{play.description}}  
-                                </div>
-                            </div>
-                    </div>
-                </div>
+                @include('partials/playPanel')
             @endeach    
         </div> 
     @else          
         <p>Vous n'avez pas encore créé de pièce de théâtre</p>  
     @endif
-    
-
-    
-
-    
-        <div class="box">
-            <form action="/groups/join">
-                <label for="name">Rejoindre un goupe avec un code</label>
-                <input type="text" name="code" class="input">
-                <input type="submit" class="button is-primary" value="Rejoindre">
-            </form>
-        </div>    
-  
-
 
 </div>
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>

@@ -7,6 +7,7 @@ export default class GroupUsers extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer("position")
+      table.integer("role_id").nullable();
       table.integer("user_id", 180)
       .unsigned()
       .references('users.id')
@@ -15,6 +16,7 @@ export default class GroupUsers extends BaseSchema {
       .unsigned()
       .references('groups.id')
       .onDelete('CASCADE');
+      table.unique(['user_id', 'group_id'])
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

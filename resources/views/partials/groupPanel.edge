@@ -1,0 +1,34 @@
+<div class="column" id={{'group_item_'+group.id}} style="max-width: 500px;min-width:300px;">
+    <div style="height:100%;" class="card play_item">
+            <div class="card-header p-3 level">    
+                <div class="level-left">
+                    <div class="level-item">
+                        {{ group.$extras.pivot_role_id==1?'Professeur':'Elève'}}
+                         dans le groupe
+                        {{group.name}}
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <p class="level-item">par {{group.creator.username}}</p>
+                        <form action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
+                            {{ csrfField() }}
+                            <button class='delete'></button>
+                        </form>
+                    </div>
+                </div>   
+            </div>
+            <div class="card-content">
+                <div class="content">
+                    <div class="block">
+                        {{group.description || ""}}  
+                    </div>
+                    <div class="block">
+                        @each((student in group.students))
+                        {{student.username}}
+                        @endeach
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>

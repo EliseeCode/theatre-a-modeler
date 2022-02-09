@@ -8,8 +8,9 @@ export default class AppsController {
             return response.redirect().toRoute("/plays");
         }
         const user=await auth.authenticate();
-        await user.load('plays');
-        await user.load('groups');//,(Query)=>{Query.preload("creator")});
+        await user.load('plays',(Query)=>{Query.preload('creator').preload('scenes')});
+
+        await user.load('groups',(Query)=>{Query.preload("creator")});
         return view.render("dashboard/index",{user})      
     }
 }

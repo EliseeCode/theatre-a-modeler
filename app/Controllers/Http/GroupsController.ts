@@ -23,7 +23,7 @@ export default class GroupsController {
   } 
   public async store ({auth,request,response}: HttpContextContract) {
       
-    Logger.info("group is being created");
+      Logger.info("group is being created");
       // await request.validate({
       //   schema:newGroupSchema,
       //   messages:{
@@ -42,13 +42,15 @@ export default class GroupsController {
       }
       Logger.info("code will be "+code);
       
-      await Group.create({
+      const group = await Group.create({
         name:request.all().name,
         description:request.all().description,
         creatorId:creatorId,
         code:code,
       });
       Logger.info("Group created");
+      await user.related("groups").save(group,undefined,{'roleId':1});
+
       return response.redirect().toRoute("/dashboard");
   }
 

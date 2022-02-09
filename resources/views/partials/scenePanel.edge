@@ -1,0 +1,20 @@
+<div id="scene_item_{{scene.id}}">
+    <div class="scene_item_display is-fullwidth">
+        <div class="level">
+            <div class="level-left">
+                <span class="level-item scene_name" onclick='toggle_scene_display({{scene.id}});'>{{scene.name}}</span>
+            </div>
+            <div class="level-right">
+                <a class="level-item" href={{ 'play/'+play.id+'/scene/'+scene.id }} >
+                    <span class="icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </a>
+                <form class='level-item' action={{ 'scenes/'+scene.id+'?_method=DELETE' }} method="POST">
+                    {{ csrfField() }}
+                <button type="submit" class='delete'></button>
+                </form>
+            </div>    
+        </div>
+    </div>
+</div>    
