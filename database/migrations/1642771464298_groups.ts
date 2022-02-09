@@ -10,6 +10,7 @@ export default class Groups extends BaseSchema {
       table.text('description','long').nullable()
       table.string("status",55).notNullable().defaultTo("active")
       table.integer("lang_id").nullable()
+      table.string("code").notNullable()
       table.integer("creator_id", 180)
       .unsigned()
       .references('users.id')

@@ -1,5 +1,6 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import User from 'App/Models/User'
+import Role from 'Contracts/enums/Role'
 
 export default class UserSeeder extends BaseSeeder {
   static createMany: any
@@ -12,7 +13,7 @@ export default class UserSeeder extends BaseSeeder {
           loginId:"elisee",
           email: '',
           password: '131313',
-          role: 'admin',
+          roleId: Role.ADMIN,
           organisation: 'NDS',
         },
         {
@@ -20,7 +21,7 @@ export default class UserSeeder extends BaseSeeder {
           loginId:"admin",
           email: '',
           password: 'passwordAdmin',
-          role: 'admin',
+          roleId: Role.ADMIN,
           organisation: 'NDS',
         },
         {
@@ -28,6 +29,7 @@ export default class UserSeeder extends BaseSeeder {
           loginId:"tester1",
           email: 'tester1@test.com',
           password: 'passwordtester',
+          roleId: Role.STUDENT,
           organisation: 'SP',
         },
         {

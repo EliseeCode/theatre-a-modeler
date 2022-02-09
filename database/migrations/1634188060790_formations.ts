@@ -14,7 +14,7 @@ export default class Formations extends BaseSchema {
       table.date("starting_date").nullable()
       table.date("finishing_date").nullable()
       table.string("status",55).notNullable().defaultTo("pending")
-      table.string("lang").nullable()
+      table.integer("lang_id").nullable()
       table.string("modality",55).nullable()
       table.integer("creator_id", 180)
       .unsigned()

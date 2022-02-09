@@ -1,0 +1,135 @@
+@layout('layouts/master')
+
+@section('content')
+  <div class="container">
+    <h1 class="subtitle">Vos groupes</h1>
+    <div class="container">
+       
+    <a href={{ 'groups/create' }} class='button is-primary'>Nouveau groupe</a>
+       
+    </div>
+    {{inspect(user.groups)}}
+    @if(user.groups.length>0)
+        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
+            @each((group,index) in user.groups)
+            <div class="column" id={{'group_item_'+group.id}} style="max-width: 500px;min-width:300px;">
+                <div style="height:100%;" class="card play_item">
+                        <div class="card-header p-3">       
+                            {{group.name}}
+                            <p class="level-item">par {{group.creator.name}}</p>
+                            <form action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
+                                {{ csrfField() }}
+                                <button type="submit" class='delete'></button>
+                            </form>
+                        </div>
+                    
+                        <div class="card-content">
+                            <div class="content">
+                                {{group.description}}  
+                            </div>
+                        </div>
+                </div>
+            </div>
+            @endeach
+        </div>    
+    @else   
+      
+        <p>Vous n'avez pas encore rejoins de groupe</p>  
+    
+    @endif
+    
+<hr>
+    <h1 class="subtitle">Vos pièces de théâtre</h1>
+    <a href={{ 'plays/create' }} class='button is-primary'>Nouvelle pièce</a>
+    @if(user.plays.length>0)
+        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
+            @each((play,index) in user.plays)
+                <div class="column" id={{'play_item_'+play.id}} style="max-width: 500px;min-width:300px;">
+                    <div style="height:100%;" class="card play_item">
+                            <div class="card-header p-3">       
+                                {{play.name}}
+                                <form action={{ 'plays/'+play.id+'?_method=DELETE' }} method="POST">
+                                    {{ csrfField() }}
+                                    <button type="submit" class='delete'></button>
+                                </form>
+                            </div>
+                        
+                            <div class="card-content">
+                                <div class="content">
+                                    {{play.description}}  
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            @endeach    
+        </div> 
+    @else          
+        <p>Vous n'avez pas encore créé de pièce de théâtre</p>  
+    @endif
+    
+
+    
+
+    
+        <div class="box">
+            <form action="/groups/join">
+                <label for="name">Rejoindre un goupe avec un code</label>
+                <input type="text" name="code" class="input">
+                <input type="submit" class="button is-primary" value="Rejoindre">
+            </form>
+        </div>    
+  
+
+
+</div>
+<div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
+<script>
+    function delete_scene(scene_id)
+    {
+        const token = $('.csrfTokenElement').data('csrf-token');
+        const params = { 
+            sceneId: scene_id, 
+            _csrf: token
+        };
+        $.post('/api/scene/delete',params,(resp)=>{
+            $("#scene_item_"+scene_id).remove();
+            }   
+        );
+    }
+    function toggle_scene_display(scene_id)
+    {
+        $("#scene_item_"+scene_id+" .scene_item_display").toggle();
+        $("#scene_item_"+scene_id+" .scene_item_edit").toggle();  
+        $("#scene_item_"+scene_id+" .scene_item_edit input").focus();      
+    }
+    function toggle_play_display(play_id)
+    {
+        $("#play_item_"+play_id+" .play_item_display").toggle();
+        $("#play_item_"+play_id+" .play_item_edit").toggle();  
+        $("#play_item_"+play_id+" .play_item_edit input").focus();      
+    }
+    function update_scene_name(scene_id)
+    {   
+        const newSceneName=$("#scene_item_"+scene_id+" .scene_item_edit input").val();
+        $("#scene_item_"+scene_id+" .scene_item_display .scene_name").text(newSceneName);
+        const token = $('.csrfTokenElement').data('csrf-token');
+        const params = { 
+            newSceneName: newSceneName, 
+            _csrf: token
+        };
+        $.post('/api/scene/'+scene_id+'/updateName',params,(resp)=>console.log(resp));
+    }
+    function update_play_name(play_id)
+    {   
+        const newPlayName=$("#play_item_"+play_id+" .play_item_edit input").val();
+        $("#play_item_"+play_id+" .play_item_edit input").focus();
+        $("#play_item_"+play_id+" .play_item_display .play_name").text(newPlayName);
+        const token = $('.csrfTokenElement').data('csrf-token');
+        const params = { 
+            newPlayName: newPlayName, 
+            _csrf: token
+        };
+        $.post('/api/play/'+play_id+'/updateName',params,(resp)=>console.log(resp));
+    }
+</script>
+@endsection

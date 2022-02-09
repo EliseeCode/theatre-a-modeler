@@ -51,8 +51,10 @@ Route.resource("formation", "FormationsController").middleware({
 Route.resource("plays", "PlaysController");
 Route.resource("scenes", "ScenesController");
 Route.resource("audios", "AudiosController");
+Route.resource("groups", "GroupsController");
 Route.resource("lines", "LinesController");
-Route.get("group/:group_id", "PlayController.IndexGroup");
+Route.get("dashboard","AppsController.index");
+
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
 Route.post("play/createNew", "PlaysController.createNew");
 Route.post("play/:id/scene/createNew", "ScenesController.createNew");
@@ -76,7 +78,7 @@ Route.get("/recoverPassword", async ({ view }) => {
 // Route.get('/verifyResetPassword/:username/', 'AuthController.verifyResetPassword');
 
 Route.get("/logout", "AuthController.logout").as("auth.logout");
-Route.get("/profile", "AuthController.profile").middleware("auth");
+Route.get("/profile", "UsersController.profile").middleware("auth");
 Route.get(
   "/loginWithSignedUrl/:username",
   "AuthController.loginWithSignedUrl"

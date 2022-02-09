@@ -29,6 +29,9 @@ export default class Group extends BaseModel {
   @column()
   public creatorId: number;
 
+  @column()
+  public code: string;
+
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 

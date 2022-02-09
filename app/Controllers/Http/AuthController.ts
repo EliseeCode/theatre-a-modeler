@@ -151,8 +151,4 @@ export default class AuthController {
     Logger.info("logout");
     response.redirect().back();
   }
-
-  public async profile({auth, view}:HttpContextContract){
-    return view.render('auth.profile',{'user':auth.user})
-  }
 }

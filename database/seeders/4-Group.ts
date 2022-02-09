@@ -7,15 +7,19 @@ export default class GroupSeeder extends BaseSeeder {
     await Group.createMany([
       {
         name: 'HAZ-A',
-        creator_id: 1
+        creatorId: 1,
+        code:"ABCDED"
+
       },
       {
         name: 'HAZ-B',
-        creator_id: 1
+        creatorId: 1,
+        code:"azerty"
       },
       {
         name: 'HAZ-C',
-        creator_id: 1
+        creatorId: 1,
+        code:"azertyu"
       }
     ]);
   }

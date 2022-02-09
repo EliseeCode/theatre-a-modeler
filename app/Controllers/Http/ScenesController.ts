@@ -1,7 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Scene from "App/Models/Scene";
 import Play from "App/Models/Play";
-
+import Logger from "@ioc:Adonis/Core/Logger";
 export default class ScenesController {
   public async index({}: HttpContextContract) {}
 
@@ -16,10 +16,26 @@ export default class ScenesController {
         lineQuery.orderBy("position", "asc").preload("character");
       });
     const scene = sceneInst[0].serialize();
+    
+    var userByCharacter={
+      1:1,
+      2:2
+    };
+    
+    
+    const sceneInst2 = await Scene.query().preload("lines",(lineQuery)=>{
+      for(let characterId in userByCharacter){
+        lineQuery.where('characterId',characterId).preload("audios",(audioQuery)=>{
+          audioQuery.where("creator_id",userByCharacter[characterId])
+        })
+      }
+    })
+    
+    
 
     const playId = params.play_id;
     const play = await (await Play.findOrFail(playId)).serialize();
-    return view.render("scene/show", { scene, play });
+    return view.render("scene/show", { scene, play,sceneInst2 });
   }
 
   public async createNew({ response, auth, params }: HttpContextContract) {
