@@ -6,6 +6,8 @@
  */
 
 import Bouncer from '@ioc:Adonis/Addons/Bouncer'
+import User from 'App/Models/User';
+import Role from 'Contracts/enums/Role'
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +32,9 @@ import Bouncer from '@ioc:Adonis/Addons/Bouncer'
 |****************************************************************
 */
 export const { actions } = Bouncer
-
+Bouncer.define("deleteGroup",(user : User)=>{
+    return [Role.ADMIN,Role.TEACHER].includes(user.roleId);
+})
 /*
 |--------------------------------------------------------------------------
 | Bouncer Policies

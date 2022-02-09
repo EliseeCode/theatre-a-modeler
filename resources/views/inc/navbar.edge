@@ -31,19 +31,22 @@
       @else
       <div class="navbar-menu">
         <div id="nav-start" class="navbar-menu">
-          <a class="navbar-item" href="/users">
-            Secret stuff
+          <a class="navbar-item" href="/dashboard">
+            Tableau de bord
+          </a>
+          <a class="navbar-item" href="/plays">
+            Explorer les pièces de théâtre
           </a>
         </div>
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
+              <a href="/profile" class="button">
+                {{auth.user.username}}
+              </a>
               <a href="/logout" class="button">
                logout
               </a>    
-              <a href="/profile" class="button">
-                {{auth.user.name}}
-              </a>
             </div>
           </div>
         </div>

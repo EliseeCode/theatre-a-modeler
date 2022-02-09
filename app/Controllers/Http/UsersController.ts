@@ -1,5 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
+import authConfig from 'Config/auth';
+import Role from 'Contracts/enums/Role';
 
 
 export default class UsersController {
@@ -9,18 +11,36 @@ export default class UsersController {
     return view.render("user.index", {
       users});
   }
-  
-  public async giveAdminRole({params,response}:HttpContextContract){
-    const id=params.id;
-    const user=await User.findOrFail(id);
-    user.role="admin";
+  public async profile({auth, view}:HttpContextContract){
+    return view.render('user.profile',{'user':auth.user})
+  }
+
+  public async RoleUpdateByUser({auth, params,response}:HttpContextContract){
+    const user=await auth.authenticate();
+    const roleId=params.roleId;
+    if(![Role.STUDENT,Role.TEACHER].includes(roleId)){
+      return response.status(403);
+    }
+    user.roleId=roleId;
     await user.save();
     return response.redirect('back');
   }
-  public async removeAdminRole({params,response}:HttpContextContract){
+
+  public async giveAdminRole({auth, params,response}:HttpContextContract){
+    const askingUser=await auth.authenticate();
+    if(askingUser.roleId!=Role.ADMIN){return response.redirect('back');}
     const id=params.id;
     const user=await User.findOrFail(id);
-    user.role="null";
+    user.roleId=Role.ADMIN;
+    await user.save();
+    return response.redirect('back');
+  }
+  public async removeAdminRole({auth, params,response}:HttpContextContract){
+    const askingUser=await auth.authenticate();
+    if(askingUser.roleId!=Role.ADMIN){return response.redirect('back');}
+    const id=params.id;
+    const user=await User.findOrFail(id);
+    user.roleId=Role.STUDENT;
     await user.save();
     return response.redirect('back');
   }

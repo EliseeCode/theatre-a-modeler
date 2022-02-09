@@ -1,7 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Scene from "App/Models/Scene";
 import Play from "App/Models/Play";
-
+import Logger from "@ioc:Adonis/Core/Logger";
 export default class ScenesController {
   public async index({}: HttpContextContract) {}
 
@@ -16,23 +16,42 @@ export default class ScenesController {
         lineQuery.orderBy("position", "asc").preload("character");
       });
     const scene = sceneInst[0].serialize();
+    
+    var userByCharacter={
+      1:1,
+      2:2
+    };
+    
+    
+    const sceneInst2 = await Scene.query().preload("lines",(lineQuery)=>{
+      for(let characterId in userByCharacter){
+        lineQuery.where('characterId',characterId).preload("audios",(audioQuery)=>{
+          audioQuery.where("creator_id",userByCharacter[characterId])
+        })
+      }
+    })
+    
+    
 
     const playId = params.play_id;
     const play = await (await Play.findOrFail(playId)).serialize();
-    return view.render("scene/show", { scene, play });
+    return view.render("scene/show", { scene, play,sceneInst2 });
   }
 
-  public async createNew({ auth, params }: HttpContextContract) {
+  public async createNew({ response, auth, params }: HttpContextContract) {
     const play = await Play.findOrFail(params.id);
     const user = await auth.authenticate();
-    const newPlay = await Scene.create({
-      name: "Nouvelle scène",
-      position: 2,
-      description: "",
-      creatorId: user.id,
-      playId: play.id,
-    });
-    return newPlay;
+    const newScene=await Scene.create(
+      {
+        
+          name: 'Nouvelle scène',
+          position: 2,
+          description:"",
+          creatorId:user.id,
+          playId:play.id
+      }
+    );
+    return response.redirect().back();
   }
 
   public async updateName({ request, params }: HttpContextContract) {
@@ -49,10 +68,10 @@ export default class ScenesController {
 
   public async update({}: HttpContextContract) {}
 
-  public async destroy({ request }: HttpContextContract) {
-    const scene_id = request.all().sceneId;
-    var scene = await Scene.findOrFail(scene_id);
+  public async destroy ({response,params}: HttpContextContract) {
+    const sceneId=params.id;
+    var scene = await Scene.findOrFail(sceneId);
     await scene.delete();
-    return "ok";
+    return response.redirect().back();
   }
 }

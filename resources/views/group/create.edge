@@ -1,0 +1,16 @@
+@layout('layouts/master')
+
+@section('content')
+  <div class="box">
+    <h1 class="title">Nouveau groupe</h1>
+      
+    <form action={{'/groups'}} method="POST">
+        {{ csrfField() }}
+        <label for="name">Nom du groupe</label>
+        <input type="text" name="name">
+        <label for="description">Description</label>
+        <textarea name="description" cols="30" rows="10"></textarea>
+        <input type="submit" value="Enregistrer">
+    </form>
+  </div>
+@endsection

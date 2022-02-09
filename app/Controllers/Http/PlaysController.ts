@@ -11,14 +11,16 @@ export default class PlaysController {
     return view.render("play/index", { plays });
   }
 
-  public async createNew({ auth }: HttpContextContract) {
+  public async createNew({ response,auth }: HttpContextContract) {
     const user = await auth.authenticate();
-    const newPlay = await Play.create({
-      name: "Nouvelle Pièce",
-      description: "description",
-      creatorId: user.id,
-    });
-    return newPlay;
+    const newPlay=await Play.create(
+      {
+        name: 'Nouvelle Pièce',
+        description: "description",
+        creatorId: user.id
+      }
+    );
+    return response.redirect().back();
   }
 
   public async create({ view }: HttpContextContract) {
@@ -40,7 +42,21 @@ export default class PlaysController {
 
   public async update({}: HttpContextContract) {}
 
-  public async destroy({ params }: HttpContextContract) {
-    await Play.query().where("id", params.id).delete();
+  public async updateName({ request, params }: HttpContextContract) {
+    const newPlayName = request.all().newPlayName;
+    const play_id = params.playId;
+    var play = await Play.findOrFail(play_id);
+    play.name = newPlayName;
+    console.log(newPlayName);
+    await play.save();
+    return play;
+  }
+
+
+  public async destroy({ response,params }: HttpContextContract) {
+    const playId=params.id;
+    var play = await Play.findOrFail(playId);
+    await play.delete();
+    return response.redirect().back();
   }
 }

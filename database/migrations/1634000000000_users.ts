@@ -9,7 +9,7 @@ export default class UsersSchema extends BaseSchema {
       table.string("username", 255).nullable();
       table.string("login_id", 255).nullable();
       table.string("email", 255).nullable();
-      table.string("role", 255).nullable();
+      table.string("role_id", 255).nullable();
       table.string("organisation", 255).nullable();
       table.string("password", 180).notNullable();
       table.string("remember_me_token", 255).nullable();

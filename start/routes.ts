@@ -49,13 +49,18 @@ Route.resource("formation", "FormationsController").middleware({
 // })
 
 Route.resource("plays", "PlaysController");
+Route.resource("scenes", "ScenesController");
 Route.resource("audios", "AudiosController");
+Route.resource("groups", "GroupsController");
 Route.resource("lines", "LinesController");
 Route.resource("images", "ImagesController");
+Route.get("dashboard", "AppsController.index");
+
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
-Route.get("api/play/createNew", "PlaysController.createNew");
-Route.get("api/play/:id/scene/createNew", "ScenesController.createNew");
+Route.post("play/createNew", "PlaysController.createNew");
+Route.post("play/:id/scene/createNew", "ScenesController.createNew");
 Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
+Route.post("api/play/:playId/updateName", "PlaysController.updateName");
 Route.post("api/scene/delete", "ScenesController.destroy");
 
 //Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
@@ -74,7 +79,7 @@ Route.get("/recoverPassword", async ({ view }) => {
 // Route.get('/verifyResetPassword/:username/', 'AuthController.verifyResetPassword');
 
 Route.get("/logout", "AuthController.logout").as("auth.logout");
-Route.get("/profile", "AuthController.profile").middleware("auth");
+Route.get("/profile", "UsersController.profile").middleware("auth");
 Route.get(
   "/loginWithSignedUrl/:username",
   "AuthController.loginWithSignedUrl"

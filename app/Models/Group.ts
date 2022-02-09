@@ -28,6 +28,9 @@ export default class Group extends BaseModel {
 
   @column()
   public creatorId: number;
+  
+  @column()
+  public code: string;
 
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
@@ -37,6 +40,7 @@ export default class Group extends BaseModel {
     relatedKey: "id",
     pivotForeignKey: "groupId",
     pivotRelatedForeignKey: "userId",
+    pivotColumns: ['role_id'],
   })
   public users: ManyToMany<typeof User>;
 
@@ -53,4 +57,5 @@ export default class Group extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
+
 }

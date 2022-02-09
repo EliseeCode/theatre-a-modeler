@@ -6,11 +6,12 @@ import {
   BaseModel,
   manyToMany,
   ManyToMany,
-  /*hasMany,
-  HasMany,*/
+  hasMany,
+  HasMany
 } from "@ioc:Adonis/Lucid/Orm";
 //import Formation from "./Formation";
 import Group from "App/Models/Group";
+import Play from "App/Models/Play";
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
@@ -25,7 +26,7 @@ export default class User extends BaseModel {
   public email: string;
 
   @column()
-  public role: string;
+  public roleId: number;
 
   @column()
   public organisation: string;
@@ -36,13 +37,15 @@ export default class User extends BaseModel {
   @column()
   public rememberMeToken?: string;
 
-  @manyToMany(() => Group, {
-    localKey: "id",
-    relatedKey: "id",
-    pivotForeignKey: "userId",
-    pivotRelatedForeignKey: "groupId",
-  })
+  @manyToMany(() => Group, {pivotColumns: ['role_id'],})
   public groups: ManyToMany<typeof Group>;
+
+  
+  @hasMany(() => Play, {
+    localKey: "id",
+    foreignKey: "creatorId",
+  })
+  public plays: HasMany<typeof Play>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

@@ -9,7 +9,7 @@ import {loginUserSchema} from 'App/Schemas/loginUserSchema'
 
 export default class AuthController {
 
-  public async register({ view,auth, request }: HttpContextContract) {
+  public async register({ response,auth, request }: HttpContextContract) {
     
     const payload=await request.validate({
       schema:newUserSchema,
@@ -21,7 +21,7 @@ export default class AuthController {
     const user = await User.create(payload);
     auth.login(user);
     Logger.info("user created");
-    return view.render("/index",{user});
+    return response.redirect().toRoute("/dashboard");
   }
 
 
@@ -52,7 +52,7 @@ export default class AuthController {
       response.redirect().back();
     }
     //return token.toJSON();
-    response.redirect().back();
+    response.redirect().toRoute("/dashboard");
   }
 
 
@@ -150,9 +150,5 @@ export default class AuthController {
     await auth.use('web').logout();
     Logger.info("logout");
     response.redirect().back();
-  }
-
-  public async profile({auth, view}:HttpContextContract){
-    return view.render('auth.profile',{'user':auth.user})
   }
 }

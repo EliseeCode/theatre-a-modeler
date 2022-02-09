@@ -1,75 +1,26 @@
 @layout('layouts/master')
 @section('content')
-{{csrfField()}}
-<div class="container has-text-centered">
-<div class="columns is-full is-centered" style="-ms-zoom: 0.80; -webkit-zoom: 0.80; -moz-transform:  scale(0.80,0.80); -moz-transform-origin: center top;">
-    <div class="column is-full">
-        <div class="container">
-            <h1 class="title">Plays</h1>
-            <div class="container">
-                <button class="button is-primary" onclick="addNewPlay()">Nouvelle pièce</div>
-            <div class="columns is-multiline is-variable is-1-mobile is-0-tablet is-3-desktop is-8-widescreen is-2-fullhd">
-                  @each((play,index) in plays)
-                  <div class="column">
-                    <div style="height:100%;" class="card play_item">
-                        <header class="card-header">
-                        <p class="card-header-title">
-                            {{play.name}}
-                        </p>
-                        <p>par {{play.creator.username}}</p>
-                        <p>le {{play.created_at}}</p>
-                        </header>
-                        
-                        <div class="card-content">
-                            <div class="content">
-                                @if(play.image)
-                                <div class="card-image">
-                                    <div class="notification is-success p-1 m-0">
-                                        <button class="delete is-large is-danger" data-image-id="{{play?.image?.id}}" style="z-index: 100;"></button>
-                                        <figure class="image is-vcentered m-1">
-                                            <img src="{{play?.image?.public_path}}" style="border-radius: 1%;" alt="Placeholder image for {{play?.id}}">
-                                          </figure>
-                                      </div>
-                                  </div>
-                                @else
-                                <input id="file_{{play.id}}" type="file" data-type="Play" data-id="{{play.id}}" hidden/>
-                                <label for="file_{{play.id}}" class="is-success has-text-centered button btnUpload is-primary is-fullwidth" >Select file</label>
-                                @end
-                                
-                                <div class="block description mt-5">
-                                {{play.description}}  
-                                </div>
-                                <div class="block" id="play_item_{{play.id}}">
-                                    @each(scene in play.scenes)
-                                    <div id="scene_item_{{scene.id}}">
-                                        <div class="scene_item_display is-fullwidth">
-                                                <span class="scene_name">{{scene.name}}</span>
-                                                <a href={{ 'play/'+play.id+'/scene/'+scene.id }} class="button">
-                                                View
-                                                </a>
-                                                <div class='button' onclick='toggle_scene_display({{scene.id}});'>Edit</div>
-                                                <div class='button' onclick='delete_scene({{scene.id}});'>Delete</div>
-                                        </div>
-                                        <div class="scene_item_edit" style="display:none;">
-                                            <input type="text" value="{{scene.name}}" class="input" onblur="update_scene_name({{scene.id}});toggle_scene_display({{scene.id}});" class="edit_scene_name">
-                                        </div>   
-                                    </div>
-                                    @endeach
-                                    
-                                </div>
-                                <div onclick="addNewScene({{play.id}})" class="button is-primary">Nouvelle Scene</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @else       
-                <p>Pas encore de pièce de théâtre</p>  
-            @endeach
-            </div>        
-        </div>
+<div class="container">
+    <h1 class="title">Plays</h1>
+    <div class="container">
+        <form action={{ 'play/createNew' }} method="POST">
+            {{ csrfField() }}
+            <button type="submit" class='button is-primary'>Nouvelle pièce</button>
+        </form>
     </div>
- </div>
+    @if(plays.length>0)
+        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
+            @each((play,index) in plays)
+
+                @include('partials/playPanel')
+                
+            @endeach
+        </div>       
+    @else       
+        <p>Pas encore de pièce de théâtre</p>  
+    @endif
 </div>
+<div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 <script>
     const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
     const deleteButtons = Array.from(document.getElementsByClassName("delete"));
@@ -148,7 +99,14 @@
     function toggle_scene_display(scene_id)
     {
         $("#scene_item_"+scene_id+" .scene_item_display").toggle();
-        $("#scene_item_"+scene_id+" .scene_item_edit").toggle();        
+        $("#scene_item_"+scene_id+" .scene_item_edit").toggle();  
+        $("#scene_item_"+scene_id+" .scene_item_edit input").focus();      
+    }
+    function toggle_play_display(play_id)
+    {
+        $("#play_item_"+play_id+" .play_item_display").toggle();
+        $("#play_item_"+play_id+" .play_item_edit").toggle();  
+        $("#play_item_"+play_id+" .play_item_edit input").focus();      
     }
     function update_scene_name(scene_id)
     {   
@@ -161,29 +119,17 @@
         };
         $.post('/api/scene/'+scene_id+'/updateName',params,(resp)=>console.log(resp));
     }
-    function addNewPlay(){
-        $.get('/api/play/createNew',(resp)=>console.log(resp));
-    }
-
-   
-    function addNewScene(play_id){
-        $.get('/api/play/'+play_id+'/scene/createNew',(newScene)=>{
-            console.log(newScene);
-            $('#play_item_'+play_id).append(`
-                            <div id="scene_item_${newScene.id}">
-                                <div class="scene_item_display is-fullwidth">
-                                        <span class="scene_name">${newScene.name}</span>
-                                        <a href='play/${play_id}/scene/${newScene.id}' class="button">
-                                        View
-                                        </a>
-                                        <div class='button' onclick='toggle_scene_display(${newScene.id});'>Edit</div>
-                                        <div class='button' onclick='delete_scene(${newScene.id});'>Delete</div>
-                                </div>
-                                <div class="scene_item_edit" style="display:none;">
-                                    <input type="text" value="${newScene.name}" class="input" onblur="update_scene_name(${newScene.id});toggle_scene_display(${newScene.id});" class="edit_scene_name">
-                                </div>   
-                            </div>`)
-        });
+    function update_play_name(play_id)
+    {   
+        const newPlayName=$("#play_item_"+play_id+" .play_item_edit input").val();
+        $("#play_item_"+play_id+" .play_item_edit input").focus();
+        $("#play_item_"+play_id+" .play_item_display .play_name").text(newPlayName);
+        const token = $('.csrfTokenElement').data('csrf-token');
+        const params = { 
+            newPlayName: newPlayName, 
+            _csrf: token
+        };
+        $.post('/api/play/'+play_id+'/updateName',params,(resp)=>console.log(resp));
     }
 </script>
 @endsection
