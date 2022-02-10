@@ -17,7 +17,11 @@ export default class Scenes extends BaseSchema {
         .unsigned()
         .references("plays.id")
         .onDelete("CASCADE");
-      table.integer("image_id", 180).unsigned().references("images.id");
+      table
+        .integer("image_id", 180)
+        .unsigned()
+        .references("images.id")
+        .onDelete("SET NULL");
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

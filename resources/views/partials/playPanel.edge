@@ -21,14 +21,18 @@
         <div class="card-content">
             <div class="content">
                 @if(play.image)
-                        <div class="card-image">
-                            <figure class="image is-16by9">
-                            <img src="{{play?.image?.public_path}}" alt="Placeholder image for {{play?.id}}">
+                <div class="card-image">
+                    <div class="notification is-success p-1 m-0">
+                        <button class="delete is-large is-danger" data-image-id="{{play?.image?.id}}" style="z-index: 100;"></button>
+                        <figure class="image is-vcentered m-1">
+                            <img src="{{play?.image?.public_path}}" style="border-radius: 1%;" alt="Placeholder image for {{play?.id}}">
                             </figure>
                         </div>
-                        @else
-                        <button class="button btnUploadInit is-primary is-fullwidth" data-play-id="{{play.id}}">Upload New</button>
-                @endif
+                    </div>
+                @else
+                <input id="file_{{play.id}}" type="file" data-type="Play" data-id="{{play.id}}" hidden/>
+                <label for="file_{{play.id}}" class="is-success has-text-centered button btnUpload is-primary is-fullwidth" >Select file</label>
+                @end
                 <div class="block description">
                 {{play.description}}  
                 </div>

@@ -55,7 +55,8 @@ Route.resource("scenes", "ScenesController");
 Route.resource("audios", "AudiosController");
 Route.resource("groups", "GroupsController");
 Route.resource("lines", "LinesController");
-Route.get("dashboard","AppsController.index");
+Route.resource("images", "ImagesController");
+Route.get("dashboard", "AppsController.index");
 
 Route.get("groups/:id/leave","GroupsController.leave");
 
