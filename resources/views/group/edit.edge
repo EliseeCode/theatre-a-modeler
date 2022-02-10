@@ -1,0 +1,14 @@
+@layout('layouts/master')
+
+@section('content')
+  <div class="box">
+    <h1 class="title">Edition groupe</h1>
+      
+    <form action='/groups/{{id?id+'?_method=PUT':''}}' method='POST'>
+        {{ csrfField() }}
+        @include('partials/inputs/nameInput')
+        @include('partials/inputs/descriptionInput')
+        <input type="submit" class="button is-primary" value="Enregistrer">
+    </form>
+  </div>
+@endsection

@@ -2,13 +2,14 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Group from 'App/Models/Group';
 import { newGroupSchema } from 'App/Schemas/newGroupSchema';
 import Logger from "@ioc:Adonis/Core/Logger";
+import Role from 'Contracts/enums/Role';
 
 export default class GroupsController {
   public async index ({}: HttpContextContract) {
   }
 
   public async create ({view}: HttpContextContract) {
-    return view.render("group/create");
+    return view.render("group/edit");
   }
   public generateCode()
   {
@@ -23,14 +24,6 @@ export default class GroupsController {
   } 
   public async store ({auth,request,response}: HttpContextContract) {
       
-      Logger.info("group is being created");
-      // await request.validate({
-      //   schema:newGroupSchema,
-      //   messages:{
-      //     'name.required':'Un nom pour ce groupe est nécessaire',
-      //   }
-      // });
-      Logger.info("validation passed");
       const user=await auth.authenticate();
       const creatorId=user.id;
       var isValidCode=false;
@@ -43,26 +36,66 @@ export default class GroupsController {
       Logger.info("code will be "+code);
       
       const group = await Group.create({
-        name:request.all().name,
+        name:request.all().name || "Groupe sans nom",
         description:request.all().description,
         creatorId:creatorId,
         code:code,
       });
       Logger.info("Group created");
-      await user.related("groups").save(group,undefined,{'roleId':1});
+      await user.related("groups").save(group,undefined,{'role_id':Role.STUDENT});
 
       return response.redirect().toRoute("/dashboard");
+  }
+
+  public async join ({params, auth, response, request}: HttpContextContract) {
+    Logger.info("join");
+    if(auth.isGuest){
+      return response.redirect().toRoute("/login")
+    }
+    const user= await auth.authenticate();
+    Logger.info("code1"+params?.code);
+    Logger.info("code2"+request.all().code);
+    const code=params?.code || request.all().code;
+    Logger.info("code"+code);
+    var group= await Group.findByOrFail("code",code);
+    await user.related("groups").save(group,undefined,{'role_id':Role.STUDENT});
+    return response.redirect().back();
+  }
+
+  public async leave ({params, auth, response}: HttpContextContract) {
+    if(auth.isGuest){
+      return response.redirect().toRoute("/login")
+    }
+    const user= await auth.authenticate();
+    const groupId=params.id;
+    await user.related('groups').detach([groupId]);
+    return response.redirect().back();
   }
 
   public async show ({}: HttpContextContract) {
   }
 
-  public async edit ({}: HttpContextContract) {
+  public async edit ({view,params}: HttpContextContract) {
+    const groupId=params.id;
+    var group = await Group.findOrFail(groupId);
+    return view.render("group/edit",{...group.serialize()});
   }
 
-  public async update ({}: HttpContextContract) {
+  public async update ({auth, params,response,request}: HttpContextContract) {
+      const user=await auth.authenticate();
+      const groupId=params.id;
+      const group = await Group.findOrFail(groupId)
+      group.name=request.all().name || "Groupe sans nom",
+      group.description=request.all().description
+      group.save();
+      Logger.info("Group updated");
+      return response.redirect().toRoute("/dashboard");
   }
 
-  public async destroy ({}: HttpContextContract) {
+  public async destroy({ response,params }: HttpContextContract) {
+    const groupId=params.id;
+    var group = await Group.findOrFail(groupId);
+    await group.delete();
+    return response.redirect().back();
   }
 }

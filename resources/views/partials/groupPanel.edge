@@ -2,26 +2,44 @@
     <div style="height:100%;" class="card play_item">
             <div class="card-header p-3 level">    
                 <div class="level-left">
-                    <div class="level-item">
-                        {{ group.$extras.pivot_role_id==1?'Professeur':'Elève'}}
-                         dans le groupe
+                    <div class="level-item subtitle">
                         {{group.name}}
                     </div>
                 </div>
                 <div class="level-right">
-                    <div class="level-item">
+                    
                         <p class="level-item">par {{group.creator.username}}</p>
-                        <form action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
-                            {{ csrfField() }}
-                            <button class='delete'></button>
+
+                        <a href={{ 'groups/'+group.id+'/edit' }} class="icon level-item">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        
+                        <a href={{ 'groups/'+group.id+'/leave' }} class="icon level-item">
+                            <i class="fas fa-door-open"></i>
+                        </a>   
+                    
+                        <form class="level-item" action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
+                            {{ csrfField() }} 
+                            <button type="submit" class="icon">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </form>
-                    </div>
+                   
                 </div>   
             </div>
             <div class="card-content">
                 <div class="content">
+                    <div class="block">{{ group.$extras.pivot_role_id==1?'Professeur':'Elève'}}</div>
                     <div class="block">
                         {{group.description || ""}}  
+                    </div>
+                    <div class="block">
+                        lien pour rejoindre le groupe :
+                        <input class="input" type="text" readonly value={{ 'https://localhost:3333/groups/'+group.code+'/join'}}>
+                        
+                    </div>
+                    <div class="block">
+                        {{group.code}}  
                     </div>
                     <div class="block">
                         @each((student in group.students))
