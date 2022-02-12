@@ -1,0 +1,12 @@
+<div class="field">
+    <!--<label for="" class="label">Identifiant ou adresse email</label>-->
+    <div class="control has-icons-left">
+      <textarea name="description" placeholder="description" class="textarea">{{description || ''}}</textarea>
+    </div>
+    @if(flashMessages.has('errors.description'))
+    <p class="notification is-danger">
+      <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+      {{ flashMessages.get('errors.description') || '' }}
+    </p>
+    @end
+</div>

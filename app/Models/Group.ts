@@ -28,9 +28,12 @@ export default class Group extends BaseModel {
 
   @column()
   public creatorId: number;
-  
+
   @column()
   public code: string;
+
+  @column()
+  public color: string;
 
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
@@ -38,8 +41,8 @@ export default class Group extends BaseModel {
   @manyToMany(() => User, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "groupId",
-    pivotRelatedForeignKey: "userId",
+    pivotForeignKey: "group_id",
+    pivotRelatedForeignKey: "user_id",
     pivotColumns: ['role_id'],
   })
   public users: ManyToMany<typeof User>;
@@ -47,8 +50,8 @@ export default class Group extends BaseModel {
   @manyToMany(() => Play, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "groupId",
-    pivotRelatedForeignKey: "playId",
+    pivotForeignKey: "group_id",
+    pivotRelatedForeignKey: "play_id",
   })
   public plays: ManyToMany<typeof Play>;
 

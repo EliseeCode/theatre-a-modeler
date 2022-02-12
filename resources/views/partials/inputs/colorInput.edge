@@ -1,0 +1,15 @@
+<div class="field">
+    <!--<label for="" class="label">email</label>-->
+    <div class="control has-icons-left">
+      <input type="color" name="color" placeholder="votre identifiant" class="input" value="{{color || ''}}">
+      <span class="icon is-small is-left">
+        <i class="fa fa-color"></i>
+      </span>
+    </div>
+    @if(flashMessages.has('errors.color'))
+    <p class="notification is-danger">
+      <span class="delete" onclick="$(this).closest('.notification').fadeOut(300)"></span>
+      {{ flashMessages.get('errors.color') || '' }}
+    </p>
+    @end
+</div>

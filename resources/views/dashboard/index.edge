@@ -1,12 +1,22 @@
 @layout('layouts/master')
 
 @section('content')
-  <div class="container">
-    <h1 class="subtitle">Vos groupes</h1>
-    <div class="container">
-       
-    <a href={{ 'groups/create' }} class='button is-primary'>Nouveau groupe</a>
-       
+  <div class="container mt-3">
+      <div class="level">
+          <div class="level-left">
+              <div class="level-item">
+                <h1 class="title">Vos groupes</h1>
+              </div>
+          </div>
+          <div class="level-right">
+              <div class="level-item"><a href='#' data-target="new-group-modal" class='button is-primary js-modal-trigger'>Créer un groupe</a></div>
+              <div class="level-item"><a href='#' data-target="join-group-with-code-modal" class='button is-primary js-modal-trigger'>Rejoindre un groupe</a></div>
+          </div>
+      </div>
+    
+    
+    <div class="block">   
+        
     </div>
     
     @if(user.groups.length>0)
@@ -20,30 +30,64 @@
         <p>Vous n'avez pas encore rejoins de groupe</p>  
     
     @endif
-
-    <div class="box">
-        <form action="/groups/join">
-            <label for="name">Rejoindre un goupe avec un code</label>
-            <input type="text" name="code" class="input">
-            <input type="submit" class="button is-primary" value="Rejoindre">
-        </form>
-    </div>    
     
-<hr>
-    <h1 class="subtitle">Vos pièces de théâtre</h1>
-    <a href={{ 'plays/create' }} class='button is-primary'>Nouvelle pièce</a>
-    @if(user.plays.length>0)
-        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
-            @each((play,index) in user.plays)
-                @include('partials/playPanel')
-            @endeach    
-        </div> 
-    @else          
-        <p>Vous n'avez pas encore créé de pièce de théâtre</p>  
-    @endif
+    <div class="modal" id="join-group-with-code-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Rejoindre un goupe avec un code</p>
+            <button class="delete" aria-label="close"></button>
+          </header>
+          <section class="modal-card-body">
+            <form action="/groups/join">
+                <div class="field">
+                    <div class="control">
+                        <input type="text" name="code" class="input">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input type="submit" class="button is-primary" value="Rejoindre">
+                    </div>
+                </div>
+            </form>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success">Save changes</button>
+            <button class="button">Cancel</button>
+          </footer>
+        </div>
+      </div>
 
+      <div class="modal" id="new-group-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Créer un groupe</p>
+            <button class="delete" aria-label="close"></button>
+          </header>
+          <form action='/groups' method='POST'>
+          <section class="modal-card-body">
+            
+                {{ csrfField() }}
+                @include('partials/inputs/nameInput')
+                @include('partials/inputs/descriptionInput')
+                @include('partials/inputs/colorInput')
+                {{--  <input type="submit" class="button is-primary" value="Enregistrer">  --}}
+            
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success" type="submit">Enregistrer</button>
+            <button class="button" onclick="closeAllModals()">Cancel</button>
+          </footer>
+        </form>
+        </div>
+      </div>
+      
+    
 </div>
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
+<script src="/js/bulma-modal.js"></script>
 <script>
     function delete_scene(scene_id)
     {

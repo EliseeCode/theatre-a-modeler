@@ -35,7 +35,7 @@ export default class Play extends BaseModel {
   @column()
   public imageId: number;
 
-  @belongsTo(()=>Image)
+  @belongsTo(() => Image)
   public image: BelongsTo<typeof Image>
 
   @column()
@@ -50,8 +50,8 @@ export default class Play extends BaseModel {
   @manyToMany(() => Group, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "playId",
-    pivotRelatedForeignKey: "groupId",
+    pivotForeignKey: "play_id",
+    pivotRelatedForeignKey: "group_id",
   })
   public groups: ManyToMany<typeof Group>;
 

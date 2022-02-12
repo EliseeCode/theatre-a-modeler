@@ -1,5 +1,8 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Play from "App/Models/Play";
+import Status from "Contracts/enums/Status";
+import Logger from "@ioc:Adonis/Core/Logger";
+
 
 export default class PlaysController {
   public dataName = "plays";
@@ -11,9 +14,9 @@ export default class PlaysController {
     return view.render("play/index", { plays });
   }
 
-  public async createNew({ response,auth }: HttpContextContract) {
+  public async createNew({ response, auth }: HttpContextContract) {
     const user = await auth.authenticate();
-    const newPlay=await Play.create(
+    const newPlay = await Play.create(
       {
         name: 'Nouvelle Pièce',
         description: "description",
@@ -23,24 +26,54 @@ export default class PlaysController {
     return response.redirect().back();
   }
 
-  public async create({ view }: HttpContextContract) {
-    const creationType = await Play.$computedDefinitions;
-    return view.render("defaultViews/create", {
-      creationType,
-      dataName: this.dataName,
-    });
+  public async create({ view, auth }: HttpContextContract) {
+    const user = await auth.authenticate();
+    await user.load("groups");
+    const status = Status
+    return view.render("play/edit", { user, status });
   }
 
-  public async store({}: HttpContextContract) {}
+  public async store({ auth, request, response }: HttpContextContract) {
 
+    const user = await auth.authenticate();
+    const creatorId = user.id;
+
+    const play = await Play.create({
+      name: request.all().name || "Pièce sans nom",
+      description: request.all().description,
+      creatorId: creatorId
+    });
+    var publishedGroups = request.all().publishedGroups;
+
+    Logger.info("Play created:" + publishedGroups);
+    await play.save();
+    await play.related("groups").attach([4, 5]);
+
+    return response.redirect().back();
+
+  }
+
+  public async detach({ view, params, response }: HttpContextContract) {
+    const groupId = params.groupId;
+    const playId = params.playId;
+    await (await Play.findOrFail(playId)).related("groups").detach([groupId]);
+
+    return response.redirect().back();
+  }
   public async show({ view, params }: HttpContextContract) {
     const data = await Play.findOrFail(params.id);
     return view.render("defaultViews/show", { data, dataName: this.dataName });
   }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ view, auth, params }: HttpContextContract) {
+    const user = await auth.authenticate();
+    await user.load("groups");
+    const status = Status;
+    const play = await Play.findOrFail(params.id);
+    return view.render("play/edit", { user, status, play });
+  }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async updateName({ request, params }: HttpContextContract) {
     const newPlayName = request.all().newPlayName;
@@ -53,8 +86,8 @@ export default class PlaysController {
   }
 
 
-  public async destroy({ response,params }: HttpContextContract) {
-    const playId=params.id;
+  public async destroy({ response, params }: HttpContextContract) {
+    const playId = params.id;
     var play = await Play.findOrFail(playId);
     await play.delete();
     return response.redirect().back();

@@ -1,0 +1,24 @@
+@layout('layouts/master')
+
+@section('content')
+
+<div class="container">
+    <h1 class="title">groupe {{group.name}}</h1>
+    <div class="block">
+        <a href={{ '/groups/'+group.id+'/plays/create' }} class='button is-primary'>Créer une nouvelle pièce pour ce groupe</a>
+    </div>  
+
+    @if(group.plays.length>0)
+        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
+            @each((play,index) in group.plays)
+            @include('partials/playPanel')
+            @endeach
+        </div>    
+    @else   
+      
+        <p>Ce groupe n'a pas encore de pièce de théâtre</p>  
+    
+    @endif
+</div>
+
+@endsection

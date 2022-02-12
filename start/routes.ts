@@ -47,8 +47,8 @@ Route.resource("formation", "FormationsController").middleware({
 // Route.get('/auth/recovery',async({ view }) => {
 //   return view.render('auth/recovery')
 // })
-Route.get("groups/join","GroupsController.join");
-Route.get("groups/:code/join","GroupsController.join");
+Route.get("groups/:code/join", "GroupsController.join");
+Route.get("groups/join", "GroupsController.join");
 
 Route.resource("plays", "PlaysController");
 Route.resource("scenes", "ScenesController");
@@ -58,12 +58,18 @@ Route.resource("lines", "LinesController");
 Route.resource("images", "ImagesController");
 Route.get("dashboard", "AppsController.index");
 
-Route.get("groups/:id/leave","GroupsController.leave");
+Route.get("groups/:id/leave", "GroupsController.leave");
+
+Route.get('/groups/:groupId/plays/create', "PlaysController.create");
+Route.get('/groups/:groupId/plays/:playId/detach', "PlaysController.detach");
+
 
 
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
 Route.post("play/createNew", "PlaysController.createNew");
 Route.post("play/:id/scene/createNew", "ScenesController.createNew");
+
+
 Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
 Route.post("api/play/:playId/updateName", "PlaysController.updateName");
 Route.post("api/scene/delete", "ScenesController.destroy");

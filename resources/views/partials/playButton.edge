@@ -1,0 +1,19 @@
+<div>
+    <div class="is-fullwidth">
+        <div class="level">
+            <div class="level-left">
+                <span class="level-item">{{play.name}}</span>
+            </div>
+            <div class="level-right">
+                <a class="level-item" href={{ 'plays/'+play.id }} >
+                    <span class="icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </a>
+                <a href="{{ '/groups/'+group.id+'/plays/'+play.id+'/detach' }}" class='icon'>
+                    <i class="fas fa-door-open"></i>
+                </a>
+            </div>    
+        </div>
+    </div>
+</div>    

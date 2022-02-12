@@ -1,0 +1,69 @@
+@layout('layouts/master')
+
+@section('content')
+<div class='container m-3'>
+  <div class="box">
+    <h1 class="title">Scène</h1>
+      
+    <form action='/scenes/{{id?id+'?_method=PUT':''}}' method='POST'>
+        {{ csrfField() }}
+        <div class="field">
+          <label class="label">Permissions</label>
+          <div class="control">
+            @each(group in user.groups)
+            <div class="box status_group" style="display:inline-block;">
+              <span>{{group.name}}</span>
+              <div class="select">
+                <select oninput="updateGroupStatus();" name={{'status_group_'+group.id}}>
+                  <option value="{{status.HIDDEN}}" {{group.status==status.HIDDEN?'selected':''}}>Caché</option>
+                  <option value="{{status.PUBLISHED}}" {{group.status==status.PUBLISHED?'selected':''}}>Publié</option>
+                  <option value="{{status.CHANGEABLE}}" {{group.status==status.CHANGEABLE?'selected':''}}>Modifiable</option>
+                </select>
+              </div>
+            </div>
+            @endeach
+          </div>
+          
+        </div>
+        @include('partials/inputs/nameInput')
+        @include('partials/inputs/descriptionInput')
+        <input type="submit" class="button is-primary" value="Enregistrer">
+    </form>
+  </div>
+</div>
+<style>
+  .hiddenStatus{background-color:grey; color:white;}
+  .publishedStatus{background-color:green;color:lime;}
+  .changeableStatus{background-color:red;color:pink;}
+</style>
+<script>
+  function updateGroupStatus()
+  {
+    console.log($(".status_group").find("select").val());
+
+    $( ".status_group" ).each(function( index ) {
+      console.log( index + ": " + $( this ).find("select").val() );
+      });
+
+
+    $(".status_group").each(function (){
+      var status=$( this ).find("select").val();
+      if(status=={{status.HIDDEN}}){
+        $(this).removeClass("publishedStatus changeableStatus");
+        $(this).addClass("hiddenStatus");
+      }
+      else if(status=={{status.CHANGEABLE}})
+      {
+        $(this).removeClass("hiddenStatus publishedStatus");
+        $(this).addClass("changeableStatus");
+      }
+      else
+      {
+        $(this).removeClass("hiddenStatus changeableStatus");
+        $(this).addClass("publishedStatus");
+      }
+    });
+  }
+  updateGroupStatus()
+</script>
+@endsection
