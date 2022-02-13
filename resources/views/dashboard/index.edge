@@ -31,58 +31,10 @@
     
     @endif
     
-    <div class="modal" id="join-group-with-code-modal">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">Rejoindre un goupe avec un code</p>
-            <button class="delete" aria-label="close"></button>
-          </header>
-          <section class="modal-card-body">
-            <form action="/groups/join">
-                <div class="field">
-                    <div class="control">
-                        <input type="text" name="code" class="input">
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="control">
-                        <input type="submit" class="button is-primary" value="Rejoindre">
-                    </div>
-                </div>
-            </form>
-          </section>
-          <footer class="modal-card-foot">
-            <button class="button is-success">Save changes</button>
-            <button class="button">Cancel</button>
-          </footer>
-        </div>
-      </div>
+    
 
-      <div class="modal" id="new-group-modal">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">Créer un groupe</p>
-            <button class="delete" aria-label="close"></button>
-          </header>
-          <form action='/groups' method='POST'>
-          <section class="modal-card-body">
-            
-                {{ csrfField() }}
-                @include('partials/inputs/nameInput')
-                @include('partials/inputs/descriptionInput')
-                @include('partials/inputs/colorInput')
-                {{--  <input type="submit" class="button is-primary" value="Enregistrer">  --}}
-            
-          </section>
-          <footer class="modal-card-foot">
-            <button class="button is-success" type="submit">Enregistrer</button>
-            <button class="button" onclick="closeAllModals()">Cancel</button>
-          </footer>
-        </form>
-        </div>
-      </div>
+      @include('partials/modals/joinGroup')
+      @include('partials/modals/createGroup')
       
     
 </div>
