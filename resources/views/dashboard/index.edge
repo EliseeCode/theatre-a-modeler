@@ -35,58 +35,23 @@
 
       @include('partials/modals/joinGroup')
       @include('partials/modals/createGroup')
+      @include('partials/modals/editGroup')
       
     
 </div>
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 <script src="/js/bulma-modal.js"></script>
+<script src="js/copyClipboard.js"></script>
 <script>
-    function delete_scene(scene_id)
+
+    function loadGroupInfoInModal(group)
     {
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            sceneId: scene_id, 
-            _csrf: token
-        };
-        $.post('/api/scene/delete',params,(resp)=>{
-            $("#scene_item_"+scene_id).remove();
-            }   
-        );
+        console.log(group);
+        $('#edit-group-modal').find('input[name="name"]').val(group.name);
+        $('#edit-group-modal').find('input[name="description"]').val(group.description);
+        $('#edit-group-modal').find('input[name="color"]').val(group.color);
+        $('#edit-group-modal').find('form').attr("action","groups/"+group.id+"?_method=PUT")
     }
-    function toggle_scene_display(scene_id)
-    {
-        $("#scene_item_"+scene_id+" .scene_item_display").toggle();
-        $("#scene_item_"+scene_id+" .scene_item_edit").toggle();  
-        $("#scene_item_"+scene_id+" .scene_item_edit input").focus();      
-    }
-    function toggle_play_display(play_id)
-    {
-        $("#play_item_"+play_id+" .play_item_display").toggle();
-        $("#play_item_"+play_id+" .play_item_edit").toggle();  
-        $("#play_item_"+play_id+" .play_item_edit input").focus();      
-    }
-    function update_scene_name(scene_id)
-    {   
-        const newSceneName=$("#scene_item_"+scene_id+" .scene_item_edit input").val();
-        $("#scene_item_"+scene_id+" .scene_item_display .scene_name").text(newSceneName);
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            newSceneName: newSceneName, 
-            _csrf: token
-        };
-        $.post('/api/scene/'+scene_id+'/updateName',params,(resp)=>console.log(resp));
-    }
-    function update_play_name(play_id)
-    {   
-        const newPlayName=$("#play_item_"+play_id+" .play_item_edit input").val();
-        $("#play_item_"+play_id+" .play_item_edit input").focus();
-        $("#play_item_"+play_id+" .play_item_display .play_name").text(newPlayName);
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            newPlayName: newPlayName, 
-            _csrf: token
-        };
-        $.post('/api/play/'+play_id+'/updateName',params,(resp)=>console.log(resp));
-    }
+    
 </script>
 @endsection

@@ -1,6 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Group from 'App/Models/Group';
-import { newGroupSchema } from 'App/Schemas/newGroupSchema';
 import Logger from "@ioc:Adonis/Core/Logger";
 import Role from 'Contracts/enums/Role';
 
@@ -11,17 +10,6 @@ export default class GroupsController {
   public async create({ view }: HttpContextContract) {
     return view.render("group/edit");
   }
-  public generateCode() {
-    var characters = 'abcdefghjklmnpqrstuvwxyz0123456789';
-    var result = ""
-    var charactersLength = characters.length;
-
-    for (var i = 0; i < 6; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  }
-
 
   public async store({ auth, request, response }: HttpContextContract) {
 
@@ -47,6 +35,63 @@ export default class GroupsController {
     await user.related("groups").save(group, undefined, { 'role_id': Role.STUDENT });
 
     return response.redirect().toRoute("/dashboard");
+  }
+
+  public async show({ params, view, auth, response }: HttpContextContract) {
+    try {
+      const group = await Group.find(params.id);
+      const user = await auth.authenticate();
+      await user.load("groups");
+      if (group) {
+        await group.load('plays', (playQuery) => {
+          playQuery.preload("scenes", (sceneQuery) => {
+            sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character") })
+          }).preload("creator")
+        });
+        return view.render('group/show', { group, user });
+      }
+    } catch (error) {
+      return response.redirect().back();
+    }
+
+  }
+
+
+
+  public async edit({ view, params }: HttpContextContract) {
+    const groupId = params.id;
+    var group = await Group.findOrFail(groupId);
+    return view.render("group/edit", { ...group.serialize() });
+  }
+
+  public async update({ auth, params, response, request }: HttpContextContract) {
+    const user = await auth.authenticate();
+    const groupId = params.id;
+    const group = await Group.findOrFail(groupId);
+    group.name = request.all().name || "Groupe sans nom";
+    group.color = request.all().color || "#ff0000";
+    group.description = request.all().description;
+    group.save();
+    Logger.info("Group updated");
+    return response.redirect().toRoute("/dashboard");
+  }
+
+  public async destroy({ response, params }: HttpContextContract) {
+    const groupId = params.id;
+    var group = await Group.findOrFail(groupId);
+    await group.delete();
+    return response.redirect().back();
+  }
+
+  public generateCode() {
+    var characters = 'abcdefghjklmnpqrstuvwxyz0123456789';
+    var result = ""
+    var charactersLength = characters.length;
+
+    for (var i = 0; i < 6; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
 
   public async join({ params, auth, response, request }: HttpContextContract) {
@@ -76,44 +121,4 @@ export default class GroupsController {
     return response.redirect().back();
   }
 
-
-
-  public async show({ params, view }: HttpContextContract) {
-    try {
-      const group = await Group.find(params.id);
-      if (group) {
-        await group.load('plays', (query) => { query.preload("scenes").preload("creator") })
-        return view.render('group/show', { group });
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-
-
-  public async edit({ view, params }: HttpContextContract) {
-    const groupId = params.id;
-    var group = await Group.findOrFail(groupId);
-    return view.render("group/edit", { ...group.serialize() });
-  }
-
-  public async update({ auth, params, response, request }: HttpContextContract) {
-    const user = await auth.authenticate();
-    const groupId = params.id;
-    const group = await Group.findOrFail(groupId);
-    group.name = request.all().name || "Groupe sans nom";
-    group.color = request.all().color || "#ff0000";
-    group.description = request.all().description;
-    group.save();
-    Logger.info("Group updated");
-    return response.redirect().toRoute("/dashboard");
-  }
-
-  public async destroy({ response, params }: HttpContextContract) {
-    const groupId = params.id;
-    var group = await Group.findOrFail(groupId);
-    await group.delete();
-    return response.redirect().back();
-  }
 }

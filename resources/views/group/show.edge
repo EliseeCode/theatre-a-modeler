@@ -2,11 +2,48 @@
 
 @section('content')
 
+
+<script  src="/js/selectize.js"></script>
+<link rel="stylesheet" href="/css/selectize.css">
+
+<div class="container is-max-widescreen mt-3 mb-3">
+    <div class="notification is-primary">
+      <div class="level">
+          <div class="level-left">
+              <div class="level-item">
+                  <div>
+                    <span class="has-text-white title">
+                        {{group.name}}
+                    </span>    
+                    <br/>
+                    <span class="has-text-white subtitle">
+                        {{group.description}}
+                    </span>
+                  </div>
+              </div>
+          </div>
+          <div class="level-right">
+              <div class="level-item">
+                  Code pour rejoindre le groupe : 
+                  <span class="is-size-1">
+                     {{group.code}}
+                  </span>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
 <div class="container">
-    <h1 class="title">groupe {{group.name}}</h1>
-    <div class="block">
-        <a href={{ '/groups/'+group.id+'/plays/create' }} class='button is-primary'>Créer une nouvelle pièce pour ce groupe</a>
-    </div>  
+    <div class="level">
+        <div class="level-left">
+            <h1 class="title level-item">groupe {{group.name}}</h1>
+        </div>
+        <div class="level-right">
+            <div class="level-item"><a href='#' data-target="new-play-modal" class='button is-primary js-modal-trigger'>Créer une pièce de théâtre</a></div>
+        </div>
+    </div>
+    
 
     @if(group.plays.length>0)
         <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
@@ -20,5 +57,6 @@
     
     @endif
 </div>
-
+@include('partials/modals/createPlay')
+<script src="/js/bulma-modal.js"></script>
 @endsection

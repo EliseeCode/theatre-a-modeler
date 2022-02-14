@@ -47,7 +47,7 @@ export default class PlaysController {
 
     Logger.info("Play created:" + publishedGroups);
     await play.save();
-    await play.related("groups").attach([4, 5]);
+    await play.related("groups").attach([publishedGroups]);
 
     return response.redirect().back();
 

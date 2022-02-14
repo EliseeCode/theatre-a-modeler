@@ -1,4 +1,4 @@
-<div class="modal" id="new-group-modal">
+<div class="modal" id="edit-group-modal">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
@@ -11,7 +11,7 @@
             {{ csrfField() }}
             @include('partials/inputs/nameInput')
             @include('partials/inputs/descriptionInput')
-            
+            @include('partials/inputs/colorInput')
             {{--  <input type="submit" class="button is-primary" value="Enregistrer">  --}}
         
       </section>

@@ -1,0 +1,40 @@
+<div class="modal" id="new-play-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Créer un groupe</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+      <form action='/plays' method='POST'>
+      <section class="modal-card-body">
+        
+            {{ csrfField() }}
+            @if(user.groups.length>0)
+            <div class="field">
+                <label class="label">Dans quel groupe publier</label>
+                <div class="control">
+                  <div class="select" style='width:500px;'>
+                    <select name="publishedGroups" class="publishedGroupSelect" width="500px" multiple>
+                      @each(group in user.groups)
+                        <option value={{group.id}}>{{group.name}}</option>
+                      @endeach
+                    </select>
+                  </div>
+                </div>
+            </div>
+            @endif
+            @include('partials/inputs/nameInput')
+            @include('partials/inputs/longDescriptionInput')
+              
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-primary" type="submit">Créer</button>
+        <button class="button" type="button" onclick="closeAllModals();">Annuler</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
+<script>
+$(".publishedGroupSelect").selectize();
+</script>
