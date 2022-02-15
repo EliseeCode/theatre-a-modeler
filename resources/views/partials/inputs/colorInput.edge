@@ -1,7 +1,22 @@
 <div class="field">
     <!--<label for="" class="label">email</label>-->
     <div class="control has-icons-left">
-      <input type="color" name="color" placeholder="votre identifiant" class="input" value="{{color || ''}}">
+      <style>
+      label > input[type="radio"] {
+        display: none;
+      }
+      label > input[type="radio"]:checked + * {
+        border: grey double 5px;
+      }
+      .colorRadio{padding:5px 25px;margin:5px;}
+      </style>
+      {{--  <input type="color" name="color" placeholder="votre identifiant" class="input" value="{{color || ''}}">  --}}
+      @each(color in ['#3066BE','#119DA4','#DB5461','#18A999','#484349','#BC3908','#E56B6F'])
+      <label>
+        <input type="radio" name="color" value={{color}} />
+        <span class="colorRadio" style="background-color:{{color}};"></span>
+      </label>
+      @endeach
       <span class="icon is-small is-left">
         <i class="fa fa-color"></i>
       </span>

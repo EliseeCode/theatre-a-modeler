@@ -14,7 +14,7 @@
     <div class="dropdown-play-panel" style="display:none;">
         <div class="card-content" >
             <div class="content" style="color:darkgrey;font-style:italic;">
-            {{play.description}}
+            {{play.description || ""}}
             </div>  
             <hr>
             @each(scene in play.scenes)

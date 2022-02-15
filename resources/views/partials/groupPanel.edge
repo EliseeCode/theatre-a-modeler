@@ -1,6 +1,6 @@
 <div class="column" id={{'group_item_'+group.id}} style="max-width: 500px;min-width:280px;">
     <div style="height:100%;" class="card play_item">
-            <div class="card-header p-3 level" style="background-image:linear-gradient(to right, red , {{group.color || 'red'}});">    
+            <div class="card-header p-3 level" style="background-color:{{group.color || 'red'}};">    
                 <div class="level-left" style="max-width:300px;">
                     <div class="level-item" title={{ group.$extras.pivot_role_id==role.TEACHER?'Professeur':'Elève'}}>
                         <div class="m-2">
@@ -17,7 +17,7 @@
                             </span>
                             <br/>
                             <span>
-                                {{group.description}}
+                                {{group.description || ""}}
                             </span>
                         </div>
                     </div>
@@ -110,10 +110,11 @@
                 <div class="card-footer-item">
                     <a href={{'groups/'+group.id}}>
                         <span class="icon-text">
+                            <span>Explorer</span>
                             <span class="icon">
                               <i class="fas fa-arrow-right"></i>
                             </span>
-                            <span>Explorer</span>
+                            
                         </span>
                     </a>
                 </div>

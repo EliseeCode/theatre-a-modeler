@@ -50,7 +50,7 @@
         console.log(group);
         $('#edit-group-modal').find('input[name="name"]').val(group.name);
         $('#edit-group-modal').find('input[name="description"]').val(group.description);
-        $('#edit-group-modal').find('input[name="color"]').val(group.color);
+        $('#edit-group-modal').find('input[value="'+group.color+'"]').prop("checked",true);
         $('#edit-group-modal').find('form').attr("action","groups/"+group.id+"?_method=PUT")
     }
    
