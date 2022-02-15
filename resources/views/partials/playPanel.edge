@@ -1,58 +1,67 @@
-<div class="column" id={{'play_item_'+play.id}} style="max-width: 500px;min-width:300px;">
-    <div style="height:100%;" class="card play_item">   
-        <div class="level card-header p-3">
-            <div class="level-left">
-                <div class="play_item_display level-item" onclick='toggle_play_display({{play.id}});'>
-                    {{play.name}}
-                </div>
-                <div class="play_item_edit level-item" style="display:none;">
-                    <input type="text" value="{{play.name}}" class="input edit_play_name" onblur="update_play_name({{play.id}});toggle_play_display({{play.id}});">
-                </div>      
-            </div>
-            <div class="level-right">
-                <p class="level-item">par {{play.creator.username}}</p>
-                <a href={{ '/plays/'+play.id+'/edit' }} class="icon level-item">
-                    <i class="fas fa-edit"></i>
+<div class="card mt-3 mb-3" >
+    <header class="card-header" onclick="$(this).parent().find('.dropdown-play-panel').slideToggle();">
+      <div class="card-header-title">
+        {{play.name}}
+      </div>
+      <div class="card-header-icon" aria-label="more options">
+        <div class="dropdown-trigger" id="dropdown-trigger-play-{{play.id}}" onclick="toggleDropdownMenu('play',{{play.id}})" aria-controls="dropdown-menu">
+            <span class="icon">
+                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+            </span>    
+        </div>
+      </div>
+    </header>
+    <div class="dropdown-play-panel" style="display:none;">
+        <div class="card-content" >
+            <div class="content" style="color:darkgrey;font-style:italic;">
+            {{play.description}}
+            </div>  
+            <hr>
+            @each(scene in play.scenes)
+                @include('partials/scenePanel')         
+            @else
+                <p>Pas encore de scene dans cette pièce</p>
+            @endeach
+            <form action={{ '/play/'+play.id+'/scene/createNew' }} method="POST">
+                {{ csrfField() }}
+                <button type="submit" class='button is-primary'>Nouvelle scène</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="hiddenDropdownMenu" style="display:none;">
+    <div class="" id="dropdown-menu-play-{{play.id}}" role="menu">
+        
+        <div class="dropdown-content">  
+            <div class="dropdown-item">
+                <a href=# 
+                    class="icon-text js-modal-trigger" 
+                    data-target="edit-play-modal" 
+                    onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadPlayInfoInModal({id:{{play.id}},groups:[{{play.groups.map((el)=>el.id)}}],name:`{{play.name}}`,description:`{{play.description}}`})"" >
+                    Modifier
                 </a>
-                <form class="level-item" action={{ '/plays/'+play.id+'?_method=DELETE' }} method="POST">
-                    {{ csrfField() }}
-                    <button type="submit" class='icon'><i class="fas fa-trash"></i></button>
+            </div> 
+           
+            <div class="dropdown-item">
+                <form class="icon-text" action={{ '/plays/'+play.id+'?_method=DELETE' }} method="POST">
+                    {{ csrfField() }} 
+                    <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
+                        <span class="icon">
+                            <i class="fas fa-trash"></i>
+                        </span>
+                        <span>Supprimer</span>
+                    </a>
                 </form>
             </div>
         </div>
-        
-        <div class="card-content">
-            <div class="content">
-                @if(play.image)
-                <div class="card-image">
-                    <div class="notification is-success p-1 m-0">
-                        <button class="delete is-large is-danger" data-image-id="{{play?.image?.id}}" style="z-index: 100;"></button>
-                        <figure class="image is-vcentered m-1">
-                            <img src="{{play?.image?.public_path}}" style="border-radius: 1%;" alt="Placeholder image for {{play?.id}}">
-                            </figure>
-                        </div>
-                    </div>
-                @else
-                <input id="file_{{play.id}}" type="file" data-type="Play" data-id="{{play.id}}" hidden/>
-                <label for="file_{{play.id}}" class="is-success has-text-centered button btnUpload is-primary is-fullwidth" >Select file</label>
-                @end
-                <div class="block description">
-                {{play.description}}  
-                </div>
-                @if(play.scenes.length>0)
-                <div class="block" id="play_item_{{play.id}}">
-                    @each(scene in play.scenes)
-                        @include('partials/scenePanel')
-                    @endeach    
-                </div>
-                @endif
-                <div class="container">
-                    <form action={{ '/play/'+play.id+'/scene/createNew' }} method="POST">
-                        {{ csrfField() }}
-                        <button type="submit" class='button is-primary'>Nouvelle scène</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> 
-</div> 
+    </div>
+</div>    
+
+ 
+
+
+
+
+
+

@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="/css/selectize.css">
 
 <div class="container is-max-widescreen mt-3 mb-3">
-    <div class="notification is-primary">
+    <div class="notification is-primary" style="background-color:{{group.color}}">
       <div class="level">
           <div class="level-left">
               <div class="level-item">
@@ -32,31 +32,72 @@
           </div>
       </div>
     </div>
-  </div>
+  
 
-<div class="container">
+
     <div class="level">
         <div class="level-left">
-            <h1 class="title level-item">groupe {{group.name}}</h1>
-        </div>
-        <div class="level-right">
             <div class="level-item"><a href='#' data-target="new-play-modal" class='button is-primary js-modal-trigger'>Créer une pièce de théâtre</a></div>
         </div>
     </div>
     
 
     @if(group.plays.length>0)
-        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
             @each((play,index) in group.plays)
             @include('partials/playPanel')
-            @endeach
-        </div>    
+            @endeach  
     @else   
       
         <p>Ce groupe n'a pas encore de pièce de théâtre</p>  
     
     @endif
 </div>
+
+@include('partials/modals/editPlay')
 @include('partials/modals/createPlay')
+@include('partials/modals/editScene')
+
+<div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
+
+<script>
+function toggleDropdownMenu(objectType,objectId){
+    window.event.stopPropagation();
+    $("#dropdown-option-container").html("");
+    $("#dropdown-menu-"+objectType+"-"+objectId).clone().attr('id', 'currentDropDown').appendTo("#dropdown-option-container");
+    $("#dropdown-option-container").show();
+    var positionTrigger = $("#dropdown-trigger-"+objectType+"-"+objectId).offset();
+    console.log(positionTrigger);
+    $("#dropdown-option-container").offset({top:positionTrigger.top+20, left:positionTrigger.left-200})
+}
+$(document).mouseup(function(e) 
+{
+    var container = $("#dropdown-option-container, .dropdown-trigger");
+    var stuffToHide=$("#dropdown-option-container");
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) 
+    {
+        stuffToHide.hide();
+    }
+});
+
+function loadPlayInfoInModal(play)
+    {
+        console.log(play.groups)
+        console.log(play);
+        $('#edit-play-modal').find('input[name="name"]').val(play.name);
+        $('#edit-play-modal').find('input[name="description"]').val(play.description);
+        var selectElement = $('#edit-play-modal').find('select[name="publishedGroups"]').eq(0);
+        var selectize = selectElement.data('selectize');
+        if (!!selectize) selectize.setValue(play.groups);
+        //$('#edit-play-modal').find('select[name="publishedGroups"]').val(play.groups);
+        $('#edit-play-modal').find('form').attr("action","/plays/"+play.id+"?_method=PUT")
+    }
+function loadSceneInfoInModal(scene)
+    {
+        console.log(scene)
+        $('#edit-scene-modal').find('input[name="name"]').val(scene.name);
+        $('#edit-scene-modal').find('form').attr("action","/scenes/"+scene.id+"?_method=PUT")
+    }    
+</script>
 <script src="/js/bulma-modal.js"></script>
 @endsection

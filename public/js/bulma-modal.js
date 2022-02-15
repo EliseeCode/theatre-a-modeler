@@ -14,16 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
     // Add a click event on buttons to open a specific modal
     (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
         const modal = $trigger.dataset.target;
         const $target = document.getElementById(modal);
-        console.log($target);
+        console.log($target, $trigger);
 
         $trigger.addEventListener('click', () => {
             openModal($target);
         });
     });
+
 
     // Add a click event on various child elements to close the parent modal
     (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {

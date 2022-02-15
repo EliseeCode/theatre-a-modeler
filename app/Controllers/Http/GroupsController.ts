@@ -44,14 +44,17 @@ export default class GroupsController {
       await user.load("groups");
       if (group) {
         await group.load('plays', (playQuery) => {
+
           playQuery.preload("scenes", (sceneQuery) => {
             sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character") })
-          }).preload("creator")
+          })
+            .preload("creator")
+            .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
         });
         return view.render('group/show', { group, user });
       }
     } catch (error) {
-      return response.redirect().back();
+      return error
     }
 
   }

@@ -39,6 +39,7 @@
       
     
 </div>
+
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 <script src="/js/bulma-modal.js"></script>
 <script src="js/copyClipboard.js"></script>
@@ -52,6 +53,7 @@
         $('#edit-group-modal').find('input[name="color"]').val(group.color);
         $('#edit-group-modal').find('form').attr("action","groups/"+group.id+"?_method=PUT")
     }
+   
     
 </script>
 @endsection

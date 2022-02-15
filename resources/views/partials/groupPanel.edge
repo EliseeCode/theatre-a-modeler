@@ -33,7 +33,10 @@
                             <div class="dropdown-menu" id="dropdown-menu6" role="menu">
                               <div class="dropdown-content has-text-left">
                                 <div class="dropdown-item">
-                                        <a href=# class="icon-text js-modal-trigger" onclick="loadGroupInfoInModal({{JSON.stringify(group)}})" data-target="edit-group-modal">
+                                        <a href=# class="icon-text js-modal-trigger" 
+                                        onclick="loadGroupInfoInModal({{JSON.stringify(['id','name','description','color'].reduce((obj, key) => ({ ...obj, [key]: group[key] }), {}));}})" 
+                                        data-target="edit-group-modal"
+                                        >
                                             <span class="icon">
                                                 <i class="fas fa-edit"></i>
                                             </span>

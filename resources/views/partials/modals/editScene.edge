@@ -1,19 +1,17 @@
-<div class="modal" id="edit-group-modal">
+<div class="modal" id="edit-scene-modal">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Modifier un groupe</p>
+        <p class="modal-card-title">Modifier une scène</p>
         <button class="delete" aria-label="close"></button>
       </header>
-      <form action='/groups' method='POST'>
+      <form action='/scenes' method='POST'>
       <section class="modal-card-body">
         
-            {{ csrfField() }}
-            @include('partials/inputs/nameInput')
-            @include('partials/inputs/descriptionInput')
-            @include('partials/inputs/colorInput')
-            {{--  <input type="submit" class="button is-primary" value="Enregistrer">  --}}
+        {{ csrfField() }}
         
+        @include('partials/inputs/nameInput')
+                          
       </section>
       <footer class="modal-card-foot">
         <button class="button is-primary" type="submit">Enregistrer</button>
