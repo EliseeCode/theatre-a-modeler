@@ -1,0 +1,15 @@
+<div>
+<select name="characters" class="charSelect" autocomplete="off">
+    @each((character) in payload.totalCharacters)
+    @if(line.character.id == character.id)
+    <option value="{{character.id}}" selected>{{character.name}}</option>
+    @else
+    <option value="{{character.id}}">{{character.name}}</option>
+    @endif
+    @endeach
+    <option class="characterCreate">Create a character</option>
+</select>
+<textarea data-line-id = "{{line.id}}" class="lineText" cols="30" rows="5" style="resize: none">{{line.text}}</textarea>
+<button class="addLineBtn">+</button>
+<br><br>
+</div>

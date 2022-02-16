@@ -1,0 +1,9 @@
+<p>{{payload.playName}}</p>
+<p>{{payload.sceneName}}</p>
+@if(payload.previousScene)
+<a href="{{request.completeUrl()}}/../../{{payload.previousScene.id}}/edit">prev.</a>
+@endif
+<p>{{request.completeUrl()}}</p>
+@if(payload.nextScene)
+<a href="{{request.completeUrl()}}/../../{{payload.nextScene.id}}/edit">next.</a>
+@endif

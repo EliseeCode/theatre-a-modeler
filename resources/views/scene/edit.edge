@@ -1,0 +1,55 @@
+@layout('layouts/master')
+@section('content')
+<h2>You're about the edit the official scene.</h2>
+@each(line in payload.lineData)
+@include('partials/scenes/edit/line')
+@endeach
+<select name="characters" class="charSelect" autocomplete="off">
+    @each((character) in payload.totalCharacters)
+    <option value="{{character.id}}">{{character.name}}</option>
+    @endeach
+    <option class="characterCreate">Create a character</option>
+</select>
+<textarea data-line-id = "" class="lineText" cols="30" rows="5" style="resize: none">Je suis comme ça. Ou j'oublie tout de suite ou je n'oublie jamais.</textarea>
+<button class="addLineBtn">+</button>
+<br><br>
+<script>
+    document.addEventListener("click", (e) => {
+        if (e.target && e.target.classList.contains("addLineBtn")) {
+            const divToAppend = document.createElement("div");
+            const selectModal = document.createElement("select");
+            // FIXME needs improv.
+            const totalCharacters = Array.from(JSON.parse(`{{{stringify(payload.totalCharacters)}}}`));
+            for (let i = 0; i <= totalCharacters.length; i++) {
+                const option = document.createElement("option");
+                if (i === totalCharacters.length) {
+                    option.textContent = "Create a character";
+                    option.classList.add("characterCreate");
+                } else {
+                    option.value = totalCharacters[i].id;
+                    option.textContent = totalCharacters[i].name;
+                }
+                selectModal.appendChild(option);
+            }
+
+            const textareaModal = document.createElement("textarea");
+            textareaModal.classList.add("lineText");
+            textareaModal.cols = 30;
+            textareaModal.rows = 5;
+            textareaModal.style.resize = "none";
+
+            const buttonModal = document.createElement("button");
+            buttonModal.classList.add("addLineBtn");
+            buttonModal.textContent = "+";
+            
+            divToAppend.appendChild(document.createElement("br"))
+            divToAppend.appendChild(selectModal);
+            divToAppend.appendChild(textareaModal);
+            divToAppend.appendChild(buttonModal);
+            divToAppend.appendChild(document.createElement("br"))
+            e.target.parentNode.insertBefore(divToAppend, e.target.nextSibling);
+        }
+    })
+ 
+</script>
+@endsection
