@@ -11,10 +11,11 @@ import {
   hasMany,
   HasMany,
   hasOne,
-  HasOne
+  HasOne,
 } from "@ioc:Adonis/Lucid/Orm";
-import Scene from "./Scene";
-import Image from "./Image";
+import Scene from "App/Models/Scene";
+import Image from "App/Models/Image";
+import Character from "App/Models/Character";
 
 export default class Play extends BaseModel {
   @column({ isPrimary: true })
@@ -35,8 +36,8 @@ export default class Play extends BaseModel {
   @column()
   public imageId: number;
 
-  @belongsTo(()=>Image)
-  public image: BelongsTo<typeof Image>
+  @belongsTo(() => Image)
+  public image: BelongsTo<typeof Image>;
 
   @column()
   public creatorId: number;
@@ -50,13 +51,21 @@ export default class Play extends BaseModel {
   @manyToMany(() => Group, {
     localKey: "id",
     relatedKey: "id",
-    pivotForeignKey: "playId",
-    pivotRelatedForeignKey: "groupId",
+    pivotForeignKey: "play_id",
+    pivotRelatedForeignKey: "group_id",
   })
   public groups: ManyToMany<typeof Group>;
 
   @hasMany(() => Scene, { localKey: "id", foreignKey: "playId" })
   public scenes: HasMany<typeof Scene>;
+
+  @manyToMany(() => Character, {
+    localKey: "id",
+    relatedKey: "id",
+    pivotForeignKey: "play_id",
+    pivotRelatedForeignKey: "character_id",
+  })
+  public characters: ManyToMany<typeof Character>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
