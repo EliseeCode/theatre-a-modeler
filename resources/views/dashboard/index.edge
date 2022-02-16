@@ -1,12 +1,22 @@
 @layout('layouts/master')
 
 @section('content')
-  <div class="container">
-    <h1 class="subtitle">Vos groupes</h1>
-    <div class="container">
-       
-    <a href={{ 'groups/create' }} class='button is-primary'>Nouveau groupe</a>
-       
+  <div class="container mt-3">
+      <div class="level">
+          <div class="level-left">
+              <div class="level-item">
+                <h1 class="title">Vos groupes</h1>
+              </div>
+          </div>
+          <div class="level-right">
+              <div class="level-item"><a href='#' data-target="new-group-modal" class='button is-primary js-modal-trigger'>Créer un groupe</a></div>
+              <div class="level-item"><a href='#' data-target="join-group-with-code-modal" class='button is-primary js-modal-trigger'>Rejoindre un groupe</a></div>
+          </div>
+      </div>
+    
+    
+    <div class="block">   
+        
     </div>
     
     @if(user.groups.length>0)
@@ -20,77 +30,30 @@
         <p>Vous n'avez pas encore rejoins de groupe</p>  
     
     @endif
-
-    <div class="box">
-        <form action="/groups/join">
-            <label for="name">Rejoindre un goupe avec un code</label>
-            <input type="text" name="code" class="input">
-            <input type="submit" class="button is-primary" value="Rejoindre">
-        </form>
-    </div>    
     
-<hr>
-    <h1 class="subtitle">Vos pièces de théâtre</h1>
-    <a href={{ 'plays/create' }} class='button is-primary'>Nouvelle pièce</a>
-    @if(user.plays.length>0)
-        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
-            @each((play,index) in user.plays)
-                @include('partials/playPanel')
-            @endeach    
-        </div> 
-    @else          
-        <p>Vous n'avez pas encore créé de pièce de théâtre</p>  
-    @endif
+    
 
+      @include('partials/modals/joinGroup')
+      @include('partials/modals/createGroup')
+      @include('partials/modals/editGroup')
+      
+    
 </div>
+
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
+<script src="/js/bulma-modal.js"></script>
+<script src="js/copyClipboard.js"></script>
 <script>
-    function delete_scene(scene_id)
+
+    function loadGroupInfoInModal(group)
     {
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            sceneId: scene_id, 
-            _csrf: token
-        };
-        $.post('/api/scene/delete',params,(resp)=>{
-            $("#scene_item_"+scene_id).remove();
-            }   
-        );
+        console.log(group);
+        $('#edit-group-modal').find('input[name="name"]').val(group.name);
+        $('#edit-group-modal').find('input[name="description"]').val(group.description);
+        $('#edit-group-modal').find('input[value="'+group.color+'"]').prop("checked",true);
+        $('#edit-group-modal').find('form').attr("action","groups/"+group.id+"?_method=PUT")
     }
-    function toggle_scene_display(scene_id)
-    {
-        $("#scene_item_"+scene_id+" .scene_item_display").toggle();
-        $("#scene_item_"+scene_id+" .scene_item_edit").toggle();  
-        $("#scene_item_"+scene_id+" .scene_item_edit input").focus();      
-    }
-    function toggle_play_display(play_id)
-    {
-        $("#play_item_"+play_id+" .play_item_display").toggle();
-        $("#play_item_"+play_id+" .play_item_edit").toggle();  
-        $("#play_item_"+play_id+" .play_item_edit input").focus();      
-    }
-    function update_scene_name(scene_id)
-    {   
-        const newSceneName=$("#scene_item_"+scene_id+" .scene_item_edit input").val();
-        $("#scene_item_"+scene_id+" .scene_item_display .scene_name").text(newSceneName);
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            newSceneName: newSceneName, 
-            _csrf: token
-        };
-        $.post('/api/scene/'+scene_id+'/updateName',params,(resp)=>console.log(resp));
-    }
-    function update_play_name(play_id)
-    {   
-        const newPlayName=$("#play_item_"+play_id+" .play_item_edit input").val();
-        $("#play_item_"+play_id+" .play_item_edit input").focus();
-        $("#play_item_"+play_id+" .play_item_display .play_name").text(newPlayName);
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            newPlayName: newPlayName, 
-            _csrf: token
-        };
-        $.post('/api/play/'+play_id+'/updateName',params,(resp)=>console.log(resp));
-    }
+   
+    
 </script>
 @endsection

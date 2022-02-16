@@ -22,7 +22,14 @@ export default class UserSeeder extends BaseSeeder {
     const groupCount = 4;
     const groups = await GroupFactory.createMany(groupCount);
     const userCount = 15;
-    const users = await UserFactory.createMany(userCount);
+    const users = [
+      await User.create({
+        loginId: "admin",
+        password: "adminadmin",
+        username: "admin",
+      }),
+      ...(await UserFactory.createMany(userCount - 1)),
+    ];
     const playCount = 7;
     const plays = await PlayFactory.createMany(playCount);
     const sceneCount = 5;

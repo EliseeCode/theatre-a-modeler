@@ -1,9 +1,11 @@
 @layout('layouts/master')
 @section('content')
 <h2>You're about the edit the official scene.</h2>
+@if(payload?.lineData)
 @each(line in payload.lineData)
 @include('partials/scenes/edit/line')
 @endeach
+@else
 <select name="characters" class="charSelect" autocomplete="off">
     @each((character) in payload.totalCharacters)
     <option value="{{character.id}}">{{character.name}}</option>
@@ -13,6 +15,7 @@
 <textarea data-line-id = "" class="lineText" cols="30" rows="5" style="resize: none">Je suis comme ça. Ou j'oublie tout de suite ou je n'oublie jamais.</textarea>
 <button class="addLineBtn">+</button>
 <br><br>
+@endif
 <script>
     document.addEventListener("click", (e) => {
         if (e.target && e.target.classList.contains("addLineBtn")) {
@@ -51,5 +54,5 @@
         }
     })
  
-</script>
+
 @endsection

@@ -1,0 +1,22 @@
+<div class="modal" id="edit-scene-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Modifier une scène</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+      <form action='/scenes' method='POST'>
+      <section class="modal-card-body">
+        
+        {{ csrfField() }}
+        
+        @include('partials/inputs/nameInput')
+                          
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-primary" type="submit">Enregistrer</button>
+        <button class="button" type="button">Annuler</button>
+      </footer>
+    </form>
+    </div>
+  </div>

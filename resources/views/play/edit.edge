@@ -1,0 +1,45 @@
+@layout('layouts/master')
+
+@section('js')
+<script  src="/js/selectize.js"></script>
+@endsection
+
+@section('css')
+<link rel="stylesheet" href="/css/selectize.css">
+@endsection
+
+
+
+@section('content')
+<div class='container mt-3'>
+  <div class="box">
+    <h1 class="title">pièce de théâtre</h1>
+      
+    <form action='/plays/{{id?id+'?_method=PUT':''}}' method='POST'>
+        {{ csrfField() }}
+        @if(user.groups.length>0)
+        <div class="field">
+            <label class="label">Dans quel groupe publier</label>
+            <div class="control">
+              <div class="select" style='width:500px;'>
+                <select name="publishedGroups" class="publishedGroupSelect" width="500px" multiple>
+                  @each(group in user.groups)
+                    <option value={{group.id}}>{{group.name}}</option>
+                  @endeach
+                </select>
+              </div>
+            </div>
+        </div>
+        @endif
+        @include('partials/inputs/nameInput')
+        @include('partials/inputs/longDescriptionInput')
+        <input type="submit" class="button is-primary" value="Enregistrer">
+    </form>
+  </div>
+</div>
+
+
+<script>
+  $(".publishedGroupSelect").selectize();
+</script>
+@endsection

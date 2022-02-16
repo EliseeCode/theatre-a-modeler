@@ -1,20 +1,66 @@
-<div id="scene_item_{{scene.id}}">
-    <div class="scene_item_display is-fullwidth">
-        <div class="level">
-            <div class="level-left">
-                <span class="level-item scene_name" onclick='toggle_scene_display({{scene.id}});'>{{scene.name}}</span>
-            </div>
-            <div class="level-right">
-                <a class="level-item" href={{ 'play/'+play.id+'/scene/'+scene.id }} >
-                    <span class="icon">
-                        <i class="fas fa-eye"></i>
-                    </span>
-                </a>
-                <form class='level-item' action={{ 'scenes/'+scene.id+'?_method=DELETE' }} method="POST">
-                    {{ csrfField() }}
-                <button type="submit" class='delete'></button>
-                </form>
-            </div>    
+<div id="scene_item_{{scene.id}}" class="card mt-3 mb-3" >
+    <header class="card-header" onclick="$(this).parent().find('.dropdown-scene-panel').slideToggle();">
+      <div class="card-header-title">
+        {{scene.name}}
+      </div>
+      <div class="card-header-icon" aria-label="more options">
+        <div class="dropdown-trigger" id="dropdown-trigger-scene-{{scene.id}}" onclick="toggleDropdownMenu('scene',{{scene.id}})" aria-controls="dropdown-menu">
+          <span class="icon">
+              <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+          </span>    
+      </div>
+
+      </div>
+    </header>
+    <div class="dropdown-scene-panel" style="display:none;">
+        <div class="card-content" >
+            <div class="content" style="color:darkgrey;font-style:italic;">
+              {{scene.description}}
+            </div>  
+              <hr>
+              @each(character in scene.characters)
+                {{--  @include('partials/scenePanel')           --}}
+                {{character.name}}-
+              @else
+                <p>Pas encore de personnage dans cette scène</p>
+              @endeach
+              
+        </div>
+        <div class="card-footer" >
+          <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">
+            <span>Explorer</span>
+            <span class="icon">
+              <i class="fas fa-arrow-right"></i>
+            </span>
+          </a>             
         </div>
     </div>
+</div>
+
+<div class="hiddenDropdownMenu" style="display:none;">
+  <div class="" id="dropdown-menu-scene-{{scene.id}}" role="menu">
+      
+      <div class="dropdown-content">  
+          <div class="dropdown-item">
+              <a href=# 
+                  class="icon-text js-modal-trigger" 
+                  data-target="edit-scene-modal" 
+                  onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadSceneInfoInModal({id:{{scene.id}},name:'{{scene.name}}'})" >
+                  Modifier
+              </a>
+          </div> 
+         
+          <div class="dropdown-item">
+              <form class="icon-text" action={{ '/scenes/'+scene.id+'?_method=DELETE' }} method="POST">
+                  {{ csrfField() }} 
+                  <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
+                      <span class="icon">
+                          <i class="fas fa-trash"></i>
+                      </span>
+                      <span>Supprimer</span>
+                  </a>
+              </form>
+          </div>
+      </div>
+  </div>
 </div>    

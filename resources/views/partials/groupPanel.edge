@@ -1,52 +1,132 @@
-<div class="column" id={{'group_item_'+group.id}} style="max-width: 500px;min-width:300px;">
+<div class="column" id={{'group_item_'+group.id}} style="max-width: 500px;min-width:280px;">
     <div style="height:100%;" class="card play_item">
-            <div class="card-header p-3 level">    
-                <div class="level-left">
-                    <div class="level-item subtitle">
-                        {{group.name}}
+            <div class="card-header p-3 level" style="background-color:{{group.color || 'red'}};">    
+                <div class="level-left" style="max-width:300px;">
+                    <div class="level-item" title={{ group.$extras.pivot_role_id==role.TEACHER?'Professeur':'Elève'}}>
+                        <div class="m-2">
+                            <span class="icon has-text-white">
+                                <i class="fas fa-2x fa-{{ group.$extras.pivot_role_id==role.TEACHER?'crown':'graduation-cap'}}"></i>
+                            </span>
+                            
+                        </div>
+                    </div>
+                    <div class="level-item has-text-white has-text-left">
+                        <div>
+                            <span class="title has-text-white">
+                                {{group.name}}
+                            </span>
+                            <br/>
+                            <span>
+                                {{group.description || ""}}
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="level-right">
                     
-                        <p class="level-item">par {{group.creator.username}}</p>
+                        <div class="dropdown is-right" onclick="$(this).toggleClass('is-active');">
+                            <div class="dropdown-trigger">
+                              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu6">
+                                <i class="fas fa-ellipsis-v"></i>
+                              </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu6" role="menu">
+                              <div class="dropdown-content has-text-left">
+                                <div class="dropdown-item">
+                                        <a href=# class="icon-text js-modal-trigger" 
+                                        onclick="loadGroupInfoInModal({{JSON.stringify(['id','name','description','color'].reduce((obj, key) => ({ ...obj, [key]: group[key] }), {}));}})" 
+                                        data-target="edit-group-modal"
+                                        >
+                                            <span class="icon">
+                                                <i class="fas fa-edit"></i>
+                                            </span>
+                                            <span>Modifier</span>
+                                        </a>
+                                </div>
 
-                        <a href={{ 'groups/'+group.id+'/edit' }} class="icon level-item">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        
-                        <a href={{ 'groups/'+group.id+'/leave' }} class="icon level-item">
-                            <i class="fas fa-door-open"></i>
-                        </a>   
-                    
-                        <form class="level-item" action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
-                            {{ csrfField() }} 
-                            <button type="submit" class="icon">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                   
-                </div>   
+                                <div class="dropdown-item">
+                                    <span href=# class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                        <span> {{group.code}} </span>
+                                    </span>
+                                </div>
+
+                                <div class="dropdown-item">
+                                    <a href=# onclick='copyTextToClipboard("https://localhost:3333/groups/{{group.code}}/join")' class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-link"></i>
+                                        </span>
+                                        <span>Copier le lien</span>
+                                    </a>
+                                </div>
+
+                                <div class="dropdown-item">
+                                    <a href={{ 'groups/'+group.id+'/leave' }} class="icon-text has-text-danger">
+                                        <span class="icon">
+                                            <i class="fas fa-door-open"></i>
+                                        </span>
+                                        <span>Quitter ce groupe</span>
+                                    </a>
+                                </div>
+
+                                <div class="dropdown-item">
+                                        <form class="icon-text" action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
+                                            {{ csrfField() }} 
+                                            <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
+                                                <span class="icon">
+                                                    <i class="fas fa-trash"></i>
+                                                </span>
+                                                <span>Supprimer</span>
+                                            </a>
+                                        </form>
+                                </div>
+                                </div>
+                              </div>
+                        </div>
+                </div>  
             </div>
             <div class="card-content">
                 <div class="content">
-                    <div class="block">{{ group.$extras.pivot_role_id==1?'Professeur':'Elève'}}</div>
+                    
+                                      
                     <div class="block">
-                        {{group.description || ""}}  
-                    </div>
-                    <div class="block">
-                        lien pour rejoindre le groupe :
-                        <input class="input" type="text" readonly value={{ 'https://localhost:3333/groups/'+group.code+'/join'}}>
                         
-                    </div>
-                    <div class="block">
-                        {{group.code}}  
-                    </div>
-                    <div class="block">
-                        @each((student in group.students))
-                        {{student.username}}
+                        @each(user in group.users)
+                        <div>
+                        {{user.username}}-
+                        {{user.pivot_role_id==role.STUDENT?"élève":"prof"}}
+                        </div>
                         @endeach
+                        {{group.users.length!=0?group.users.length+" élèves":"Pas encore d'élève dans ce groupe"}}
                     </div>
+                    <hr>
+                    {{--  <p class="subtitle">Pièce</p>
+                    @each(play in group.plays)
+                    <div class="block">
+                        @include('.partials/playButton')
+                    </div>
+                    @else
+                    <p>Pas encore de pièce publiée dans ce groupe groupe</p>
+                    @end  --}}
+                   
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-footer-item">
+                    <a href={{'groups/'+group.id}}>
+                        <span class="icon-text">
+                            <span>Explorer</span>
+                            <span class="icon">
+                              <i class="fas fa-arrow-right"></i>
+                            </span>
+                            
+                        </span>
+                    </a>
                 </div>
             </div>
     </div>
 </div>
+
+

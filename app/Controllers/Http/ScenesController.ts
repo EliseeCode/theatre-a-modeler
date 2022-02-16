@@ -5,10 +5,12 @@ import Logger from "@ioc:Adonis/Core/Logger";
 import Group from "App/Models/Group";
 import Image from "App/Models/Image";
 import Character from "App/Models/Character";
+import Status from "Contracts/enums/Status";
 import Line from "App/Models/Line";
 
 export default class ScenesController {
-  public async select({ params, view }: HttpContextContract) {
+  public async select({ params, view, auth }: HttpContextContract) {
+    const user = await auth.authenticate();
     const currentGroup = await Group.findOrFail(params.group_id);
     const currentPlay = (
       await currentGroup
@@ -99,7 +101,7 @@ export default class ScenesController {
         ].audios.add(audio.versionId);
       });
     });
-    return view.render("scene/select.edge", { payload });
+    return view.render("scene/select", { payload, user });
   }
   public async index({}: HttpContextContract) {}
 
@@ -228,7 +230,8 @@ export default class ScenesController {
     return scene;
   }
 
-  public async edit({ params, view }: HttpContextContract) {
+  public async edit({ params, view, auth }: HttpContextContract) {
+    const user = await auth.authenticate();
     const currentGroup = await Group.findOrFail(params.group_id);
     const currentPlay = (
       await currentGroup
@@ -251,7 +254,15 @@ export default class ScenesController {
       ) - 1; // FIXME just a stupid method for tackling global variables with foreach
     if (currentSceneIndex < 0) {
       Logger.error(`No record found for scene with id: ${params.id}`);
-      return;
+      const totalCharacters = currentPlay.characters.map((character) =>
+        character.serialize()
+      ); // on this play
+      return view.render("scene/edit", {
+        payload: {
+          totalCharacters: totalCharacters,
+          lineData: null,
+        },
+      });
     }
     const currentScene = scenes[currentSceneIndex];
     const previousScene = scenes[currentSceneIndex - 1];
@@ -333,10 +344,17 @@ export default class ScenesController {
           });
       }); */
 
-    return view.render("scene/edit", { payload });
+    return view.render("scene/edit", { payload, user, status: Status });
   }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ request, params, response }: HttpContextContract) {
+    const name = request.all().name;
+    const scene_id = params.id;
+    var scene = await Scene.findOrFail(scene_id);
+    scene.name = name;
+    await scene.save();
+    return response.redirect().back();
+  }
 
   public async destroy({ response, params }: HttpContextContract) {
     const sceneId = params.id;
