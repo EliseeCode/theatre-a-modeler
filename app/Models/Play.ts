@@ -48,10 +48,10 @@ export default class Play extends BaseModel {
   public creator: BelongsTo<typeof User>;
 
   @manyToMany(() => Group, {
-    localKey: "id",
-    relatedKey: "id",
-    pivotForeignKey: "play_id",
-    pivotRelatedForeignKey: "group_id",
+    // localKey: "id",
+    // relatedKey: "id",
+    // pivotForeignKey: "play_id",
+    // pivotRelatedForeignKey: "group_id",
   })
   public groups: ManyToMany<typeof Group>;
 

@@ -92,7 +92,14 @@
                     
                                       
                     <div class="block">
-                        {{group.studentCount?studentCount+" élèves":"Pas encore d'élève dans ce groupe"}}
+                        
+                        @each(user in group.users)
+                        <div>
+                        {{user.username}}-
+                        {{user.pivot_role_id==role.STUDENT?"élève":"prof"}}
+                        </div>
+                        @endeach
+                        {{group.users.length!=0?group.users.length+" élèves":"Pas encore d'élève dans ce groupe"}}
                     </div>
                     <hr>
                     {{--  <p class="subtitle">Pièce</p>

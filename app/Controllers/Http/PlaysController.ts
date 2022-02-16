@@ -34,21 +34,30 @@ export default class PlaysController {
   }
 
   public async store({ auth, request, response }: HttpContextContract) {
-
+    const { name, description, publishedGroups } = request.body();
     const user = await auth.authenticate();
     const creatorId = user.id;
 
     const play = await Play.create({
-      name: request.all().name || "Pièce sans nom",
-      description: request.all().description,
+      name: name || "Pièce sans nom",
+      description: description || "",
       creatorId: creatorId
     });
-    var publishedGroups = request.all().publishedGroups;
 
-    Logger.info("Play created:" + publishedGroups);
+
     await play.save();
 
-    await play.related("groups").attach(publishedGroups);
+    let publishedGroupsArray = [];
+    if (!!publishedGroups) {
+      if (typeof (publishedGroups) == "string") {
+        publishedGroupsArray[0] = publishedGroups;
+      }
+      else {
+        publishedGroupsArray = Object.values(publishedGroups);
+      }
+      await play.related("groups").attach(publishedGroupsArray);
+    }
+
 
     return response.redirect().back();
 
@@ -74,7 +83,25 @@ export default class PlaysController {
     return view.render("play/edit", { user, status, play });
   }
 
-  public async update({ }: HttpContextContract) { }
+  public async update({ request, response, params }: HttpContextContract) {
+    const { name, description, publishedGroups } = request.body();
+    const play_id = params.id;
+    var play = await Play.findOrFail(play_id);
+    play.name = name;
+    play.description = description;
+    await play.save();
+    let publishedGroupsArray;
+    if (!!publishedGroups) {
+      if (typeof (publishedGroups) == "string") {
+        publishedGroupsArray = [publishedGroups];
+      }
+      else {
+        publishedGroupsArray = Object.values(publishedGroups);
+      }
+      await play.related("groups").sync(publishedGroupsArray);
+    }
+    return response.redirect().back();
+  }
 
   public async updateName({ request, params }: HttpContextContract) {
     const newPlayName = request.all().newPlayName;

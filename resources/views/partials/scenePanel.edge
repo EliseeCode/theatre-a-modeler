@@ -27,14 +27,12 @@
               
         </div>
         <div class="card-footer" >
-            <a href="/scenes/{{scene.id}}" class="card-footer-item">
-                Explorer
-            </a>
-            <form class='card-footer-item' action={{ 'scenes/'+scene.id+'?_method=DELETE' }} method="POST">
-                {{ csrfField() }}
-            <button type="submit" class='content has-text-danger'>Supprimer</button>
-            </form>
-              
+          <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">
+            <span>Explorer</span>
+            <span class="icon">
+              <i class="fas fa-arrow-right"></i>
+            </span>
+          </a>             
         </div>
     </div>
 </div>
@@ -53,7 +51,7 @@
           </div> 
          
           <div class="dropdown-item">
-              <form class="icon-text" action={{ '/scene/'+scene.id+'?_method=DELETE' }} method="POST">
+              <form class="icon-text" action={{ '/scenes/'+scene.id+'?_method=DELETE' }} method="POST">
                   {{ csrfField() }} 
                   <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
                       <span class="icon">

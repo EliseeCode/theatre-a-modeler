@@ -32,7 +32,7 @@ export default class GroupsController {
       code: code,
     });
     Logger.info("Group created");
-    await user.related("groups").save(group, undefined, { 'role_id': Role.STUDENT });
+    await user.related("groups").save(group, undefined, { 'role_id': Role.TEACHER });
 
     return response.redirect().toRoute("/dashboard");
   }
@@ -111,6 +111,7 @@ export default class GroupsController {
     var group = await Group.findByOrFail("code", code);
     console.log(group)
     await user.related("groups").save(group, undefined, { 'role_id': Role.STUDENT });
+
     return response.redirect().back();
   }
 
