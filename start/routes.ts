@@ -63,9 +63,6 @@ Route.get("groups/:id/leave", "GroupsController.leave");
 Route.get("/groups/:groupId/plays/create", "PlaysController.create");
 Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 
-Route.get("/groups/:groupId/plays/create", "PlaysController.create");
-Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
-
 Route.resource("group/:group_id/play/:play_id/scene", "ScenesController");
 Route.post(
   "group/:group_id/play/:play_id/scene/:scene_id/action",
