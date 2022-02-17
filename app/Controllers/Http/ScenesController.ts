@@ -9,79 +9,64 @@ import Status from "Contracts/enums/Status";
 import Line from "App/Models/Line";
 
 export default class ScenesController {
-  //
+  private async getCharacters(model: Play | Scene) {
+    const totalCharacters = new Set();
+    if (model instanceof Play) {
+      await model.load("scenes", (sceneQuery) => {
+        sceneQuery.preload("lines", (lineQuery) => {
+          lineQuery.preload("character");
+        });
+      });
+      model.scenes.forEach((scene) => {
+        scene.lines.forEach((line) => {
+          totalCharacters.add(line.characterId);
+        });
+      });
+    } else if (model instanceof Scene) {
+      await model.load("lines", (lineQuery) => {
+        lineQuery.preload("character", (characterQuery) => {
+          characterQuery.preload("image");
+        });
+      });
+      model.lines.forEach((line) => {
+        totalCharacters.add(line.characterId);
+      });
+    } else return null;
+    return totalCharacters;
+  }
   public async select({ params, view, auth }: HttpContextContract) {
-
-    //const user = await auth.authenticate();
-    // const groupId = params.group_id;
-    // const scene = await Scene.findOrFail(params.scene_id);
-    // await scene.load("lines", (lineQuery) => {
-    //   lineQuery.preload('character')
-    // })
-    // await scene.load("lines", (lineQuery) => {
-    //   lineQuery.orderBy("position").preload('character', (characterQuery) => {
-    //     characterQuery.preload('image')
-    //   })
-    // });
-
-    // return view.render("scene/select", {
-    //   scene
-    // })
-
-
     const user = await auth.authenticate();
-    const currentGroup = await Group.findOrFail(params.group_id);
-    const currentPlay = (
-      await currentGroup
-        .related("plays")
-        .query()
-        .where("play_id", params.play_id)
-        .preload("characters")
-    )[0];
-    // TODO add error handlers for relation and query results
-    const scenes = await currentPlay
-      .related("scenes")
-      .query()
-      .orderBy("position")
-      .preload("image")
-      .preload("lines", (lineQuery) =>
-        lineQuery
-          .preload("audios", (audioQuery) => {
-            audioQuery.preload("creator");
-          })
-          .preload("version")
-          .preload("character")
-      );
-    const currentSceneIndex =
-      scenes.reduce(
-        (acc, cur, index) =>
-          cur.id === parseInt(params.scene_id) ? acc + index + 1 : acc,
-        0
-      ) - 1; // FIXME just a stupid method for tackling global variables with foreach
-    if (currentSceneIndex < 0) {
-      Logger.error(`No record found for scene with id: ${params.scene_id}`);
-      return;
-    }
-    const currentScene = scenes[currentSceneIndex];
-    const previousScene = scenes[currentSceneIndex - 1];
-    const nextScene = scenes[currentSceneIndex + 1];
-    const totalCharacters = new Set(); // total characters in this scene
-    const payload = {};
-    currentScene.lines.forEach((line) => {
-      console.log(`Going through line with id of: ${line.id}`);
-      totalCharacters.add(line.character.id);
-      const lineCharacter = line?.character; // fallback value of 1 is for "didascalie"
-      const lineVersion = line?.version?.id ?? "official";
 
-      console.log(`Added to the total characters...`);
+    const scene = (
+      await Scene.query()
+        .where("id", params.scene_id)
+        .preload("play")
+        .preload("lines", (lineQuery) => {
+          lineQuery.preload("audios");
+        })
+    )[0];
+
+    const totalCharacters = await this.getCharacters(scene); // total characters in this scene
+    const payload = {};
+
+    console.log(scene.lines);
+
+    const lines = scene.lines;
+    await lines.map(async (line) => await line.load("audios"));
+
+    lines.forEach((line) => {
+      console.log(`Going through line with id of: ${line.id}`);
+      const lineCharacter = line?.character; // fallback for "didascalie"
+      const lineVersion = line?.version?.id ?? 1; // fallback for official version
       if (!payload[lineCharacter?.id ?? 1]) {
         console.log(
-          `No record found for character with id of: ${lineCharacter?.id ?? 1
+          `No record found for character with id of: ${
+            lineCharacter?.id ?? 1
           } on the payload...`
         );
-        payload[lineCharacter?.id ?? 1] = { character: null, lines: {} };
+        payload[lineCharacter?.id ?? 1] = { character: null, lines: {} }; // init a new object
       }
-
+      console.log(lineCharacter?.id ?? 1);
       payload[lineCharacter?.id ?? 1].character = lineCharacter.serialize();
 
       if (!payload[lineCharacter?.id ?? 1].lines[lineVersion]) {
@@ -91,48 +76,52 @@ export default class ScenesController {
         payload[lineCharacter?.id ?? 1].lines[lineVersion] = {
           line: null,
           doublers: {},
-        };
+        }; // init a new object
       }
+
       payload[lineCharacter?.id ?? 1].lines[lineVersion].line =
         line.serialize();
 
-      line.audios.forEach((audio) => {
+      if (!line.audios) {
+        console.log(
+          `No attached audios found for line id: ${line.id}: ${line.audios[0]}`
+        );
+        return;
+      }
+
+      line?.audios.forEach((audio) => {
+        // get lines' audios
         const audioCreator = audio?.creator; // FIXME not sure for this...
         if (
           !payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-          audioCreator.id ?? "public"
+            audioCreator.id
           ]
         ) {
           console.log(
             `No record found for audio with creator id of: ${audioCreator} on the payload...`
           );
           payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-            audioCreator.id ?? "public"
+            audioCreator.id
           ] = { creator: null, audios: new Set() };
         }
         payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-          audioCreator.id ?? "public"
+          audioCreator.id
         ].creator = audioCreator.serialize();
 
         payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-          audioCreator.id ?? "public"
+          audioCreator.id
         ].audios.add(audio.versionId);
       });
     });
     return view.render("scene/select", { payload, user });
   }
-  public async index({ }: HttpContextContract) { }
+  public async index({}: HttpContextContract) {}
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
-  public async store({ }: HttpContextContract) { }
+  public async store({}: HttpContextContract) {}
 
-  public async show({
-    request,
-    params,
-    view,
-    response,
-  }: HttpContextContract) {
+  public async show({ request, params, view, response }: HttpContextContract) {
     const data = JSON.parse(request.input("data"));
 
     const currentGroup = await Group.findOrFail(params.group_id);
@@ -166,7 +155,7 @@ export default class ScenesController {
     const payload = []; // indexes represent positions
 
     const lineQuery = currentScene.related("lines").query();
-    //get line_version_id depending on character_id 
+    //get line_version_id depending on character_id
     data.forEach((datum) => {
       console.log(datum);
       lineQuery
@@ -218,43 +207,34 @@ export default class ScenesController {
     await scene.save();
     return scene;
   }
-
-  private getCharactersfromPlay(play: Play) {
-    return [];
-  }
-
-  private getCharactersFromScene(scene: Scene) {
-    return [];
-  }
-
   public async edit({ params, view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
     const scene = await Scene.findOrFail(params.id);
     await scene.load("play", (playQuery) => {
-      playQuery.preload('scenes')
-    })
+      playQuery.preload("scenes");
+    });
 
     await scene.load("play", (playQuery) => {
-      playQuery.preload('scenes', (scenesQuery) => {
-        scenesQuery.preload('lines')
-      })
-    })
+      playQuery.preload("scenes", (scenesQuery) => {
+        scenesQuery.preload("lines");
+      });
+    });
     var charactersSet = new Set();
     scene.play.scenes.forEach((scene) => {
-      scene.lines.forEach((line) => charactersSet.add(line.characterId))
-    })
-    const characterIds = Array.from(charactersSet)
+      scene.lines.forEach((line) => charactersSet.add(line.characterId));
+    });
+    const characterIds = Array.from(charactersSet);
     const characters = await Character.findMany(characterIds);
 
     await scene.load("lines", (lineQuery) => {
-      lineQuery.orderBy("position").preload('character', (characterQuery) => {
-        characterQuery.preload('image')
-      })
+      lineQuery.orderBy("position").preload("character", (characterQuery) => {
+        characterQuery.preload("image");
+      });
     });
     return view.render("scene/edit", {
-      scene, characters
-    })
-
+      scene,
+      characters,
+    });
 
     const currentGroup = await Group.findOrFail(params.group_id);
     const currentPlay = (
@@ -389,3 +369,51 @@ export default class ScenesController {
     return response.redirect().back();
   }
 }
+
+// For payload in /select
+/* 
+We need this structure to store different alternative lines per character upon different audio versions per creator.
+1 (Lux): {
+  character: Lux,
+  lines: {
+    1 (Official): {
+      line: Line,
+      doublers: {
+        4 (Renekton) : {
+          creator: Renekton,
+          audios: [2, 3]
+        }
+        9 (Aphelios) : {
+          creator: Aphelios,
+          audios: [6, 12]
+        }
+      }
+    },
+    7: {
+      line: Line,
+      doublers: {
+      12 (Master Yi): {
+        creator: Master Yi,
+        audios: [1]
+      }
+      }
+    }
+  }
+}
+
+paylod = {
+  line_character_id: {
+    character: Character,
+    lines: {
+      line_version_id: { // Relation with versions table
+        line: Line,
+        doublers: {
+          audio_creator_id: {
+            creator: User,
+            audios: [audio_version_ids] // Audios can be grouped by version id
+          }
+        },
+      },
+    },
+  },
+}; */

@@ -1,31 +1,65 @@
 @layout('layouts/master')
 @section('content')
-{{inspect(payload)}}
+
 {{csrfField()}}
 
+{{inspect(payload)}}
+
+
 @each((characterLoad) in payload)
-<h1 class="title">Character: {{characterLoad.character.name}}</h1>
-    @each((lineLoad) in characterLoad.lines)
-    <h3 class="subtitle is-3">{{lineLoad.line?.version?.name ?? 'Official'}}</h3>
-        @each((doubler) in lineLoad?.doublers)
-        <h5 class="subtitle is-5" style="display: inline;">{{doubler.creator.username}}</h5>
-        <div style="display: inline;">
-            @each((audio) in Array.from(doubler.audios).sort())
-            <p style="display: inline;">{{audio}}</p>
-            @endeach
+
+<div class='container has-text-centered'>
+    <div class='columns is-mobile is-centered'>
+      <div class='column is-5'>
+        <div class="card"  style="overflow: visible;">
+          <div class="card-image has-text-centered">
+            <figure class="image is-128x128 is-inline-block">
+              <img src=
+"https://bulma.io/images/placeholders/128x128.png"
+                   alt="Placeholder image">
+            </figure>
+            <p class='is-success'>
+                {{characterLoad.character.image.public_path}}
+              </p>
+          </div>
+          <div class="card-content">
+            <div class='content'>
+              <div class="media-content">
+                <select class="select-search tail-select default white" tabindex="0">
+                    @each((lineLoad) in characterLoad.lines)
+                    <optgroup label="{{lineLoad.line?.version?.name ?? 'Official'}}">
+                        @each((doubler) in lineLoad?.doublers)
+                                @each((audioVersion) in Array.from(doubler.audios).sort())
+                                <option>{{doubler.creator.username}}{{audioVersion}}</option>
+                                @endeach
+                        @endeach
+                        <option>Record your interpretation</option>
+                    </optgroup>
+                    @endeach
+                    <option>Robotise</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
-        <br>
-        @endeach
-    <button class="button is-primary">Record your interpretation</button>
-    @endeach
-<br>
-<br>
-<button class="button is-info">Robotise</button>
+      </div>
+    </div>
+  </div>
 @endeach
 <br>
 <br>
 <button id="submitBtn" class="button is-danger" href='{{request.completeUrl()}}/../action'>Submit</button>
+
 <script>
+    tippy('#submitBtn', {content: "ghey"});
+    document.addEventListener("DOMContentLoaded",  () => {
+        tail.select(".select-search", {
+            search: true
+        }).on("change", (item, state) => {
+            console.log(item.option.getAttribute("hello"), item.group);
+        });
+    })
+    
     const submitButon = document.getElementById("submitBtn");
     const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
     submitButon.addEventListener("click", (e) => {

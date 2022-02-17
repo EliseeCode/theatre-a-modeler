@@ -70,7 +70,7 @@ Route.resource("group/:group_id/scene", "ScenesController");
 Route.post("group/:group_id/scene/:scene_id/action", "ScenesController.action");
 
 Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
-Route.post("scenes/:id", "ScenesController.show");
+Route.post("group/:group_id/scene/scene_id", "ScenesController.show");
 
 Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
