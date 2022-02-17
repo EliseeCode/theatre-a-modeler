@@ -1,6 +1,8 @@
 @layout('layouts/master')
 @section('content')
+{{inspect(payload)}}
 {{csrfField()}}
+
 @each((characterLoad) in payload)
 <h1 class="title">Character: {{characterLoad.character.name}}</h1>
     @each((lineLoad) in characterLoad.lines)

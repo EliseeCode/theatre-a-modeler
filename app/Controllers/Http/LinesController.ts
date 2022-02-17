@@ -18,15 +18,37 @@ export default class LinesController {
     });
   }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ params, response }: HttpContextContract) {
+    const scene_id = params.scene_id;
+    const position = parseInt(params.position);
+    await Line.query().where('sceneId', scene_id).andWhere('position', ">", position).increment("position", 1);
+    await Line.create({
+      text: "",
+      sceneId: scene_id,
+      position: position + 1
+    });
+    return response.redirect().back();
+  }
 
-  public async store({}: HttpContextContract) {}
+  public async store({ }: HttpContextContract) { }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ }: HttpContextContract) { }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ params, response, request }: HttpContextContract) {
+    let line = await Line.findOrFail(params.id);
+    const { text, characterId } = request.body();
+    line.text = text;
+    line.characterId = characterId;
+    await line.save();
+    return response.redirect().back();
+  }
 
-  public async destroy({}: HttpContextContract) {}
+  public async destroy({ params, response }: HttpContextContract) {
+    let line = await Line.findOrFail(params.id);
+    await Line.query().where('sceneId', line.sceneId).andWhere('position', ">", line.position).decrement("position", 1);
+    await line.delete();
+    return response.redirect().back();
+  }
 }

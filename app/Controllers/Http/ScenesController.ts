@@ -177,7 +177,6 @@ export default class ScenesController {
   }
   public async show({ request, params, view }: HttpContextContract) {
     console.log(request.body());
-
     return;
     const sceneInst = await Scene.query()
       .where("id", params.scene_id)
@@ -231,6 +230,20 @@ export default class ScenesController {
 
   public async edit({ params, view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
+    const scene = await Scene.findOrFail(params.id);
+    await scene.load("play", (playQuery) => {
+      playQuery.preload('characters').preload('scenes')
+    })
+    await scene.load("lines", (lineQuery) => {
+      lineQuery.orderBy("position").preload('character', (characterQuery) => {
+        characterQuery.preload('image')
+      })
+    });
+    return view.render("scene/edit", {
+      scene
+    })
+
+
     const currentGroup = await Group.findOrFail(params.group_id);
     const currentPlay = (
       await currentGroup
@@ -251,12 +264,14 @@ export default class ScenesController {
           cur.id === parseInt(params.id) ? acc + index + 1 : acc,
         0
       ) - 1; // FIXME just a stupid method for tackling global variables with foreach
+
     if (currentSceneIndex < 0) {
       Logger.error(`No record found for scene with id: ${params.id}`);
       const totalCharacters = currentPlay.characters.map((character) =>
         character.serialize()
       ); // on this play
       return view.render("scene/edit", {
+        scene,
         payload: {
           totalCharacters: totalCharacters,
           lineData: null,
