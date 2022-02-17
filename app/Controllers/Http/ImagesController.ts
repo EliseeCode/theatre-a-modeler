@@ -2,15 +2,18 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Image from "App/Models/Image";
 import Play from "App/Models/Play";
 import Scene from "App/Models/Scene";
+import User from "App/Models/User";
+import Character from "App/Models/Character";
 import Line from "App/Models/Line";
 import Logger from "@ioc:Adonis/Core/Logger";
 import Drive from "@ioc:Adonis/Core/Drive";
 import { URL } from "url";
+import ObjectType from "Contracts/enums/ObjectType";
 
 export default class ImagesController {
-  public async index({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
   public async store({ request, response, auth }: HttpContextContract) {
     const imageFile = await request.file("image");
@@ -21,25 +24,24 @@ export default class ImagesController {
       });
     console.log("1");
     const user = await auth.authenticate();
-    const entityType = request.body().entityType;
+    const entityType = parseInt(request.body().entityType);
     const entityId = request.body().entityId;
-    console.log("2");
-    if (!["Play", "Scene", "Line"].includes(entityType)) {
-      let message = `Invalid entity type (${entityType}) for upload...`;
+    console.log(entityType, [ObjectType.PLAY, ObjectType.SCENE, ObjectType.LINE, ObjectType.CHARACTER, ObjectType.USER]);
+    if (![ObjectType.PLAY, ObjectType.SCENE, ObjectType.LINE, ObjectType.CHARACTER, ObjectType.USER].includes(entityType)) {
+      let message = `Invalid entity type :(${entityType}) for upload...`;
       Logger.info(message);
       return response.json({
         status: 0,
         message: `Invalid entity type (${entityType}) for upload...`,
       });
     }
-    console.log("3");
+
     // Won't use a custom name instead Adonis will auto-generate a random name
     /*const fileName = `${user.id}_${lineId}_${await Hash.make(
       new Date().getTime().toString()
     )}.${imageFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
     let message: string, status: boolean;
     try {
-      console.log("4");
       await imageFile?.moveToDisk(
         "./images/",
         { contentType: request.header("Content-Type") },
@@ -65,17 +67,20 @@ export default class ImagesController {
     // eval(entityType) -> Play is not defined... Why can't we use import aliases in eval? #FIXME
     let entityModel;
     switch (entityType) {
-      case "Play":
+      case ObjectType.PLAY:
         entityModel = Play;
         break;
-      case "Scene":
+      case ObjectType.SCENE:
         entityModel = Scene;
         break;
-      case "Line":
-        entityModel = Line;
+      case ObjectType.USER:
+        entityModel = User;
+        break;
+      case ObjectType.CHARACTER:
+        entityModel = Character;
         break;
     } // a stupid switch...
-    const entity = (await entityModel.query().where("id", entityId))[0];
+    const entity = await entityModel.findOrFail(entityId);
 
     const newImage = await Image.create({
       name: imageFile.fileName,
@@ -95,11 +100,11 @@ export default class ImagesController {
     return newImage;
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ }: HttpContextContract) { }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async destroy({ response, params }: HttpContextContract) {
     const image = (await Image.query().where("id", params.id))[0];

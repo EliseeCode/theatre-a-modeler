@@ -9,7 +9,26 @@ import Status from "Contracts/enums/Status";
 import Line from "App/Models/Line";
 
 export default class ScenesController {
+  //
   public async select({ params, view, auth }: HttpContextContract) {
+
+    //const user = await auth.authenticate();
+    // const groupId = params.group_id;
+    // const scene = await Scene.findOrFail(params.scene_id);
+    // await scene.load("lines", (lineQuery) => {
+    //   lineQuery.preload('character')
+    // })
+    // await scene.load("lines", (lineQuery) => {
+    //   lineQuery.orderBy("position").preload('character', (characterQuery) => {
+    //     characterQuery.preload('image')
+    //   })
+    // });
+
+    // return view.render("scene/select", {
+    //   scene
+    // })
+
+
     const user = await auth.authenticate();
     const currentGroup = await Group.findOrFail(params.group_id);
     const currentPlay = (
@@ -108,7 +127,7 @@ export default class ScenesController {
 
   public async store({ }: HttpContextContract) { }
 
-  public async action({
+  public async show({
     request,
     params,
     view,
@@ -147,6 +166,7 @@ export default class ScenesController {
     const payload = []; // indexes represent positions
 
     const lineQuery = currentScene.related("lines").query();
+    //get line_version_id depending on character_id 
     data.forEach((datum) => {
       console.log(datum);
       lineQuery
@@ -175,35 +195,6 @@ export default class ScenesController {
     console.log(payload.length, lines.length);
     return view.render("scene/action", { payload });
   }
-  public async show({ request, params, view }: HttpContextContract) {
-    console.log(request.body());
-    return;
-    const sceneInst = await Scene.query()
-      .where("id", params.scene_id)
-      .preload("lines", (lineQuery) => {
-        lineQuery.orderBy("position", "asc").preload("character");
-      });
-    const scene = sceneInst[0].serialize();
-
-    var userByCharacter = {
-      1: 1,
-      2: 2,
-    };
-
-    const sceneInst2 = await Scene.query().preload("lines", (lineQuery) => {
-      for (let characterId in userByCharacter) {
-        lineQuery
-          .where("characterId", characterId)
-          .preload("audios", (audioQuery) => {
-            audioQuery.where("creator_id", userByCharacter[characterId]);
-          });
-      }
-    });
-
-    const playId = params.play_id;
-    const play = await (await Play.findOrFail(playId)).serialize();
-    return view.render("scene/show", { scene, play, sceneInst2 });
-  }
 
   public async createNew({ response, auth, params }: HttpContextContract) {
     const play = await Play.findOrFail(params.id);
@@ -228,19 +219,40 @@ export default class ScenesController {
     return scene;
   }
 
+  private getCharactersfromPlay(play: Play) {
+    return [];
+  }
+
+  private getCharactersFromScene(scene: Scene) {
+    return [];
+  }
+
   public async edit({ params, view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
     const scene = await Scene.findOrFail(params.id);
     await scene.load("play", (playQuery) => {
-      playQuery.preload('characters').preload('scenes')
+      playQuery.preload('scenes')
     })
+
+    await scene.load("play", (playQuery) => {
+      playQuery.preload('scenes', (scenesQuery) => {
+        scenesQuery.preload('lines')
+      })
+    })
+    var charactersSet = new Set();
+    scene.play.scenes.forEach((scene) => {
+      scene.lines.forEach((line) => charactersSet.add(line.characterId))
+    })
+    const characterIds = Array.from(charactersSet)
+    const characters = await Character.findMany(characterIds);
+
     await scene.load("lines", (lineQuery) => {
       lineQuery.orderBy("position").preload('character', (characterQuery) => {
         characterQuery.preload('image')
       })
     });
     return view.render("scene/edit", {
-      scene
+      scene, characters
     })
 
 
