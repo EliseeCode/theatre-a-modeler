@@ -1,0 +1,50 @@
+@layout('layouts/master')
+@section('content')
+{{csrfField()}}
+@each((characterLoad) in payload)
+<h1 class="title">Character: {{characterLoad.character.name}}</h1>
+    @each((lineLoad) in characterLoad.lines)
+    <h3 class="subtitle is-3">{{lineLoad.line?.version?.name ?? 'Official'}}</h3>
+        @each((doubler) in lineLoad?.doublers)
+        <h5 class="subtitle is-5" style="display: inline;">{{doubler.creator.username}}</h5>
+        <div style="display: inline;">
+            @each((audio) in Array.from(doubler.audios).sort())
+            <p style="display: inline;">{{audio}}</p>
+            @endeach
+        </div>
+        <br>
+        @endeach
+    <button class="button is-primary">Record your interpretation</button>
+    @endeach
+<br>
+<br>
+<button class="button is-info">Robotise</button>
+@endeach
+<br>
+<br>
+<button id="submitBtn" class="button is-danger" href='{{request.completeUrl()}}/../action'>Submit</button>
+<script>
+    const submitButon = document.getElementById("submitBtn");
+    const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
+    submitButon.addEventListener("click", (e) => {
+        const targetURL = e.target.getAttribute("href");
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = targetURL;
+        const formData = JSON.stringify([
+            {character_id: 2, line_version_id: 2, audio_creator_id: 2, audio_version_id: 1}, 
+            {character_id: 7, line_version_id: 7, audio_creator_id: 7, audio_version_id: 1}, 
+            {character_id: 1, line_version_id: 3, audio_creator_id: 12, audio_version_id:2}
+        ])
+        const dataElement = document.createElement("input");
+        dataElement.value = formData;
+        dataElement.name = "data";
+        dataElement.hidden = true;
+        form.appendChild(dataElement);
+        form.appendChild(document.getElementsByName("_csrf")[0])
+        document.body.appendChild(form);
+        form.submit()
+        return; 
+    })
+</script>
+@endsection

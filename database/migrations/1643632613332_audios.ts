@@ -25,7 +25,13 @@ export default class Audios extends BaseSchema {
       table.bigInteger("size").notNullable(); // #FIXME in MB/KB
       table.string("type", 255).notNullable();
       table.string("mime_type", 255).notNullable();
-      table.integer("lang_id", 180).notNullable();
+      table.integer("lang_id", 180).nullable();
+      table
+        .integer("version_id", 180)
+        .unsigned()
+        .references("versions.id")
+        .onDelete("CASCADE")
+        .nullable();
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

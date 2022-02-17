@@ -43,15 +43,15 @@ export default class Group extends BaseModel {
     relatedKey: "id",
     pivotForeignKey: "group_id",
     pivotRelatedForeignKey: "user_id",
-    pivotColumns: ['role_id'],
+    pivotColumns: ["role_id"],
   })
   public users: ManyToMany<typeof User>;
 
   @manyToMany(() => Play, {
-    // localKey: "id",
-    // relatedKey: "id",
-    // pivotForeignKey: "group_id",
-    // pivotRelatedForeignKey: "play_id",
+    localKey: "id",
+    relatedKey: "id",
+    pivotForeignKey: "group_id",
+    pivotRelatedForeignKey: "play_id",
   })
   public plays: ManyToMany<typeof Play>;
 
@@ -60,5 +60,4 @@ export default class Group extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
-
 }

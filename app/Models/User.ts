@@ -7,7 +7,7 @@ import {
   manyToMany,
   ManyToMany,
   hasMany,
-  HasMany
+  HasMany,
 } from "@ioc:Adonis/Lucid/Orm";
 //import Formation from "./Formation";
 import Group from "App/Models/Group";
@@ -37,10 +37,15 @@ export default class User extends BaseModel {
   @column()
   public rememberMeToken?: string;
 
-  @manyToMany(() => Group, {pivotColumns: ['role_id'],})
+  @manyToMany(() => Group, {
+    localKey: "id",
+    relatedKey: "id",
+    pivotForeignKey: "user_id",
+    pivotRelatedForeignKey: "group_id",
+    pivotColumns: ["role_id"],
+  })
   public groups: ManyToMany<typeof Group>;
 
-  
   @hasMany(() => Play, {
     localKey: "id",
     foreignKey: "creatorId",

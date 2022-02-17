@@ -11,6 +11,7 @@ import {
   hasMany,
   HasMany,
 } from "@ioc:Adonis/Lucid/Orm";
+import Version from "App/Models/Version";
 
 export default class Line extends BaseModel {
   @column({ isPrimary: true })
@@ -48,6 +49,12 @@ export default class Line extends BaseModel {
 
   @column()
   public langId: number;
+
+  @column()
+  public versionId: number;
+
+  @belongsTo(() => Version, { localKey: "id", foreignKey: "versionId" })
+  public version: BelongsTo<typeof Version>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

@@ -1,69 +1,58 @@
 @layout('layouts/master')
-
 @section('content')
-<div class='container m-3'>
-  <div class="box">
-    <h1 class="title">Scène</h1>
-      
-    <form action='/scenes/{{id?id+'?_method=PUT':''}}' method='POST'>
-        {{ csrfField() }}
-        <div class="field">
-          <label class="label">Permissions</label>
-          <div class="control">
-            @each(group in user.groups)
-            <div class="box status_group" style="display:inline-block;">
-              <span>{{group.name}}</span>
-              <div class="select">
-                <select oninput="updateGroupStatus();" name={{'status_group_'+group.id}}>
-                  <option value="{{status.HIDDEN}}" {{group.status==status.HIDDEN?'selected':''}}>Caché</option>
-                  <option value="{{status.PUBLISHED}}" {{group.status==status.PUBLISHED?'selected':''}}>Publié</option>
-                  <option value="{{status.CHANGEABLE}}" {{group.status==status.CHANGEABLE?'selected':''}}>Modifiable</option>
-                </select>
-              </div>
-            </div>
-            @endeach
-          </div>
-          
-        </div>
-        @include('partials/inputs/nameInput')
-        @include('partials/inputs/descriptionInput')
-        <input type="submit" class="button is-primary" value="Enregistrer">
-    </form>
-  </div>
-</div>
-<style>
-  .hiddenStatus{background-color:grey; color:white;}
-  .publishedStatus{background-color:green;color:lime;}
-  .changeableStatus{background-color:red;color:pink;}
-</style>
+<h2>You're about the edit the official scene.</h2>
+@if(payload?.lineData)
+@each(line in payload.lineData)
+@include('partials/scenes/edit/line')
+@endeach
+@else
+<select name="characters" class="charSelect" autocomplete="off">
+    @each((character) in payload.totalCharacters)
+    <option value="{{character.id}}">{{character.name}}</option>
+    @endeach
+    <option class="characterCreate">Create a character</option>
+</select>
+<textarea data-line-id = "" class="lineText" cols="30" rows="5" style="resize: none">Je suis comme ça. Ou j'oublie tout de suite ou je n'oublie jamais.</textarea>
+<button class="addLineBtn">+</button>
+<br><br>
+@endif
 <script>
-  function updateGroupStatus()
-  {
-    console.log($(".status_group").find("select").val());
+    document.addEventListener("click", (e) => {
+        if (e.target && e.target.classList.contains("addLineBtn")) {
+            const divToAppend = document.createElement("div");
+            const selectModal = document.createElement("select");
+            // FIXME needs improv.
+            const totalCharacters = Array.from(JSON.parse(`{{{stringify(payload.totalCharacters)}}}`));
+            for (let i = 0; i <= totalCharacters.length; i++) {
+                const option = document.createElement("option");
+                if (i === totalCharacters.length) {
+                    option.textContent = "Create a character";
+                    option.classList.add("characterCreate");
+                } else {
+                    option.value = totalCharacters[i].id;
+                    option.textContent = totalCharacters[i].name;
+                }
+                selectModal.appendChild(option);
+            }
 
-    $( ".status_group" ).each(function( index ) {
-      console.log( index + ": " + $( this ).find("select").val() );
-      });
+            const textareaModal = document.createElement("textarea");
+            textareaModal.classList.add("lineText");
+            textareaModal.cols = 30;
+            textareaModal.rows = 5;
+            textareaModal.style.resize = "none";
 
+            const buttonModal = document.createElement("button");
+            buttonModal.classList.add("addLineBtn");
+            buttonModal.textContent = "+";
+            
+            divToAppend.appendChild(document.createElement("br"))
+            divToAppend.appendChild(selectModal);
+            divToAppend.appendChild(textareaModal);
+            divToAppend.appendChild(buttonModal);
+            divToAppend.appendChild(document.createElement("br"))
+            e.target.parentNode.insertBefore(divToAppend, e.target.nextSibling);
+        }
+    })
+ 
 
-    $(".status_group").each(function (){
-      var status=$( this ).find("select").val();
-      if(status=={{status.HIDDEN}}){
-        $(this).removeClass("publishedStatus changeableStatus");
-        $(this).addClass("hiddenStatus");
-      }
-      else if(status=={{status.CHANGEABLE}})
-      {
-        $(this).removeClass("hiddenStatus publishedStatus");
-        $(this).addClass("changeableStatus");
-      }
-      else
-      {
-        $(this).removeClass("hiddenStatus changeableStatus");
-        $(this).addClass("publishedStatus");
-      }
-    });
-  }
-  updateGroupStatus()
-</script>
 @endsection

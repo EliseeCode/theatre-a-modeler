@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import User from "App/Models/User";
 import Line from "App/Models/Line";
 import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
+import Version from "App/Models/Version";
 
 export default class Audios extends BaseModel {
   @column({ isPrimary: true, meta: { type: "number" } })
@@ -28,11 +29,17 @@ export default class Audios extends BaseModel {
   @column({ meta: { type: "number" } })
   public lineId: number;
 
+  @column({ meta: { type: "number" } })
+  public versionId: number;
+
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
 
   @belongsTo(() => Line, { localKey: "id", foreignKey: "lineId" })
   public line: BelongsTo<typeof Line>;
+
+  @belongsTo(() => Version, { localKey: "id", foreignKey: "versionId" })
+  public version: BelongsTo<typeof Version>;
 
   @column({ meta: { type: "number" } })
   public size: number;

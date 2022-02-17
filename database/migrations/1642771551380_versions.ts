@@ -1,18 +1,13 @@
 import BaseSchema from "@ioc:Adonis/Lucid/Schema";
 
-export default class Characters extends BaseSchema {
-  protected tableName = "characters";
+export default class Versions extends BaseSchema {
+  protected tableName = "versions";
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments("id");
-      table.string("name", 255).nullable();
-      table.string("gender").nullable();
-      table
-        .integer("image_id", 180)
-        .unsigned()
-        .references("images.id")
-        .onDelete("SET NULL");
+      table.increments("id").primary();
+      table.string("name", 255).notNullable().defaultTo("official");
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

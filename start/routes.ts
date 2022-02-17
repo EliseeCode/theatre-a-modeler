@@ -60,15 +60,24 @@ Route.get("dashboard", "AppsController.index");
 
 Route.get("groups/:id/leave", "GroupsController.leave");
 
-Route.get('/groups/:groupId/plays/create', "PlaysController.create");
-Route.get('/groups/:groupId/plays/:playId/detach', "PlaysController.detach");
-
+Route.get("/groups/:groupId/plays/create", "PlaysController.create");
+Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 Route.post('/profile/updateRole', 'UsersController.RoleUpdateByUser');
+
+Route.resource("group/:group_id/play/:play_id/scene", "ScenesController");
+Route.post(
+  "group/:group_id/play/:play_id/scene/:scene_id/action",
+  "ScenesController.action"
+);
+
+Route.get(
+  "group/:group_id/play/:play_id/scene/:scene_id/select",
+  "ScenesController.select"
+);
 
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
 Route.post("play/createNew", "PlaysController.createNew");
 Route.post("play/:id/scene/createNew", "ScenesController.createNew");
-
 
 Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
 Route.post("api/play/:playId/updateName", "PlaysController.updateName");
