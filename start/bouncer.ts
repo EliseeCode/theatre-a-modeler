@@ -6,8 +6,7 @@
  */
 
 import Bouncer from '@ioc:Adonis/Addons/Bouncer'
-import User from 'App/Models/User';
-import Role from 'Contracts/enums/Role'
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +31,7 @@ import Role from 'Contracts/enums/Role'
 |****************************************************************
 */
 export const { actions } = Bouncer
-Bouncer.define("deleteGroup",(user : User)=>{
-    return [Role.ADMIN,Role.TEACHER].includes(user.roleId);
-})
+
 /*
 |--------------------------------------------------------------------------
 | Bouncer Policies
@@ -58,4 +55,8 @@ Bouncer.define("deleteGroup",(user : User)=>{
 | NOTE: Always export the "policies" const from this file
 |****************************************************************
 */
-export const { policies } = Bouncer.registerPolicies({})
+export const { policies } = Bouncer.registerPolicies({
+    GroupPolicy: () => import('App/Policies/GroupPolicy'),
+    PlayPolicy: () => import('App/Policies/PlayPolicy'),
+    ScenePolicy: () => import('App/Policies/ScenePolicy')
+})

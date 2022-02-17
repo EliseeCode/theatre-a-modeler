@@ -9,7 +9,9 @@
               </div>
           </div>
           <div class="level-right">
+            @can('GroupPolicy.create')
               <div class="level-item"><a href='#' data-target="new-group-modal" class='button is-primary js-modal-trigger'>Créer un groupe</a></div>
+            @endcan  
               <div class="level-item"><a href='#' data-target="join-group-with-code-modal" class='button is-primary js-modal-trigger'>Rejoindre un groupe</a></div>
           </div>
       </div>

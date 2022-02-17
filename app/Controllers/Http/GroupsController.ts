@@ -3,6 +3,7 @@ import Group from 'App/Models/Group';
 import Logger from "@ioc:Adonis/Core/Logger";
 import Role from 'Contracts/enums/Role';
 
+
 export default class GroupsController {
   public async index({ }: HttpContextContract) {
   }
@@ -37,26 +38,23 @@ export default class GroupsController {
     return response.redirect().toRoute("/dashboard");
   }
 
-  public async show({ params, view, auth, response }: HttpContextContract) {
-    try {
-      const group = await Group.find(params.id);
-      const user = await auth.authenticate();
-      await user.load("groups");
-      if (group) {
-        await group.load('plays', (playQuery) => {
+  public async show({ params, view, auth, bouncer }: HttpContextContract) {
 
-          playQuery.preload("scenes", (sceneQuery) => {
-            sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character") })
-          })
-            .preload("creator")
-            .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
-        });
-        return view.render('group/show', { group, user });
-      }
-    } catch (error) {
-      return error
+    const group = await Group.findOrFail(params.id);
+    const user = await auth.authenticate();
+    await bouncer.with('GroupPolicy').authorize('view', group);
+    await user.load("groups");
+    if (group) {
+      await group.load('plays', (playQuery) => {
+
+        playQuery.preload("scenes", (sceneQuery) => {
+          sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character") })
+        })
+          .preload("creator")
+          .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
+      });
+      return view.render('group/show', { group, user });
     }
-
   }
 
 
@@ -67,10 +65,11 @@ export default class GroupsController {
     return view.render("group/edit", { ...group.serialize() });
   }
 
-  public async update({ auth, params, response, request }: HttpContextContract) {
+  public async update({ auth, params, response, request, bouncer }: HttpContextContract) {
     const user = await auth.authenticate();
     const groupId = params.id;
     const group = await Group.findOrFail(groupId);
+    await bouncer.with('GroupPolicy').authorize('update', group);
     group.name = request.all().name || "Groupe sans nom";
     group.color = request.all().color || "#ff0000";
     group.description = request.all().description;
@@ -79,9 +78,10 @@ export default class GroupsController {
     return response.redirect().toRoute("/dashboard");
   }
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
     const groupId = params.id;
     var group = await Group.findOrFail(groupId);
+    await bouncer.with('GroupPolicy').authorize('delete', group);
     await group.delete();
     return response.redirect().back();
   }

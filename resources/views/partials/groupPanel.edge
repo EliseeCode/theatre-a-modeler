@@ -31,57 +31,59 @@
                               </button>
                             </div>
                             <div class="dropdown-menu" id="dropdown-menu6" role="menu">
-                              <div class="dropdown-content has-text-left">
-                                <div class="dropdown-item">
-                                        <a href=# class="icon-text js-modal-trigger" 
-                                        onclick="loadGroupInfoInModal({{JSON.stringify(['id','name','description','color'].reduce((obj, key) => ({ ...obj, [key]: group[key] }), {}));}})" 
-                                        data-target="edit-group-modal"
-                                        >
+                                <div class="dropdown-content has-text-left">
+                                    @can('GroupPolicy.update', group)
+                                        <div class="dropdown-item">
+                                                <a href=# class="icon-text js-modal-trigger" 
+                                                onclick="loadGroupInfoInModal({{JSON.stringify(['id','name','description','color'].reduce((obj, key) => ({ ...obj, [key]: group[key] }), {}));}})" 
+                                                data-target="edit-group-modal"
+                                                >
+                                                    <span class="icon">
+                                                        <i class="fas fa-edit"></i>
+                                                    </span>
+                                                    <span>Modifier</span>
+                                                </a>
+                                        </div>
+                                    @endcan
+                                    <div class="dropdown-item">
+                                        <span href=# class="icon-text">
                                             <span class="icon">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-key"></i>
                                             </span>
-                                            <span>Modifier</span>
+                                            <span> {{group.code}} </span>
+                                        </span>
+                                    </div>
+
+                                    <div class="dropdown-item">
+                                        <a href=# onclick='copyTextToClipboard("https://localhost:3333/groups/{{group.code}}/join")' class="icon-text">
+                                            <span class="icon">
+                                                <i class="fas fa-link"></i>
+                                            </span>
+                                            <span>Copier le lien</span>
                                         </a>
-                                </div>
+                                    </div>
 
-                                <div class="dropdown-item">
-                                    <span href=# class="icon-text">
-                                        <span class="icon">
-                                            <i class="fas fa-key"></i>
-                                        </span>
-                                        <span> {{group.code}} </span>
-                                    </span>
-                                </div>
-
-                                <div class="dropdown-item">
-                                    <a href=# onclick='copyTextToClipboard("https://localhost:3333/groups/{{group.code}}/join")' class="icon-text">
-                                        <span class="icon">
-                                            <i class="fas fa-link"></i>
-                                        </span>
-                                        <span>Copier le lien</span>
-                                    </a>
-                                </div>
-
-                                <div class="dropdown-item">
-                                    <a href={{ 'groups/'+group.id+'/leave' }} class="icon-text has-text-danger">
-                                        <span class="icon">
-                                            <i class="fas fa-door-open"></i>
-                                        </span>
-                                        <span>Quitter ce groupe</span>
-                                    </a>
-                                </div>
-
-                                <div class="dropdown-item">
-                                        <form class="icon-text" action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
-                                            {{ csrfField() }} 
-                                            <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
-                                                <span class="icon">
-                                                    <i class="fas fa-trash"></i>
-                                                </span>
-                                                <span>Supprimer</span>
-                                            </a>
-                                        </form>
-                                </div>
+                                    <div class="dropdown-item">
+                                        <a href={{ 'groups/'+group.id+'/leave' }} class="icon-text has-text-danger">
+                                            <span class="icon">
+                                                <i class="fas fa-door-open"></i>
+                                            </span>
+                                            <span>Quitter ce groupe</span>
+                                        </a>
+                                    </div>
+                                @can('GroupPolicy.delete', group)
+                                    <div class="dropdown-item">
+                                            <form class="icon-text" action={{ 'groups/'+group.id+'?_method=DELETE' }} method="POST">
+                                                {{ csrfField() }} 
+                                                <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
+                                                    <span class="icon">
+                                                        <i class="fas fa-trash"></i>
+                                                    </span>
+                                                    <span>Supprimer</span>
+                                                </a>
+                                            </form>
+                                    </div>
+                                @endcan    
                                 </div>
                               </div>
                         </div>
