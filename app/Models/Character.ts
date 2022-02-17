@@ -29,16 +29,6 @@ export default class Character extends BaseModel {
   @column({ meta: { type: "number" } })
   public imageId: number;
 
-  @hasMany(() => Line, {})
-  public lines: HasMany<typeof Line>
-  // @manyToMany(() => Play, {
-  //   localKey: "id",
-  //   relatedKey: "id",
-  //   pivotForeignKey: "character_id",
-  //   pivotRelatedForeignKey: "play_id",
-  // })
-  // public plays: ManyToMany<typeof Play>;
-
   @belongsTo(() => Image, { localKey: "id", foreignKey: "imageId" })
   public image: BelongsTo<typeof Image>;
 

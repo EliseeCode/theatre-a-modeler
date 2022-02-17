@@ -83,12 +83,6 @@ export default class UserSeeder extends BaseSeeder {
       await scenes[i].related("image").associate(images[i % imageCount]);
     }
     for (let i = 0; i < characterCount; i++) {
-      await characters[i].related("plays").attach({
-        [plays[i % playCount].id]: {
-          created_at: DateTime.now().toISO(),
-          updated_at: DateTime.now().toISO(),
-        },
-      });
       await characters[i].related("image").associate(images[i % imageCount]);
     }
     for (let i = 0; i < lineCount; i++) {

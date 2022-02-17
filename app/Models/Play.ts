@@ -59,6 +59,7 @@ export default class Play extends BaseModel {
   @hasMany(() => Scene, { localKey: "id", foreignKey: "playId" })
   public scenes: HasMany<typeof Scene>;
 
+<<<<<<< HEAD
   // @manyToMany(() => Character, {
   //   localKey: "id",
   //   relatedKey: "id",
@@ -68,6 +69,8 @@ export default class Play extends BaseModel {
 
   public characters: Character[];
 
+=======
+>>>>>>> 56efd0f418d610abeb7bf52847ac3a6b11353aed
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
 

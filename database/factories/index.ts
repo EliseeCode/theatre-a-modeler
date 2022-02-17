@@ -53,9 +53,7 @@ export const CharacterFactory = Factory.define(Character, ({ faker }) => {
     name: faker.internet.userName(),
     gender: ["Male", "Female"][Math.floor(Math.random() * 2)],
   };
-})
-  .relation("plays", () => PlayFactory) // 👈
-  .build();
+}).build();
 
 export const LineFactory = Factory.define(Line, ({ faker }) => {
   return {
