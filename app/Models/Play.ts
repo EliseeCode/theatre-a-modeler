@@ -59,13 +59,14 @@ export default class Play extends BaseModel {
   @hasMany(() => Scene, { localKey: "id", foreignKey: "playId" })
   public scenes: HasMany<typeof Scene>;
 
-  @manyToMany(() => Character, {
-    localKey: "id",
-    relatedKey: "id",
-    pivotForeignKey: "play_id",
-    pivotRelatedForeignKey: "character_id",
-  })
-  public characters: ManyToMany<typeof Character>;
+  // @manyToMany(() => Character, {
+  //   localKey: "id",
+  //   relatedKey: "id",
+  //   pivotForeignKey: "play_id",
+  //   pivotRelatedForeignKey: "character_id",
+  // })
+
+  public characters: Character[];
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

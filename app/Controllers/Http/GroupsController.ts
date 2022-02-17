@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Group from 'App/Models/Group';
+import Character from 'App/Models/Character';
 import Logger from "@ioc:Adonis/Core/Logger";
 import Role from 'Contracts/enums/Role';
 
@@ -46,14 +47,33 @@ export default class GroupsController {
     await user.load("groups");
     if (group) {
       await group.load('plays', (playQuery) => {
-
         playQuery.preload("scenes", (sceneQuery) => {
           sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character") })
         })
           .preload("creator")
           .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
       });
-      return view.render('group/show', { group, user });
+
+
+      //create a set of character's id and loop over each line to populate the set.
+      var characterIdsByPlay = Array();
+      group.plays.forEach(async (play) => {
+        var charactersSet = new Set();
+        play.scenes.forEach((scene) => {
+          scene.lines.forEach((line) => charactersSet.add(line.characterId))
+        })
+        //transform the set in Array and get Characters from those.
+        var characterIds = Array.from(charactersSet);
+        console.log(play.id, characterIds);
+        characterIdsByPlay[play.id] = characterIds;
+      });
+      console.log(characterIdsByPlay);
+      const charactersByPlay = characterIdsByPlay.map(async (el) => {
+        var a = await Character.findMany(el);
+        return a;
+      });
+      console.log(charactersByPlay);
+      return view.render('group/show', { group, user, charactersByPlay });
     }
   }
 

@@ -8,9 +8,9 @@
                 <span class="select">
                     <select name="characterId" class="charSelect" autocomplete="off">
                         <option value="" {{line.characterId == ""?'selected':''}}>Choisir un personnage</option>
-                        @each(character in characters)
+                        @each(character in play.characters)
                         {{--  @each(character in scene.play.characters)  --}}
-                        <option value={{character.id}} {{line.characterId == character.id?'selected':''}}>{{line.characterId}}-{{character.id}}-{{character.name}}</option>
+                            <option value={{character.id}} {{line.characterId == character.id?'selected':''}}>{{line.characterId}}-{{character.id}}-{{character.name}}</option>
                         @endeach 
                         <option class="characterCreate">Créer un personnage</option>
                     </select>

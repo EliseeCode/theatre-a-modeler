@@ -219,40 +219,66 @@ export default class ScenesController {
     return scene;
   }
 
-  private getCharactersfromPlay(play: Play) {
-    return [];
+
+  public async getCharactersFromPlay(play: Play) {
+    var charactersSet = new Set();
+    await play.load("scenes", (scenesQuery) => {
+      scenesQuery.preload('lines');
+    });
+    play.scenes.forEach((scene) => {
+      scene.lines.forEach((line) => {
+        charactersSet.add(line.characterId);
+      });
+    });
+    const charactersArray = Array.from(charactersSet);
+    const res = await Character.findMany(charactersArray);
+    play.characters = res;
+    return res;
   }
 
-  private getCharactersFromScene(scene: Scene) {
-    return [];
+  public async getCharactersFromScene(scene: Scene) {
+    var charactersSet = new Set();
+    await scene.load("lines");
+    scene.lines.forEach((el) => { charactersSet.add(el.characterId); });
+    const charactersArray = Array.from(charactersSet);
+    const res = await Character.findMany(charactersArray);
+    scene.characters = res;
+    return res;
   }
 
   public async edit({ params, view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
     const scene = await Scene.findOrFail(params.id);
+
     await scene.load("play", (playQuery) => {
       playQuery.preload('scenes')
     })
+    const play = await Play.findOrFail(scene.playId);
+    scene.characters = await this.getCharactersFromScene(scene);
+    await this.getCharactersFromPlay(play);
 
+    //get all the lines from a play to extract character
     await scene.load("play", (playQuery) => {
       playQuery.preload('scenes', (scenesQuery) => {
         scenesQuery.preload('lines')
       })
     })
-    var charactersSet = new Set();
-    scene.play.scenes.forEach((scene) => {
-      scene.lines.forEach((line) => charactersSet.add(line.characterId))
-    })
-    const characterIds = Array.from(charactersSet)
-    const characters = await Character.findMany(characterIds);
+    //create a set of character's id and loop over each line to populate the set.
+    // var charactersSet = new Set();
+    // scene.play.scenes.forEach((scene) => {
+    //   scene.lines.forEach((line) => charactersSet.add(line.characterId))
+    // })
+    // //transform the set in Array and get Characters from those.
+    // const characterIds = Array.from(charactersSet)
+    // const characters = await Character.findMany(characterIds);
 
-    await scene.load("lines", (lineQuery) => {
-      lineQuery.orderBy("position").preload('character', (characterQuery) => {
-        characterQuery.preload('image')
-      })
-    });
+    // await scene.load("lines", (lineQuery) => {
+    //   lineQuery.orderBy("position").preload('character', (characterQuery) => {
+    //     characterQuery.preload('image')
+    //   })
+    // });
     return view.render("scene/edit", {
-      scene, characters
+      scene, play
     })
 
 
