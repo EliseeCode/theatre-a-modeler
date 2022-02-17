@@ -56,6 +56,7 @@ Route.resource("audios", "AudiosController");
 Route.resource("groups", "GroupsController");
 Route.resource("lines", "LinesController");
 Route.resource("images", "ImagesController");
+Route.resource("characters", "CharactersController");
 Route.get("dashboard", "AppsController.index");
 
 Route.get("groups/:id/leave", "GroupsController.leave");
@@ -73,9 +74,11 @@ Route.post(
 );
 
 Route.get(
-  "group/:group_id/play/:play_id/scene/:scene_id/select",
+  "group/:group_id/scene/:scene_id/select",
   "ScenesController.select"
 );
+Route.post("scenes/:id", "ScenesController.show");
+
 Route.post('scenes/:scene_id/line/create/:position', 'LinesController.create');
 
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");

@@ -17,19 +17,22 @@ export default class Character extends BaseModel {
   @column({ meta: { type: "string" } })
   public name: string;
 
+  @column()
+  public description: string;
+
   @column({ meta: { type: "string" } })
   public gender: string;
 
   @column({ meta: { type: "number" } })
   public imageId: number;
 
-  @manyToMany(() => Play, {
-    localKey: "id",
-    relatedKey: "id",
-    pivotForeignKey: "character_id",
-    pivotRelatedForeignKey: "play_id",
-  })
-  public plays: ManyToMany<typeof Play>;
+  // @manyToMany(() => Play, {
+  //   localKey: "id",
+  //   relatedKey: "id",
+  //   pivotForeignKey: "character_id",
+  //   pivotRelatedForeignKey: "play_id",
+  // })
+  // public plays: ManyToMany<typeof Play>;
 
   @belongsTo(() => Image, { localKey: "id", foreignKey: "imageId" })
   public image: BelongsTo<typeof Image>;

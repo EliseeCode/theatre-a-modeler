@@ -4,17 +4,23 @@
         <div class="field has-addons" id="line_{{line.id}}">
             <form class="field has-addons" action={{'/lines/'+line.id+'?_method=PUT'}} method="POST" >
             {{ csrfField() }}
-            <p class="control">
-            <span class="select">
-                <select name="characterId" class="charSelect" autocomplete="off">
-                    <option value="" {{line.characterId == ""?'selected':''}}>Choisir un personnage</option>
-                    @each(character in scene.play.characters)
-                    <option value={{character.id}} {{line.characterId == character.id?'selected':''}}>{{line.characterId}}-{{character.id}}-{{character.name}}</option>
-                    @endeach 
-                    <option class="characterCreate">Créer un personnage</option>
-                </select>
-            </span>
-            </p>
+            <div class="control">
+                <span class="select">
+                    <select name="characterId" class="charSelect" autocomplete="off">
+                        <option value="" {{line.characterId == ""?'selected':''}}>Choisir un personnage</option>
+                        @each(character in scene.play.characters)
+                        <option value={{character.id}} {{line.characterId == character.id?'selected':''}}>{{line.characterId}}-{{character.id}}-{{character.name}}</option>
+                        @endeach 
+                        <option class="characterCreate">Créer un personnage</option>
+                    </select>
+                </span>
+                <div class="dropdown-trigger" id="dropdown-trigger-character-{{line.id}}" onclick="toggleDropdownMenu('line',{{line.id}})" aria-controls="dropdown-menu">
+                    <span class="icon">
+                        <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                    </span>    
+                </div>
+
+            </div>
             <p class="control">
                 <textarea name='text' data-line-id = "{{line.id}}" class="lineText textarea" cols="30" rows="5" style="resize: none">{{line.text}}</textarea>
             </p>
@@ -41,5 +47,32 @@
         </form>
     </div>
     <hr>
-
 </div>
+
+<div class="hiddenDropdownMenu" style="display:none;">
+    <div class="" id="dropdown-menu-line-{{line.id}}" role="menu">
+        
+        <div class="dropdown-content">  
+            <div class="dropdown-item">
+                <a href=# 
+                    class="icon-text js-modal-trigger" 
+                    data-target="edit-line-modal" 
+                    onclick="" >
+                    Voir la fiche du personnage
+                </a>
+            </div> 
+           
+            <div class="dropdown-item">
+                <form class="icon-text" action={{ '/characters/'+line.characterId+'?_method=DELETE' }} method="POST">
+                    {{ csrfField() }} 
+                    <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
+                        <span class="icon">
+                            <i class="fas fa-trash"></i>
+                        </span>
+                        <span>Supprimer</span>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>    

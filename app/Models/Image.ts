@@ -10,9 +10,6 @@ export default class Image extends BaseModel {
   public name: string;
 
   @column({ meta: { type: "string" } })
-  public description: string;
-
-  @column({ meta: { type: "string" } })
   public publicPath: string;
 
   @column({ meta: { type: "string" } })
