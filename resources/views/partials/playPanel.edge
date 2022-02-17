@@ -15,6 +15,9 @@
         <div class="card-content" >
             <div class="content" style="color:darkgrey;font-style:italic;">
             {{play.description || ""}}
+            @each(character in charactersByPlay[play.id])
+            {{inspect(character)}}
+            @endeach
             </div>  
             <hr>
             @each(scene in play.scenes)

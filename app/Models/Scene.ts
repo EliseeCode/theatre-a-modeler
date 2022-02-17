@@ -10,7 +10,11 @@ import {
   BelongsTo,
   hasMany,
   HasMany,
+  computed,
+  afterFetch,
+  afterFind,
 } from "@ioc:Adonis/Lucid/Orm";
+import Character from "./Character";
 
 export default class Scene extends BaseModel {
   @column({ isPrimary: true })
@@ -51,6 +55,8 @@ export default class Scene extends BaseModel {
 
   @hasMany(() => Line, { localKey: "id", foreignKey: "sceneId" })
   public lines: HasMany<typeof Line>;
+
+  public characters: Character[];
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
