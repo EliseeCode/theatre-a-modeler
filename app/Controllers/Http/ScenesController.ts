@@ -231,15 +231,28 @@ export default class ScenesController {
     const user = await auth.authenticate();
     const scene = await Scene.findOrFail(params.id);
     await scene.load("play", (playQuery) => {
-      playQuery.preload('characters').preload('scenes')
+      playQuery.preload('scenes')
     })
+
+    await scene.load("play", (playQuery) => {
+      playQuery.preload('scenes', (scenesQuery) => {
+        scenesQuery.preload('lines')
+      })
+    })
+    var charactersSet = new Set();
+    scene.play.scenes.forEach((scene) => {
+      scene.lines.forEach((line) => charactersSet.add(line.characterId))
+    })
+    const characterIds = Array.from(charactersSet)
+    const characters = await Character.findMany(characterIds);
+
     await scene.load("lines", (lineQuery) => {
       lineQuery.orderBy("position").preload('character', (characterQuery) => {
         characterQuery.preload('image')
       })
     });
     return view.render("scene/edit", {
-      scene
+      scene, characters
     })
 
 

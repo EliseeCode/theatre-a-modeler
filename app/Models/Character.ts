@@ -4,11 +4,14 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  HasMany,
+  hasMany,
   ManyToMany,
   manyToMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import Play from "App/Models/Play";
 import Image from "./Image";
+import Line from "./Line";
 
 export default class Character extends BaseModel {
   @column({ isPrimary: true })
@@ -26,6 +29,8 @@ export default class Character extends BaseModel {
   @column({ meta: { type: "number" } })
   public imageId: number;
 
+  @hasMany(() => Line, {})
+  public lines: HasMany<typeof Line>
   // @manyToMany(() => Play, {
   //   localKey: "id",
   //   relatedKey: "id",
