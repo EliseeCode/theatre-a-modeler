@@ -63,23 +63,16 @@ Route.get("groups/:id/leave", "GroupsController.leave");
 
 Route.get("/groups/:groupId/plays/create", "PlaysController.create");
 Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
-Route.post('/profile/updateRole', 'UsersController.RoleUpdateByUser');
+Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
 
+Route.resource("group/:group_id/scene", "ScenesController");
 
-Route.resource("group/:group_id/play/:play_id/scene", "ScenesController");
+Route.post("group/:group_id/scene/:scene_id/action", "ScenesController.action");
 
-Route.post(
-  "group/:group_id/play/:play_id/scene/:scene_id/action",
-  "ScenesController.action"
-);
-
-Route.get(
-  "group/:group_id/scene/:scene_id/select",
-  "ScenesController.select"
-);
+Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
 Route.post("scenes/:id", "ScenesController.show");
 
-Route.post('scenes/:scene_id/line/create/:position', 'LinesController.create');
+Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
 Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
 Route.post("play/createNew", "PlaysController.createNew");
