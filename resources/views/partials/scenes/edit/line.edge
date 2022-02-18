@@ -1,36 +1,56 @@
-<div>
-    
-        {{line.position}}
-        <div class="field has-addons" id="line_{{line.id}}">
-            <form class="field has-addons" action={{'/lines/'+line.id+'?_method=PUT'}} method="POST" >
-            {{ csrfField() }}
+<div style="position:relative;">
+        <div class="field has-addons m-0" id="line_{{line.id}}">
+        <form id="form_line_{{line.id}}" action={{'/lines/'+line.id+'?_method=PUT'}} method="POST" ></form>
+        <div class="field has-addons m-0" >
+            
             <div class="control">
+                <input type="hidden" form="form_line_{{line.id}}" name="_csrf" value="{{csrfToken}}">
+                {{line.position}}
                 <span class="select">
-                    <select name="characterId" class="charSelect" autocomplete="off">
+                    <select name="characterId" form="form_line_{{line.id}}" class="charSelect" autocomplete="off">
                         <option value="" {{line.characterId == ""?'selected':''}}>Choisir un personnage</option>
                         @each(character in play.characters)
                         {{--  @each(character in scene.play.characters)  --}}
-                            <option value={{character.id}} {{line.characterId == character.id?'selected':''}}>{{line.characterId}}-{{character.id}}-{{character.name}}</option>
+                            <option class="option" value={{character.id}} {{line.characterId == character.id?'selected':''}}>{{character.name}}</option>
                         @endeach 
-                        <option class="characterCreate">Créer un personnage</option>
+                        <option class="characterCreate option">Créer un personnage</option>
                     </select>
                 </span>
-                <div class="dropdown-trigger" id="dropdown-trigger-character-{{line.id}}" onclick="toggleDropdownMenu('line',{{line.id}})" aria-controls="dropdown-menu">
+            </div>
+            <div class="control">    
+                <div class="dropdown-trigger input" id="dropdown-trigger-line-{{line.id}}" onclick="toggleDropdownMenu('line',{{line.id}})" aria-controls="dropdown-menu">
                     <span class="icon">
                         <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
                     </span>    
                 </div>
-
             </div>
-            <p class="control">
-                <textarea name='text' data-line-id = "{{line.id}}" class="lineText textarea" cols="30" rows="5" style="resize: none">{{line.text}}</textarea>
-            </p>
-            <p class="control">
-                <button class="button">
+            <div class="control">
+                <div style="position:relative;">
+                    
+                    @if(indexLine==0)
+                    <div class="field buttonAddLine buttonAddLineFirst">
+                        <form action="/scenes/{{scene.id}}/line/create/-1" method="POST">
+                            {{ csrfField() }}
+                            <button type="submit" title="Ajouter une réplique ici"></button>
+                        </form>
+                    </div>
+                    @endif
+                    <textarea form="form_line_{{line.id}}" name='text' data-line-id = "{{line.id}}" class="lineText textarea" cols="30" rows="5" style="resize: none">{{line.text}}</textarea>
+                    <div class="field buttonAddLine">
+                        <form action="/scenes/{{scene.id}}/line/create/{{line.position}}" method="POST">
+                            {{ csrfField() }}
+                            <button title="Ajouter une réplique ici"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control">
+                <button type="submit" form="form_line_{{line.id}}" class="button">
                     Enregistrer
                 </button>
-            </p>
-        </form>
+            </div>
+        </div>
             <p class="control">
                 <form action="/lines/{{line.id}}?_method=DELETE" method="POST">
                     {{ csrfField() }}
@@ -41,13 +61,7 @@
         </div>
      
 
-    <div class="field">
-        <form action="/scenes/{{scene.id}}/line/create/{{line.position}}" method="POST">
-            {{ csrfField() }}
-            <button class="button">Ajouter une réplique ici</button>
-        </form>
-    </div>
-    <hr>
+    
 </div>
 
 <div class="hiddenDropdownMenu" style="display:none;">
@@ -55,10 +69,10 @@
         
         <div class="dropdown-content">  
             <div class="dropdown-item">
-                <a href=# 
+                <a href=#
                     class="icon-text js-modal-trigger" 
                     data-target="edit-line-modal" 
-                    onclick="" >
+                    onclick="window.location.href='/characters/{{line.characterId}}'" >
                     Voir la fiche du personnage
                 </a>
             </div> 
@@ -70,7 +84,7 @@
                         <span class="icon">
                             <i class="fas fa-trash"></i>
                         </span>
-                        <span>Supprimer</span>
+                        <span>Supprimer le personnage</span>
                     </a>
                 </form>
             </div>

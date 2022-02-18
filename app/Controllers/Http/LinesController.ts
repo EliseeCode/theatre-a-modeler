@@ -21,6 +21,7 @@ export default class LinesController {
   public async create({ params, response }: HttpContextContract) {
     const scene_id = params.scene_id;
     const position = parseInt(params.position);
+    console.log("creation line at pos:" + position);
     await Line.query().where('sceneId', scene_id).andWhere('position', ">", position).increment("position", 1);
     await Line.create({
       text: "",

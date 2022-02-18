@@ -7,6 +7,7 @@ import Image from "App/Models/Image";
 import Character from "App/Models/Character";
 import Status from "Contracts/enums/Status";
 import Line from "App/Models/Line";
+import CharacterFetcher from "App/Controllers/helperClass/CharacterFetcher";
 
 export default class ScenesController {
   private async getCharacters(model: Play | Scene) {
@@ -60,8 +61,7 @@ export default class ScenesController {
       const lineVersion = line?.version?.id ?? 1; // fallback for official version
       if (!payload[lineCharacter?.id ?? 1]) {
         console.log(
-          `No record found for character with id of: ${
-            lineCharacter?.id ?? 1
+          `No record found for character with id of: ${lineCharacter?.id ?? 1
           } on the payload...`
         );
         payload[lineCharacter?.id ?? 1] = { character: null, lines: {} }; // init a new object
@@ -94,7 +94,7 @@ export default class ScenesController {
         const audioCreator = audio?.creator; // FIXME not sure for this...
         if (
           !payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-            audioCreator.id
+          audioCreator.id
           ]
         ) {
           console.log(
@@ -115,22 +115,21 @@ export default class ScenesController {
     });
     return view.render("scene/select", { payload, user });
   }
-  public async index({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
-  public async store({}: HttpContextContract) {}
+  public async store({ }: HttpContextContract) { }
 
   public async show({ request, params, view, response }: HttpContextContract) {
     const data = JSON.parse(request.input("data"));
-
+    const sceneId = params.id;
     const currentGroup = await Group.findOrFail(params.group_id);
     const currentPlay = (
       await currentGroup
         .related("plays")
         .query()
         .where("play_id", params.play_id)
-        .preload("characters")
     )[0];
     // TODO add error handlers for relation and query results
     const scenes = await currentPlay
@@ -141,11 +140,11 @@ export default class ScenesController {
     const currentSceneIndex =
       scenes.reduce(
         (acc, cur, index) =>
-          cur.id === parseInt(params.scene_id) ? acc + index + 1 : acc,
+          cur.id === parseInt(sceneId) ? acc + index + 1 : acc,
         0
       ) - 1; // FIXME just a stupid method for tackling global variables with foreach
     if (currentSceneIndex < 0) {
-      Logger.error(`No record found for scene with id: ${params.scene_id}`);
+      Logger.error(`No record found for scene with id: ${sceneId}`);
       return;
     }
     const currentScene = scenes[currentSceneIndex];
@@ -186,7 +185,8 @@ export default class ScenesController {
   }
 
   public async createNew({ response, auth, params }: HttpContextContract) {
-    const play = await Play.findOrFail(params.id);
+    const playId = params.id;
+    const play = await Play.findOrFail(playId);
     const user = await auth.authenticate();
     const newScene = await Scene.create({
       name: "Nouvelle scène",
@@ -237,156 +237,26 @@ export default class ScenesController {
   }
 
   public async edit({ params, view, auth }: HttpContextContract) {
-    const user = await auth.authenticate();
     const scene = await Scene.findOrFail(params.id);
 
     await scene.load("play", (playQuery) => {
       playQuery.preload("scenes");
     });
     const play = await Play.findOrFail(scene.playId);
-    scene.characters = await this.getCharactersFromScene(scene);
-    await this.getCharactersFromPlay(play);
+    const characterFetcher = new CharacterFetcher;
+    scene.characters = await characterFetcher.getCharactersFromScene(scene)
+    //scene.characters = await this.getCharactersFromScene(scene);
+    await characterFetcher.getCharactersFromPlay(play);
 
-    //get all the lines from a play to extract character
-    await scene.load("play", (playQuery) => {
-      playQuery.preload("scenes", (scenesQuery) => {
-        scenesQuery.preload("lines");
-      });
-    });
-    //create a set of character's id and loop over each line to populate the set.
-    // var charactersSet = new Set();
-    // scene.play.scenes.forEach((scene) => {
-    //   scene.lines.forEach((line) => charactersSet.add(line.characterId))
-    // })
-    // //transform the set in Array and get Characters from those.
-    // const characterIds = Array.from(charactersSet)
-    // const characters = await Character.findMany(characterIds);
+    //get all the lines from a scene
+    await scene.load("lines", (linesQuery) => {
+      linesQuery.orderBy('lines.position', 'asc')
+    })
 
-    // await scene.load("lines", (lineQuery) => {
-    //   lineQuery.orderBy("position").preload('character', (characterQuery) => {
-    //     characterQuery.preload('image')
-    //   })
-    // });
     return view.render("scene/edit", {
       scene,
       play,
     });
-
-    const currentGroup = await Group.findOrFail(params.group_id);
-    const currentPlay = (
-      await currentGroup
-        .related("plays")
-        .query()
-        .where("play_id", params.play_id)
-        .preload("characters")
-    )[0];
-    // TODO add error handlers for relation and query results
-    const scenes = await currentPlay
-      .related("scenes")
-      .query()
-      .orderBy("position")
-      .preload("image");
-    const currentSceneIndex =
-      scenes.reduce(
-        (acc, cur, index) =>
-          cur.id === parseInt(params.id) ? acc + index + 1 : acc,
-        0
-      ) - 1; // FIXME just a stupid method for tackling global variables with foreach
-
-    if (currentSceneIndex < 0) {
-      Logger.error(`No record found for scene with id: ${params.id}`);
-      const totalCharacters = currentPlay.characters.map((character) =>
-        character.serialize()
-      ); // on this play
-      return view.render("scene/edit", {
-        scene,
-        payload: {
-          totalCharacters: totalCharacters,
-          lineData: null,
-        },
-      });
-    }
-    const currentScene = scenes[currentSceneIndex];
-    const previousScene = scenes[currentSceneIndex - 1];
-    const nextScene = scenes[currentSceneIndex + 1];
-    /* const scene = (
-      await currentPlay
-        .related("scenes")
-        .query()
-        .where("id", params.id)
-        .preload("lines")
-        .preload("creator")
-        .preload("image")
-    )[0]; */
-    const lines = await currentScene
-      .related("lines")
-      .query()
-      .whereNull("version_id") // for official line data
-      .orderBy("position", "asc")
-      .preload("character");
-    /*type lineData = {
-      // character: Character;
-      line: Line;
-    };*/
-    type payload = {
-      playName: string;
-      sceneName: string;
-      sceneDescription: string;
-      sceneImage: Image;
-      previousScene: Scene;
-      nextScene: Scene;
-      lineData: Line[]; // lineData[];
-      totalCharacters: any[];
-    };
-
-    const payload: payload = {
-      totalCharacters: Array.from(
-        currentPlay.characters.map((character) => character.serialize())
-      ),
-      playName: currentPlay.name,
-      sceneName: currentScene.name,
-      sceneDescription: currentScene.description,
-      sceneImage: currentScene.image,
-      previousScene: previousScene,
-      nextScene: nextScene,
-      lineData: [], // ordered by position
-    };
-    lines.forEach((line) => {
-      payload.lineData.push(/*character: line.character,*/ line); // FIXME it can be unnec. for character property
-    });
-    console.log(payload.totalCharacters);
-    /* await groups.forEach(async (group) => {
-      (
-        await group
-          .related("plays")
-          .query()
-          .where("id", params.id)
-          .preload("scenes")
-      ).forEach(async (play) => {
-        await play
-          .related("scenes")
-          .query()
-          .where("id", params.id)
-          .preload("creator")
-          .preload("play")
-          .preload("image")
-          .preload("lines");
-      });
-    }); */
-    /* .preload("plays", async (playsQuery) => {
-        await playsQuery
-          .where("id", params.play_id)
-          .preload("scenes", async (scenesQuery) => {
-            await scenesQuery
-              .where("id", params.id)
-              .preload("play")
-              .preload("creator")
-              .preload("image")
-              .preload("lines");
-          });
-      }); */
-
-    return view.render("scene/edit", { payload, user, status: Status });
   }
 
   public async update({ request, params, response }: HttpContextContract) {
@@ -406,50 +276,4 @@ export default class ScenesController {
   }
 }
 
-// For payload in /select
-/* 
-We need this structure to store different alternative lines per character upon different audio versions per creator.
-1 (Lux): {
-  character: Lux,
-  lines: {
-    1 (Official): {
-      line: Line,
-      doublers: {
-        4 (Renekton) : {
-          creator: Renekton,
-          audios: [2, 3]
-        }
-        9 (Aphelios) : {
-          creator: Aphelios,
-          audios: [6, 12]
-        }
-      }
-    },
-    7: {
-      line: Line,
-      doublers: {
-      12 (Master Yi): {
-        creator: Master Yi,
-        audios: [1]
-      }
-      }
-    }
-  }
-}
 
-paylod = {
-  line_character_id: {
-    character: Character,
-    lines: {
-      line_version_id: { // Relation with versions table
-        line: Line,
-        doublers: {
-          audio_creator_id: {
-            creator: User,
-            audios: [audio_version_ids] // Audios can be grouped by version id
-          }
-        },
-      },
-    },
-  },
-}; */

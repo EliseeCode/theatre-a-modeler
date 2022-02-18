@@ -3,6 +3,7 @@ import Group from 'App/Models/Group';
 import Character from 'App/Models/Character';
 import Logger from "@ioc:Adonis/Core/Logger";
 import Role from 'Contracts/enums/Role';
+import CharacterFetcher from '../helperClass/CharacterFetcher';
 
 
 export default class GroupsController {
@@ -53,6 +54,15 @@ export default class GroupsController {
           .preload("creator")
           .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
       });
+      const characterFetcher = new CharacterFetcher;
+
+      for (const play of group.plays) {
+        await characterFetcher.getCharactersFromPlay(play);
+        for (const scene of play.scenes) {
+          await characterFetcher.getCharactersFromScene(scene);
+        }
+      }
+
 
 
       //create a set of character's id and loop over each line to populate the set.

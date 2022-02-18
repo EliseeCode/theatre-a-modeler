@@ -15,10 +15,12 @@
         <div class="card-content" >
             <div class="content" style="color:darkgrey;font-style:italic;">
             {{play.description || ""}}
-            @each(character in play.characters)
-            {{inspect(character)}}
-            @endeach
             </div>  
+            <ul>
+            @each(character in play.characters)
+                <li>{{character.name}}</li>
+            @endeach
+            </ul>
             <hr>
             @each(scene in play.scenes)
                 @include('partials/scenePanel')         

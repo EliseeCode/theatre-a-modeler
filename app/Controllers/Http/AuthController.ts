@@ -49,10 +49,10 @@ export default class AuthController {
     catch {
       console.log("error");
       session.responseFlashMessages.set('errors.login', "L'identifiant ou le mot de passe ne sont pas correct");
-      response.redirect().back();
+      return response.redirect("/login");
     }
     //return token.toJSON();
-    response.redirect().toRoute("/dashboard");
+    return response.redirect().toRoute("/dashboard");
   }
 
 

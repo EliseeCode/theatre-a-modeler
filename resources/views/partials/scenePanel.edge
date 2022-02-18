@@ -18,12 +18,15 @@
               {{scene.description}}
             </div>  
               <hr>
-              @each(character in scene.characters)
-                {{--  @include('partials/scenePanel')           --}}
-                {{character.name}}-
+              @if(scene.characters.length>0)
+              <ul>
+                @each(character in scene.characters)
+                    <li>{{character.name}}</li>
+                @endeach
+              </ul>
               @else
                 <p>Pas encore de personnage dans cette scène</p>
-              @endeach
+              @end
               
         </div>
         <div class="card-footer" >

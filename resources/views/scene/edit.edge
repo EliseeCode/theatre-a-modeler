@@ -1,10 +1,59 @@
 @layout('layouts/master')
 @section('content')
-
-    <h1 class="title">
-        {{scene.play.name}}
-    </h1>
-
+<style>
+    .buttonAddLine{
+        position:absolute;
+        bottom:-20px;
+        z-index:30;
+        width:100%;
+        padding:5px;
+    }
+    .buttonAddLineFirst{
+        bottom:auto;
+        top:-14px;
+    }
+    .buttonAddLine button{
+        width:100%;
+        padding:3px;
+        border:none;
+        border-top:5px dashed grey;
+        opacity:0.1;
+        transition:0.5s;
+        height:0;
+        position:relative;
+        top:-5px;
+        z-index:30;
+    }
+    .buttonAddLine:hover button{
+      
+        opacity:1;
+    }
+    .lineContainer{position:relative;}
+</style>
+<div class="container">
+<div class="level">
+    <div class="level-left">
+        <div class="level-item">
+            <div>
+            <h1 class="title">
+                {{scene.play.name}}
+            </h1>
+            </div>
+        </div>
+    </div>
+    <div class="level-right">
+        <div class="level-item">
+            <a href=# class="icon-text">
+                <span class="icon fas fa-edit" >
+                </span>
+                <span>
+                    Modifier
+                </span>
+            </a>
+        </div>
+        <div class="level-item"></div>
+    </div>
+</div>    
     <h2 class="subtitle">
         <div class="select">
             <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value+'/edit';">
@@ -13,19 +62,17 @@
                 @endeach
             </select>
         </div>
-        
     </h2>
-
-    <form action="/scenes/{{scene.id}}/line/create/-1" method="POST">
-        {{ csrfField() }}
-        <button class="button">Ajouter une réplique au début du dialogue</button>
-    </form>
-
-    @each(line in scene.lines)
+    <h2 class="subtitle">
+        {{scene.description}}
+    </h2>
+    <hr>
+    <div class="lineContainer">   
+    @each((line,indexLine) in scene.lines)
         @include('partials/scenes/edit/line')
     @endeach
-    
-    
+    </div>
+</div>
     @include('partials/modals/editScene')
     <div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
     <script>
@@ -38,6 +85,16 @@
         console.log(positionTrigger);
         $("#dropdown-option-container").offset({top:positionTrigger.top+20, left:positionTrigger.left-200})
     }
+    $(document).mouseup(function(e) 
+    {
+        var container = $("#dropdown-option-container, .dropdown-trigger");
+        var stuffToHide=$("#dropdown-option-container");
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0) 
+        {
+            stuffToHide.hide();
+        }
+    });
     </script>
     
 @endsection

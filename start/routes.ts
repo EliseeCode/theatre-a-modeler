@@ -51,7 +51,6 @@ Route.get("groups/:code/join", "GroupsController.join");
 Route.get("groups/join", "GroupsController.join");
 
 Route.resource("plays", "PlaysController");
-Route.resource("scenes", "ScenesController");
 Route.resource("audios", "AudiosController");
 Route.resource("groups", "GroupsController");
 Route.resource("lines", "LinesController");
@@ -65,16 +64,20 @@ Route.get("/groups/:groupId/plays/create", "PlaysController.create");
 Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
 
+//ROUTES FOR SCENES 
+
 Route.resource("group/:group_id/scene", "ScenesController");
-
+Route.resource("scenes", "ScenesController");
 Route.post("group/:group_id/scene/:scene_id/action", "ScenesController.action");
-
 Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
-Route.post("group/:group_id/scene/scene_id", "ScenesController.show");
+//WITHOUT GROUP
+Route.resource("scene", "ScenesController");
+Route.post("scene/:scene_id/action", "ScenesController.action");
+Route.get("scene/:scene_id/select", "ScenesController.select");
+
 
 Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
-Route.get("play/:play_id/scene/:scene_id", "ScenesController.show");
 Route.post("play/createNew", "PlaysController.createNew");
 Route.post("play/:id/scene/createNew", "ScenesController.createNew");
 

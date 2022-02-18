@@ -3,7 +3,7 @@ import Database from "@ioc:Adonis/Lucid/Database";
 import Character from "App/Models/Character";
 import Play from "App/Models/Play";
 import ObjectType from "Contracts/enums/ObjectType";
-import Lines from "Database/migrations/1642771551381_lines";
+
 
 export default class CharactersController {
   public dataName = "characters";
@@ -34,19 +34,45 @@ export default class CharactersController {
     await character.load("image");
     const objectType = ObjectType
 
-    const plays = await Play.query().preload('scenes', (sceneQuery) => {
-      sceneQuery.preload("lines", (lineQuery) => {
-        lineQuery.where("character_id", characterId)
-      })
-    }).distinct("plays.id").select("name")
+    Database.query();
+    const data = await Database.from('plays')
+      .join('scenes', 'plays.id', '=', 'scenes.play_id')
+      .join('lines', 'scenes.id', '=', 'lines.scene_id')
+      .select("plays.name as playName", "scenes.name as sceneName", "scenes.id as sceneId")
+      .where('lines.character_id', characterId);
 
 
-    return view.render("characters/show", { character, plays, objectType });
+
+
+    const playData = data.reduce(function (acc, cur) {
+      (acc[cur["playName"]] = acc[cur["playName"]] || { scenes: [], name: cur["playName"] }).scenes.push(cur);
+      return acc;
+    }, {});
+
+    console.log(playData);
+    // data.reduce((prevPlay,currPlay,index)=>{
+    //   Play.
+    // })
+
+
+    return view.render("characters/show", { character, playData, objectType });
   }
 
   public async edit({ }: HttpContextContract) { }
 
-  public async update({ }: HttpContextContract) { }
+  public async update({ response, params, request }: HttpContextContract) {
+
+    const characterId = params.id;
+    const { name, description, gender } = request.all();
+    const character = await Character.findOrFail(characterId);
+    console.log(characterId, name, description, gender);
+    character.name = name || "Personnage sans nom";
+    character.description = description || "";
+    character.gender = gender || "Other";
+    await character.save();
+
+    return response.redirect().back();
+  }
 
   public async destroy({ params }: HttpContextContract) {
     await Character.query().where("id", params.id).delete();
