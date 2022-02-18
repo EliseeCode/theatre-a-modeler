@@ -9,13 +9,13 @@
         </form>
     </div>
     @if(plays.length>0)
-        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
+        <div class="container">
             @each((play,index) in plays)
 
                 @include('partials/playPanel')
                 
             @endeach
-        </div>       
+        </div>  
     @else       
         <p>Pas encore de pièce de théâtre</p>  
     @endif

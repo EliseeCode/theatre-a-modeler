@@ -15,7 +15,7 @@
         <div class="card-content" >
             <div class="content" style="color:darkgrey;font-style:italic;">
             {{play.description || ""}}
-            @each(character in charactersByPlay[play.id])
+            @each(character in play.characters)
             {{inspect(character)}}
             @endeach
             </div>  

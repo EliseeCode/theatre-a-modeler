@@ -9,7 +9,7 @@ export default class PlaysController {
 
   public async index({ view }: HttpContextContract) {
     const plays = await (
-      await Play.query().preload("scenes").preload("creator").preload("image")
+      await Play.query().preload("scenes").preload("groups").preload("creator").preload("image")
     ).map((e) => e.serialize());
     return view.render("play/index", { plays });
   }

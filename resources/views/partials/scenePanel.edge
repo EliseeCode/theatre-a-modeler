@@ -18,7 +18,6 @@
               {{scene.description}}
             </div>  
               <hr>
-              
               @each(character in scene.characters)
                 {{--  @include('partials/scenePanel')           --}}
                 {{character.name}}-
@@ -28,14 +27,14 @@
               
         </div>
         <div class="card-footer" >
-          <a href="/group/{{group.id}}/play/{{play.id}}/scene/{{scene.id}}/select" class="card-footer-item icon-text">
+          <a href="{{group?.id?'/group/{{group.id}}':''}}/scene/{{scene.id}}/select" class="card-footer-item icon-text">
           {{--  <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">  --}}
             <span>Explorer</span>
             <span class="icon">
               <i class="fas fa-arrow-right"></i>
             </span>
           </a>       
-          <a href="/group/{{group.id}}/play/{{play.id}}/scene/{{scene.id}}/edit" class="card-footer-item icon-text">
+          <a href="/scene/{{scene.id}}/edit" class="card-footer-item icon-text">
             {{--  <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">  --}}
               <span>Edit</span>
               <span class="icon">
