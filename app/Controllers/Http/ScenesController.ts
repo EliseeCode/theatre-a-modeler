@@ -254,7 +254,7 @@ export default class ScenesController {
         characterQuery.preload('image')
       }).orderBy('lines.position', 'asc')
     })
-
+    console.log(scene.lines[0].character.image.publicPath);
     return view.render("scene/edit", {
       scene,
       play,

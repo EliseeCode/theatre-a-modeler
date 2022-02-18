@@ -1,6 +1,14 @@
 @layout('layouts/master')
+@section('css')
+<link rel="stylesheet" href="/css/character.css">
+<link rel="stylesheet" href="/css/selectize.css">
+@endsection
+@section('js')
+<script src="/js/bulma-dropdown.js"></script>
+@endsection
 @section('content')
 <style>
+    
     .buttonAddLine{
         position:absolute;
         bottom:-20px;
@@ -96,6 +104,6 @@
         }
     });
     </script>
-    <script src="/js/bulma-dropdown.js"></script>
+    
     
 @endsection

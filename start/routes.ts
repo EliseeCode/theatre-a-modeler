@@ -65,7 +65,6 @@ Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
 
 //ROUTES FOR SCENES 
-
 Route.resource("group/:group_id/scene", "ScenesController");
 Route.resource("scenes", "ScenesController");
 Route.post("group/:group_id/scene/:scene_id/action", "ScenesController.action");

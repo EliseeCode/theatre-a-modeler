@@ -6,28 +6,41 @@
             <div class="control">
                 <input type="hidden" form="form_line_{{line.id}}" name="_csrf" value="{{csrfToken}}">
                 <div class="dropdown" style="">
-                    <div class="dropdown-trigger">
-                      <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" style="width:300px;">
-                        <label for="dropdown-toggle">
-                            {{line.characterId?'character.name':'Choisir un personnage'}}
-                            <img src="" alt="">
-                        </label>
-                        <span class="icon is-small">
-                          <i class="fas fa-angle-down" aria-hidden="true"></i>
-                        </span>
+                    
+                      <button class="dropdown-trigger" aria-haspopup="true" aria-controls="dropdown-menu" style="width:300px;">
+                        <div class="level">
+                            <div class="level-center">
+                                <div class="level-item">
+                                    <label for="dropdown-toggle">
+                                        <img class="image-character" src='{{line.character?.image?.publicPath}}' >
+                                        {{line.characterId?line.character.name:'Choisir un personnage'}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <span class=" caret icon is-small">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                  </span>
+                            </div>
+                        </div>
                       </button>
-                    </div>
+                    
                     <div class="dropdown-menu" id="dropdown-menu" role="menu">
                       <div class="dropdown-content">
                         @each(character in play.characters)
                         <a href="#" class="dropdown-item {{line.characterId == character.id?'is-active':''}}">
-                            <img src='{{character.image.publicPath}}' width="30px">
+                            <img class="image-character" src='{{character?.image?.publicPath}}' >
+                            {{character.name}}
                         </a>
                         @endeach 
                         <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item">
-                            Créer un personnage
-                        </a>
+                        <form action="/characters" method="POST">
+                            {{ csrfField() }}
+                            <input type="hidden" name="lineId" value={{line.id}}>
+                            <button class="dropdown-item">
+                                Créer un personnage
+                            </button>
+                        </form>
                       </div>
                     </div>
                 </div>
