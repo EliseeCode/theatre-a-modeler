@@ -250,7 +250,9 @@ export default class ScenesController {
 
     //get all the lines from a scene
     await scene.load("lines", (linesQuery) => {
-      linesQuery.orderBy('lines.position', 'asc')
+      linesQuery.preload('character', (characterQuery) => {
+        characterQuery.preload('image')
+      }).orderBy('lines.position', 'asc')
     })
 
     return view.render("scene/edit", {

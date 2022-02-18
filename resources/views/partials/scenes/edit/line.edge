@@ -5,23 +5,31 @@
             
             <div class="control">
                 <input type="hidden" form="form_line_{{line.id}}" name="_csrf" value="{{csrfToken}}">
-                {{line.position}}
-                <span class="select">
-                    <select name="characterId" form="form_line_{{line.id}}" class="charSelect" autocomplete="off">
-                        <option value="" {{line.characterId == ""?'selected':''}}>Choisir un personnage</option>
+                <div class="dropdown" style="">
+                    <div class="dropdown-trigger">
+                      <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" style="width:300px;">
+                        <label for="dropdown-toggle">
+                            {{line.characterId?'character.name':'Choisir un personnage'}}
+                            <img src="" alt="">
+                        </label>
+                        <span class="icon is-small">
+                          <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                      <div class="dropdown-content">
                         @each(character in play.characters)
-                        {{--  @each(character in scene.play.characters)  --}}
-                            <option class="option" value={{character.id}} {{line.characterId == character.id?'selected':''}}>{{character.name}}</option>
+                        <a href="#" class="dropdown-item {{line.characterId == character.id?'is-active':''}}">
+                            <img src='{{character.image.publicPath}}' width="30px">
+                        </a>
                         @endeach 
-                        <option class="characterCreate option">Créer un personnage</option>
-                    </select>
-                </span>
-            </div>
-            <div class="control">    
-                <div class="dropdown-trigger input" id="dropdown-trigger-line-{{line.id}}" onclick="toggleDropdownMenu('line',{{line.id}})" aria-controls="dropdown-menu">
-                    <span class="icon">
-                        <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-                    </span>    
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item">
+                            Créer un personnage
+                        </a>
+                      </div>
+                    </div>
                 </div>
             </div>
             <div class="control">
@@ -64,30 +72,3 @@
     
 </div>
 
-<div class="hiddenDropdownMenu" style="display:none;">
-    <div class="" id="dropdown-menu-line-{{line.id}}" role="menu">
-        
-        <div class="dropdown-content">  
-            <div class="dropdown-item">
-                <a href=#
-                    class="icon-text js-modal-trigger" 
-                    data-target="edit-line-modal" 
-                    onclick="window.location.href='/characters/{{line.characterId}}'" >
-                    Voir la fiche du personnage
-                </a>
-            </div> 
-           
-            <div class="dropdown-item">
-                <form class="icon-text" action={{ '/characters/'+line.characterId+'?_method=DELETE' }} method="POST">
-                    {{ csrfField() }} 
-                    <a href="#" onclick="this.closest('form').submit();return false;" class="icon-text has-text-danger">
-                        <span class="icon">
-                            <i class="fas fa-trash"></i>
-                        </span>
-                        <span>Supprimer le personnage</span>
-                    </a>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>    
