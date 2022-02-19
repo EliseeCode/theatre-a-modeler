@@ -26,7 +26,8 @@ export default class LinesController {
     await Line.create({
       text: "",
       sceneId: scene_id,
-      position: position + 1
+      position: position + 1,
+      versionId: 1
     });
     return response.redirect().back();
   }
