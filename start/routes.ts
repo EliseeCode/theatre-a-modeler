@@ -75,8 +75,9 @@ Route.put("play/:id/scene/createNew", "ScenesController.createNew");
 Route.resource("scene", "ScenesController");
 Route.post("scene/:scene_id/action", "ScenesController.action");
 Route.get("scene/:scene_id/select", "ScenesController.select");
-
-
+//CHARACTER
+Route.post("line/:lineId/characters/create", "CharactersController.store");
+Route.put("/line/:lineId/updateCharacter", "LinesController.updateCharacter")
 Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
 Route.post("play/createNew", "PlaysController.createNew");
@@ -123,9 +124,21 @@ Route.get("/register", async ({ response, view, auth }) => {
   }
 }).middleware("silentAuth");
 
-Route.get('/test', 'testController.index');
+
+
+
 Route.post("/login", "AuthController.login").as("auth.login");
 Route.post("/register", "AuthController.register").as("auth.register");
 
-Route.get("/:objet", "DefaultsController.index");
+
+//TEST ROUTES
+Route.get('/test', 'testController.index');
+Route.post('testImage', async ({ request }) => {
+  const coverImage = request.file('cover_image')
+  console.log(coverImage);
+  // if (coverImage) {
+  //   await coverImage.move(Application.tmpPath('uploads'))
+  // }
+})
+
 

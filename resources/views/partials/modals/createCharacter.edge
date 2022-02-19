@@ -5,20 +5,23 @@
                 <p class="modal-card-title">Créer un personnage</p>
                 <button class="delete" aria-label="close"></button>
             </header>
-            <form action='/character' method='POST'>
+            <form action='/character' method='POST' enctype="multipart/form-data">
             <section class="modal-card-body">
                 
                 {{ csrfField() }}
-                <input type="hidden" value="" name="lineId">
-                <div class="card-image p-3" style="margin-top:-100px;">
-                <div style="width:200px;height:200px;display:inline-block;">                      
-                    <img src="" style="border-radius: 50%;object-fit: cover;width:200px;height:200px;display:inline-block;" alt="Placeholder image">
-                    <button class="delete deleteImage is-large is-danger" data-image-id="" style="z-index: 100;position: absolute;"></button>
-                   
-                    <input id="file_" type="file" data-type="" data-id="" hidden/>
-                    <label for="file_" class="has-text-centered button btnUpload" >Choisir une image</label>
-                   
-                </div>
+                <div class="card-image p-3" style="text-align:center;">
+                
+                    <div class="characterImageContainer" style="width:200px;height:200px;display:inline-block;">  
+                        <div class="hasImage" style="display:none;position:relative;">                  
+                            <img class="imagePreviewNewCharacter" src="" style="border-radius: 50%;object-fit: cover;width:200px;height:200px;display:inline-block;" alt="Placeholder image">
+                            <button type="button" onclick="$('#imageCharacterFile').val('');changeNewCharacterImage();" class="delete deleteImage is-large is-danger" style="z-index: 100;position: absolute;"></button>
+                        </div>
+                        <div class="hasNoImage">
+                            <input name="imageCharacter" id="imageCharacterFile" onchange='changeNewCharacterImage();' type="file" hidden/>
+                            <label for="imageCharacterFile" class="has-text-centered button btnUpload">Choisir une image</label>
+                        </div>
+                    </div>
+                
                 
             </div>
             <div class="card-content">
@@ -43,7 +46,7 @@
                     </div>    
                     <div class="field">
                         <div class="control">
-                                <textarea name="description" placeholder="Informations sur le personnage" id="" cols="30" rows="10" class="textarea" style="resize: none"></textarea>
+                                <textarea name="description" placeholder="Informations sur le personnage" id="" cols="30" rows="3" class="textarea" style="resize: none"></textarea>
                         </div>
                     </div>    
             
@@ -63,3 +66,27 @@
     
   </div>
   {{--  <script src="/js/importImage.js"></script>  --}}
+  <script>
+// const deleteButtons = Array.from(document.getElementsByClassName("deleteImage"));
+
+function changeNewCharacterImage()
+{
+    console.log("change Img");
+    var myFile = $('#imageCharacterFile').prop('files');
+    console.log(myFile);
+    if(myFile[0]){
+        $('.imagePreviewNewCharacter')[0].src = window.URL.createObjectURL(myFile[0]);
+        $('.characterImageContainer .hasImage').show();
+        $('.characterImageContainer .hasNoImage').hide();
+    }
+    else{
+        $('.imagePreviewNewCharacter')[0].src ="";
+        $('.characterImageContainer .hasImage').hide();
+        $('.characterImageContainer .hasNoImage').show();
+    }
+    
+    
+
+}
+
+</script>

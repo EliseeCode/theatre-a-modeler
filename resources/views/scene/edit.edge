@@ -1,14 +1,17 @@
 @layout('layouts/master')
 @section('css')
-<link rel="stylesheet" href="/css/character.css">
 <link rel="stylesheet" href="/css/selectize.css">
 @endsection
 @section('js')
 <script src="/js/bulma-dropdown.js"></script>
+<script src="/js/bulma-modal.js"></script>
 @endsection
 @section('content')
 <style>
-    
+    .image-character{
+    width:40px;
+    height:40px;
+    }
     .buttonAddLine{
         position:absolute;
         bottom:-20px;
@@ -94,6 +97,7 @@
 </div>
    
     <div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
+    
     @include('partials/modals/editScene')
     @include('partials/modals/createCharacter')
     <script>
@@ -126,7 +130,7 @@
     function loadCharacterInfoInModal(line)
     {
         lineId=line.lineId;
-        $('#create-character-modal').find('form').attr("action","line/"+lineId+"/characters/create");
+        $('#create-character-modal').find('form').attr("action","/line/"+lineId+"/characters/create");
     }
     </script>
     

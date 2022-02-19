@@ -2,10 +2,10 @@
 @section('content')
 
 <div class="container">
-    {{--  {{inspect(user)}}  --}}
-    @each(group in user.groups)
-    {{group.pivot_user_id}}
-    {{group.$extras.pivot_user_id}}
-    @endeach
+  <form action="/testImage" method="POST" enctype="multipart/form-data">
+    {{ csrfField() }}
+      <input type="file" name="cover_image" id="">
+      <button>send</button>
+  </form>
 </div>
 @endsection

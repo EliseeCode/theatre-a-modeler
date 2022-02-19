@@ -46,6 +46,13 @@ export default class LinesController {
     await line.save();
     return response.redirect().back();
   }
+  public async updateCharacter({ params, response, request }: HttpContextContract) {
+    let line = await Line.findOrFail(params.lineId);
+    const { characterId } = request.body();
+    line.characterId = characterId;
+    await line.save();
+    return response.redirect().back();
+  }
 
   public async destroy({ params, response }: HttpContextContract) {
     let line = await Line.findOrFail(params.id);
