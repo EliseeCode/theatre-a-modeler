@@ -27,8 +27,10 @@
   -ms-flex-pack: justify;
   justify-content: space-between;
   min-height: 100vh;
-  background-image:url({{asset('assets/img/authSide.svg')}});
-  background-size:cover;}
+  background-image:url('img/curtain.png');
+  background-size:contain;
+  background-position:top left;
+  background-repeat:no-repeat;}
 }
 
 @media (max-width: 960px)
@@ -43,16 +45,15 @@
 <div class="level">
     <div class="auth-sidebar-content level-left" >
       <div style="margin:50px 0px 0 0px;display:flex;flex-direction:column;">
-        <div style="margin:auto;">
-          <img src="{{asset('assets/img/logo1.svg')}}" class="floating" width="100px" style="margin-bottom:40px;">
-          <h1><span class="titre1" style="font-weight:normal;color:white;">ExoLingo</span></h1>
-        </div>
-        <img style="margin:auto;margin-top:100px;" src="{{asset('assets/img/authsidePerso.png')}}" width="80%">
+        
+        {{--  <img style="margin:auto;margin-top:100px;" src="/img/curtain.png" width="80%">  --}}
       </div>
     </div>
 
     <div class="auth-form-content level-item">
+            
               @!section('content')
+         
     </div>  
 </div>
 
@@ -68,6 +69,6 @@
 
 
 
-        
+<a href='https://fr.freepik.com/vecteurs/vecteur'>Vecteur vecteur créé par pch.vector - fr.freepik.com</a>
 </body>
 </html>

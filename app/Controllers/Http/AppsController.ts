@@ -7,7 +7,11 @@ export default class AppsController {
             return response.redirect().toRoute("/plays");
         }
         const user = await auth.authenticate();
-        await user.load('plays', (Query) => { Query.preload('creator').preload('scenes') });
+        await user.load('plays', (Query) => {
+            Query.preload('creator').preload('scenes', (sceneQuery) => {
+                sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character").orderBy('position') })
+            })
+        });
 
         await user.load('groups', (Query) => { Query.preload("creator").preload('plays').preload('users') });
         const role = Role;
