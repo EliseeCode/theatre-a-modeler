@@ -46,12 +46,22 @@ export default class LinesController {
     await line.save();
     return response.redirect().back();
   }
-  public async updateCharacter({ params, response, request }: HttpContextContract) {
-    let line = await Line.findOrFail(params.lineId);
-    const { characterId } = request.body();
+
+  public async updateCharacter({ response, request }: HttpContextContract) {
+
+    const { characterId, lineId } = request.body();
+    let line = await Line.findOrFail(lineId);
     line.characterId = characterId;
     await line.save();
-    return response.redirect().back();
+    return "ok";
+  }
+  public async updateText({ response, request }: HttpContextContract) {
+
+    const { text, lineId } = request.body();
+    let line = await Line.findOrFail(lineId);
+    line.text = text;
+    await line.save();
+    return "ok";
   }
 
   public async destroy({ params, response }: HttpContextContract) {

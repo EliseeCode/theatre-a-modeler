@@ -77,7 +77,9 @@ Route.post("scene/:scene_id/action", "ScenesController.action");
 Route.get("scene/:scene_id/select", "ScenesController.select");
 //CHARACTER
 Route.post("line/:lineId/characters/create", "CharactersController.store");
-Route.put("/line/:lineId/updateCharacter", "LinesController.updateCharacter")
+Route.post("line/updateCharacter", "LinesController.updateCharacter")
+Route.post("line/updateText", "LinesController.updateText")
+
 Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
 Route.post("play/createNew", "PlaysController.createNew");

@@ -1,6 +1,5 @@
-<div style="position:relative;">
+<div style="position:relative;display:inline-block;">
         <div class="field has-addons m-0" id="line_{{line.id}}">
-        <form id="form_line_{{line.id}}" action={{'/lines/'+line.id+'?_method=PUT'}} method="POST" ></form>
         <div class="field has-addons m-0" >
             
             @include('partials/characters/dropDownEditLine')
@@ -15,7 +14,7 @@
                         </form>
                     </div>
                     @endif
-                    <textarea form="form_line_{{line.id}}" name='text' data-line-id = "{{line.id}}" class="lineText textarea" cols="30" rows="2" style="resize: none">{{line.text}}</textarea>
+                    <textarea oninput="auto_grow(this);updateText({{line.id}});" name='text' id ="lineText_{{line.id}}" class="lineText textarea" cols="30" rows="1" style="resize: none">{{line.text}}</textarea>
                     <div class="field buttonAddLine">
                         <form action="/scenes/{{scene.id}}/line/create/{{line.position}}" method="POST">
                             {{ csrfField() }}
@@ -23,12 +22,6 @@
                         </form>
                     </div>
                 </div>
-            </div>
-            
-            <div class="control">
-                <button type="submit" form="form_line_{{line.id}}" class="button">
-                    Enregistrer
-                </button>
             </div>
         </div>
             <p class="control">
