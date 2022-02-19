@@ -54,6 +54,15 @@ export default class GroupsController {
           .preload("creator")
           .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
       });
+
+      for (let play of group.plays) {
+        for (let scene of play.scenes) {
+          for (let line of scene.lines) {
+            console.log(line.character.name);
+          }
+        }
+      }
+
       const characterFetcher = new CharacterFetcher;
 
       for (const play of group.plays) {
@@ -62,28 +71,35 @@ export default class GroupsController {
           await characterFetcher.getCharactersFromScene(scene);
         }
       }
+      console.log("//////////////////")
+      for (let play of group.plays) {
+        for (let scene of play.scenes) {
+          for (let line of scene.lines) {
+            console.log(line.character.name);
+          }
+        }
+      }
 
 
-
-      //create a set of character's id and loop over each line to populate the set.
-      var characterIdsByPlay = Array();
-      group.plays.forEach(async (play) => {
-        var charactersSet = new Set();
-        play.scenes.forEach((scene) => {
-          scene.lines.forEach((line) => charactersSet.add(line.characterId))
-        })
-        //transform the set in Array and get Characters from those.
-        var characterIds = Array.from(charactersSet);
-        console.log(play.id, characterIds);
-        characterIdsByPlay[play.id] = characterIds;
-      });
-      console.log(characterIdsByPlay);
-      const charactersByPlay = characterIdsByPlay.map(async (el) => {
-        var a = await Character.findMany(el);
-        return a;
-      });
-      console.log(charactersByPlay);
-      return view.render('group/show', { group, user, charactersByPlay, Role });
+      // //create a set of character's id and loop over each line to populate the set.
+      // var characterIdsByPlay = Array();
+      // group.plays.forEach(async (play) => {
+      //   var charactersSet = new Set();
+      //   play.scenes.forEach((scene) => {
+      //     scene.lines.forEach((line) => charactersSet.add(line.characterId))
+      //   })
+      //   //transform the set in Array and get Characters from those.
+      //   var characterIds = Array.from(charactersSet);
+      //   console.log(play.id, characterIds);
+      //   characterIdsByPlay[play.id] = characterIds;
+      // });
+      // console.log(characterIdsByPlay);
+      // const charactersByPlay = characterIdsByPlay.map(async (el) => {
+      //   var a = await Character.findMany(el);
+      //   return a;
+      // });
+      // console.log(charactersByPlay);
+      return view.render('group/show', { group, user, Role });
     }
   }
 

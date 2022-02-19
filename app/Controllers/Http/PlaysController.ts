@@ -9,7 +9,9 @@ export default class PlaysController {
   public dataName = "plays";
 
   public async index({ view }: HttpContextContract) {
-    const plays = await Play.query().preload("scenes").preload("groups").preload("creator").preload("image")
+    const plays = await Play.query().preload("scenes", (sceneQuery) => {
+      sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character").orderBy('position') })
+    }).preload("groups").preload("creator").preload("image")
     const characterFetcher = new CharacterFetcher;
 
     for (const play of plays) {

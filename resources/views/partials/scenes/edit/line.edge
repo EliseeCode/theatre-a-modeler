@@ -10,7 +10,7 @@
                     <div class="field buttonAddLine buttonAddLineFirst">
                         <form action="/scenes/{{scene.id}}/line/create/-1" method="POST">
                             {{ csrfField() }}
-                            <button type="submit" title="Ajouter une réplique ici"></button>
+                            <button class="fas fa-plus" type="submit" title="Ajouter une réplique ici"></button>
                         </form>
                     </div>
                     @endif
@@ -18,7 +18,7 @@
                     <div class="field buttonAddLine">
                         <form action="/scenes/{{scene.id}}/line/create/{{line.position}}" method="POST">
                             {{ csrfField() }}
-                            <button title="Ajouter une réplique ici"></button>
+                            <button class="fas fa-plus" title="Ajouter une réplique ici"></button>
                         </form>
                     </div>
                 </div>

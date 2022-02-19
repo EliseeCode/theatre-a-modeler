@@ -4,6 +4,17 @@
         {{scene.name}}
       </div>
       <div class="card-header-icon" aria-label="more options">
+        @if(group?.id)
+          <a href={{'/group/'+group.id+'/scene/'+scene.id+'/select'}} class="card-header-item icon-text">
+          @else
+          <a href={{'/scene/'+scene.id+'/select'}} class="card-header-item icon-text">
+          @endif
+          {{--  <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">  --}}
+            <span>Explorer</span>
+            <span class="icon">
+              <i class="fas fa-arrow-right"></i>
+            </span>
+          </a>       
         <div class="dropdown-trigger" id="dropdown-trigger-scene-{{scene.id}}" onclick="toggleDropdownMenu('scene',{{scene.id}})" aria-controls="dropdown-menu">
           <span class="icon">
               <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
@@ -16,18 +27,16 @@
         <div class="card-content" >
             <div class="content" style="color:darkgrey;font-style:italic;">
               {{scene.description}}
-            </div>  
-              <hr>
-              @if(scene.characters.length>0)
-              <ul>
-                @each(character in scene.characters)
-                    <li>{{character.name}}</li>
-                @endeach
-              </ul>
-              @else
-                <p>Pas encore de personnage dans cette scène</p>
-              @end
-              
+            </div> 
+            <hr>
+            @each(line in scene.lines)
+            <p>
+              @if(line.versionId==1)
+            <em>{{line?.character?.name}}</em> - {{line.text}}
+              @endif
+            </p>
+            @endeach 
+                       
         </div>
         <div class="card-footer" >
           @if(group?.id)
