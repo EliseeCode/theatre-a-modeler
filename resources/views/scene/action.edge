@@ -1,18 +1,5 @@
 @layout('layouts/master')
 
 @section('content')
-@each(position in payload)
-<div style="display: inline;">
-    <p style="display: inline;">{{position.character.name}}</p>
-    <img src="{{position.character.image.public_path}}" alt="{{position.character.name}}'s image">
-    <textarea name="" id="" cols="10" rows="5" readonly>{{position.line.text}}</textarea>
-    @if(position.audio)
-    <button>Play: {{position.audio.creator.username}}</button>
-    @else
-    <button>Record!</button>
-    @endif
-</div>
-<br>
-<br>
-@endeach
+{{inspect(lines)}}
 @endsection

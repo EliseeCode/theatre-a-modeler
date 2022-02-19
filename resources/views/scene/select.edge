@@ -24,25 +24,25 @@
               <div class="media-content">
                 <select name="versions" class="select-search tail-select default white" tabindex="0">
                   @if(!character?.versions.map((version) => version.name).includes('Official'))
-                  <optgroup label="Official">
-                    <option value="{{`${character.id}-1-record`}}">Enregistrer votre interpretation</option>
-                    <option value="{{`${character.id}-1-robot`}}">Robotiser</option>
-                </optgroup>
+                    <optgroup label="Official">
+                        <option value="{{`${character.id}-1-record-0`}}">Enregistrer votre interpretation</option>
+                        <option value="{{`${character.id}-1-robot-0`}}">Robotiser</option>
+                    </optgroup>
                   @else
                     @each(version in character?.versions)
                     <optgroup label="{{version?.name}}">
                         @each(doubler in version.doublers)
                                 @each(audioVersion in doubler?.audioVersions)
-                                <option value="{{`${character.id}-${version.id}-${audioVersion.id}`}}">{{doubler?.username}} | {{audioVersion.name}}</option>
+                                <option value="{{`${character.id}-${version.id}-${doubler.id}-${audioVersion.id}`}}">{{doubler?.username}} | {{audioVersion.name}}</option>
                                 @endeach
                         @endeach
-                        <option value="{{`${character.id}-${version.id}-record`}}">Enregistrer votre interpretation</option>
-                        <option value="{{`${character.id}-${version.id}-robot`}}">Robotiser</option>
+                        <option value="{{`${character.id}-${version.id}-record-0`}}">Enregistrer votre interpretation</option>
+                        <option value="{{`${character.id}-${version.id}-robot-0`}}">Robotiser</option>
                     </optgroup>
                     
                     @endeach
                     @endif
-                    <option value="{{`${character.id}-0-alt`}}">Créer une alternative</option>
+                    <option value="{{`${character.id}-0-record-0`}}">Créer une alternative</option>
                 </select>
               </div>
             </div>

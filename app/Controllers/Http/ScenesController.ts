@@ -12,6 +12,7 @@ import LineVersionFetcher from "App/Controllers/helperClass/LineVersionFetcher";
 import Version from "App/Models/Version";
 import User from "App/Models/User";
 import AudioFetcher from "App/Controllers/helperClass/AudioFetcher";
+import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 
 export default class ScenesController {
   private async getCharacters(model: Play | Scene) {
@@ -88,51 +89,144 @@ export default class ScenesController {
 
     return view.render("scene/select", { characters: scene.characters });
   }
-  public async index({ }: HttpContextContract) { }
+  public async index({}: HttpContextContract) {}
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
-  public async store({ }: HttpContextContract) { }
+  public async store({}: HttpContextContract) {}
 
   public async action({
     request,
     params,
     view,
     response,
+    auth,
   }: HttpContextContract) {
     console.log(request.body());
-    return;
-    const data = JSON.parse(request.input("data"));
-    const sceneId = params.id;
-    const currentGroup = await Group.findOrFail(params.group_id);
-    const currentPlay = (
-      await currentGroup
-        .related("plays")
-        .query()
-        .where("play_id", params.play_id)
-    )[0];
-    // TODO add error handlers for relation and query results
-    const scenes = await currentPlay
-      .related("scenes")
-      .query()
-      .orderBy("position")
-      .preload("image");
-    const currentSceneIndex =
-      scenes.reduce(
-        (acc, cur, index) =>
-          cur.id === parseInt(sceneId) ? acc + index + 1 : acc,
-        0
-      ) - 1; // FIXME just a stupid method for tackling global variables with foreach
-    if (currentSceneIndex < 0) {
-      Logger.error(`No record found for scene with id: ${sceneId}`);
-      return;
-    }
-    const currentScene = scenes[currentSceneIndex];
-    const previousScene = scenes[currentSceneIndex - 1];
-    const nextScene = scenes[currentSceneIndex + 1];
-    const totalCharacters = new Set(); // total characters in this scene
-    const payload = []; // indexes represent positions
+    const user = await auth.authenticate();
+    const scene = await Scene.findOrFail(params.scene_id);
+    const versions = request.body()?.versions ?? [];
+    const lineVersionFetcher = new LineVersionFetcher(scene);
+    // versions: ["(character_id)-(line_version_id)-(audio_version_id)"]
+    // if line_version_id = 0; create alternative entry/version
+    // if doubler_id = record; send a toBeRecorded bool
+    // if doubler_id = robot; send a robotized bool
+    // if audio_version_id = 0; send a toBeRecorded bool
+    if (!versions) return;
+    const finalQuery = scene.related("lines").query(); // We are iterating over the versions and "cooking" a global query, where in the end, we'll have the whole line structure ordered by position.
+    const versionRegex = /^[1-9]\d*-\d+-([1-9]+||record|robot)-\d+$/;
+    const cookedLines: ModelObject[] = [];
 
+    for (const version of versions) {
+      if (!versionRegex.test(version))
+        return response.internalServerError(
+          "Error in version parse... Please cook it more! :)"
+        );
+      let [characterID, lineVersionID, doublerID, audioVersionID] =
+        version.split("-");
+      console.log(
+        `Character ID: ${characterID}\nLine Version ID:${
+          lineVersionID == 0 ? "Alternative Text" : lineVersionID
+        }\nDoubler ID:${
+          typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
+        }\nAudio Version ID:${
+          audioVersionID == 0 ? "To be recorded" : audioVersionID
+        }\n`
+      );
+      const character = await Character.findOrFail(characterID);
+      const characterVersions = (
+        await lineVersionFetcher.getVersionsFromCharacterOnScene(character)
+      ).map((version) => version.id);
+      const versionExistsOnCharacter = characterVersions.includes(
+        parseInt(lineVersionID)
+      ); // If not a specific version exists on character, we'll query the official version...
+      console.log(versionExistsOnCharacter);
+      let [isAlternative, isRobotized, toBeRecorded] =
+        Array<boolean>(3).fill(false);
+
+      isRobotized = doublerID == "robot";
+      toBeRecorded = doublerID == "record" && !parseInt(audioVersionID);
+
+      if (lineVersionID === "0") {
+        console.log("So, you wanna create an alternative? OK, go on!\n");
+        // lineVersionID = 1; // serving to user the official lines...
+        isAlternative = true;
+        isRobotized = false;
+      }
+
+      const lines = await (
+        await scene
+          .related("lines")
+          .query()
+          .where("character_id", parseInt(characterID))
+          .unless(
+            versionExistsOnCharacter,
+            (ifquery) => {
+              console.log(
+                `are you lost? no version id like this: ${lineVersionID} on ${characterID}...`
+              );
+              ifquery.where("version_id", 1);
+            },
+            (ifquery) => {
+              console.log("there exists a version id on line!");
+              ifquery.where("version_id", parseInt(lineVersionID));
+            }
+          )
+          .preload("character", (characterQuery) => {
+            characterQuery.preload("image");
+          })
+          .preload("audios", (audioQuery) => {
+            audioQuery
+              .where("creator_id", doublerID)
+              .where("version_id", audioVersionID);
+          })
+      ).map((line) => {
+        line.isAlternative = isAlternative;
+        line.isRobotized = isRobotized;
+        line.toBeRecorded = toBeRecorded;
+        return line.serialize({
+          fields: {
+            pick: [
+              "id",
+              "character_id",
+              "version_id",
+              "position",
+              "isAlternative",
+              "text",
+              "isRobotized",
+              "toBeRecorded",
+            ],
+          },
+          relations: {
+            character: {
+              fields: {
+                omit: ["created_at", "updated_at", "versions"],
+              },
+              relations: {
+                image: {
+                  fields: {
+                    omit: ["type", "relative_path", "created_at", "updated_at"],
+                  },
+                },
+              },
+            },
+          },
+        });
+      });
+
+      if (!lines.length)
+        return response.internalServerError(
+          "Scene data is corrupted. No official line version exists..."
+        );
+
+      cookedLines.push(...lines);
+    }
+
+    cookedLines.sort(
+      (currLine, nextLine) => currLine.position - nextLine.position
+    );
+
+    return view.render("scene/action", { lines: cookedLines });
     const lineQuery = currentScene.related("lines").query();
     //get line_version_id depending on character_id
     data.forEach((datum) => {
