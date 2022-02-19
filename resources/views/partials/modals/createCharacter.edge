@@ -1,0 +1,65 @@
+<div class="modal" id="create-character-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Créer un personnage</p>
+                <button class="delete" aria-label="close"></button>
+            </header>
+            <form action='/character' method='POST'>
+            <section class="modal-card-body">
+                
+                {{ csrfField() }}
+                <input type="hidden" value="" name="lineId">
+                <div class="card-image p-3" style="margin-top:-100px;">
+                <div style="width:200px;height:200px;display:inline-block;">                      
+                    <img src="" style="border-radius: 50%;object-fit: cover;width:200px;height:200px;display:inline-block;" alt="Placeholder image">
+                    <button class="delete deleteImage is-large is-danger" data-image-id="" style="z-index: 100;position: absolute;"></button>
+                   
+                    <input id="file_" type="file" data-type="" data-id="" hidden/>
+                    <label for="file_" class="has-text-centered button btnUpload" >Choisir une image</label>
+                   
+                </div>
+                
+            </div>
+            <div class="card-content">
+                
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" placeholder="Nom du personnage" class="input subtitle" name='name' style="text-align:center;" value="">
+                        </div>
+                    </div>
+                    <div class="field">    
+                        <div class="control">
+                            <div class="select">
+                                <select name="gender">
+                                
+                                    <option value="Male" >Homme</option>
+                                    <option value="Female" >Femme</option>
+                                    <option value="Other" selected>Autre</option>
+                                    
+                                </select>
+                            </div>  
+                        </div>
+                    </div>    
+                    <div class="field">
+                        <div class="control">
+                                <textarea name="description" placeholder="Informations sur le personnage" id="" cols="30" rows="10" class="textarea" style="resize: none"></textarea>
+                        </div>
+                    </div>    
+            
+                
+                
+                    
+            </div>
+                
+                        
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-primary" type="submit">Enregistrer</button>
+                <button class="button" type="button">Annuler</button>
+            </footer>
+            </form>
+        </div>
+    
+  </div>
+  {{--  <script src="/js/importImage.js"></script>  --}}

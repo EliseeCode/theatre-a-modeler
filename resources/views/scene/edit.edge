@@ -51,13 +51,17 @@
     </div>
     <div class="level-right">
         <div class="level-item">
-            <a href=# class="icon-text">
-                <span class="icon fas fa-edit" >
-                </span>
-                <span>
-                    Modifier
-                </span>
+            <a href=# 
+                    class="icon-text js-modal-trigger" 
+                    data-target="edit-scene-modal" 
+                    onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadSceneInfoInModal({id:{{scene.id}},name:'{{scene.name}}'})" >
+                    <span class="icon fas fa-edit" >
+                    </span>
+                    <span>
+                        Modifier
+                    </span>
             </a>
+           
         </div>
         <div class="level-item"></div>
     </div>
@@ -75,14 +79,23 @@
         {{scene.description}}
     </h2>
     <hr>
-    <div class="lineContainer">   
-    @each((line,indexLine) in scene.lines)
-        @include('partials/scenes/edit/line')
-    @endeach
+    <div class="lineContainer"> 
+    @if(scene.lines.length==0)
+        <form action="/scenes/{{scene.id}}/line/create/-1" method="POST">
+            {{ csrfField() }}
+            <button type="submit" class="button" title="">Ajouter une réplique ici</button>
+        </form>
+    @else
+        @each((line,indexLine) in scene.lines)
+            @include('partials/scenes/edit/line')
+        @endeach
+    @endif
     </div>
 </div>
-    @include('partials/modals/editScene')
+   
     <div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
+    @include('partials/modals/editScene')
+    @include('partials/modals/createCharacter')
     <script>
     function toggleDropdownMenu(objectType,objectId){
         window.event.stopPropagation();
@@ -103,6 +116,18 @@
             stuffToHide.hide();
         }
     });
+
+    function loadSceneInfoInModal(scene)
+    {
+        console.log(scene)
+        $('#edit-scene-modal').find('input[name="name"]').val(scene.name);
+        $('#edit-scene-modal').find('form').attr("action","/scenes/"+scene.id+"?_method=PUT")
+    }    
+    function loadCharacterInfoInModal(line)
+    {
+        lineId=line.lineId;
+        $('#create-character-modal').find('form').attr("action","line/"+lineId+"/characters/create");
+    }
     </script>
     
     

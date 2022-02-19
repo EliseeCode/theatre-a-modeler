@@ -3,48 +3,7 @@
         <form id="form_line_{{line.id}}" action={{'/lines/'+line.id+'?_method=PUT'}} method="POST" ></form>
         <div class="field has-addons m-0" >
             
-            <div class="control">
-                <input type="hidden" form="form_line_{{line.id}}" name="_csrf" value="{{csrfToken}}">
-                <div class="dropdown" style="">
-                    
-                      <button class="dropdown-trigger button" aria-haspopup="true" aria-controls="dropdown-menu" style="width:300px;">
-                        <div class="level">
-                            <div class="level-center">
-                                <div class="level-item">
-                                    <label for="dropdown-toggle">
-                                        <img class="image-character" src='{{line.character?.image?.publicPath}}' >
-                                        {{line.characterId?line.character.name:'Choisir un personnage'}}
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="level-right">
-                                <span class=" caret icon is-small">
-                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
-                                  </span>
-                            </div>
-                        </div>
-                      </button>
-                    
-                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                      <div class="dropdown-content">
-                        @each(character in play.characters)
-                        <a href="#" class="dropdown-item {{line.characterId == character.id?'is-active':''}}">
-                            <img class="image-character" src='{{character?.image?.publicPath}}' >
-                            {{character.name}}
-                        </a>
-                        @endeach 
-                        <hr class="dropdown-divider">
-                        <form action="/characters" method="POST">
-                            {{ csrfField() }}
-                            <input type="hidden" name="lineId" value={{line.id}}>
-                            <button class="dropdown-item">
-                                Créer un personnage
-                            </button>
-                        </form>
-                      </div>
-                    </div>
-                </div>
-            </div>
+            @include('partials/characters/dropDownEditLine')
             <div class="control">
                 <div style="position:relative;">
                     
@@ -56,7 +15,7 @@
                         </form>
                     </div>
                     @endif
-                    <textarea form="form_line_{{line.id}}" name='text' data-line-id = "{{line.id}}" class="lineText textarea" cols="30" rows="5" style="resize: none">{{line.text}}</textarea>
+                    <textarea form="form_line_{{line.id}}" name='text' data-line-id = "{{line.id}}" class="lineText textarea" cols="30" rows="2" style="resize: none">{{line.text}}</textarea>
                     <div class="field buttonAddLine">
                         <form action="/scenes/{{scene.id}}/line/create/{{line.position}}" method="POST">
                             {{ csrfField() }}

@@ -41,3 +41,22 @@ fileInputs.map((elem) => {
 
     })
 })
+deleteButtons.map((elem) => {
+    elem.addEventListener("click", (e) => {
+        const id = e.target.getAttribute("data-image-id");
+        fetch(`${window.location.origin}/images/${id}`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-Token": CSRF_TOKEN
+            }
+        }).then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        }).then((data) => {
+            console.info(data);
+            window.location.reload()
+        }).catch((err) => {
+            console.error(err);
+        })
+    })
+})
