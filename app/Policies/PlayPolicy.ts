@@ -30,7 +30,7 @@ export default class PlayPolicy extends BasePolicy {
 	}
 	public async link(user: User, play: Play, groupsId: number[]) {
 		//user Teacher des group
-		res = await Database.query().select()
+		const res = await Database.query().select()
 			.from('group_user')
 			.where('group_user.role_id', Role.TEACHER)
 			.andWhere('group_user.user_id', user.id)

@@ -55,7 +55,7 @@ export default class PlaysController {
 
     await play.save();
 
-    let publishedGroupsArray = [];
+    let publishedGroupsArray: string[] = [];
     if (!!publishedGroups) {
       if (typeof (publishedGroups) == "string") {
         publishedGroupsArray[0] = publishedGroups;
