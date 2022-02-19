@@ -1,14 +1,25 @@
 @layout('layouts/master')
 @section('css')
-<link rel="stylesheet" href="/css/character.css">
 <link rel="stylesheet" href="/css/selectize.css">
 @endsection
 @section('js')
 <script src="/js/bulma-dropdown.js"></script>
+<script src="/js/bulma-modal.js"></script>
 @endsection
 @section('content')
 <style>
+    .saved{
+        background-color:#00FF8050;
+    }
     
+    .lineText{
+        margin-bottom:3px;
+        overflow:hidden;
+    }
+    .image-character{
+    width:40px;
+    height:40px;
+    }
     .buttonAddLine{
         position:absolute;
         bottom:-20px;
@@ -79,7 +90,7 @@
         {{scene.description}}
     </h2>
     <hr>
-    <div class="lineContainer"> 
+    <div class="lineContainer" style="text-align:center;"> 
     @if(scene.lines.length==0)
         <form action="/scenes/{{scene.id}}/line/create/-1" method="POST">
             {{ csrfField() }}
@@ -92,8 +103,9 @@
     @endif
     </div>
 </div>
-   
+    <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
     <div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
+    
     @include('partials/modals/editScene')
     @include('partials/modals/createCharacter')
     <script>
@@ -122,12 +134,66 @@
         console.log(scene)
         $('#edit-scene-modal').find('input[name="name"]').val(scene.name);
         $('#edit-scene-modal').find('form').attr("action","/scenes/"+scene.id+"?_method=PUT")
-    }    
+    }  
+    let timer = [];
     function loadCharacterInfoInModal(line)
     {
         lineId=line.lineId;
-        $('#create-character-modal').find('form').attr("action","line/"+lineId+"/characters/create");
+        $('#create-character-modal').find('form').attr("action","/line/"+lineId+"/characters/create");
     }
+    function updateText(lineId) {
+        if(timer[lineId]!=null){
+        clearTimeout(timer[lineId]);
+        }
+        timer[lineId] = setTimeout(()=>{sendUpdateText(lineId)}, 1000);
+    }
+    function sendUpdateText(lineId){
+        console.log("updateText")
+        const text=$(`#lineText_${lineId}`).val();
+        const token = $('.csrfToken').data('csrf-token');
+        const params = { 
+            lineId, 
+            text,
+            _csrf: token
+        };
+        $.post('/line/updateText', params, function(data) {
+            console.log("updateTextData")
+            if(data)
+            {
+                $(`#lineText_${lineId}`).addClass('saved');
+                setTimeout(function(){
+                    $('.saved').removeClass('saved')
+                }, 500);
+            }
+        });
+    }
+    
+    function updateCharacter(characterId,lineId)
+    {
+        const token = $('.csrfToken').data('csrf-token');
+        const params = { 
+            lineId, 
+            characterId,
+            _csrf: token
+        };
+
+        $.post('/line/updateCharacter', params, function(data) {
+            if(data)
+            {
+                $(`#select_character_line_${lineId}`).html("");
+                characterClone=$(`#character_line_${characterId}_${lineId}`).clone();
+                characterClone.appendTo(`#select_character_line_${lineId}`);
+                characterClone.find('.caret').show();
+            }
+        });
+    }
+    function auto_grow(element) {
+        element.style.height = "5px";
+        element.style.height = (element.scrollHeight)+"px";
+    }
+    [...document.getElementsByClassName('lineText')].forEach((element)=>{
+        auto_grow(element)
+    })    
     </script>
     
     

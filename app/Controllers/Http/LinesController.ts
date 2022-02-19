@@ -47,6 +47,23 @@ export default class LinesController {
     return response.redirect().back();
   }
 
+  public async updateCharacter({ response, request }: HttpContextContract) {
+
+    const { characterId, lineId } = request.body();
+    let line = await Line.findOrFail(lineId);
+    line.characterId = characterId;
+    await line.save();
+    return "ok";
+  }
+  public async updateText({ response, request }: HttpContextContract) {
+
+    const { text, lineId } = request.body();
+    let line = await Line.findOrFail(lineId);
+    line.text = text;
+    await line.save();
+    return "ok";
+  }
+
   public async destroy({ params, response }: HttpContextContract) {
     let line = await Line.findOrFail(params.id);
     await Line.query().where('sceneId', line.sceneId).andWhere('position', ">", line.position).decrement("position", 1);

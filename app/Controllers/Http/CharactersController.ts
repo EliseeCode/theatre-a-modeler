@@ -1,6 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Character from "App/Models/Character";
+import Image from "App/Models/Image";
 import Line from "App/Models/Line";
 import Play from "App/Models/Play";
 import ObjectType from "Contracts/enums/ObjectType";
@@ -27,15 +28,68 @@ export default class CharactersController {
     });
   }
 
-  public async store({ request, response }: HttpContextContract) {
-    const lineId = request.body().lineId;
+  public async store({ auth, params, request, response }: HttpContextContract) {
+    const user = await auth.authenticate();
+    const lineId = params.lineId;
+    const { name, gender, description } = request.body();
+    const imageCharacter = request.file('imageCharacter')
     const character = await Character.create(
       {
-        name: "Personnage sans nom",
-        gender: "Other",
+        name,
+        gender,
+        description,
       })
     await (await Line.findOrFail(lineId)).related('character').associate(character);
-    return response.redirect('/characters/' + character.id)
+    console.log(imageCharacter)
+    if (imageCharacter) {
+      console.log("Image à uploader");
+
+      // Won't use a custom name instead Adonis will auto-generate a random name
+      /*const fileName = `${user.id}_${lineId}_${await Hash.make(
+        new Date().getTime().toString()
+      )}.${imageFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
+
+      let message: string, status: boolean;
+      try {
+        await imageCharacter?.moveToDisk(
+          "./images/",
+          { contentType: request.header("Content-Type") },
+          "local"
+        );
+        status = true;
+        message = `The image file has been successfully saved!`;
+        console.log(message);
+      } catch (err) {
+        status = false;
+        message = `An error occured during the save of the image file.\nHere's the details: ${err} `;
+        console.log(message);
+        return response.json({ status: 0, message });
+      }
+
+      if (!imageCharacter.fileName) {
+        message = `An error occured during the save of the image file.\nHere's the details: imageFile.fileName is not defined.`;
+        console.log(message);
+        return response.json({ status: 0, message });
+      }
+
+      const locationOrigin = new URL(request.completeUrl()).origin;
+      // eval(entityType) -> Play is not defined... Why can't we use import aliases in eval? #FIXME
+
+      const newImage = await Image.create({
+        name: imageCharacter.fileName,
+        publicPath: `${locationOrigin}/uploads/images/${imageCharacter.fileName}`,
+        relativePath: `/uploads/images/${imageCharacter.fileName}`,
+        creatorId: user.id,
+        size: imageCharacter.size,
+        type: imageCharacter.extname,
+        // mimeType: request.header("Content-Type"), // It's getting as multipart/form-data
+        mimeType: `${imageCharacter.fieldName}/${imageCharacter.extname}`,
+      });
+      console.log(newImage.publicPath);
+      character.imageId = newImage.id;
+      await character.related('image').associate(newImage);
+    }
+    return response.redirect().back();
   }
 
   public async show({ view, params }: HttpContextContract) {

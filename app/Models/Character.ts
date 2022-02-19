@@ -4,15 +4,9 @@ import {
   BelongsTo,
   belongsTo,
   column,
-  computed,
-  HasMany,
-  hasMany,
-  ManyToMany,
-  manyToMany,
+  computed
 } from "@ioc:Adonis/Lucid/Orm";
-import Play from "App/Models/Play";
 import Image from "App/Models/Image";
-import Line from "App/Models/Line";
 import Version from "App/Models/Version";
 
 export default class Character extends BaseModel {
@@ -37,7 +31,7 @@ export default class Character extends BaseModel {
   @belongsTo(() => Image, {
     localKey: "id",
     foreignKey: "imageId",
-    serializeAs: "image",
+    serializeAs: "image"
   })
   public image: BelongsTo<typeof Image>;
 

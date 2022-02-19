@@ -2,33 +2,61 @@
     <input type="hidden" form="form_line_{{line.id}}" name="_csrf" value="{{csrfToken}}">
     <div class="dropdown" style="">
         
-          <button class="dropdown-trigger button" aria-haspopup="true" aria-controls="dropdown-menu" style="width:300px;">
-            <div class="level">
+          <button id="select_character_line_{{line.id}}" class="dropdown-trigger button" aria-haspopup="true" aria-controls="dropdown-menu" style="width:300px;">
+            {{--  <label for="dropdown-toggle">   --}}
+            <div class="level" style="width:100%;">
+                <div class="level-left">
+                    @if(line.character?.image)
+                    <div class="level-item">
+                        <img class="image-character" src='{{line.character?.image?.publicPath}}' >
+                    </div>
+                    @endif
+                </div>
                 <div class="level-center">
                     <div class="level-item">
-                        <label for="dropdown-toggle">
-                            @if(line.character?.image)
-                            <img class="image-character" src='{{line.character?.image?.publicPath}}' >
-                            @endif
                             {{line.characterId?line.character.name:'Choisir un personnage'}}
-                        </label>
                     </div>
                 </div>
                 <div class="level-right">
-                    <span class=" caret icon is-small">
-                        <i class="fas fa-angle-down" aria-hidden="true"></i>
-                      </span>
+                    <div class="level-item">
+                        <span class=" caret icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
+            {{--  </label>  --}}
           </button>
         
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
           <div class="dropdown-content">
             @each(character in play.characters)
-            <a href="#" class="dropdown-item {{line.characterId == character.id?'is-active':''}}">
-                <img class="image-character" src='{{character?.image?.publicPath}}' >
-                {{character.name}}
-            </a>
+                <div onclick="updateCharacter({{character.id}},{{line.id}})" class="dropdown-item is-clickable" {{line.characterId == character.id?'is-active':''}}>
+                    <div id="character_line_{{character.id}}_{{line.id}}" style="width:100%;">
+                        <div class="level" style="width:100%;">
+                            <div class="level-left">
+                                
+                                @if(line.character?.image)
+                                <div class="level-item">
+                                <img class="image-character" src='{{character?.image?.publicPath}}' >
+                                </div>
+                                @endif
+                            </div>
+                            <div class="level-center">
+                                <div class="level-item">
+                                    {{character.name}}
+                                </div>
+                            </div>
+                            <div class="level-right caret" style="display:none;">
+                                <div class="level-item">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endeach 
             <hr class="dropdown-divider">
             {{--  <form action="/characters" method="POST">
