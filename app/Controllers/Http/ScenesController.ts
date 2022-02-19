@@ -184,13 +184,16 @@ export default class ScenesController {
     return view.render("scene/action", { payload });
   }
 
-  public async createNew({ response, auth, params }: HttpContextContract) {
+  public async createNew({ bouncer, response, auth, params, request }: HttpContextContract) {
     const playId = params.id;
-    const play = await Play.findOrFail(playId);
+    const play = await Play.findOrFail(playId)
+    await bouncer.with('PlayPolicy').authorize('update', play);
+    await play.load('scenes');
     const user = await auth.authenticate();
-    const newScene = await Scene.create({
-      name: "Nouvelle scène",
-      position: 2,
+    const name = request.body().name || "Scène sans nom";
+    await Scene.create({
+      name: name,
+      position: play.scenes.length,
       description: "",
       creatorId: user.id,
       playId: play.id,
@@ -254,7 +257,7 @@ export default class ScenesController {
         characterQuery.preload('image')
       }).orderBy('lines.position', 'asc')
     })
-    console.log(scene.lines[0].character.image.publicPath);
+
     return view.render("scene/edit", {
       scene,
       play,

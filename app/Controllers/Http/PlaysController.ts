@@ -97,6 +97,7 @@ export default class PlaysController {
     const { name, description, publishedGroups } = request.body();
     const play_id = params.id;
     var play = await Play.findOrFail(play_id);
+    await bouncer.with('PlayPolicy').authorize('update', play);
     play.name = name;
     play.description = description;
     await play.save();

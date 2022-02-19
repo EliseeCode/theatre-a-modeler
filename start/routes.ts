@@ -65,10 +65,12 @@ Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
 
 //ROUTES FOR SCENES 
+
 Route.resource("group/:group_id/scene", "ScenesController");
 Route.resource("scenes", "ScenesController");
 Route.post("group/:group_id/scene/:scene_id/action", "ScenesController.action");
 Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
+Route.put("play/:id/scene/createNew", "ScenesController.createNew");
 //WITHOUT GROUP
 Route.resource("scene", "ScenesController");
 Route.post("scene/:scene_id/action", "ScenesController.action");
@@ -78,7 +80,7 @@ Route.get("scene/:scene_id/select", "ScenesController.select");
 Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
 Route.post("play/createNew", "PlaysController.createNew");
-Route.post("play/:id/scene/createNew", "ScenesController.createNew");
+
 
 Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
 Route.post("api/play/:playId/updateName", "PlaysController.updateName");

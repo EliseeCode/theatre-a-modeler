@@ -55,6 +55,7 @@
 @include('partials/modals/editPlay')
 @include('partials/modals/createPlay')
 @include('partials/modals/editScene')
+@include('partials/modals/createScene')
 
 <div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
 
@@ -91,6 +92,11 @@ function loadPlayInfoInModal(play)
         //$('#edit-play-modal').find('select[name="publishedGroups"]').val(play.groups);
         $('#edit-play-modal').find('form').attr("action","/plays/"+play.id+"?_method=PUT")
     }
+function loadSceneCreateInfoInModal(scene)
+    {
+        console.log(scene)
+        $('#edit-sceneCreate-modal').find('form').attr("action","/play/"+scene.playId+"/scene/createNew?_method=PUT")
+    }    
 function loadSceneInfoInModal(scene)
     {
         console.log(scene)
