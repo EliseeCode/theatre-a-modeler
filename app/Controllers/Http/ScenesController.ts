@@ -93,7 +93,14 @@ export default class ScenesController {
 
   public async store({}: HttpContextContract) {}
 
-  public async show({ request, params, view, response }: HttpContextContract) {
+  public async action({
+    request,
+    params,
+    view,
+    response,
+  }: HttpContextContract) {
+    console.log(request.body());
+    return;
     const data = JSON.parse(request.input("data"));
     const sceneId = params.id;
     const currentGroup = await Group.findOrFail(params.group_id);
