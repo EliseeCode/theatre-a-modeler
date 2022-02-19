@@ -2,15 +2,23 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Play from "App/Models/Play";
 import Status from "Contracts/enums/Status";
 import Logger from "@ioc:Adonis/Core/Logger";
+import CharacterFetcher from "../helperClass/CharacterFetcher";
 
 
 export default class PlaysController {
   public dataName = "plays";
 
   public async index({ view }: HttpContextContract) {
-    const plays = await (
-      await Play.query().preload("scenes").preload("groups").preload("creator").preload("image")
-    ).map((e) => e.serialize());
+    const plays = await Play.query().preload("scenes").preload("groups").preload("creator").preload("image")
+    const characterFetcher = new CharacterFetcher;
+
+    for (const play of plays) {
+      await characterFetcher.getCharactersFromPlay(play);
+      for (const scene of play.scenes) {
+        await characterFetcher.getCharactersFromScene(scene);
+      }
+    }
+
     return view.render("play/index", { plays });
   }
 
@@ -83,14 +91,16 @@ export default class PlaysController {
     return view.render("play/edit", { user, status, play });
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  public async update({ bouncer, request, response, params }: HttpContextContract) {
     const { name, description, publishedGroups } = request.body();
     const play_id = params.id;
     var play = await Play.findOrFail(play_id);
     play.name = name;
     play.description = description;
     await play.save();
-    let publishedGroupsArray;
+    //Links
+
+    let publishedGroupsArray = [];
     if (!!publishedGroups) {
       if (typeof (publishedGroups) == "string") {
         publishedGroupsArray = [publishedGroups];
@@ -98,8 +108,9 @@ export default class PlaysController {
       else {
         publishedGroupsArray = Object.values(publishedGroups);
       }
-      await play.related("groups").sync(publishedGroupsArray);
     }
+    await bouncer.with('PlayPolicy').authorize('link', play, publishedGroupsArray);
+    await play.related("groups").sync(publishedGroupsArray);
     return response.redirect().back();
   }
 

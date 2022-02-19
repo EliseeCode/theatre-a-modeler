@@ -84,7 +84,7 @@ export default class ScenesController {
 
       if (!line.audios) {
         console.log(
-          `No attached audios found for line id: ${line.id}: ${line.audios[0]}`
+          `No attached audios found for line id: ${line.id}: ${line?.audios}`
         );
         return;
       }

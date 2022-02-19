@@ -1,0 +1,11 @@
+@layout('layouts/master')
+@section('content')
+
+<div class="container">
+    {{--  {{inspect(user)}}  --}}
+    @each(group in user.groups)
+    {{group.pivot_user_id}}
+    {{group.$extras.pivot_user_id}}
+    @endeach
+</div>
+@endsection

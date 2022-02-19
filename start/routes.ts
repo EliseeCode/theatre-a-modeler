@@ -121,7 +121,9 @@ Route.get("/register", async ({ response, view, auth }) => {
   }
 }).middleware("silentAuth");
 
+Route.get('/test', 'testController.index');
 Route.post("/login", "AuthController.login").as("auth.login");
 Route.post("/register", "AuthController.register").as("auth.register");
 
 Route.get("/:objet", "DefaultsController.index");
+
