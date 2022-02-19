@@ -30,7 +30,11 @@
               
         </div>
         <div class="card-footer" >
-          <a href="{{group?.id?'/group/{{group.id}}':''}}/scene/{{scene.id}}/select" class="card-footer-item icon-text">
+          @if(group?.id)
+          <a href={{'/group/'+group.id+'/scene/'+scene.id+'/select'}} class="card-footer-item icon-text">
+          @else
+          <a href={{'/scene/'+scene.id+'/select'}} class="card-footer-item icon-text">
+          @endif
           {{--  <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">  --}}
             <span>Explorer</span>
             <span class="icon">

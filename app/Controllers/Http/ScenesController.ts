@@ -60,6 +60,7 @@ export default class ScenesController {
       character.versions =
         await lineVersionFetcher.getVersionsFromCharacterOnScene(character); // Why this doesn't automatically updates referenced parameter? Why do we have to restore it in scene.characters?
       for (const version of character.versions) {
+        console.log(version);
         version.doublers =
           await audioFetcher.getDoublersAndAudioVersionsFromLineVersionOnScene(
             version
@@ -87,11 +88,11 @@ export default class ScenesController {
 
     return view.render("scene/select", { characters: scene.characters });
   }
-  public async index({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
-  public async store({}: HttpContextContract) {}
+  public async store({ }: HttpContextContract) { }
 
   public async action({
     request,
