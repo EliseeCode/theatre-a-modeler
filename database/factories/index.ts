@@ -101,7 +101,6 @@ export const ImageFactory = Factory.define(Image, ({ faker }) => {
     size: faker.datatype.number(150000),
     publicPath: faker.internet.url(),
     relativePath: faker.internet.url(),
-    description: faker.lorem.sentences(3),
     creatorId: 1,
   };
 }).build();
