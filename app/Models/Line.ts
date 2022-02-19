@@ -10,12 +10,22 @@ import {
   BelongsTo,
   hasMany,
   HasMany,
+  computed,
 } from "@ioc:Adonis/Lucid/Orm";
 import Version from "App/Models/Version";
 
 export default class Line extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
+
+  @computed()
+  public isAlternative: boolean;
+
+  @computed()
+  public toBeRecorded: boolean;
+
+  @computed()
+  public isRobotized: boolean;
 
   @column()
   public text: string;
