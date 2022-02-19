@@ -71,10 +71,12 @@ export default class PlaysController {
 
   }
 
-  public async detach({ view, params, response }: HttpContextContract) {
+  public async detach({ bouncer, view, params, response }: HttpContextContract) {
     const groupId = params.groupId;
     const playId = params.playId;
-    await (await Play.findOrFail(playId)).related("groups").detach([groupId]);
+    const play = await Play.findOrFail(playId);
+    await bouncer.with('PlayPolicy').authorize('link', play, [groupId]);
+    await play.related("groups").detach([groupId]);
 
     return response.redirect().back();
   }
