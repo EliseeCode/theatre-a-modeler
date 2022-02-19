@@ -8,13 +8,19 @@ import {
   ManyToMany,
   hasMany,
   HasMany,
+  computed,
 } from "@ioc:Adonis/Lucid/Orm";
 //import Formation from "./Formation";
 import Group from "App/Models/Group";
 import Play from "App/Models/Play";
+import Version from "App/Models/Version";
+
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
+
+  @computed()
+  public audioVersions: Version[];
 
   @column()
   public username: string;
@@ -49,6 +55,7 @@ export default class User extends BaseModel {
   @hasMany(() => Play, {
     localKey: "id",
     foreignKey: "creatorId",
+    serializeAs: "plays",
   })
   public plays: HasMany<typeof Play>;
 

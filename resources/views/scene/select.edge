@@ -3,10 +3,10 @@
 
 {{csrfField()}}
 
-{{inspect(payload)}}
+{{inspect(characters[0].versions[0].doublers[0].audioVersions[0].name)}}
 
 
-@each((characterLoad) in payload)
+{{--  @each((characterLoad) in payload)
 
 <div class='container has-text-centered'>
     <div class='columns is-mobile is-centered'>
@@ -19,18 +19,18 @@
                    alt="Placeholder image">
             </figure>
             <p class='is-success'>
-                {{characterLoad.character.image.public_path}}
+                {{characterLoad?.character?.image?.public_path}}
               </p>
           </div>
           <div class="card-content">
             <div class='content'>
               <div class="media-content">
                 <select class="select-search tail-select default white" tabindex="0">
-                    @each((lineLoad) in characterLoad.lines)
+                    @each((lineLoad) in characterLoad?.lines)
                     <optgroup label="{{lineLoad.line?.version?.name ?? 'Official'}}">
                         @each((doubler) in lineLoad?.doublers)
-                                @each((audioVersion) in Array.from(doubler.audios).sort())
-                                <option>{{doubler.creator.username}}{{audioVersion}}</option>
+                                @each((audioVersion) in Array.from(doubler?.audios).sort())
+                                <option>{{doubler?.creator.username}}{{audioVersion}}</option>
                                 @endeach
                         @endeach
                         <option>Record your interpretation</option>
@@ -82,5 +82,5 @@
         form.submit()
         return; 
     })
-</script>
+</script>  --}}
 @endsection

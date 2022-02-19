@@ -1,5 +1,12 @@
 import { DateTime } from "luxon";
-import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  computed,
+} from "@ioc:Adonis/Lucid/Orm";
+import User from "App/Models/User";
 
 export default class Version extends BaseModel {
   @column({ isPrimary: true })
@@ -7,6 +14,15 @@ export default class Version extends BaseModel {
 
   @column()
   public name: string;
+
+  @column()
+  public creatorId: number;
+
+  @computed()
+  public doublers: User[];
+
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
+  public creator: BelongsTo<typeof User>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
