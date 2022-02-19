@@ -8,6 +8,10 @@ import Character from "App/Models/Character";
 import Status from "Contracts/enums/Status";
 import Line from "App/Models/Line";
 import CharacterFetcher from "App/Controllers/helperClass/CharacterFetcher";
+import LineVersionFetcher from "App/Controllers/helperClass/LineVersionFetcher";
+import Version from "App/Models/Version";
+import User from "App/Models/User";
+import AudioFetcher from "App/Controllers/helperClass/AudioFetcher";
 
 export default class ScenesController {
   private async getCharacters(model: Play | Scene) {
@@ -36,90 +40,58 @@ export default class ScenesController {
     return totalCharacters;
   }
   public async select({ params, view, auth }: HttpContextContract) {
+    // We want to know which personnage will be animated by who. So, we need to list each possible animator/doubler for a personnage. But! We do accept different improvisations in each line. You can say either "Hi!" or "Hello!". So, we need to track of each version (with its own id & name). And we want to get the doubler ids to know who we're attaching the personnage. But! Again, we do accept multiple audio sets/versions for each line. Like you can say "Hello!" in a rush or calmly.
+    // Thus, we have to know character, line version, audio creator and audio version. With this, we can reconstruct a fresh scene, by having a fallback of official version!!!
+
     const user = await auth.authenticate();
+    const scene = await Scene.findOrFail(params.scene_id);
+    const characterFetcher = new CharacterFetcher();
+    const lineVersionFetcher = new LineVersionFetcher(scene);
+    const audioFetcher = new AudioFetcher(scene);
+    await scene.load("creator");
+    await scene.load("lines");
+    await scene.load("image");
+    await scene.load("play");
 
-    const scene = (
-      await Scene.query()
-        .where("id", params.scene_id)
-        .preload("play")
-        .preload("lines", (lineQuery) => {
-          lineQuery.preload("audios");
-        })
-    )[0];
+    scene.characters = await characterFetcher.getCharactersFromScene(scene);
 
-    const totalCharacters = await this.getCharacters(scene); // total characters in this scene
-    const payload = {};
-
-    console.log(scene.lines);
-
-    const lines = scene.lines;
-    await lines.map(async (line) => await line.load("audios"));
-
-    lines.forEach((line) => {
-      console.log(`Going through line with id of: ${line.id}`);
-      const lineCharacter = line?.character; // fallback for "didascalie"
-      const lineVersion = line?.version?.id ?? 1; // fallback for official version
-      if (!payload[lineCharacter?.id ?? 1]) {
-        console.log(
-          `No record found for character with id of: ${lineCharacter?.id ?? 1
-          } on the payload...`
-        );
-        payload[lineCharacter?.id ?? 1] = { character: null, lines: {} }; // init a new object
+    for (const character of scene.characters) {
+      await character.load("image");
+      character.versions =
+        await lineVersionFetcher.getVersionsFromCharacterOnScene(character); // Why this doesn't automatically updates referenced parameter? Why do we have to restore it in scene.characters?
+      for (const version of character.versions) {
+        version.doublers =
+          await audioFetcher.getDoublersAndAudioVersionsFromLineVersionOnScene(
+            version
+          ); // FIXME shorten the function name
       }
-      console.log(lineCharacter?.id ?? 1);
-      payload[lineCharacter?.id ?? 1].character = lineCharacter.serialize();
+    }
 
-      if (!payload[lineCharacter?.id ?? 1].lines[lineVersion]) {
-        console.log(
-          `No record found for line with version id of: ${lineVersion} on the payload...`
-        );
-        payload[lineCharacter?.id ?? 1].lines[lineVersion] = {
-          line: null,
-          doublers: {},
-        }; // init a new object
-      }
-
-      payload[lineCharacter?.id ?? 1].lines[lineVersion].line =
-        line.serialize();
-
-      if (!line.audios) {
-        console.log(
-          `No attached audios found for line id: ${line.id}: ${line?.audios}`
-        );
-        return;
-      }
-
-      line?.audios.forEach((audio) => {
-        // get lines' audios
-        const audioCreator = audio?.creator; // FIXME not sure for this...
-        if (
-          !payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-          audioCreator.id
-          ]
-        ) {
-          console.log(
-            `No record found for audio with creator id of: ${audioCreator} on the payload...`
-          );
-          payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-            audioCreator.id
-          ] = { creator: null, audios: new Set() };
-        }
-        payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-          audioCreator.id
-        ].creator = audioCreator.serialize();
-
-        payload[lineCharacter?.id ?? 1].lines[lineVersion].doublers[
-          audioCreator.id
-        ].audios.add(audio.versionId);
+    /* scene.characters.map((character) => {
+      // console.log(character.versions[0].name);
+      character.serialize({
+        fields: {
+          omit: ["gender", "created_at", "updated_at", "description"],
+        },
+        relations: {
+          image: {
+            fields: {
+              pick: ["id", "name", "public_path", "mime_type", "size"],
+            },
+          },
+        },
       });
-    });
-    return view.render("scene/select", { payload, user });
+
+      return;
+    }); */
+
+    return view.render("scene/select", { characters: scene.characters });
   }
-  public async index({ }: HttpContextContract) { }
+  public async index({}: HttpContextContract) {}
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
-  public async store({ }: HttpContextContract) { }
+  public async store({}: HttpContextContract) {}
 
   public async show({ request, params, view, response }: HttpContextContract) {
     const data = JSON.parse(request.input("data"));
@@ -184,11 +156,17 @@ export default class ScenesController {
     return view.render("scene/action", { payload });
   }
 
-  public async createNew({ bouncer, response, auth, params, request }: HttpContextContract) {
+  public async createNew({
+    bouncer,
+    response,
+    auth,
+    params,
+    request,
+  }: HttpContextContract) {
     const playId = params.id;
-    const play = await Play.findOrFail(playId)
-    await bouncer.with('PlayPolicy').authorize('update', play);
-    await play.load('scenes');
+    const play = await Play.findOrFail(playId);
+    await bouncer.with("PlayPolicy").authorize("update", play);
+    await play.load("scenes");
     const user = await auth.authenticate();
     const name = request.body().name || "Scène sans nom";
     await Scene.create({
@@ -246,17 +224,19 @@ export default class ScenesController {
       playQuery.preload("scenes");
     });
     const play = await Play.findOrFail(scene.playId);
-    const characterFetcher = new CharacterFetcher;
-    scene.characters = await characterFetcher.getCharactersFromScene(scene)
+    const characterFetcher = new CharacterFetcher();
+    scene.characters = await characterFetcher.getCharactersFromScene(scene);
     //scene.characters = await this.getCharactersFromScene(scene);
     await characterFetcher.getCharactersFromPlay(play);
 
     //get all the lines from a scene
     await scene.load("lines", (linesQuery) => {
-      linesQuery.preload('character', (characterQuery) => {
-        characterQuery.preload('image')
-      }).orderBy('lines.position', 'asc')
-    })
+      linesQuery
+        .preload("character", (characterQuery) => {
+          characterQuery.preload("image");
+        })
+        .orderBy("lines.position", "asc");
+    });
 
     return view.render("scene/edit", {
       scene,
@@ -280,5 +260,3 @@ export default class ScenesController {
     return response.redirect().back();
   }
 }
-
-

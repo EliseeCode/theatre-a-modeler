@@ -4,14 +4,16 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  computed,
   HasMany,
   hasMany,
   ManyToMany,
   manyToMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import Play from "App/Models/Play";
-import Image from "./Image";
-import Line from "./Line";
+import Image from "App/Models/Image";
+import Line from "App/Models/Line";
+import Version from "App/Models/Version";
 
 export default class Character extends BaseModel {
   @column({ isPrimary: true })
@@ -26,10 +28,17 @@ export default class Character extends BaseModel {
   @column({ meta: { type: "string" } })
   public gender: string;
 
-  @column({ meta: { type: "number" } })
+  @column({ meta: { type: "number" }, serializeAs: null })
   public imageId: number;
 
-  @belongsTo(() => Image, { localKey: "id", foreignKey: "imageId" })
+  @computed()
+  public versions: Version[];
+
+  @belongsTo(() => Image, {
+    localKey: "id",
+    foreignKey: "imageId",
+    serializeAs: "image",
+  })
   public image: BelongsTo<typeof Image>;
 
   @column.dateTime({ autoCreate: true })
