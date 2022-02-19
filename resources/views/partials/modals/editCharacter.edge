@@ -1,0 +1,76 @@
+<div class="modal" id="edit-character-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Créer un personnage</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+      <form action='/character' method='POST'>
+      <section class="modal-card-body">
+        
+        {{ csrfField() }}
+        <input type="hidden" value="" name="lineId">
+        <div class="card-image p-3" style="margin-top:-100px;">
+          <div style="width:200px;height:200px;display:inline-block;">                      
+              @if(character.image)  
+              <img src="{{character?.image?.publicPath}}" style="border-radius: 50%;object-fit: cover;width:200px;height:200px;display:inline-block;" alt="Placeholder image for {{character?.id}}">
+              <button class="delete deleteImage is-large is-danger" data-image-id="{{character?.image?.id}}" style="z-index: 100;position: absolute;"></button>
+              @else
+              <input id="file_{{character.id}}" type="file" data-type="{{objectType.CHARACTER}}" data-id="{{character.id}}" hidden/>
+              <label for="file_{{character.id}}" class="has-text-centered button btnUpload" >Choisir une image</label>
+              @end
+          </div>
+          
+      </div>
+      <div class="card-content">
+         
+              <div class="field">
+                  <div class="control">
+                      <input type="text" placeholder="Nom du personnage" class="input subtitle" name='name' style="text-align:center;" value="{{character.name}}">
+                  </div>
+              </div>
+              <div class="field">    
+                  <div class="control">
+                      <div class="select">
+                          <select name="gender">
+                          
+                              <option value="Male" {{character.gender=='Male'?'selected':''}}>Homme</option>
+                              <option value="Female" {{character.gender=='Female'?'selected':''}}>Femme</option>
+                              <option value="Other" {{character.gender=='Other'?'selected':''}}>Autre</option>
+                              
+                          </select>
+                      </div>  
+                  </div>
+              </div>    
+              <div class="field">
+                  <div class="control">
+                          <textarea name="description" placeholder="Informations sur le personnage" id="" cols="30" rows="10" class="textarea" style="resize: none">{{character.description || ""}}</textarea>
+                  </div>
+              </div>    
+      
+          
+          
+             <hr>
+         
+          <div class="block">
+              @each(play in playData)
+                       <h1 class="subtitle">{{play.name}}</h1>
+                       @each(scene in play.scenes)
+                       <a href={{'/scenes/'+scene.sceneId+'/edit'}} class="button" style="width:300px;">{{scene.sceneName}}</a><br>
+                       @endeach
+                       <br/>          
+              @endeach
+          </div>
+      </div>
+        
+                  
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-primary" type="submit">Enregistrer</button>
+        <button class="button" type="button">Annuler</button>
+      </footer>
+    </form>
+    </div>
+    
+  </div>
+  <script src="/js/importImage.js"></script>

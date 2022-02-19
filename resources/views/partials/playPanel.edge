@@ -27,6 +27,12 @@
             @else
                 <p>Pas encore de scene dans cette pièce</p>
             @endeach
+            <a href=# 
+                    class="icon-text js-modal-trigger" 
+                    data-target="edit-sceneCreate-modal" 
+                    onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadSceneCreateInfoInModal({playId:{{play.id}}})" >
+                    Nouvelle scène
+            </a>
             <form action={{ '/play/'+play.id+'/scene/createNew' }} method="POST">
                 {{ csrfField() }}
                 <button type="submit" class='button is-primary'>Nouvelle scène</button>

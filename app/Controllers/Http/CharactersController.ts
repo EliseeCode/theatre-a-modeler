@@ -1,6 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Character from "App/Models/Character";
+import Line from "App/Models/Line";
 import Play from "App/Models/Play";
 import ObjectType from "Contracts/enums/ObjectType";
 
@@ -26,7 +27,16 @@ export default class CharactersController {
     });
   }
 
-  public async store({ }: HttpContextContract) { }
+  public async store({ request, response }: HttpContextContract) {
+    const lineId = request.body().lineId;
+    const character = await Character.create(
+      {
+        name: "Personnage sans nom",
+        gender: "Other",
+      })
+    await (await Line.findOrFail(lineId)).related('character').associate(character);
+    return response.redirect('/characters/' + character.id)
+  }
 
   public async show({ view, params }: HttpContextContract) {
     const characterId = params.id;
@@ -40,9 +50,6 @@ export default class CharactersController {
       .join('lines', 'scenes.id', '=', 'lines.scene_id')
       .select("plays.name as playName", "scenes.name as sceneName", "scenes.id as sceneId")
       .where('lines.character_id', characterId);
-
-
-
 
     const playData = data.reduce(function (acc, cur) {
       (acc[cur["playName"]] = acc[cur["playName"]] || { scenes: [], name: cur["playName"] }).scenes.push(cur);

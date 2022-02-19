@@ -40,6 +40,9 @@ export default class ScenesController {
     return totalCharacters;
   }
   public async select({ params, view, auth }: HttpContextContract) {
+    // We want to know which personnage will be animated by who. So, we need to list each possible animator/doubler for a personnage. But! We do accept different improvisations in each line. You can say either "Hi!" or "Hello!". So, we need to track of each version (with its own id & name). And we want to get the doubler ids to know who we're attaching the personnage. But! Again, we do accept multiple audio sets/versions for each line. Like you can say "Hello!" in a rush or calmly.
+    // Thus, we have to know character, line version, audio creator and audio version. With this, we can reconstruct a fresh scene, by having a fallback of official version!!!
+
     const user = await auth.authenticate();
     const scene = await Scene.findOrFail(params.scene_id);
     const characterFetcher = new CharacterFetcher();
@@ -61,12 +64,6 @@ export default class ScenesController {
           await audioFetcher.getDoublersAndAudioVersionsFromLineVersionOnScene(
             version
           ); // FIXME shorten the function name
-        /* console.log(
-          `${version.name.slice(0, 10)} | ${character.name.slice(
-            0,
-            10
-          )} | ${version.doublers[0].username.slice(0, 10)}`
-        ); */
       }
     }
 
@@ -89,74 +86,6 @@ export default class ScenesController {
     }); */
 
     return view.render("scene/select", { characters: scene.characters });
-
-    await scene.characters.forEach(async (character) => {
-      character.versions =
-        await lineVersionFetcher.getVersionsFromCharacterOnScene(character); // Why this doesn't automatically updates referenced parameter? Why do we have to restore it in scene.characters?
-      console.log(character.versions);
-      character.versions.forEach(async (version) => {
-        version.doublers =
-          await audioFetcher.getDoublersAndAudioVersionsFromLineVersionOnScene(
-            version
-          ); // FIXME shorten the function name
-        /* console.log(
-          `${version.name.slice(0, 10)} | ${character.name.slice(
-            0,
-            10
-          )} | ${version.doublers[0].username.slice(0, 10)}`
-        ); */
-        return;
-        // Property check logs
-        version.doublers.map((doubler) => {
-          console.log(
-            `${doubler.username.slice(0, 10)} | ${character.name.slice(
-              0,
-              10
-            )} | ${doubler.audioVersions[0].id}`
-          );
-          doubler.audioVersions.map((version) => {
-            console.log(`Audio Version: ${version.name} `);
-          });
-        });
-      });
-    });
-    console.log(scene.characters[1].versions);
-    return;
-    console.log(
-      scene.characters.map((character) => {
-        console.log(character.name);
-        return character.serialize({
-          fields: {
-            pick: ["id", "name", "image", "versions"],
-          },
-        });
-      })
-    );
-
-    // We want to know which personnage will be animated by who. So, we need to list each possible animator/doubler for a personnage. But! We do accept different improvisations in each line. You can say either "Hi!" or "Hello!". So, we need to track of each version (with its own id & name). And we want to get the doubler ids to know who we're attaching the personnage. But! Again, we do accept multiple audio sets/versions for each line. Like you can say "Hello!" in a rush or calmly.
-    // Thus, we have to know character, line version, audio creator and audio version. With this, we can reconstruct a fresh scene, by having a fallback of official version!!!
-    /* const payload = {
-      2: {
-        // character_id
-        character: Character,
-        lineVersions: {
-          3: {
-            // line_version_id
-            lineVersion: Version, // for using version.name in view
-            doublers: {
-              // audio creators
-              5: {
-                // audio_creator_id
-                creator: User,
-                audioVersions: [1, 3], // audio_version_id
-              },
-            },
-          },
-        },
-      },
-    }; */
-
-    return view.render("scene/select", { payload, user });
   }
   public async index({}: HttpContextContract) {}
 
@@ -227,13 +156,22 @@ export default class ScenesController {
     return view.render("scene/action", { payload });
   }
 
-  public async createNew({ response, auth, params }: HttpContextContract) {
+  public async createNew({
+    bouncer,
+    response,
+    auth,
+    params,
+    request,
+  }: HttpContextContract) {
     const playId = params.id;
     const play = await Play.findOrFail(playId);
+    await bouncer.with("PlayPolicy").authorize("update", play);
+    await play.load("scenes");
     const user = await auth.authenticate();
-    const newScene = await Scene.create({
-      name: "Nouvelle scène",
-      position: 2,
+    const name = request.body().name || "Scène sans nom";
+    await Scene.create({
+      name: name,
+      position: play.scenes.length,
       description: "",
       creatorId: user.id,
       playId: play.id,
@@ -293,7 +231,11 @@ export default class ScenesController {
 
     //get all the lines from a scene
     await scene.load("lines", (linesQuery) => {
-      linesQuery.orderBy("lines.position", "asc");
+      linesQuery
+        .preload("character", (characterQuery) => {
+          characterQuery.preload("image");
+        })
+        .orderBy("lines.position", "asc");
     });
 
     return view.render("scene/edit", {

@@ -83,7 +83,7 @@ export default class GroupsController {
         return a;
       });
       console.log(charactersByPlay);
-      return view.render('group/show', { group, user, charactersByPlay });
+      return view.render('group/show', { group, user, charactersByPlay, Role });
     }
   }
 
@@ -96,7 +96,7 @@ export default class GroupsController {
   }
 
   public async update({ auth, params, response, request, bouncer }: HttpContextContract) {
-    const user = await auth.authenticate();
+    //const user = await auth.authenticate();
     const groupId = params.id;
     const group = await Group.findOrFail(groupId);
     await bouncer.with('GroupPolicy').authorize('update', group);

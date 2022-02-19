@@ -16,7 +16,9 @@
               <div class="select" style='width:500px;'>
                 <select name="publishedGroups" class="publishedGroupSelect" width="500px" multiple>
                   @each(group in user.groups)
+                    @if(group.$extras.pivot_role_id==Role.TEACHER)
                     <option value={{group.id}}>{{group.name}}</option>
+                    @endif
                   @endeach
                 </select>
               </div>
