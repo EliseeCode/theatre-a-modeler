@@ -1,5 +1,162 @@
 @layout('layouts/master')
 
 @section('content')
-{{inspect(lines)}}
+<style>
+    .audioPlayer {
+    display: flex;
+    justify-content: center;
+  align-items: center;
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   height: 7vh;
+   background-color: red;
+   color: white;
+   text-align: center;
+}
+.audioPlayer .controls *     {
+    display: inline;
+}
+
+.controls .play, .controls .pause {
+  margin: 15px 25px;
+  color: #6e946c;
+}
+.controls .volume {
+  margin-right: 30px;
+  font-size: 0.8em;
+}
+
+</style>
+{{inspect(audios)}}
+@each(line in lines)
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-content">
+        <nav class="level">
+          <!-- Left side -->
+          <div class="level-left ml-4">
+            <div class="level-item">
+              <p class="subtitle is-5">
+                <strong>{{line.character.id}}</strong>
+              <div class="is-divider-vertical"></div>
+              </p>
+            </div>
+            <div class="level-item">
+                <figure class="image is-256x256">
+                    <img class="is-rounded" src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y">
+                </figure>
+            </div>
+          </div>
+  
+          <div class="level-item has-text-centered mr-6 ml-6">
+            <textarea class="textarea is-info has-fixed-size is-small" placeholder="Info textarea" {{!line.isAlternative ? "readonly" : "" }}>{{line.text}}</textarea>
+          </div>
+  
+          <!-- Right side -->
+          <div class="level-right">
+            <p class="level-item">
+                <button class="button is-primary is-light is-inverted is-focused">
+                    @if(line.toBeRecorded)
+                    <span class="icon">
+                        <i class="fa fa-solid fa-microphone"></i>
+                    </span>
+                    <span>Enregistrer !</span>  
+                    @elseif(line.isRobotized)
+                    <span class="icon">
+                        <i class="fa fa-solid fa-robot-astromech"></i>
+                    </span>
+                    <span>Robotiser !</span>  
+                    @elseif(line.audios.length)
+                    <span class="icon">
+                        <i class="fa fa-solid fa-play"></i>
+                    </span>
+                    <span>Lire !</span>  
+                    @endif
+                </button>
+            </p>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+@endeach
+
+<div class="audioPlayer">
+    <div class="controls">
+        <div class="previousScene"><i class="fas fa-hand-point-left"></i></div>
+        <div class="previousLine"><i class="fas fa-backward"></i></div>
+        <div class="play">
+            <button id="btnPlay">
+                <i class="fas fa-play"></i>
+            </button>   
+        </div>
+        <div class="pause" style="display: none">
+            <button id="btnPause">
+                <i class="fas fa-pause"></i>
+            </button>   
+        </div>
+        <div class="reset">
+            <button id="btnReset">
+                <i class="fas fa-stop"></i>
+            </button>   
+        </div>
+        <div class="nextLine"><i class="fa fa-forward"></i></div>
+        <div class="nextScene"><i class="fa fa-forward-fast"></i></div>
+    </div>
+</div>
+<audio id="player" style="display: none"></audio>
+
+  <script>
+    const player = document.getElementById("player");
+    const playButton = document.getElementById("btnPlay");
+    const pauseButton = document.getElementById("btnPause");
+    const resetButton = document.getElementById("btnReset");
+    const audios = Array.from(JSON.parse(`{{{stringify(audios)}}}`)); // FIXME find a more elegant way to pass data to frontend
+    let currentAudioIndex = 0;
+
+    const resetPlayer = (e) => {
+        player.pause();
+        player.currentTime = 0;
+        currentAudioIndex = 0;
+        player.src = audios[currentAudioIndex];
+        player.removeEventListener("ended", loadNextAudio);
+        // FIXME try to use the purest/native JS
+        pauseButton.parentNode.style.display = "none";
+        playButton.parentNode.style.display = "inline";
+    }
+
+    const playPlayer = () => {
+        pauseButton.parentNode.style.display = "inline";
+        playButton.parentNode.style.display = "none";
+        if (player.currentTime > 0) return player.play();
+        player.src = audios[currentAudioIndex];
+        player.addEventListener("ended", loadNextAudio);
+        player.play();
+    }
+
+    const pausePlayer = (e) => {
+        player.pause();
+        pauseButton.parentNode.style.display = "none";
+        playButton.parentNode.style.display = "inline";
+    }
+
+    const loadNextAudio = (event) => {
+        console.log(event)
+        currentAudioIndex++;
+        if (currentAudioIndex <= audios.length && audios[currentAudioIndex]) {
+            console.log("jj")
+            event.target.src = audios[currentAudioIndex];
+            event.target.play();
+        } else {
+            event.target.pause();
+            resetPlayer();
+        }
+    }
+    playButton.addEventListener("click", playPlayer)
+    pauseButton.addEventListener("click", pausePlayer)
+    resetButton.addEventListener("click", resetPlayer)
+
+  </script>
 @endsection

@@ -225,8 +225,15 @@ export default class ScenesController {
     cookedLines.sort(
       (currLine, nextLine) => currLine.position - nextLine.position
     );
+    const cookedAudios: any[] = [];
+    cookedLines.map((line) => {
+      cookedAudios.push(line.audios.length ? line.audios[0].public_path : null);
+    });
 
-    return view.render("scene/action", { lines: cookedLines });
+    return view.render("scene/action", {
+      lines: cookedLines,
+      audios: cookedAudios,
+    });
     const lineQuery = currentScene.related("lines").query();
     //get line_version_id depending on character_id
     data.forEach((datum) => {
