@@ -3,6 +3,7 @@ import Audio from "App/Models/Audio";
 import Logger from "@ioc:Adonis/Core/Logger";
 import Drive from "@ioc:Adonis/Core/Drive";
 import { URL } from "url";
+import Version from "App/Models/Version";
 
 export default class AudiosController {
   public dataName = "audios";
@@ -34,6 +35,7 @@ export default class AudiosController {
 
     const user = await auth.authenticate();
     const lineId = request.body().lineId;
+    let versionId = request.body().versionId;
     // Won't use a custom name instead Adonis will auto-generate a random name
     /*const fileName = `${user.id}_${lineId}_${await Hash.make(
       new Date().getTime().toString()
@@ -61,6 +63,12 @@ export default class AudiosController {
       return response.json({ status: 0, message });
     }
 
+    if (!versionId) {
+      console.log("No version given. Creating a new one...");
+      versionId = await (
+        await Version.create({ name: "let there be light" })
+      ).id;
+    }
     const locationOrigin = new URL(request.completeUrl()).origin;
     const newAudio = await Audio.create({
       name: audioFile.fileName,
@@ -71,10 +79,11 @@ export default class AudiosController {
       lineId: lineId,
       size: audioFile.size,
       type: audioFile.extname,
+      versionId: versionId,
       // mimeType: request.header("Content-Type"), // It's getting as multipart/form-data
       mimeType: `${audioFile.fieldName}/${audioFile.extname}`,
     });
-    return newAudio;
+    return response.json({ version: versionId });
   }
 
   public async show({ view, params }: HttpContextContract) {
