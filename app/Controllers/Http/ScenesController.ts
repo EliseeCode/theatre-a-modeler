@@ -64,7 +64,8 @@ export default class ScenesController {
         console.log(version);
         version.doublers =
           await audioFetcher.getDoublersAndAudioVersionsFromLineVersionOnScene(
-            version
+            version,
+            character
           ); // FIXME shorten the function name
       }
     }
@@ -178,7 +179,8 @@ export default class ScenesController {
           .preload("audios", (audioQuery) => {
             audioQuery
               .where("creator_id", doublerID)
-              .where("version_id", audioVersionID);
+              .where("version_id", audioVersionID)
+              .preload("version");
           })
       ).map((line) => {
         line.isAlternative = isAlternative;

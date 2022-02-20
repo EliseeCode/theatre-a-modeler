@@ -1,3 +1,4 @@
+import Character from "App/Models/Character";
 import Scene from "App/Models/Scene";
 import User from "App/Models/User";
 import Version from "App/Models/Version";
@@ -8,13 +9,15 @@ export default class AudioVersionFetcher {
     this.scene = scene; // We need the scene instance due to conflicting line verions from different scenes, we don't want to get other doublers around!
   }
   public async getDoublersAndAudioVersionsFromLineVersionOnScene(
-    version: Version
+    version: Version,
+    character: Character
   ) {
     const doublers = new Set<User>();
     const linesOnScene = await this.scene
       .related("lines")
       .query()
       .where("version_id", version.id)
+      .where("character_id", character.id)
       .preload("audios", (audioQuery) => {
         audioQuery.preload("creator").preload("version");
       });
