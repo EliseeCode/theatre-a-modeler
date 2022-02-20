@@ -1,7 +1,27 @@
 @layout('layouts/master')
 
 @section('content')
+{{csrfField()}}
 <style>
+@keyframes glowing {
+  0% {
+    background-color: #fde0e6;
+    box-shadow: 0 0 10px #fde0e6;
+  }
+  50% {
+    background-color: #ff0000;
+    box-shadow: 0 0 30px #ff0000;
+  }
+  100% {
+    background-color: #fde0e6;
+    box-shadow: 0 0 10px #fde0e6;
+  }
+}
+
+  .glowing {
+    animation: glowing 1300ms infinite;
+  }
+
     .audioPlayer {
     display: flex;
     justify-content: center;
@@ -57,24 +77,40 @@
           <!-- Right side -->
           <div class="level-right">
             <p class="level-item">
-                <button class="button is-primary is-light is-inverted is-focused">
-                    @if(line.toBeRecorded)
-                    <span class="icon">
-                        <i class="fa fa-solid fa-microphone"></i>
-                    </span>
-                    <span>Enregistrer !</span>  
-                    @elseif(line.isRobotized)
-                    <span class="icon">
-                        <i class="fa fa-solid fa-robot-astromech"></i>
-                    </span>
-                    <span>Robotiser !</span>  
-                    @elseif(line.audios.length)
+              @if(line.toBeRecorded)
+              {{--  maybe we can use columns??  --}}
+                <button class="button is-danger is-light is-inverted is-focused btnRecordControl">
+                  <span class="icon" style="pointer-events: none;">
+                    <i class="fa fa-solid fa-microphone" style="pointer-events: none;"></i>
+                  </span>
+                  <span style="pointer-events: none;">Enregistrer !</span> 
+                </button> 
+                <button data-line-id="{{line.id}}" class="button is-danger is-light is-inverted is-focused btnUpload ml-3" style="display:none">
+                  <span class="icon" style="pointer-events: none;">
+                    <i class="fa fa-solid fa-upload" style="pointer-events: none;"></i>
+                  </span>
+                </button> 
+                <button class="button is-danger is-light is-inverted is-focused btnCancel ml-3" style="display:none">
+                  <span class="icon" style="pointer-events: none;">
+                    <i class="fa fa-solid fa-eraser" style="pointer-events: none;"></i>
+                  </span>
+                </button>
+              @elseif(line.isRobotized)
+                <button class="button is-info is-light is-inverted is-focused btnRobotize">
+                  <span class="icon">
+                    <i class="fa fa-solid fa-robot"></i>
+                  </span>
+                  <span>Robotiser !</span>  
+                </button>
+              @elseif(line.audios.length)
+                <button class="button is-primary is-light is-inverted is-focused btnPlay" data-position="{{line.position}}" data-version="{{line.audios[0].version.id}}">
                     <span class="icon">
                         <i class="fa fa-solid fa-play"></i>
                     </span>
-                    <span>Lire !</span>  
-                    @endif
-                </button>
+                    <span>Lire !</span>
+                </button>  
+              @endif
+                
             </p>
           </div>
         </nav>
@@ -109,7 +145,16 @@
 <audio id="player" style="display: none"></audio>
 
   <script>
+    const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
+    let recording = false;
+    let mediaRecorder;
+    const characterToAudioVersion = {}; // To keep track of uploaded audio files by character_id and set them;
     const player = document.getElementById("player");
+    const inlinePlayButtons = Array.from(document.getElementsByClassName("btnPlay"));
+    const recordControlButtons = Array.from(document.getElementsByClassName("btnRecordControl")) // naming like this, because will also allow stop recording
+    const robotizeButtons = Array.from(document.getElementsByClassName("btnRobotize"))
+    const cancelButtons = Array.from(document.getElementsByClassName("btnCancel"));
+    const uploadButtons = Array.from(document.getElementsByClassName("btnUpload"));
     const playButton = document.getElementById("btnPlay");
     const pauseButton = document.getElementById("btnPause");
     const resetButton = document.getElementById("btnReset");
@@ -119,7 +164,7 @@
     const resetPlayer = (e) => {
         player.pause();
         player.currentTime = 0;
-        currentAudioIndex = 0;
+        currentAudioIndex = audios.findIndex((element) => element !== null);
         player.src = audios[currentAudioIndex];
         player.removeEventListener("ended", loadNextAudio);
         // FIXME try to use the purest/native JS
@@ -127,7 +172,12 @@
         playButton.parentNode.style.display = "inline";
     }
 
-    const playPlayer = () => {
+    const playPlayer = (e) => {
+        const position = e.target.getAttribute("data-position");
+        if (position) {
+          currentAudioIndex = parseInt(position); // TODO Maybe add a pause icon in the line's button
+          console.log("inline button")
+        }
         pauseButton.parentNode.style.display = "inline";
         playButton.parentNode.style.display = "none";
         if (player.currentTime > 0) return player.play();
@@ -146,7 +196,6 @@
         console.log(event)
         currentAudioIndex++;
         if (currentAudioIndex <= audios.length && audios[currentAudioIndex]) {
-            console.log("jj")
             event.target.src = audios[currentAudioIndex];
             event.target.play();
         } else {
@@ -154,9 +203,146 @@
             resetPlayer();
         }
     }
+
+    const uploadAudio = async (event, objectURL) => {
+      const lineID = event.target.getAttribute("data-line-id");
+      console.log("uploading audio!!", objectURL)
+      console.log(`Here's the line_id to attach: ${lineID}`);
+      event.target.style.display = "none";
+      const cancelButton = event.target.parentNode.querySelector(".btnCancel");
+      cancelButton.style.display = "none";
+      const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+      const recordIcon = recordControlButton.querySelector("i");
+      recordIcon.classList.remove("fa-play");
+      recordIcon.classList.add("fa-microphone");
+      event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
+      player.currentTime = 0;
+      player.src = "";
+      const blob = await fetch(objectURL).then(r => r.blob());
+      console.log(blob);
+      const form = new FormData();
+      form.append("audio", blob);
+      form.append("lineId", lineID);
+      fetch(`${window.location.origin}/audios`, {
+          method: "POST",
+          headers: {
+              'X-CSRF-Token': CSRF_TOKEN,
+              /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+              'Content-Type': `${blob.type}`,*/ 
+              'Content-Transfer-Encoding': 'base64'
+          },
+          mode: "cors",
+          body: form
+      }).then(response => {
+          if (!response.ok) throw response;
+          return response.json();
+      }).then((data) => {
+          console.info(data);
+          // window.location.reload();
+      }).catch((err) => {
+          console.error(err);
+      })
+
+    };
+
+    const cancelRecording = (event, objectURL) => {
+      console.log("canceling recording :(", objectURL)
+      event.target.style.display = "none";
+      const uploadButton = event.target.parentNode.querySelector(".btnUpload");
+      uploadButton.style.display = "none";
+      const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+      const recordIcon = recordControlButton.querySelector("i");
+      recordIcon.classList.remove("fa-play");
+      recordIcon.classList.add("fa-microphone");
+      event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
+      player.currentTime = 0;
+      player.src = "";
+      URL.revokeObjectURL(objectURL); // FIXME Invalid URI. Load of media resource  failed.
+      
+    }
+
+    const handleMediaDevice = (event, stream, isFirstRecording) => {
+        const cancelButton = event.target.parentNode.querySelector(".btnCancel");
+        const uploadButton = event.target.parentNode.querySelector(".btnUpload");
+        const options = {mimeType: "audio/webm"};
+        const recordedChunks = [];
+        let objectURL;
+        mediaRecorder = new MediaRecorder(stream, options);
+        console.log(mediaRecorder.mimeType);
+        mediaRecorder.addEventListener("dataavailable", function(e) {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        })
+        mediaRecorder.addEventListener("stop", (e) => {
+          console.log("stopped the media recorder");
+          // make the create request here!
+          const blob = new Blob(recordedChunks, {type: mediaRecorder.mimeType});
+          objectURL = URL.createObjectURL(blob);
+          player.src = objectURL;
+          // ref: https://stackoverflow.com/questions/11455515/how-to-check-whether-dynamically-attached-event-listener-exists-or-not
+          cancelButton.onclick = (_e) => cancelRecording(_e, objectURL);
+          uploadButton.onclick = (_e) => uploadAudio(_e, objectURL);
+
+          cancelButton.style.display = "inline";
+          uploadButton.style.display = "inline";
+          // FIXME how to revoke microphone permissions?
+
+        })
+        if (mediaRecorder && mediaRecorder.state !== "recording") mediaRecorder.start();
+
+    };
+
+    const controlAudioRecord = (event) => {
+      const cancelButton = event.target.parentNode.querySelector(".btnCancel");
+      const uploadButton = event.target.parentNode.querySelector(".btnUpload");
+      const icon = event.target.querySelector("i");
+      const audioVersion = event.target.getAttribute("data-version");
+      const isFirstRecording = !Boolean(audioVersion);
+      if (!recording) {
+        if (icon.classList.contains("fa-play")) { // playing the recorded one & set upload and delete button
+          console.log("now, let's play your recording!")
+          player.play();
+        } else if (icon.classList.contains("fa-microphone")) {
+          event.target.querySelector("span:nth-child(2)").textContent = "Arrêter d'enregistrer !";
+        recording = true;
+        console.log("starting recording...");
+        icon.classList.remove("fa-microphone");
+        icon.classList.add("fa-stopwatch");
+        event.target.classList.add("glowing");
+        if (isFirstRecording) {
+          console.log("be prepared! first recording!!")
+          navigator.mediaDevices.getUserMedia({audio: true, video:false}).then((stream) => handleMediaDevice(event, stream, isFirstRecording))
+        } else {
+          console.log("not your first one I guess...")
+        }
+      }
+
+      } else {
+        event.target.querySelector("span:nth-child(2)").textContent = "Lire votre enregistrement !";
+        recording = false;
+        console.log("stopping recording...");
+        // icon.classList.add("fa-microphone");
+        icon.classList.remove("fa-stopwatch");
+        event.target.classList.remove("glowing");
+        if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
+        icon.classList.add("fa-play");
+      }
+    }
+    inlinePlayButtons.map((button) => {
+      button.addEventListener("click", playPlayer)
+    })
     playButton.addEventListener("click", playPlayer)
     pauseButton.addEventListener("click", pausePlayer)
     resetButton.addEventListener("click", resetPlayer)
+
+    recordControlButtons.forEach((button) => {
+      button.addEventListener("click", controlAudioRecord)
+    })
+    /* uploadButtons.forEach((button) => {
+      button.addEventListener("click", uploadAudio);
+    })
+    cancelButtons.forEach((button) => {
+      button.addEventListener("click", cancelRecording);
+    }) */
 
   </script>
 @endsection
