@@ -9,11 +9,13 @@ import Database from '@ioc:Adonis/Lucid/Database'
 export default class PlayPolicy extends BasePolicy {
 	public async before(user: User | null) {
 		// allow admins authorization to perform all comment actions
-		if (user?.roleId === Role.ADMIN) {
+		if (user?.roleId == Role.ADMIN) {
 			return true
 		}
 	}
-
+	public async create(user: User) {
+		return true;
+	}
 	public async update(user: User, play: Play) {
 		if (user.id == play.creatorId) {
 			return true;

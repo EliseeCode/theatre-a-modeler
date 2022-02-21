@@ -3,9 +3,15 @@ import User from 'App/Models/User'
 import Scene from 'App/Models/Scene'
 
 export default class ScenePolicy extends BasePolicy {
-	public async viewList(user: User) {}
-	public async view(user: User, scene: Scene) {}
-	public async create(user: User) {}
-	public async update(user: User, scene: Scene) {}
-	public async delete(user: User, scene: Scene) {}
+	public async before(user: User | null) {
+		// allow admins authorization to perform all comment actions
+		if (user?.roleId == Role.ADMIN) {
+			return true
+		}
+	}
+	public async viewList(user: User) { }
+	public async view(user: User, scene: Scene) { }
+	public async create(user: User) { }
+	public async update(user: User, scene: Scene) { }
+	public async delete(user: User, scene: Scene) { }
 }

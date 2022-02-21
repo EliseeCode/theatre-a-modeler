@@ -27,6 +27,7 @@ export default class UserSeeder extends BaseSeeder {
         loginId: "admin",
         password: "adminadmin",
         username: "admin",
+        roleId: 4,
       }),
       ...(await UserFactory.createMany(userCount - 1)),
     ];
@@ -53,7 +54,7 @@ export default class UserSeeder extends BaseSeeder {
     const lineCount = 32;
     const lines = await LineFactory.createMany(lineCount);
     const audioCount = 39;
-    const audios = await AudioFactory.createMany(audioCount);
+    //const audios = await AudioFactory.createMany(audioCount);
     const imageCount = 30;
     const images = await ImageFactory.createMany(imageCount);
     for (let i = 0; i < groupCount; i++) {
@@ -95,12 +96,12 @@ export default class UserSeeder extends BaseSeeder {
         .associate(characters[i % characterCount]);
       await lines[i].related("creator").associate(users[i % userCount]);
     }
-    for (let i = 0; i < audioCount; i++) {
-      await audios[i].related("creator").associate(users[i % userCount]);
-      await audios[i].related("line").associate(lines[i % lineCount]);
-      await audios[i]
-        .related("version")
-        .associate(versions[Math.trunc(i / versionCount)]);
-    }
+    //for (let i = 0; i < audioCount; i++) {
+    //await audios[i].related("creator").associate(users[i % userCount]);
+    //await audios[i].related("line").associate(lines[i % lineCount]);
+    // await audios[i]
+    //   .related("version")
+    //   .associate(versions[Math.trunc(i / versionCount)]);
+    //}
   }
 }

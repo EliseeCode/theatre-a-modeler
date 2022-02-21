@@ -28,12 +28,14 @@
                 <p>Pas encore de scene dans cette pièce</p>
             @endeach
 
+            {{--  @can('ScenePolicy.create',play)  --}}
             <a href=# 
-                    class="icon-text js-modal-trigger" 
+                    class="icon-text js-modal-trigger button is-primary" 
                     data-target="edit-sceneCreate-modal" 
                     onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadSceneCreateInfoInModal({playId:{{play.id}}})" >
                     Nouvelle scène
             </a>
+            {{--  @endcan  --}}
         </div>
     </div>
 </div>
