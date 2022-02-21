@@ -33,13 +33,13 @@
     </div>
   
 
-
+    @can('PlayPolicy.create')
     <div class="level">
         <div class="level-left">
             <div class="level-item"><a href='#' data-target="new-play-modal" class='button is-primary js-modal-trigger'>Créer une pièce de théâtre</a></div>
         </div>
     </div>
-    
+    @endcan
 
     @if(group.plays.length>0)
             @each((play,index) in group.plays)

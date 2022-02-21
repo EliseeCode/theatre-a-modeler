@@ -8,6 +8,7 @@ import Play from "App/Models/Play";
 import Scene from "App/Models/Scene";
 import User from "App/Models/User";
 import Version from "App/Models/Version";
+import Status from "Contracts/enums/Status";
 
 export const GroupFactory = Factory.define(Group, ({ faker }) => {
   return {
@@ -33,7 +34,7 @@ export const PlayFactory = Factory.define(Play, ({ faker }) => {
   return {
     name: faker.hacker.adjective(),
     description: faker.lorem.sentence(),
-    status: "active",
+    status: Status.PUBLIC,
   };
 })
   .relation("groups", () => GroupFactory) // 👈

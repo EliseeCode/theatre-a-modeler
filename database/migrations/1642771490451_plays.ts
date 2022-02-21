@@ -1,4 +1,5 @@
 import BaseSchema from "@ioc:Adonis/Lucid/Schema";
+import Status from "Contracts/enums/Status";
 
 export default class Plays extends BaseSchema {
   protected tableName = "plays";
@@ -8,7 +9,7 @@ export default class Plays extends BaseSchema {
       table.increments("id");
       table.string("name", 255);
       table.text("description", "long").nullable();
-      table.string("status", 55).notNullable().defaultTo("active");
+      table.integer("status").notNullable().defaultTo(Status.HIDDEN);
       table.integer("lang_id").nullable();
       table
         .integer("creator_id", 180)
