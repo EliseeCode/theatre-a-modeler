@@ -27,8 +27,8 @@ export default class Play extends BaseModel {
   @column({ meta: { type: "string" } })
   public description: string;
 
-  @column({ meta: { type: "string" } })
-  public status: string;
+  @column()
+  public status: number;
 
   @column({ meta: { type: "number" } })
   public langId: number;
