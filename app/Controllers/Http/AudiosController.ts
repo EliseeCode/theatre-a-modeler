@@ -83,7 +83,10 @@ export default class AudiosController {
       // mimeType: request.header("Content-Type"), // It's getting as multipart/form-data
       mimeType: `${audioFile.fieldName}/${audioFile.extname}`,
     });
-    return response.json({ version: versionId });
+    return response.json({
+      version: versionId,
+      public_path: newAudio.publicPath,
+    });
   }
 
   public async show({ view, params }: HttpContextContract) {

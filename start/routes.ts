@@ -64,11 +64,16 @@ Route.get("/groups/:groupId/plays/create", "PlaysController.create");
 Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
 
-//ROUTES FOR SCENES 
+//ROUTES FOR SCENES
 
 Route.resource("group/:group_id/scene", "ScenesController");
 Route.resource("scenes", "ScenesController");
-Route.post("group/:group_id/scene/:scene_id/action", "ScenesController.action");
+Route.get("group/:group_id/scene/:scene_id/action", "ScenesController.action");
+Route.post("group/:group_id/scene/:scene_id/change", "ScenesController.change");
+/* Route.post(
+  "group/:group_id/scene/:scene_id/character/:character_id/lineVersion/:line_version_id/doubler/:doubler_id/audioVersion/:audio_version:id/change",
+  "ScenesController.change"
+); */ // FIXME
 Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
 Route.put("play/:id/scene/createNew", "ScenesController.createNew");
 //WITHOUT GROUP
@@ -77,13 +82,12 @@ Route.post("scene/:scene_id/action", "ScenesController.action");
 Route.get("scene/:scene_id/select", "ScenesController.select");
 //CHARACTER
 Route.post("line/:lineId/characters/create", "CharactersController.store");
-Route.post("line/updateCharacter", "LinesController.updateCharacter")
-Route.post("line/updateText", "LinesController.updateText")
+Route.post("line/updateCharacter", "LinesController.updateCharacter");
+Route.post("line/updateText", "LinesController.updateText");
 
 Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
 Route.post("play/createNew", "PlaysController.createNew");
-
 
 Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
 Route.post("api/play/:playId/updateName", "PlaysController.updateName");
@@ -126,21 +130,15 @@ Route.get("/register", async ({ response, view, auth }) => {
   }
 }).middleware("silentAuth");
 
-
-
-
 Route.post("/login", "AuthController.login").as("auth.login");
 Route.post("/register", "AuthController.register").as("auth.register");
 
-
 //TEST ROUTES
-Route.get('/test', 'testController.index');
-Route.post('testImage', async ({ request }) => {
-  const coverImage = request.file('cover_image')
+Route.get("/test", "testController.index");
+Route.post("testImage", async ({ request }) => {
+  const coverImage = request.file("cover_image");
   console.log(coverImage);
   // if (coverImage) {
   //   await coverImage.move(Application.tmpPath('uploads'))
   // }
-})
-
-
+});

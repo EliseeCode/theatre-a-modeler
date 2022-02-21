@@ -1,0 +1,119 @@
+@layout('layouts/master')
+@section('content')
+<style>
+    .inline {
+        display: inline-block;
+    }
+    .vertically-centered {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: normal;
+    }
+</style>
+{{inspect(lines)}}
+@set("faces", ["https://images.generated.photos/IyhiaDSy30MuFzgVenEmOhM4thtrNz1M8aFvFFqHabk/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LmNvbmQvMGI3YTk5/MDItNmRjNS00MWUz/LTgzYTgtZGQ3YzA3/YzAyZTQxLmpwZw.jpg", "https://images.generated.photos/vaI3Meqsw3KjgcPFXYLX1VW2BUERcurt8d17la--wzc/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LmNvbmQvNjFmMDcz/ODktMGFkZi00ZDYw/LTk4MjAtY2Q3YTAx/MGFmYWI1LmpwZw.jpg", "https://images.generated.photos/ngLmCFtNOfogoWtneXHOM8NiVTK1xHmt1efQ6lCo_2g/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LmNvbmQvMGVmNGNk/NjgtN2ZjOC00NTlj/LWFlYTgtZjVjMjdj/OWI1YzhlLmpwZw.jpg", "https://images.generated.photos/qx0_FoMRdd-_g48rdS_AW61Lym_5R4JEtDoZeIltnZQ/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LmNvbmQvZWFhZDg3/MmYtOTg3Yy00Y2Ux/LWEwMTYtN2RlZTg1/MjQ4YzEzLmpwZw.jpg"])
+@set("didascalie", "https://www.yapasdequoi.com/wp-content/uploads/2012/10/guillemets_francais.gif")
+@each((character, index) in characters)
+<div id="character_{{character.id}}" class="characterSelect" data-array-index="{{index}}">
+    <figure class="image is-128x128 inline">
+        <img src="{{character.id === 1 ? didascalie : faces[index]}}">
+    </figure>
+    <span class="inline vertically-centered">{{character.name}}</span>
+    <select name="lineVersions" class="lineVersionSelect">
+        <option value="" selected="selected">Select a line version</option>
+        <option value="">Select a dline d</option>
+    </select>
+    <select name="doublers" class="doublerSelect">
+        <option value="" selected="selected">Select a doubler</option>
+        <option value="">Select dddd</option>
+    </select>
+    <select name="audioVersions" class="audioVersionSelect">
+        <option value="" selected="selected">Select an audio version</option>
+        <option value="">Select aaaa</option>
+    </select>
+
+
+</div>
+@endeach
+<script>
+    const characters = Array.from(JSON.parse(`{{{stringify(characters)}}}`));
+    document.addEventListener("DOMContentLoaded",  () => {
+        const setOptions = (options, parent) => {
+            options.forEach((option, index) => {
+                const optionElement = document.createElement("option");
+                optionElement.text = option?.name ?? option.username;
+                optionElement.value = option.id;
+                optionElement.setAttribute("data-array-index", index);
+                parent.add(optionElement);
+            })
+        };
+
+        const audioVersionCallback = (event, lineVersionSelect, doublerVersionSelect) => {
+            const selectedAudioVersion = event.target.options[event.target.selectedIndex].value
+            console.log(selectedAudioVersion)
+            const selectedLineVersion = lineVersionSelect.options[lineVersionSelect.selectedIndex].value
+            const selectedDoublerVersion = doublerVersionSelect.options[doublerVersionSelect.selectedIndex].value
+            if (!(selectedAudioVersion && selectedDoublerVersion && selectedLineVersion)) return;
+
+            console.log("audio version change", selectedLineVersion, selectedDoublerVersion, selectedAudioVersion);
+
+        }
+
+        const doublerCallback = (event, lineVersionSelect, closestAudioVersionSelect, characterIndex, lineVersionIndex) => {
+            // FIXME using such a nested event listener attaching due to the fact that our main object gets relationed (nested). So, we're benefiting it to reduce recurant variable definitions.
+            const selectedOption = event.target.options[event.target.selectedIndex]
+            if (!selectedOption.value) return;
+            console.log("doubler change", selectedOption)
+            const doublerIndex = selectedOption.getAttribute("data-array-index");
+            closestAudioVersionSelect.length = 1;
+            const audioVersions = characters[characterIndex].versions[lineVersionIndex].doublers[doublerIndex].audioVersions;
+            console.log(audioVersions);
+            setOptions(audioVersions, closestAudioVersionSelect);
+            //closestAudioVersionSelect.removeEventListener("change", audioVersionCallback);
+            closestAudioVersionSelect.onchange = null;
+            /* closestAudioVersionSelect.addEventListener("change", (audioVersionEvent) => {
+                audioVersionCallback(audioVersionEvent, lineVersionSelect, event.target);
+            })      */
+            closestAudioVersionSelect.onchange = (audioVersionEvent) => {
+                audioVersionCallback(audioVersionEvent, lineVersionSelect, event.target);
+            }
+        }
+
+        const lineVersionCallback = (event, lineVersionSelect) => {
+            const selectedOption = event.target.options[event.target.selectedIndex]
+            if (!selectedOption.value) return;
+            console.log("line version change", selectedOption)
+            const lineVersionIndex = selectedOption.getAttribute("data-array-index");
+            console.log(`this is the ${lineVersionIndex} indexed line version`)
+            const dialogRoot = lineVersionSelect.closest(".characterSelect"); // This'll be the each character div
+            const closestDoublerSelect = dialogRoot.querySelector(".doublerSelect");
+            const closestAudioVersionSelect = dialogRoot.querySelector(".audioVersionSelect");
+            const characterIndex = parseInt(dialogRoot.getAttribute("data-array-index"));
+            const doublers = characters[characterIndex].versions[lineVersionIndex].doublers;
+            closestDoublerSelect.onchange = null;
+            closestDoublerSelect.onchange = (doublerEvent) => {
+                doublerCallback(doublerEvent, lineVersionSelect, closestAudioVersionSelect, characterIndex, lineVersionIndex)
+            }
+            closestDoublerSelect.length = 1;
+            closestAudioVersionSelect.length = 1;
+            setOptions(doublers, closestDoublerSelect);
+        }
+
+
+        const lineVersionSelectors = Array.from(document.querySelectorAll(".lineVersionSelect"));
+        characters.forEach((character, index) => {
+            console.log(lineVersionSelectors[index])
+            setOptions(character.versions, lineVersionSelectors[index])
+        })
+
+        lineVersionSelectors.map((lineVersionSelect) => {
+            console.log("bind")
+            lineVersionSelect.addEventListener("change", (event) => {
+                lineVersionCallback(event, lineVersionSelect);
+            })
+        })
+
+        console.log(characters);
+    })
+</script>
+@endsection

@@ -15,37 +15,13 @@ import AudioFetcher from "App/Controllers/helperClass/AudioFetcher";
 import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 
 export default class ScenesController {
-  private async getCharacters(model: Play | Scene) {
-    const totalCharacters = new Set();
-    if (model instanceof Play) {
-      await model.load("scenes", (sceneQuery) => {
-        sceneQuery.preload("lines", (lineQuery) => {
-          lineQuery.preload("character");
-        });
-      });
-      model.scenes.forEach((scene) => {
-        scene.lines.forEach((line) => {
-          totalCharacters.add(line.characterId);
-        });
-      });
-    } else if (model instanceof Scene) {
-      await model.load("lines", (lineQuery) => {
-        lineQuery.preload("character", (characterQuery) => {
-          characterQuery.preload("image");
-        });
-      });
-      model.lines.forEach((line) => {
-        totalCharacters.add(line.characterId);
-      });
-    } else return null;
-    return totalCharacters;
-  }
-  public async select({ params, view, auth }: HttpContextContract) {
+  private async selectCharacters(scene_id) {
     // We want to know which personnage will be animated by who. So, we need to list each possible animator/doubler for a personnage. But! We do accept different improvisations in each line. You can say either "Hi!" or "Hello!". So, we need to track of each version (with its own id & name). And we want to get the doubler ids to know who we're attaching the personnage. But! Again, we do accept multiple audio sets/versions for each line. Like you can say "Hello!" in a rush or calmly.
     // Thus, we have to know character, line version, audio creator and audio version. With this, we can reconstruct a fresh scene, by having a fallback of official version!!!
 
-    const user = await auth.authenticate();
-    const scene = await Scene.findOrFail(params.scene_id);
+    // FIXME if we don't serialize objects, we're risking exposing our appRoot
+
+    const scene = await Scene.findOrFail(scene_id);
     const characterFetcher = new CharacterFetcher();
     const lineVersionFetcher = new LineVersionFetcher(scene);
     const audioFetcher = new AudioFetcher(scene);
@@ -61,7 +37,6 @@ export default class ScenesController {
       character.versions =
         await lineVersionFetcher.getVersionsFromCharacterOnScene(character); // Why this doesn't automatically updates referenced parameter? Why do we have to restore it in scene.characters?
       for (const version of character.versions) {
-        console.log(version);
         version.doublers =
           await audioFetcher.getDoublersAndAudioVersionsFromLineVersionOnScene(
             version,
@@ -69,10 +44,23 @@ export default class ScenesController {
           ); // FIXME shorten the function name
       }
     }
-
-    /* scene.characters.map((character) => {
+    const serializedCharacters = scene.characters.map((character) => {
       // console.log(character.versions[0].name);
-      character.serialize({
+      const versions = character.versions.map((version) => {
+        const serializedVersion = version.serialize();
+        serializedVersion.doublers = serializedVersion.doublers.map(
+          (doubler) => {
+            const serializedDoubler = doubler.serialize();
+            console.log(serializedDoubler.username);
+            serializedDoubler.audioVersions.map((audioVersion) => {
+              return audioVersion.serialize();
+            });
+            return serializedDoubler;
+          }
+        );
+        return serializedVersion;
+      });
+      const serializedCharacter = character.serialize({
         fields: {
           omit: ["gender", "created_at", "updated_at", "description"],
         },
@@ -84,17 +72,162 @@ export default class ScenesController {
           },
         },
       });
+      serializedCharacter.versions = versions;
+      return serializedCharacter;
+    });
 
-      return;
-    }); */
+    return serializedCharacters;
+  }
 
-    return view.render("scene/select", { characters: scene.characters });
+  public async select({ params, view, auth }: HttpContextContract) {
+    return view.render("scene/test", {
+      characters: await this.selectCharacters(params.scene_id),
+    });
   }
   public async index({}: HttpContextContract) {}
 
   public async create({}: HttpContextContract) {}
 
   public async store({}: HttpContextContract) {}
+
+  public async change({
+    params,
+    request,
+    auth,
+    response,
+  }: HttpContextContract) {
+    // This is for dynamic content (line, audio, doubler) change
+    const user = await auth.authenticate();
+    const scene = await Scene.findOrFail(params.scene_id);
+    const version = request.body()?.version ?? "";
+    const lineVersionFetcher = new LineVersionFetcher(scene);
+    // version: "(character_id)-(line_version_id)-(doubler_id)-(audio_version_id)"
+    // if line_version_id = 0; create alternative entry/version
+    // if doubler_id = record; send a toBeRecorded bool
+    // if doubler_id = robot; send a robotized bool
+    // if audio_version_id = 0; send a toBeRecorded bool
+    if (!version) return;
+    // const finalQuery = scene.related("lines").query(); // We are iterating over the versions and "cooking" a global query, where in the end, we'll have the whole line structure ordered by position.
+    const versionRegex = /^[1-9]\d*-\d+-([1-9]+||record|robot)-\d+$/;
+    const cookedLines: ModelObject[] = [];
+
+    if (!versionRegex.test(version))
+      return response.internalServerError(
+        "Error in version parse... Please cook it more! :)"
+      );
+    let [characterID, lineVersionID, doublerID, audioVersionID] =
+      version.split("-");
+    console.log(
+      `Character ID: ${characterID}\nLine Version ID:${
+        lineVersionID == 0 ? "Alternative Text" : lineVersionID
+      }\nDoubler ID:${
+        typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
+      }\nAudio Version ID:${
+        audioVersionID == 0 ? "To be recorded" : audioVersionID
+      }\n`
+    );
+    const character = await Character.findOrFail(characterID);
+    const characterVersions = (
+      await lineVersionFetcher.getVersionsFromCharacterOnScene(character)
+    ).map((version) => version.id);
+    const versionExistsOnCharacter = characterVersions.includes(
+      parseInt(lineVersionID)
+    ); // If not a specific version exists on character, we'll query the official version...
+    console.log(versionExistsOnCharacter);
+    let [isAlternative, isRobotized, toBeRecorded] =
+      Array<boolean>(3).fill(false);
+
+    isRobotized = doublerID == "robot";
+    toBeRecorded = doublerID == "record" && !parseInt(audioVersionID);
+
+    if (lineVersionID === "0") {
+      console.log("So, you wanna create an alternative? OK, go on!\n");
+      // lineVersionID = 1; // serving to user the official lines...
+      isAlternative = true;
+      isRobotized = false;
+    }
+
+    const lines = await (
+      await scene
+        .related("lines")
+        .query()
+        .where("character_id", parseInt(characterID))
+        .unless(
+          versionExistsOnCharacter,
+          (ifquery) => {
+            console.log(
+              `are you lost? no version id like this: ${lineVersionID} on ${characterID}...`
+            );
+            ifquery.where("version_id", 1);
+          },
+          (ifquery) => {
+            console.log("there exists a version id on line!");
+            ifquery.where("version_id", parseInt(lineVersionID));
+          }
+        )
+        .preload("character", (characterQuery) => {
+          characterQuery.preload("image");
+        })
+        .preload("audios", (audioQuery) => {
+          audioQuery
+            .where("creator_id", doublerID)
+            .where("version_id", audioVersionID)
+            .preload("version");
+        })
+    ).map((line) => {
+      line.isAlternative = isAlternative;
+      line.isRobotized = isRobotized;
+      line.toBeRecorded = toBeRecorded;
+      return line.serialize({
+        fields: {
+          pick: [
+            "id",
+            "character_id",
+            "version_id",
+            "position",
+            "isAlternative",
+            "text",
+            "isRobotized",
+            "toBeRecorded",
+          ],
+        },
+        relations: {
+          character: {
+            fields: {
+              omit: ["created_at", "updated_at", "versions"],
+            },
+            relations: {
+              image: {
+                fields: {
+                  omit: ["type", "relative_path", "created_at", "updated_at"],
+                },
+              },
+            },
+          },
+        },
+      });
+    });
+
+    if (!lines.length)
+      return response.internalServerError(
+        "Scene data is corrupted. No official line version exists..."
+      );
+
+    cookedLines.push(...lines);
+
+    cookedLines.sort(
+      (currLine, nextLine) => currLine.position - nextLine.position
+    );
+    const cookedAudios: any[] = [];
+    cookedLines.map((line) => {
+      cookedAudios.push(line.audios.length ? line.audios[0].public_path : null);
+    });
+    console.log(`Cooked audios length: ${cookedAudios.length}`);
+    return response.json({
+      lines: cookedLines,
+      audios: cookedAudios,
+    });
+  }
 
   public async action({
     request,
@@ -105,166 +238,36 @@ export default class ScenesController {
   }: HttpContextContract) {
     console.log(request.body());
     const user = await auth.authenticate();
+    const characters = await this.selectCharacters(params.scene_id);
+
     const scene = await Scene.findOrFail(params.scene_id);
-    const versions = request.body()?.versions ?? [];
     const lineVersionFetcher = new LineVersionFetcher(scene);
-    // versions: ["(character_id)-(line_version_id)-(audio_version_id)"]
-    // if line_version_id = 0; create alternative entry/version
-    // if doubler_id = record; send a toBeRecorded bool
-    // if doubler_id = robot; send a robotized bool
-    // if audio_version_id = 0; send a toBeRecorded bool
-    if (!versions) return;
-    const finalQuery = scene.related("lines").query(); // We are iterating over the versions and "cooking" a global query, where in the end, we'll have the whole line structure ordered by position.
-    const versionRegex = /^[1-9]\d*-\d+-([1-9]+||record|robot)-\d+$/;
-    const cookedLines: ModelObject[] = [];
-
-    for (const version of versions) {
-      if (!versionRegex.test(version))
-        return response.internalServerError(
-          "Error in version parse... Please cook it more! :)"
-        );
-      let [characterID, lineVersionID, doublerID, audioVersionID] =
-        version.split("-");
-      console.log(
-        `Character ID: ${characterID}\nLine Version ID:${
-          lineVersionID == 0 ? "Alternative Text" : lineVersionID
-        }\nDoubler ID:${
-          typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
-        }\nAudio Version ID:${
-          audioVersionID == 0 ? "To be recorded" : audioVersionID
-        }\n`
-      );
-      const character = await Character.findOrFail(characterID);
-      const characterVersions = (
-        await lineVersionFetcher.getVersionsFromCharacterOnScene(character)
-      ).map((version) => version.id);
-      const versionExistsOnCharacter = characterVersions.includes(
-        parseInt(lineVersionID)
-      ); // If not a specific version exists on character, we'll query the official version...
-      console.log(versionExistsOnCharacter);
-      let [isAlternative, isRobotized, toBeRecorded] =
-        Array<boolean>(3).fill(false);
-
-      isRobotized = doublerID == "robot";
-      toBeRecorded = doublerID == "record" && !parseInt(audioVersionID);
-
-      if (lineVersionID === "0") {
-        console.log("So, you wanna create an alternative? OK, go on!\n");
-        // lineVersionID = 1; // serving to user the official lines...
-        isAlternative = true;
-        isRobotized = false;
-      }
-
-      const lines = await (
-        await scene
-          .related("lines")
-          .query()
-          .where("character_id", parseInt(characterID))
-          .unless(
-            versionExistsOnCharacter,
-            (ifquery) => {
-              console.log(
-                `are you lost? no version id like this: ${lineVersionID} on ${characterID}...`
-              );
-              ifquery.where("version_id", 1);
+    const officialLines = await lineVersionFetcher.getOfficialVersionOnScene(); // There'll be no official audios
+    const serializedOfficialLines = officialLines.map((line) => {
+      return line.serialize({
+        relations: {
+          character: {
+            fields: {
+              pick: ["id", "name"],
             },
-            (ifquery) => {
-              console.log("there exists a version id on line!");
-              ifquery.where("version_id", parseInt(lineVersionID));
-            }
-          )
-          .preload("character", (characterQuery) => {
-            characterQuery.preload("image");
-          })
-          .preload("audios", (audioQuery) => {
-            audioQuery
-              .where("creator_id", doublerID)
-              .where("version_id", audioVersionID)
-              .preload("version");
-          })
-      ).map((line) => {
-        line.isAlternative = isAlternative;
-        line.isRobotized = isRobotized;
-        line.toBeRecorded = toBeRecorded;
-        return line.serialize({
-          fields: {
-            pick: [
-              "id",
-              "character_id",
-              "version_id",
-              "position",
-              "isAlternative",
-              "text",
-              "isRobotized",
-              "toBeRecorded",
-            ],
-          },
-          relations: {
-            character: {
-              fields: {
-                omit: ["created_at", "updated_at", "versions"],
-              },
-              relations: {
-                image: {
-                  fields: {
-                    omit: ["type", "relative_path", "created_at", "updated_at"],
-                  },
+            relations: {
+              audios: {},
+              image: {
+                fields: {
+                  pick: ["id", "public_path"],
                 },
               },
             },
           },
-        });
+        },
       });
-
-      if (!lines.length)
-        return response.internalServerError(
-          "Scene data is corrupted. No official line version exists..."
-        );
-
-      cookedLines.push(...lines);
-    }
-
-    cookedLines.sort(
-      (currLine, nextLine) => currLine.position - nextLine.position
-    );
-    const cookedAudios: any[] = [];
-    cookedLines.map((line) => {
-      cookedAudios.push(line.audios.length ? line.audios[0].public_path : null);
     });
-
+    console.log(serializedOfficialLines);
     return view.render("scene/action", {
-      lines: cookedLines,
-      audios: cookedAudios,
+      lines: serializedOfficialLines,
+      audios: [],
+      characters: characters,
     });
-    const lineQuery = currentScene.related("lines").query();
-    //get line_version_id depending on character_id
-    data.forEach((datum) => {
-      console.log(datum);
-      lineQuery
-        .orWhere("character_id", datum.character_id)
-        .andWhere("version_id", datum.line_version_id)
-        .preload("character", (characterQuery) => {
-          characterQuery.preload("image");
-        });
-    });
-    lineQuery.preload("audios", (audioQuery) => {
-      data.forEach((datum) => {
-        audioQuery
-          .orWhere("creator_id", datum.audio_creator_id)
-          .andWhere("version_id", datum.audio_version_id)
-          .preload("creator");
-      });
-    });
-    const lines = await lineQuery.orderBy("position", "asc");
-    lines.forEach((line) => {
-      payload.push({
-        character: line.character.serialize(),
-        line: line.serialize(),
-        audio: line.audios[0].serialize(),
-      });
-    });
-    console.log(payload.length, lines.length);
-    return view.render("scene/action", { payload });
   }
 
   public async createNew({

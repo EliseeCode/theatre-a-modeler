@@ -20,4 +20,13 @@ export default class LineVersionFetcher {
     character.versions = Array.from(lineVersions);
     return Array.from(lineVersions);
   }
+  public async getOfficialVersionOnScene() {
+    const officialLinesOnScene = await this.scene
+      .related("lines")
+      .query()
+      .where("version_id", 1)
+      .preload("character")
+      .orderBy("position", "asc");
+    return officialLinesOnScene;
+  }
 }
