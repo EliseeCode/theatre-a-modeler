@@ -130,7 +130,6 @@
                         @set('position',line.position)
                             @include('partials/scenes/show/line')    
                 @endeach
-            @endif
             </div>
         </div>
     </div>
@@ -159,12 +158,24 @@
 
 
     <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
+    <audio id="player"></audio>
         
     <script>
+
+    ////////////////////
+    // GLOBALS
+    ////////////////////
+        const globalAudios = [];
+        const characterToAudioVersion = {};
+        let recording = false;
+        let mediaRecorder;
     ////////////////////
     // LINE VERSION SELECTION
     ////////////////////
-        $(".selectLineVersion select").on('change',function(){
+        $(".selectLineVersion select").on('change',function(e){
+            const audioVersionSelect = e.target.closest(".characterSelect").querySelector(".selectAudioVersion select");
+            audioVersionSelect.length = 2;
+
             var characterId=$(this).data('character-id');
             var versionId=$(this).val();
             //if it is a real lineVersion
@@ -209,10 +220,12 @@
                     selectAudioVersion.find("option.audioVersionOption").remove();
                     for(let version of data.versions)
                     {
-                        console.log(version);
-                        selectAudioVersion.append(`<option value=${version.id}>
-                            ${version.name}
+                        for (let doubler of version.doublers) {
+                            selectAudioVersion.append(`<option value=${version.id}>
+                            ${doubler.username} | ${version.name}
                             </option>`);
+                        }
+                        
                     }
                 }
             });
@@ -243,11 +256,14 @@
     ////////////////////
     // AUDIO VERSION SELECTION
     ////////////////////    
-        $(".selectAudioVersion select").on('change',function(){
+        $(".selectAudioVersion select").on('change',async function(){
+            alert($(this).val()+$(this).data('character-id'))
             var characterId=$(this).data('character-id');
-            var audioVersionId=$(this).val();
-            console.log("audioVersionId",audioVersionId);
+            var audioVersionId=parseInt($(this).val());
+            console.log($(this));
             switch(audioVersionId){
+                case "":
+                break;
                 case 0:
                 console.log("on écoute le robot");
                 $(".lineCharacter_"+characterId+" .btnAction").hide();
@@ -256,10 +272,16 @@
                 case -1:
                 console.log("on enregistre sa voix==>Nouvelle version");
                 versionName=prompt("Quel est le nom de votre nouvelle version Audio?");
-                createNewAudioVersion(versionName,characterId);
+                const newAudioVersionId = await createNewAudioVersion(versionName,characterId);
+                characterToAudioVersion[characterId] = newAudioVersionId;
+                console.log(characterToAudioVersion, "s")
                 break;
                 default:
+                characterToAudioVersion[characterId] = audioVersionId;
+                console.log(characterToAudioVersion, "s")
                 getAudioPaths(audioVersionId,characterId);    
+                displayAudioReader(audioVersionId,characterId);
+                
             }
             
             
@@ -275,6 +297,12 @@
                 _csrf: token
             };
             $.get('/audio/getAudiosFromAudioVersion', params, function(data) {
+                console.log("getAudiosFromAudioVersionAnswer",data)
+                for (let audio of data) {
+                    console.log(audio.line.position);
+                    globalAudios[audio.line.position] = audio.public_path;
+                }
+                
                 console.log("getAudioVersionAnswer",data)
                 displayAudioReader(audioVersionId,characterId,data);
             });
@@ -290,8 +318,9 @@
 
         
 
-        function createNewAudioVersion(versionName,characterId){
-            const token = $('.csrfToken').data('csrf-token');
+        async function createNewAudioVersion(versionName,characterId){
+            return new Promise((resolve) => {
+                const token = $('.csrfToken').data('csrf-token');
             const params = { 
                 characterId:characterId,
                 sceneId:{{scene.id}},
@@ -304,10 +333,158 @@
                 //show microphone next to character's line
                 $(".lineCharacter_"+characterId+" .btnAction").hide();
                 $(".lineCharacter_"+characterId+" .btnRecordControl").show();
+                resolve(version.id)
             })
+            })
+            
         }
 
+        ////////////////////
+        // AUDIO RECORD
+        ////////////////////
 
+        const uploadAudio = async (event, objectURL) => {
+            const characterID = $(event.target).closest(".line").attr("data-character-id");
+            const lineID = event.target.getAttribute("data-line-id");
+            const audioVersionID = characterToAudioVersion[characterID];
+            console.log("uploading audio!!", objectURL)
+            console.log(`Here's the line_id to attach: ${lineID}`);
+            event.target.style.display = "none";
+            const cancelButton = event.target.parentNode.querySelector(".btnCancel");
+            cancelButton.style.display = "none";
+            const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+            const recordIcon = recordControlButton.querySelector("i");
+            recordIcon.classList.remove("fa-play");
+            recordIcon.classList.add("fa-microphone");
+            event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
+            player.currentTime = 0;
+            player.src = "";
+            const blob = await fetch(objectURL).then(r => r.blob());
+            console.log(blob);
+            const form = new FormData();
+            form.append("audio", blob);
+            form.append("lineId", lineID);
+            form.append("versionId", audioVersionID);
+            fetch(`${window.location.origin}/audios`, {
+                method: "POST",
+                headers: {
+                    'X-CSRF-Token': $('.csrfToken').data('csrf-token'),
+                    /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+                    'Content-Type': `${blob.type}`,*/ 
+                    'Content-Transfer-Encoding': 'base64'
+                },
+                mode: "cors",
+                body: form
+            }).then(response => {
+                if (!response.ok) throw response;
+                return response.json();
+            }).then((data) => {
+                const {versionID, public_path} = data;
+                characterToAudioVersion[characterID] = versionID;
+                console.log("jsdkajlk")
+                // window.location.reload();
+            }).catch((err) => {
+                console.error(err);
+            })
+
+            };
+
+            const cancelRecording = (event, objectURL) => {
+            console.log("canceling recording :(", objectURL)
+            event.target.style.display = "none";
+            const uploadButton = event.target.parentNode.querySelector(".btnUpload");
+            uploadButton.style.display = "none";
+            const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+            const recordIcon = recordControlButton.querySelector("i");
+            recordIcon.classList.remove("fa-play");
+            recordIcon.classList.add("fa-microphone");
+            event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
+            player.currentTime = 0;
+            player.src = "";
+            URL.revokeObjectURL(objectURL); // FIXME Invalid URI. Load of media resource  failed.
+            
+            }
+
+            const handleMediaDevice = (event, stream, isFirstRecording) => {
+                console.log(event.target);
+                const cancelButton = event.target.parentNode.querySelector(".btnCancel");
+                const uploadButton = event.target.parentNode.querySelector(".btnUpload");
+                const options = {mimeType: "audio/webm"};
+                const recordedChunks = [];
+                let objectURL;
+                mediaRecorder = new MediaRecorder(stream, options);
+                console.log(mediaRecorder.mimeType);
+                mediaRecorder.addEventListener("dataavailable", function(e) {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                })
+                mediaRecorder.addEventListener("stop", (e) => {
+                console.log("stopped the media recorder");
+                // make the create request here!
+                const blob = new Blob(recordedChunks, {type: mediaRecorder.mimeType});
+                objectURL = URL.createObjectURL(blob);
+                player.src = objectURL;
+                // ref: https://stackoverflow.com/questions/11455515/how-to-check-whether-dynamically-attached-event-listener-exists-or-not
+                cancelButton.onclick = (_e) => cancelRecording(_e, objectURL);
+                uploadButton.onclick = (_e) => uploadAudio(_e, objectURL);
+
+                cancelButton.style.display = "inline";
+                uploadButton.style.display = "inline";
+                // FIXME how to revoke microphone permissions?
+
+                })
+                if (mediaRecorder && mediaRecorder.state !== "recording") mediaRecorder.start();
+
+            };
+
+        const controlAudioRecord = (event) => { 
+            const characterID = $(this).closest(".line").attr("data-character-id");
+            const cancelButton = event.target.parentNode.querySelector(".btnCancel");
+            const uploadButton = event.target.parentNode.querySelector(".btnUpload");
+            const icon = event.target.querySelector("i");
+            const audioVersion = characterToAudioVersion[characterID];
+            const isFirstRecording = !Boolean(audioVersion);
+
+            if (!recording) {
+                if (icon.classList.contains("fa-play")) { // playing the recorded one & set upload and delete button
+                console.log("now, let's play your recording!")
+                player.play();
+                } else if (icon.classList.contains("fa-microphone")) {
+                event.target.querySelector("span:nth-child(2)").textContent = "Arrêter d'enregistrer !";
+                recording = true;
+                console.log("starting recording...");
+                icon.classList.remove("fa-microphone");
+                icon.classList.add("fa-stopwatch");
+                event.target.classList.add("glowing");
+                console.log(isFirstRecording ? "be prepared! first recording!!" : "not your first one I guess...");
+                navigator.mediaDevices.getUserMedia({audio: true, video:false}).then((stream) => handleMediaDevice(event, stream, isFirstRecording))
+            }
+
+            } else {
+                event.target.querySelector("span:nth-child(2)").textContent = "Lire votre enregistrement !";
+                recording = false;
+                console.log("stopping recording...");
+                // icon.classList.add("fa-microphone");
+                icon.classList.remove("fa-stopwatch");
+                event.target.classList.remove("glowing");
+                if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
+                icon.classList.add("fa-play");
+            }
+            }
+
+
+
+            ////////////////////
+            // BUTTON LISTENERS
+            ////////////////////
+            $(".btnPlay").on('click',function(){
+                const player = $("#player").get(0);
+                const position = $(this).attr("data-position")
+                console.log(player);
+                if (globalAudios[position]) {
+                    player.src = globalAudios[position];
+                    player.play();
+                }
+            });
         function robotSpeak(lineId)
         {
             var text=$("#lineText_"+lineId).val();
@@ -317,6 +494,7 @@
         }
 
 
+            $(".btnRecordControl").on("click", controlAudioRecord);
 
 
 

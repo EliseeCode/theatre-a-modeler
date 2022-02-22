@@ -24,7 +24,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
   public async store({ request, response, auth }: HttpContextContract) {
     const audioFile = await request.file("audio");
@@ -37,7 +37,7 @@ export default class AudiosController {
 
     const user = await auth.authenticate();
     const lineId = request.body().lineId;
-    let versionId = request.body().versionId;
+    const versionId = request.body().versionId;
     // Won't use a custom name instead Adonis will auto-generate a random name
     /*const fileName = `${user.id}_${lineId}_${await Hash.make(
       new Date().getTime().toString()
@@ -116,9 +116,9 @@ export default class AudiosController {
     return response.json(version);
   }
 
-  public async edit({ }: HttpContextContract) { }
+  public async edit({}: HttpContextContract) {}
 
-  public async update({ }: HttpContextContract) { }
+  public async update({}: HttpContextContract) {}
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete
@@ -160,8 +160,7 @@ export default class AudiosController {
     const { characterId, versionId, sceneId } = request.all();
     //const scene = await Scene.findOrFail(sceneId);
     const audioVersions = new Set();
-    const lines = await Line
-      .query()
+    const lines = await Line.query()
       .where("character_id", characterId)
       .andWhere("version_id", versionId)
       .andWhere("scene_id", sceneId)
@@ -170,9 +169,10 @@ export default class AudiosController {
       });
     lines.map((line) => {
       line.audios.map((audio) => {
-        if (!(audio.version.doublers?.size || audio.version?.doublers))
-          audio.version.doublers = new Set();
-        audio.version.doublers.add(audio.creator);
+        if (!(audio.version.doublers?.length || audio.version?.doublers))
+          audio.version.doublers = [];
+        audio.version.doublers.push(audio.creator);
+        audio.version.doublers = Array.from(new Set(audio.version.doublers));
         audioVersions.add(audio.version);
       });
     });
