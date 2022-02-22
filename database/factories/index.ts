@@ -17,7 +17,9 @@ export const GroupFactory = Factory.define(Group, ({ faker }) => {
     name: faker.lorem.slug(),
     status: "active",
   };
-}).build();
+})
+  .relation("creator", () => UserFactory)
+  .build();
 
 export const UserFactory = Factory.define(User, ({ faker }) => {
   return {
@@ -27,7 +29,7 @@ export const UserFactory = Factory.define(User, ({ faker }) => {
     organisation: faker.commerce.department(),
   };
 })
-  .relation("groups", () => GroupFactory) // 👈
+  //.relation("groups", () => GroupFactory)
   .build();
 
 export const PlayFactory = Factory.define(Play, ({ faker }) => {
@@ -37,7 +39,10 @@ export const PlayFactory = Factory.define(Play, ({ faker }) => {
     status: Status.PUBLIC,
   };
 })
-  .relation("groups", () => GroupFactory) // 👈
+  //.relation("groups", () => GroupFactory)
+  .relation("creator", () => UserFactory)
+  .relation("image", () => ImageFactory)
+  .relation("scenes", () => SceneFactory)
   .build();
 
 export const SceneFactory = Factory.define(Scene, ({ faker }) => {
@@ -48,13 +53,18 @@ export const SceneFactory = Factory.define(Scene, ({ faker }) => {
   };
 })
   .relation("play", () => PlayFactory)
+  .relation("creator", () => UserFactory)
+  .relation("image", () => ImageFactory)
+  .relation("lines", () => LineFactory)
   .build();
 export const CharacterFactory = Factory.define(Character, ({ faker }) => {
   return {
     name: faker.internet.userName(),
     gender: ["Male", "Female"][Math.floor(Math.random() * 2)],
   };
-}).build();
+})
+  .relation("image", () => ImageFactory)
+  .build();
 
 export const LineFactory = Factory.define(Line, ({ faker }) => {
   return {
@@ -63,6 +73,10 @@ export const LineFactory = Factory.define(Line, ({ faker }) => {
   };
 })
   .relation("scene", () => SceneFactory)
+  .relation("audios", () => AudioFactory)
+  .relation("character", () => CharacterFactory)
+  .relation("creator", () => UserFactory)
+  .relation("version", () => VersionFactory)
   .build();
 export const AudioFactory = Factory.define(Audio, ({ faker }) => {
   return {
@@ -84,13 +98,19 @@ export const AudioFactory = Factory.define(Audio, ({ faker }) => {
     lineId: 1,
     versionId: 1,
   };
-}).build();
+})
+  .relation("creator", () => UserFactory)
+  .relation("line", () => LineFactory)
+  .relation("version", () => VersionFactory)
+  .build();
 
 export const VersionFactory = Factory.define(Version, ({ faker }) => {
   return {
     name: faker.lorem.words(3),
   };
-}).build();
+})
+  .relation("creator", () => UserFactory)
+  .build();
 
 export const ImageFactory = Factory.define(Image, ({ faker }) => {
   return {
@@ -104,4 +124,6 @@ export const ImageFactory = Factory.define(Image, ({ faker }) => {
     relativePath: faker.internet.url(),
     creatorId: 1,
   };
-}).build();
+})
+  .relation("creator", () => UserFactory)
+  .build();

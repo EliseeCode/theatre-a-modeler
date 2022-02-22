@@ -26,7 +26,7 @@ export default class Lines extends BaseSchema {
         .unsigned()
         .references("versions.id")
         .onDelete("CASCADE")
-        .nullable();
+        .notNullable();
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
