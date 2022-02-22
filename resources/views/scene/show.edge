@@ -197,20 +197,20 @@
                 _csrf: token
             };
             $.get('/audio/getAudioVersions', params, function(data) {
-                console.log("getAudioVersionAnswer",data)
+                console.log("getAudioVersionAnswer",data.versions)
                 //data: audioVersion[].id
                 //                    .doubleur:{name,id}
                 //                    .name
 
                 $("#characterSelect_"+characterId+" .selectAudioVersion").show();
-                if(data)
+                if(data.versions)
                 {
                     var selectAudioVersion=$("#characterSelect_"+characterId+" .selectAudioVersion select");
                     selectAudioVersion.find("option.audioVersionOption").remove();
                     for(let version of data.versions)
                     {
                         console.log(version);
-                        selectAudioVersion.append(`<option val=${version.id}>
+                        selectAudioVersion.append(`<option value=${version.id}>
                             ${version.name}
                             </option>`);
                     }
@@ -244,9 +244,9 @@
     // AUDIO VERSION SELECTION
     ////////////////////    
         $(".selectAudioVersion select").on('change',function(){
-            alert($(this).val()+$(this).data('character-id'))
             var characterId=$(this).data('character-id');
-            var audioVersionId=parseInt($(this).val());
+            var audioVersionId=$(this).val();
+            console.log("audioVersionId",audioVersionId);
             switch(audioVersionId){
                 case 0:
                 console.log("on écoute le robot");
@@ -274,7 +274,7 @@
                 sceneId:{{scene.id}},
                 _csrf: token
             };
-            $.get('/audio/getAudioFromAudioVersion', params, function(data) {
+            $.get('/audio/getAudiosFromAudioVersion', params, function(data) {
                 console.log("getAudioVersionAnswer",data)
                 displayAudioReader(audioVersionId,characterId,data);
             });

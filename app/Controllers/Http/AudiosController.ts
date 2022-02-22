@@ -5,6 +5,7 @@ import Drive from "@ioc:Adonis/Core/Drive";
 import { URL } from "url";
 import Version from "App/Models/Version";
 import Scene from "App/Models/Scene";
+import Line from "App/Models/Line";
 
 export default class AudiosController {
   public dataName = "audios";
@@ -23,7 +24,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
   public async store({ request, response, auth }: HttpContextContract) {
     const audioFile = await request.file("audio");
@@ -115,9 +116,9 @@ export default class AudiosController {
     return response.json(version);
   }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete
@@ -157,13 +158,13 @@ export default class AudiosController {
   }: HttpContextContract) {
     const user = await auth.authenticate();
     const { characterId, versionId, sceneId } = request.all();
-    const scene = await Scene.findOrFail(sceneId);
+    //const scene = await Scene.findOrFail(sceneId);
     const audioVersions = new Set();
-    const lines = await scene
-      .related("lines")
+    const lines = await Line
       .query()
       .where("character_id", characterId)
-      .where("version_id", versionId)
+      .andWhere("version_id", versionId)
+      .andWhere("scene_id", sceneId)
       .preload("audios", (audioQuery) => {
         audioQuery.preload("version").preload("creator");
       });
@@ -184,10 +185,11 @@ export default class AudiosController {
     response,
   }: HttpContextContract) {
     const user = await auth.authenticate();
-    const { versionId } = request.all();
+    const { audioVersionId } = request.all();
+    console.log(audioVersionId);
     const audios = await Audio.query()
-      .where("version_id", versionId)
+      .where("version_id", audioVersionId)
       .preload("line");
-    return response.json({ audios });
+    return response.json(audios);
   }
 }
