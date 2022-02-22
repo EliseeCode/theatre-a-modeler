@@ -11,6 +11,7 @@ export default class LinesAlter_1s extends BaseSchema {
 
   public async down() {
     this.schema.alterTable(this.tableName, (table) => {
+      // table.dropIndex(["creator_id", "scene_id", "character_id", "version_id"]);
       table.dropUnique([
         "creator_id",
         "scene_id",

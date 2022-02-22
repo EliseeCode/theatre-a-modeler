@@ -18,6 +18,9 @@ export default class Image extends BaseModel {
   @column({ meta: { type: "number" } })
   public creatorId: number;
 
+  @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
+  public creator: BelongsTo<typeof User>;
+
   @column({ meta: { type: "number" } })
   public size: number;
 
