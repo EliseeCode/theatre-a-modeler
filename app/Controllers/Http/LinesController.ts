@@ -66,6 +66,7 @@ export default class LinesController {
         characterId: characterId
       })
     }
+    console.log(newLines)
 
     const created_lines = await Line.createMany(newLines);
 

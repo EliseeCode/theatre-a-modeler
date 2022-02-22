@@ -125,10 +125,10 @@
                 
                 @each((line,indexLine) in scene.lines)
                         @if(line.position!=position)
-                        @include('partials/scenes/show/newLine')  
+                            @include('partials/scenes/show/newLine')  
                         @endif
                         @set('position',line.position)
-                        @include('partials/scenes/show/line')    
+                            @include('partials/scenes/show/line')    
                 @endeach
             @endif
             </div>
@@ -169,11 +169,13 @@
             var versionId=$(this).val();
             //if it is a real lineVersion
             if(versionId>0){
+                console.log('versionId',versionId);
                 UpdateDisplayLineVersion(characterId,versionId);
                 getAudioVersion(characterId,versionId)
             }else{
             //if it is 0=>Create a new text alternative
-                $("#characterSelect_"+characterId+" .selectAudioVersion").hide();
+                //$("#characterSelect_"+characterId+" .selectAudioVersion").hide();
+                
                 versionName=prompt("Quel est le nom de votre nouvelle version?");
                 createNewLineVersion(versionName,characterId);
             }
@@ -184,7 +186,7 @@
             $(".lineCharacter_"+characterId).hide();
             $(".lineCharacter_"+characterId+".lineVersion_"+versionId).show();
         }
-       
+        
         function getAudioVersion(characterId,versionId){
             console.log("getAudioVersion")
             const token = $('.csrfToken').data('csrf-token');
@@ -214,54 +216,6 @@
                 }
             });
         }
-    ////////////////////
-    // AUDIO VERSION SELECTION
-    ////////////////////    
-        $(".selectAudioVersion select").on('change',function(){
-            alert($(this).val()+$(this).data('character-id'))
-            var characterId=$(this).data('character-id');
-            var audioVersionId=parseInt($(this).val());
-            switch(audioVersionId){
-                case 0:
-                console.log("on écoute le robot");
-                $(".lineCharacter_"+characterId+" .btnAction").hide();
-                $(".lineCharacter_"+characterId+" .btnRobotize").show();
-                break;
-                case -1:
-                console.log("on enregistre sa voix==>Nouvelle version");
-                versionName=prompt("Quel est le nom de votre nouvelle version Audio?");
-                createNewAudioVersion(versionName,characterId);
-                break;
-                default:
-                loadAudioPaths(audioVersionId,characterId);    
-                displayAudioReader(audioVersionId,characterId);
-            }
-            
-            
-        })
-
-
-        function loadAudioPaths(audioVersionId,characterId){
-            const token = $('.csrfToken').data('csrf-token');
-            const params = { 
-                characterId,
-                audioVersionId,
-                sceneId:{{scene.id}},
-                _csrf: token
-            };
-            $.get('/audio/getAudioFromAudioVersion', params, function(data) {
-                console.log("getAudioVersionAnswer",data)
-                
-            });
-
-        }
-        function displayAudioReader(audioVersionId,characterId){
-            $(".lineCharacter_"+characterId+" .btnAction").hide();
-            $(".lineCharacter_"+characterId+" .btnPlay").show();
-        }
-
-
-
 
         function createNewLineVersion(versionName,characterId){
             const token = $('.csrfToken').data('csrf-token');
@@ -282,10 +236,58 @@
                         .on("input",function(){
                             updateText(line.id);
                         })
-                    
                 }
             })
         }
+    ////////////////////
+    // AUDIO VERSION SELECTION
+    ////////////////////    
+        $(".selectAudioVersion select").on('change',function(){
+            alert($(this).val()+$(this).data('character-id'))
+            var characterId=$(this).data('character-id');
+            var audioVersionId=parseInt($(this).val());
+            switch(audioVersionId){
+                case 0:
+                console.log("on écoute le robot");
+                $(".lineCharacter_"+characterId+" .btnAction").hide();
+                $(".lineCharacter_"+characterId+" .btnRobotize").show();
+                break;
+                case -1:
+                console.log("on enregistre sa voix==>Nouvelle version");
+                versionName=prompt("Quel est le nom de votre nouvelle version Audio?");
+                createNewAudioVersion(versionName,characterId);
+                break;
+                default:
+                getAudioPaths(audioVersionId,characterId);    
+            }
+            
+            
+        })
+
+
+        function getAudioPaths(audioVersionId,characterId){
+            const token = $('.csrfToken').data('csrf-token');
+            const params = { 
+                characterId,
+                audioVersionId,
+                sceneId:{{scene.id}},
+                _csrf: token
+            };
+            $.get('/audio/getAudioFromAudioVersion', params, function(data) {
+                console.log("getAudioVersionAnswer",data)
+                displayAudioReader(audioVersionId,characterId,data);
+            });
+
+        }
+        function displayAudioReader(audioVersionId,characterId){
+            $(".lineCharacter_"+characterId+" .btnAction").hide();
+            $(".lineCharacter_"+characterId+" .btnPlay").show();
+        }
+
+
+
+
+        
 
         function createNewAudioVersion(versionName,characterId){
             const token = $('.csrfToken').data('csrf-token');
@@ -304,6 +306,14 @@
             })
         }
 
+
+        function robotSpeak(lineId)
+        {
+            var text=$("#lineText_"+lineId).val();
+            let message = new SpeechSynthesisUtterance(text)
+            message.lang = 'fr-FR'
+            speechSynthesis.speak(message);
+        }
 
 
 
