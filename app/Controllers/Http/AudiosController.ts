@@ -163,7 +163,7 @@ export default class AudiosController {
     return response.json({ versions: audioVersions });
   }
 
-  public async getAudiosFromVersion({
+  public async getAudiosFromAudioVersion({
     request,
     auth,
     response,
