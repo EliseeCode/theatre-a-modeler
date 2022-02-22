@@ -22,7 +22,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
   public async store({ request, response, auth }: HttpContextContract) {
     const audioFile = await request.file("audio");
@@ -101,9 +101,9 @@ export default class AudiosController {
     } else return view.render("errors/not-found");
   }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete
@@ -135,4 +135,9 @@ export default class AudiosController {
         response.json({ status: 0, message });
       });
   }
+
+  public async getAudioVersions({ }: HttpContextContract) {
+    return '';
+  }
+
 }

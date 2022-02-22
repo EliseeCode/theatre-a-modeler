@@ -1,0 +1,16 @@
+<div class="control">
+            <div class="level" style="width:100%;">
+                <div class="level-left">
+                    @if(line.character?.image)
+                    <div class="level-item">
+                        <img class="image-character" src='{{line.character?.image?.publicPath}}' >
+                    </div>
+                    @endif
+                </div>
+                <div class="level-center">
+                    <div class="level-item">
+                            {{line.characterId?line.character.name:'Choisir un personnage'}}
+                    </div>
+                </div>
+            </div>    
+</div>

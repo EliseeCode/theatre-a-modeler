@@ -15,6 +15,75 @@ import AudioFetcher from "App/Controllers/helperClass/AudioFetcher";
 import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 
 export default class ScenesController {
+
+  public async show({ params, view }: HttpContextContract) {
+    const scene = await Scene.findOrFail(params.id);
+    //get other scene from play to navigate between scene of the same play
+    await scene.load("play", (playQuery) => {
+      playQuery.preload("scenes");
+    });
+    //get character from scene
+    const characterFetcher = new CharacterFetcher();
+    await characterFetcher.getCharactersFromScene(scene);
+
+    //get all the lines from a scene
+    await scene.load("lines", (linesQuery) => {
+      linesQuery
+        .preload("character", (characterQuery) => {
+          characterQuery.preload("image");
+        })
+        .orderBy("lines.position", "asc");
+    });
+
+
+    const lines = await Line.query()
+      .preload('character')
+      .preload('version')
+      .where('lines.scene_id', scene.id)
+      .distinct("lines.version_id", "lines.character_id");
+
+    //Character[].versions[]
+    const characters = lines.reduce(function (acc, cur) {
+      (acc[cur.character["name"]] = acc[cur.character["name"]] || { ...cur.character, versions: [] })
+        .versions.push(cur.version);
+
+      // (acc[cur.character["name"]] = acc[cur.character["name"]] || { versions: [], character: cur.character })
+      //   .character.versions = cur.version;
+      return acc;
+    }, {});
+
+    const charactersArray = Object.values(characters);
+    console.log(characters)
+
+    return view.render("scene/show", {
+      scene,
+      characters: charactersArray
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   private async selectCharacters(scene_id) {
     // We want to know which personnage will be animated by who. So, we need to list each possible animator/doubler for a personnage. But! We do accept different improvisations in each line. You can say either "Hi!" or "Hello!". So, we need to track of each version (with its own id & name). And we want to get the doubler ids to know who we're attaching the personnage. But! Again, we do accept multiple audio sets/versions for each line. Like you can say "Hello!" in a rush or calmly.
     // Thus, we have to know character, line version, audio creator and audio version. With this, we can reconstruct a fresh scene, by having a fallback of official version!!!
@@ -84,11 +153,21 @@ export default class ScenesController {
       characters: await this.selectCharacters(params.scene_id),
     });
   }
-  public async index({}: HttpContextContract) {}
 
-  public async create({}: HttpContextContract) {}
 
-  public async store({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
+
+  public async create({ }: HttpContextContract) { }
+
+  public async store({ }: HttpContextContract) { }
+
+
+
+
+
+
+
+
 
   public async change({
     params,
@@ -118,12 +197,9 @@ export default class ScenesController {
     let [characterID, lineVersionID, doublerID, audioVersionID] =
       version.split("-");
     console.log(
-      `Character ID: ${characterID}\nLine Version ID:${
-        lineVersionID == 0 ? "Alternative Text" : lineVersionID
-      }\nDoubler ID:${
-        typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
-      }\nAudio Version ID:${
-        audioVersionID == 0 ? "To be recorded" : audioVersionID
+      `Character ID: ${characterID}\nLine Version ID:${lineVersionID == 0 ? "Alternative Text" : lineVersionID
+      }\nDoubler ID:${typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
+      }\nAudio Version ID:${audioVersionID == 0 ? "To be recorded" : audioVersionID
       }\n`
     );
     const character = await Character.findOrFail(characterID);
@@ -270,6 +346,12 @@ export default class ScenesController {
     });
   }
 
+
+
+
+
+
+
   public async createNew({
     bouncer,
     response,
@@ -303,33 +385,6 @@ export default class ScenesController {
     return scene;
   }
 
-  public async getCharactersFromPlay(play: Play) {
-    var charactersSet = new Set();
-    await play.load("scenes", (scenesQuery) => {
-      scenesQuery.preload("lines");
-    });
-    play.scenes.forEach((scene) => {
-      scene.lines.forEach((line) => {
-        charactersSet.add(line.characterId);
-      });
-    });
-    const charactersArray = Array.from(charactersSet);
-    const res = await Character.findMany(charactersArray);
-    play.characters = res;
-    return res;
-  }
-
-  public async getCharactersFromScene(scene: Scene) {
-    var charactersSet = new Set();
-    await scene.load("lines");
-    scene.lines.forEach((el) => {
-      charactersSet.add(el.characterId);
-    });
-    const charactersArray = Array.from(charactersSet);
-    const res = await Character.findMany(charactersArray);
-    scene.characters = res;
-    return res;
-  }
 
   public async edit({ params, view, auth }: HttpContextContract) {
     const scene = await Scene.findOrFail(params.id);

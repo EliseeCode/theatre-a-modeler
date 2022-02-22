@@ -20,37 +20,7 @@
     width:40px;
     height:40px;
     }
-    .buttonAddLine{
-        position:absolute;
-        bottom:0px;
-        z-index:30;
-        width:100%;
-        padding:5px;
-        height:0;
-    }
-    .buttonAddLine form{height:0;}
-    .buttonAddLine button{
-        background-color:white;
-        padding:18px 12px;
-        height:36px;
-        color:grey;
-        line-height:0px;
-        border:2px solid lightgrey;
-        border-radius:50%;
-        opacity:0.5;
-        font-size:1em;
-        transition:0.5s;
-        position:relative;
-        top:-14px;
-        z-index:30;
-    }
-    .buttonAddLineFirst{
-        bottom:auto;
-        top:-7px;
-    }
-    .buttonAddLine:hover button{
-        opacity:1;
-    }
+   
     .lineContainer{position:relative;}
 </style>
 <div class="container">
@@ -64,57 +34,118 @@
             </div>
         </div>
     </div>
-    <div class="level-right">
-        <div class="level-item">
-            <a href=# 
-                    class="icon-text js-modal-trigger" 
-                    data-target="edit-scene-modal" 
-                    onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadSceneInfoInModal({id:{{scene.id}},name:'{{scene.name}}'})" >
-                    <span class="icon fas fa-edit" >
-                    </span>
-                    <span>
-                        Modifier
-                    </span>
-            </a>
-           
-        </div>
-        <div class="level-item"></div>
-    </div>
 </div>    
+{{--  Select other scene from this play  --}}
     <h2 class="subtitle">
         <div class="select">
-            <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value+'/edit';">
+            <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value">
                 @each(sceneFromPlay in scene.play.scenes)
                 <option value="{{sceneFromPlay.id}}" {{sceneFromPlay.id==scene.id?'selected':''}}>{{sceneFromPlay.name}}</option>
                 @endeach
             </select>
         </div>
     </h2>
+
     <h2 class="subtitle">
         {{scene.description}}
     </h2>
+    
     <hr>
-    <div class="lineContainer" style="text-align:center;"> 
-    @if(scene.lines.length==0)
-        <form action="/scenes/{{scene.id}}/line/create/-1" method="POST">
-            {{ csrfField() }}
-            <button type="submit" class="button" title="">Ajouter une réplique ici</button>
-        </form>
-    @else
-        @each((line,indexLine) in scene.lines)
-            @if(line.versionId==1)
-                @include('partials/scenes/edit/line')
-            @endif    
-        @endeach
-    @endif
+    
+    {{--  LineContainer  --}}
+    
+    <div class="level" style="align-items:flex-start">
+        {{--  Select of Textversions & voice version  --}}
+        <div class="level-item">
+            <div class="selectContainer">
+                @each(character in characters)
+                    @include('partials/scenes/show/selectCharacterVersion')
+                @endeach
+            </div>
+        </div>
+        <div class="level-item" >
+            <div class="lineContainer" style="text-align:center;"> 
+                @each((line,indexLine) in scene.lines)
+                        @include('partials/scenes/show/line')    
+                @endeach
+            @endif
+            </div>
+        </div>
     </div>
+    
 </div>
     <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
-    <div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
-    
-    @include('partials/modals/editScene')
-    @include('partials/modals/createCharacter')
+        
     <script>
+        $(".selectLineVersion select").on('change',function(){
+            alert($(this).val()+$(this).data('character-id'))
+            var characterId=$(this).data('character-id');
+            var versionId=$(this).val();
+            //if it is a real lineVersion
+            if(versionId>0){
+                UpdateDisplayLineVersion(characterId,versionId);
+                getAudioVersion(characterId,versionId)
+            }else{
+            //if it is 0=>Create a new text alternative
+                $("#characterSelect_"+characterId+" .selectAudioVersion").hide();
+                versionName=prompt("Quel est le nom de votre nouvelle version?");
+                createNewLineVersion(characterId);
+            }
+        })
+
+        function UpdateDisplayLineVersion(characterId,versionId)
+        {
+            $(".lineCharacter_"+characterId).hide();
+            $(".lineCharacter_"+characterId+".lineVersion_"+versionId).show();
+        }
+       
+        function getAudioVersion(characterId,versionId){
+            console.log("getAudioVersion")
+            const token = $('.csrfToken').data('csrf-token');
+            const params = { 
+                characterId,
+                versionId,
+                _csrf: token
+            };
+            $.get('/audio/getAudioVersions', params, function(data) {
+                console.log("getAudioVersionAnswer",data)
+                $("#characterSelect_"+characterId+" .selectAudioVersion").show();
+                if(data)
+                {
+                    var selectAudioVersion=$("#characterSelect_"+characterId+" .selectAudioVersion select");
+                    selectAudioVersion.find("option.audioVersionOption").remove();
+                    for(let version in data.versions)
+                    {
+                        selectAudioVersion.append(`<option val=${version.id}>
+                            ${version.name}
+                            </option>`);
+                    }
+                }
+            });
+        }
+
+        $(".selectAudioVersion select").on('change',function(){
+            alert($(this).val()+$(this).data('character-id'))
+            var characterId=$(this).data('character-id');
+            var versionId=$(this).val();
+            UpdateDisplayLineVersion(characterId,versionId);
+            getAudioVersion(characterId,versionId)
+        })
+
+
+        function createNewLineVersion(characterId){
+            
+        }
+
+
+
+
+
+
+
+
+
+
     function toggleDropdownMenu(objectType,objectId){
         window.event.stopPropagation();
         $("#dropdown-option-container").html("");
@@ -135,18 +166,9 @@
         }
     });
 
-    function loadSceneInfoInModal(scene)
-    {
-        console.log(scene)
-        $('#edit-scene-modal').find('input[name="name"]').val(scene.name);
-        $('#edit-scene-modal').find('form').attr("action","/scenes/"+scene.id+"?_method=PUT")
-    }  
+   
     let timer = [];
-    function loadCharacterInfoInModal(line)
-    {
-        lineId=line.lineId;
-        $('#create-character-modal').find('form').attr("action","/line/"+lineId+"/characters/create");
-    }
+   
     function updateText(lineId) {
         if(timer[lineId]!=null){
         clearTimeout(timer[lineId]);
@@ -193,6 +215,7 @@
             }
         });
     }
+
     function auto_grow(element) {
         element.style.height = "5px";
         element.style.height = (element.scrollHeight)+"px";

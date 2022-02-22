@@ -1,0 +1,37 @@
+
+<div class='container characterSelect' id="characterSelect_{{character.$attributes.id}}">
+    {{inspect(character)}}
+      
+        <div class="level">
+            <div class="level-item">
+                {{--  <figure class="image is-128x128 is-inline-block">
+                    <img src={{character?.image?.public_path}}
+                         alt="image de {{character.name}}">
+                </figure>  --}}
+                <p class='is-success'>
+                    {{character.$attributes.name}}
+                </p>
+            </div>
+            <div class="level-item">
+                <div class="select selectLineVersion" 
+                    id="selectLineVersion_{{character.$attributes.id}}">
+                    <select data-character-id={{character.$attributes.id}}>
+                        @each(version in character.versions)
+                        <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
+                        @endeach
+                        <option value="0">Créer une alternative</option>
+                    </select>
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="select selectAudioVersion" 
+                id="selectAudioVersion_{{character.$attributes.id}}"
+                style="display:none;">
+                    <select data-character-id={{character.$attributes.id}} >
+                        <option value="-1">Enregistrer</option>
+                        <option value="0" selected>Ecouter le robot</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+  </div>

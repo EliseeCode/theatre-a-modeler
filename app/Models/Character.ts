@@ -33,6 +33,7 @@ export default class Character extends BaseModel {
     foreignKey: "imageId",
     serializeAs: "image"
   })
+
   public image: BelongsTo<typeof Image>;
 
   @column.dateTime({ autoCreate: true })

@@ -1,0 +1,41 @@
+<div 
+    style="position:relative;" 
+    id="line_{{line.id}}" 
+    class="lineCharacter_{{line.characterId}} lineVersion_{{line.versionId}}">
+    
+    <div class="field has-addons m-0">
+   
+        @include('partials/characters/inline')
+        <div class="control">
+            <div style="position:relative;">
+                <span>line.versionId:{{line.versionId}}</span> 
+                <textarea oninput="auto_grow(this);updateText({{line.id}});" 
+                    name='text' 
+                    id ="lineText_{{line.id}}" 
+                    class="lineText textarea" 
+                    cols="30" 
+                    rows="1" 
+                    style="resize: none">
+                    {{line.text}}
+                </textarea>
+               
+            </div>
+        </div>
+        <div class="control box m-1">
+            <div class="field">
+                Enregistrement
+            </div>
+            <div class="field">
+                Play Audio
+            </div>
+            <div class="field">
+                Play Robotic
+            </div>                   
+        </div>
+   
+    </div>
+ 
+
+
+</div>
+
