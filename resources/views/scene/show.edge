@@ -125,10 +125,10 @@
                 
                 @each((line,indexLine) in scene.lines)
                         @if(line.position!=position)
-                        @include('partials/scenes/show/newLine')  
+                            @include('partials/scenes/show/newLine')  
                         @endif
                         @set('position',line.position)
-                        @include('partials/scenes/show/line')    
+                            @include('partials/scenes/show/line')    
                 @endeach
             </div>
         </div>
@@ -180,11 +180,13 @@
             var versionId=$(this).val();
             //if it is a real lineVersion
             if(versionId>0){
+                console.log('versionId',versionId);
                 UpdateDisplayLineVersion(characterId,versionId);
                 getAudioVersion(characterId,versionId)
             }else{
             //if it is 0=>Create a new text alternative
-                $("#characterSelect_"+characterId+" .selectAudioVersion").hide();
+                //$("#characterSelect_"+characterId+" .selectAudioVersion").hide();
+                
                 versionName=prompt("Quel est le nom de votre nouvelle version?");
                 createNewLineVersion(versionName,characterId);
             }
@@ -195,7 +197,7 @@
             $(".lineCharacter_"+characterId).hide();
             $(".lineCharacter_"+characterId+".lineVersion_"+versionId).show();
         }
-       
+        
         function getAudioVersion(characterId,versionId){
             console.log("getAudioVersion")
             const token = $('.csrfToken').data('csrf-token');
@@ -206,13 +208,13 @@
                 _csrf: token
             };
             $.get('/audio/getAudioVersions', params, function(data) {
-                console.log("getAudioVersionAnswer",data)
+                console.log("getAudioVersionAnswer",data.versions)
                 //data: audioVersion[].id
                 //                    .doubleur:{name,id}
                 //                    .name
 
                 $("#characterSelect_"+characterId+" .selectAudioVersion").show();
-                if(data)
+                if(data.versions)
                 {
                     var selectAudioVersion=$("#characterSelect_"+characterId+" .selectAudioVersion select");
                     selectAudioVersion.find("option.audioVersionOption").remove();
@@ -227,6 +229,29 @@
                     }
                 }
             });
+        }
+
+        function createNewLineVersion(versionName,characterId){
+            const token = $('.csrfToken').data('csrf-token');
+            const params = { 
+                characterId:characterId,
+                sceneId:{{scene.id}},
+                name:versionName,
+                _csrf: token
+            };
+            $.post("/lines/createNewVersion",params,function(data){
+                console.log(data);
+                versionId=data.versionId;
+                for(let line of data.lines)
+                {
+                    $(".linePosition_"+line.position).hide();
+                    $(".linePosition_"+line.position+".line_newLine").show();
+                    $(".linePosition_"+line.position+".line_newLine textarea")
+                        .on("input",function(){
+                            updateText(line.id);
+                        })
+                }
+            })
         }
     ////////////////////
     // AUDIO VERSION SELECTION
@@ -254,15 +279,16 @@
                 default:
                 characterToAudioVersion[characterId] = audioVersionId;
                 console.log(characterToAudioVersion, "s")
-                loadAudioPaths(audioVersionId,characterId);    
+                getAudioPaths(audioVersionId,characterId);    
                 displayAudioReader(audioVersionId,characterId);
+                
             }
             
             
         })
 
 
-        function loadAudioPaths(audioVersionId,characterId){
+        function getAudioPaths(audioVersionId,characterId){
             const token = $('.csrfToken').data('csrf-token');
             const params = { 
                 characterId,
@@ -272,11 +298,13 @@
             };
             $.get('/audio/getAudiosFromAudioVersion', params, function(data) {
                 console.log("getAudiosFromAudioVersionAnswer",data)
-                for (let audio of data.audios) {
+                for (let audio of data) {
                     console.log(audio.line.position);
                     globalAudios[audio.line.position] = audio.public_path;
                 }
                 
+                console.log("getAudioVersionAnswer",data)
+                displayAudioReader(audioVersionId,characterId,data);
             });
 
         }
@@ -288,29 +316,7 @@
 
 
 
-        function createNewLineVersion(versionName,characterId){
-            const token = $('.csrfToken').data('csrf-token');
-            const params = { 
-                characterId:characterId,
-                sceneId:{{scene.id}},
-                name:versionName,
-                _csrf: token
-            };
-            $.post("/lines/createNewVersion",params,function(data){
-                console.log(data);
-                versionId=data.versionId;
-                for(let line of data.lines)
-                {
-                    $(".linePosition_"+line.position).hide();
-                    $(".linePosition_"+line.position+".line_newLine").show();
-                    $(".linePosition_"+line.position+".line_newLine textarea")
-                        .on("input",function(){
-                            updateText(line.id);
-                        })
-                    
-                }
-            })
-        }
+        
 
         async function createNewAudioVersion(versionName,characterId){
             return new Promise((resolve) => {
@@ -479,6 +485,14 @@
                     player.play();
                 }
             });
+        function robotSpeak(lineId)
+        {
+            var text=$("#lineText_"+lineId).val();
+            let message = new SpeechSynthesisUtterance(text)
+            message.lang = 'fr-FR'
+            speechSynthesis.speak(message);
+        }
+
 
             $(".btnRecordControl").on("click", controlAudioRecord);
 

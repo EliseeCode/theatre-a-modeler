@@ -19,7 +19,7 @@
                         @each(version in character.versions)
                         <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
                         @endeach
-                        <option value="0">Créer une alternative</option>
+                        <option id='newLineVersionCreationOption' value="0">Créer une alternative</option>
                     </select>
                 </div>
             </div>
