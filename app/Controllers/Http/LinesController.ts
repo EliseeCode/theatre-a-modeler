@@ -69,7 +69,7 @@ export default class LinesController {
 
     const created_lines = await Line.createMany(newLines);
 
-    return response.json(created_lines);
+    return response.json({ lines: created_lines, versionId: version.id });
   }
 
 

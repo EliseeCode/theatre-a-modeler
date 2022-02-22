@@ -1,16 +1,13 @@
-<div class="control">
-            <div class="level" style="width:200px;">
-                <div class="level-left">
+
+            <div class="level" style="display:inline-block;margin-bottom:0;">
+                <div class="level-center">
                     @if(line.character?.image)
                     <div class="level-item">
                         <img class="image-character" src='{{line.character?.image?.publicPath}}' >
                     </div>
                     @endif
-                </div>
-                <div class="level-center">
                     <div class="level-item">
-                            {{line.characterId?line.character.name:'Choisir un personnage'}}
+                        {{line.characterId?line.character.name:'Choisir un personnage'}}
                     </div>
-                </div>
+                </div>  
             </div>    
-</div>

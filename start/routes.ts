@@ -99,7 +99,8 @@ Route.post("/recoverUsername", "AuthController.recoverUsername");
 Route.post("/recoverPassword", "AuthController.recoverPassword");
 
 Route.post("/audio/upload", "AudiosController.upload");
-Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions");
+Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions")
+Route.post("/audios/createNewVersion", "AudiosController.createNewVersion");
 Route.get(
   "/audio/getAudiosFromAudioVersion",
   "AudiosController.getAudiosFromAudioVersion"
