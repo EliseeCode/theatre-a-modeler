@@ -4,6 +4,7 @@ import Logger from "@ioc:Adonis/Core/Logger";
 import Drive from "@ioc:Adonis/Core/Drive";
 import { URL } from "url";
 import Version from "App/Models/Version";
+import Scene from "App/Models/Scene";
 
 export default class AudiosController {
   public dataName = "audios";
@@ -22,7 +23,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
   public async store({ request, response, auth }: HttpContextContract) {
     const audioFile = await request.file("audio");
@@ -101,9 +102,9 @@ export default class AudiosController {
     } else return view.render("errors/not-found");
   }
 
-  public async edit({ }: HttpContextContract) { }
+  public async edit({}: HttpContextContract) {}
 
-  public async update({ }: HttpContextContract) { }
+  public async update({}: HttpContextContract) {}
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete
@@ -136,9 +137,42 @@ export default class AudiosController {
       });
   }
 
-  public async getAudioVersions({ request }: HttpContextContract) {
-
-    return '';
+  public async getAudioVersions({
+    request,
+    auth,
+    response,
+  }: HttpContextContract) {
+    const user = await auth.authenticate();
+    const { characterId, versionId, sceneId } = request.all();
+    const scene = await Scene.findOrFail(sceneId);
+    const audioVersions = new Set();
+    const lines = await scene
+      .related("lines")
+      .query()
+      .where("character_id", characterId)
+      .where("version_id", versionId)
+      .preload("audios", (audioQuery) => {
+        audioQuery.preload("version").preload("creator");
+      });
+    lines.map((line) => {
+      line.audios.map((audio) => {
+        audio.version.doublers.add(audio.creator);
+        audioVersions.add(audio.version);
+      });
+    });
+    return response.json({ versions: audioVersions });
   }
 
+  public async getAudiosFromVersion({
+    request,
+    auth,
+    response,
+  }: HttpContextContract) {
+    const user = await auth.authenticate();
+    const { versionId } = request.all();
+    const audios = await Audio.query()
+      .where("version_id", versionId)
+      .preload("line");
+    return response.json({ audios });
+  }
 }
