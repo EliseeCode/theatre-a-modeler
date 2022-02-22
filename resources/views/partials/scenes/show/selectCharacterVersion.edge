@@ -1,5 +1,5 @@
 
-<div class='container characterSelect' id="characterSelect_{{character.$attributes.id}}">
+<div class='container characterSelect' id="characterSelect_{{character.id}}">
     
       
         <div class="level">
@@ -9,13 +9,13 @@
                          alt="image de {{character.name}}">
                 </figure>  --}}
                 <p class='is-success'>
-                    {{character.$attributes.name}}
+                    {{character.name}}
                 </p>
             </div>
             <div class="level-item">
                 <div class="select selectLineVersion" 
-                    id="selectLineVersion_{{character.$attributes.id}}">
-                    <select data-character-id={{character.$attributes.id}}>
+                    id="selectLineVersion_{{character.id}}">
+                    <select data-character-id={{character.id}}>
                         @each(version in character.versions)
                         <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
                         @endeach
@@ -25,9 +25,9 @@
             </div>
             <div class="level-item">
                 <div class="select selectAudioVersion" 
-                id="selectAudioVersion_{{character.$attributes.id}}"
+                id="selectAudioVersion_{{character.id}}"
                 style="display:none;">
-                    <select data-character-id={{character.$attributes.id}} >
+                    <select data-character-id={{character.id}} >
                         <option value="-1">Enregistrer</option>
                         <option value="0" selected>Ecouter le robot</option>
                     </select>
