@@ -36,7 +36,7 @@ export default class AudiosController {
 
     const user = await auth.authenticate();
     const lineId = request.body().lineId;
-    let versionId = request.body().versionId;
+    const versionId = request.body().versionId;
     // Won't use a custom name instead Adonis will auto-generate a random name
     /*const fileName = `${user.id}_${lineId}_${await Hash.make(
       new Date().getTime().toString()
@@ -169,9 +169,10 @@ export default class AudiosController {
       });
     lines.map((line) => {
       line.audios.map((audio) => {
-        if (!(audio.version.doublers?.size || audio.version?.doublers))
-          audio.version.doublers = new Set();
-        audio.version.doublers.add(audio.creator);
+        if (!(audio.version.doublers?.length || audio.version?.doublers))
+          audio.version.doublers = [];
+        audio.version.doublers.push(audio.creator);
+        audio.version.doublers = Array.from(new Set(audio.version.doublers));
         audioVersions.add(audio.version);
       });
     });
@@ -184,10 +185,31 @@ export default class AudiosController {
     response,
   }: HttpContextContract) {
     const user = await auth.authenticate();
-    const { versionId } = request.all();
+    const { characterId, audioVersionId, sceneId } = request.all();
+    console.log(request.all());
+    /* const scene = await Scene.findOrFail(sceneId);
+    const lines = await scene
+      .related("lines")
+      .query()
+      .where("character_id", characterId)
+      .preload("audios");
+    const audios: Audio[] = [];
+    lines.map(async (line) => {
+      const audio = (
+        await line
+          .related("audios")
+          .query()
+          .where("version_id", audioVersionId)
+          .preload("line")
+      )[0];
+      console.log(audio);
+      audios.push(audio);
+    });
+    console.log(audios); */
     const audios = await Audio.query()
-      .where("version_id", versionId)
+      .where("version_id", audioVersionId)
       .preload("line");
+    console.log(audios);
     return response.json({ audios });
   }
 }

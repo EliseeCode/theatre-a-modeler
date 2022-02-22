@@ -19,7 +19,7 @@ export default class Version extends BaseModel {
   public creatorId: number;
 
   @computed()
-  public doublers: Set<User>;
+  public doublers: User[];
 
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;
