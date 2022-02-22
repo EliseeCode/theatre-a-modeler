@@ -31,4 +31,20 @@ export default class CharacterFetcher {
         scene.characters = res;
         return res;
     }
+    // public async getCharactersFromSceneWithCharacterVersion(scene: Scene) {
+    //     const charactersTable = await Database.query()
+    //         .select('lines.character_id', 'versions.id', 'versions.name')
+    //         .from('lines')
+    //         .join('versions', 'versions.id', 'lines.version_id')
+    //         .where('lines.scene_id', scene.id)
+    //         .distinct('lines.version_id');
+
+    //     let charactersArray = charactersTable.map((el) => el.character_id)
+    //     //remove duplicates
+    //     charactersArray = [...new Set(charactersArray)];
+
+    //     const res = await Character.query().preload('image').whereIn('id', charactersArray);
+    //     scene.characters = res;
+    //     return res;
+    // }
 }

@@ -99,6 +99,10 @@ Route.post("/recoverUsername", "AuthController.recoverUsername");
 Route.post("/recoverPassword", "AuthController.recoverPassword");
 
 Route.post("/audio/upload", "AudiosController.upload");
+Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions")
+
+
+
 
 Route.get("/recoverUsername", async ({ view }) => {
   return view.render("auth/recoverUsername");

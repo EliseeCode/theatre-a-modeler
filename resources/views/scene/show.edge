@@ -1,0 +1,229 @@
+@layout('layouts/master')
+@section('css')
+<link rel="stylesheet" href="/css/selectize.css">
+@endsection
+@section('js')
+<script src="/js/bulma-dropdown.js"></script>
+<script src="/js/bulma-modal.js"></script>
+@endsection
+@section('content')
+<style>
+    .saved{
+        background-color:#00FF8050;
+    }
+    
+    .lineText{
+        margin-bottom:3px;
+        overflow:hidden;
+    }
+    .image-character{
+    width:40px;
+    height:40px;
+    }
+   
+    .lineContainer{position:relative;}
+</style>
+<div class="container">
+<div class="level">
+    <div class="level-left">
+        <div class="level-item">
+            <div>
+            <h1 class="title">
+                {{scene.play.name}}
+            </h1>
+            </div>
+        </div>
+    </div>
+</div>    
+{{--  Select other scene from this play  --}}
+    <h2 class="subtitle">
+        <div class="select">
+            <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value">
+                @each(sceneFromPlay in scene.play.scenes)
+                <option value="{{sceneFromPlay.id}}" {{sceneFromPlay.id==scene.id?'selected':''}}>{{sceneFromPlay.name}}</option>
+                @endeach
+            </select>
+        </div>
+    </h2>
+
+    <h2 class="subtitle">
+        {{scene.description}}
+    </h2>
+    
+    <hr>
+    
+    {{--  LineContainer  --}}
+    
+    <div class="level" style="align-items:flex-start">
+        {{--  Select of Textversions & voice version  --}}
+        <div class="level-item">
+            <div class="selectContainer">
+                @each(character in characters)
+                    @include('partials/scenes/show/selectCharacterVersion')
+                @endeach
+            </div>
+        </div>
+        <div class="level-item" >
+            <div class="lineContainer" style="text-align:center;"> 
+                @each((line,indexLine) in scene.lines)
+                        @include('partials/scenes/show/line')    
+                @endeach
+            @endif
+            </div>
+        </div>
+    </div>
+    
+</div>
+    <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
+        
+    <script>
+        $(".selectLineVersion select").on('change',function(){
+            alert($(this).val()+$(this).data('character-id'))
+            var characterId=$(this).data('character-id');
+            var versionId=$(this).val();
+            //if it is a real lineVersion
+            if(versionId>0){
+                UpdateDisplayLineVersion(characterId,versionId);
+                getAudioVersion(characterId,versionId)
+            }else{
+            //if it is 0=>Create a new text alternative
+                $("#characterSelect_"+characterId+" .selectAudioVersion").hide();
+                versionName=prompt("Quel est le nom de votre nouvelle version?");
+                createNewLineVersion(characterId);
+            }
+        })
+
+        function UpdateDisplayLineVersion(characterId,versionId)
+        {
+            $(".lineCharacter_"+characterId).hide();
+            $(".lineCharacter_"+characterId+".lineVersion_"+versionId).show();
+        }
+       
+        function getAudioVersion(characterId,versionId){
+            console.log("getAudioVersion")
+            const token = $('.csrfToken').data('csrf-token');
+            const params = { 
+                characterId,
+                versionId,
+                _csrf: token
+            };
+            $.get('/audio/getAudioVersions', params, function(data) {
+                console.log("getAudioVersionAnswer",data)
+                $("#characterSelect_"+characterId+" .selectAudioVersion").show();
+                if(data)
+                {
+                    var selectAudioVersion=$("#characterSelect_"+characterId+" .selectAudioVersion select");
+                    selectAudioVersion.find("option.audioVersionOption").remove();
+                    for(let version in data.versions)
+                    {
+                        selectAudioVersion.append(`<option val=${version.id}>
+                            ${version.name}
+                            </option>`);
+                    }
+                }
+            });
+        }
+
+        $(".selectAudioVersion select").on('change',function(){
+            alert($(this).val()+$(this).data('character-id'))
+            var characterId=$(this).data('character-id');
+            var versionId=$(this).val();
+            UpdateDisplayLineVersion(characterId,versionId);
+            getAudioVersion(characterId,versionId)
+        })
+
+
+        function createNewLineVersion(characterId){
+            
+        }
+
+
+
+
+
+
+
+
+
+
+    function toggleDropdownMenu(objectType,objectId){
+        window.event.stopPropagation();
+        $("#dropdown-option-container").html("");
+        $("#dropdown-menu-"+objectType+"-"+objectId).clone().attr('id', 'currentDropDown').appendTo("#dropdown-option-container");
+        $("#dropdown-option-container").show();
+        var positionTrigger = $("#dropdown-trigger-"+objectType+"-"+objectId).offset();
+        console.log(positionTrigger);
+        $("#dropdown-option-container").offset({top:positionTrigger.top+20, left:positionTrigger.left-200})
+    }
+    $(document).mouseup(function(e) 
+    {
+        var container = $("#dropdown-option-container, .dropdown-trigger");
+        var stuffToHide=$("#dropdown-option-container");
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0) 
+        {
+            stuffToHide.hide();
+        }
+    });
+
+   
+    let timer = [];
+   
+    function updateText(lineId) {
+        if(timer[lineId]!=null){
+        clearTimeout(timer[lineId]);
+        }
+        timer[lineId] = setTimeout(()=>{sendUpdateText(lineId)}, 1000);
+    }
+    function sendUpdateText(lineId){
+        console.log("updateText")
+        const text=$(`#lineText_${lineId}`).val();
+        const token = $('.csrfToken').data('csrf-token');
+        const params = { 
+            lineId, 
+            text,
+            _csrf: token
+        };
+        $.post('/line/updateText', params, function(data) {
+            console.log("updateTextData")
+            if(data)
+            {
+                $(`#lineText_${lineId}`).addClass('saved');
+                setTimeout(function(){
+                    $('.saved').removeClass('saved')
+                }, 500);
+            }
+        });
+    }
+    
+    function updateCharacter(characterId,lineId)
+    {
+        const token = $('.csrfToken').data('csrf-token');
+        const params = { 
+            lineId, 
+            characterId,
+            _csrf: token
+        };
+
+        $.post('/line/updateCharacter', params, function(data) {
+            if(data)
+            {
+                $(`#select_character_line_${lineId}`).html("");
+                characterClone=$(`#character_line_${characterId}_${lineId}`).clone();
+                characterClone.appendTo(`#select_character_line_${lineId}`);
+                characterClone.find('.caret').show();
+            }
+        });
+    }
+
+    function auto_grow(element) {
+        element.style.height = "5px";
+        element.style.height = (element.scrollHeight)+"px";
+    }
+    [...document.getElementsByClassName('lineText')].forEach((element)=>{
+        auto_grow(element)
+    })    
+    </script>
+    
+    
+@endsection
