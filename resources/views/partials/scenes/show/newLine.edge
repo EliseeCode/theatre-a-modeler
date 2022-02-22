@@ -5,10 +5,9 @@
     
     <div class="field has-addons m-0">
         
-        @include('partials/characters/inline')
         <div class="control">
             <div style="position:relative;width:500px;">
-                <span>line.versionId:NewLineVersion</span> 
+              @include('partials/characters/inline')
                 {{--  <textarea oninput="auto_grow(this);updateText({{line.id}});"   --}}
                 <textarea oninput="auto_grow(this);" 
                     name='text' 
@@ -17,9 +16,7 @@
                     cols="30" 
                     rows="2" 
                     style="resize: none;background-color:chartreuse;"
-                    placeholder="{{line.text}}">
-                    Ecrivez votre alternative ici
-                </textarea>
+                    placeholder="{{line.text}}">Ecrivez votre alternative ici</textarea>
                
             </div>
         </div>

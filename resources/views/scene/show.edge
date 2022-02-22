@@ -161,6 +161,9 @@
     <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
         
     <script>
+    ////////////////////
+    // LINE VERSION SELECTION
+    ////////////////////
         $(".selectLineVersion select").on('change',function(){
             var characterId=$(this).data('character-id');
             var versionId=$(this).val();
@@ -211,14 +214,53 @@
                 }
             });
         }
-        
+    ////////////////////
+    // AUDIO VERSION SELECTION
+    ////////////////////    
         $(".selectAudioVersion select").on('change',function(){
             alert($(this).val()+$(this).data('character-id'))
             var characterId=$(this).data('character-id');
-            var versionId=$(this).val();
-            UpdateDisplayLineVersion(characterId,versionId);
-            getAudioVersion(characterId,versionId)
+            var audioVersionId=parseInt($(this).val());
+            switch(audioVersionId){
+                case 0:
+                console.log("on écoute le robot");
+                $(".lineCharacter_"+characterId+" .btnAction").hide();
+                $(".lineCharacter_"+characterId+" .btnRobotize").show();
+                break;
+                case -1:
+                console.log("on enregistre sa voix==>Nouvelle version");
+                versionName=prompt("Quel est le nom de votre nouvelle version Audio?");
+                createNewAudioVersion(versionName,characterId);
+                break;
+                default:
+                loadAudioPaths(audioVersionId,characterId);    
+                displayAudioReader(audioVersionId,characterId);
+            }
+            
+            
         })
+
+
+        function loadAudioPaths(audioVersionId,characterId){
+            const token = $('.csrfToken').data('csrf-token');
+            const params = { 
+                characterId,
+                audioVersionId,
+                sceneId:{{scene.id}},
+                _csrf: token
+            };
+            $.get('/audio/getAudioFromAudioVersion', params, function(data) {
+                console.log("getAudioVersionAnswer",data)
+                
+            });
+
+        }
+        function displayAudioReader(audioVersionId,characterId){
+            $(".lineCharacter_"+characterId+" .btnAction").hide();
+            $(".lineCharacter_"+characterId+" .btnPlay").show();
+        }
+
+
 
 
         function createNewLineVersion(versionName,characterId){
@@ -232,7 +274,7 @@
             $.post("/lines/createNewVersion",params,function(data){
                 console.log(data);
                 versionId=data.versionId;
-                for(let line of data)
+                for(let line of data.lines)
                 {
                     $(".linePosition_"+line.position).hide();
                     $(".linePosition_"+line.position+".line_newLine").show();
@@ -243,8 +285,26 @@
                     
                 }
             })
-            
         }
+
+        function createNewAudioVersion(versionName,characterId){
+            const token = $('.csrfToken').data('csrf-token');
+            const params = { 
+                characterId:characterId,
+                sceneId:{{scene.id}},
+                name:versionName,
+                _csrf: token
+            };
+            $.post("/audios/createNewVersion",params,function(version){
+                console.log(version);
+                versionId=version.id;
+                //show microphone next to character's line
+                $(".lineCharacter_"+characterId+" .btnAction").hide();
+                $(".lineCharacter_"+characterId+" .btnRecordControl").show();
+            })
+        }
+
+
 
 
 

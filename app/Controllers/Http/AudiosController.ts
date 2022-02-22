@@ -101,6 +101,32 @@ export default class AudiosController {
     } else return view.render("errors/not-found");
   }
 
+
+
+
+
+
+
+  public async createNewVersion({ request, response }: HttpContextContract) {
+    const sceneId = request.body().sceneId;
+    const characterId = request.body().characterId;
+    const versionName = request.body().name;
+
+    //version creation
+    const version = await Version.create({
+      name: versionName
+    })
+
+    return response.json(version);
+  }
+
+
+
+
+
+
+
+
   public async edit({ }: HttpContextContract) { }
 
   public async update({ }: HttpContextContract) { }
