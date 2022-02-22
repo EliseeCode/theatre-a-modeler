@@ -78,7 +78,6 @@
         
     <script>
         $(".selectLineVersion select").on('change',function(){
-            alert($(this).val()+$(this).data('character-id'))
             var characterId=$(this).data('character-id');
             var versionId=$(this).val();
             //if it is a real lineVersion
@@ -105,10 +104,15 @@
             const params = { 
                 characterId,
                 versionId,
+                sceneId:{{scene.id}}
                 _csrf: token
             };
             $.get('/audio/getAudioVersions', params, function(data) {
                 console.log("getAudioVersionAnswer",data)
+                //data: audioVersion[].id
+                //                    .doubleur:{name,id}
+                //                    .name
+
                 $("#characterSelect_"+characterId+" .selectAudioVersion").show();
                 if(data)
                 {
@@ -123,7 +127,7 @@
                 }
             });
         }
-
+        
         $(".selectAudioVersion select").on('change',function(){
             alert($(this).val()+$(this).data('character-id'))
             var characterId=$(this).data('character-id');
@@ -136,6 +140,47 @@
         function createNewLineVersion(characterId){
             
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

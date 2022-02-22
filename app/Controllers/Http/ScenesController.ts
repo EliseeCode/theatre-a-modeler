@@ -42,22 +42,27 @@ export default class ScenesController {
       .where('lines.scene_id', scene.id)
       .distinct("lines.version_id", "lines.character_id");
 
+    for (let line of lines) { line.character.serialize() };
     //Character[].versions[]
     const characters = lines.reduce(function (acc, cur) {
-      (acc[cur.character["name"]] = acc[cur.character["name"]] || { ...cur.character, versions: [] })
-        .versions.push(cur.version);
 
-      // (acc[cur.character["name"]] = acc[cur.character["name"]] || { versions: [], character: cur.character })
-      //   .character.versions = cur.version;
+      if (acc.map((char) => { char.id }).includes(cur.character.id)) {
+        //push version if character is already in accumulator
+        acc.filter((char) => { return char.id == cur.character.id })[0].versions.push(cur.version);
+      }
+      else {
+        cur.character.versions = [cur.version];
+        acc.push(cur.character)
+      }
       return acc;
-    }, {});
+    }, []);
 
-    const charactersArray = Object.values(characters);
+    //const charactersArray = Object.values(characters);
     console.log(characters)
 
     return view.render("scene/show", {
       scene,
-      characters: charactersArray
+      characters: characters
     });
   }
 

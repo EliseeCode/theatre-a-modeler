@@ -136,7 +136,8 @@ export default class AudiosController {
       });
   }
 
-  public async getAudioVersions({ }: HttpContextContract) {
+  public async getAudioVersions({ request }: HttpContextContract) {
+
     return '';
   }
 
