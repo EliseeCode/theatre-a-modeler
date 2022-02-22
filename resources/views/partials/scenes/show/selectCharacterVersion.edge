@@ -2,17 +2,20 @@
 <div class='container characterSelect' id="characterSelect_{{character.id}}">
     
       
-        <div class="level">
-            <div class="level-item">
-                {{--  <figure class="image is-128x128 is-inline-block">
+        <div class="grid" style="display: grid;grid-template-columns: 150px 200px 200px">
+                                
+            <div style="display: grid; grid-template-columns: auto auto;">
+                
                     <img src={{character?.image?.public_path}}
-                         alt="image de {{character.name}}">
-                </figure>  --}}
-                <p class='is-success'>
+                         alt="image de {{character.name}}"
+                         width="30px">
+                
+                    <div>
                     {{character.name}}
-                </p>
+                    </div>
+                
             </div>
-            <div class="level-item">
+            <div>
                 <div class="select selectLineVersion" 
                     id="selectLineVersion_{{character.id}}">
                     <select data-character-id={{character.id}}>
@@ -23,7 +26,7 @@
                     </select>
                 </div>
             </div>
-            <div class="level-item">
+            <div>
                 <div class="select selectAudioVersion" 
                 id="selectAudioVersion_{{character.id}}">
                     <select data-character-id={{character.id}} >
