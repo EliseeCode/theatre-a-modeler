@@ -1,5 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Line from "App/Models/Line";
+import Version from "App/Models/Version";
+import Lines from "Database/migrations/1642771551381_lines";
 
 export default class LinesController {
   public dataName = "lines";
@@ -31,6 +33,55 @@ export default class LinesController {
     });
     return response.redirect().back();
   }
+
+
+
+
+
+
+
+
+  public async createNewVersion({ params, request, response }: HttpContextContract) {
+    const sceneId = request.body().sceneId;
+    const characterId = request.body().characterId;
+    const versionName = request.body().name;
+
+    //version creation
+    const version = await Version.create({
+      name: versionName
+    })
+    //collect all line on this scene with this character to grab position
+    const lines = await Line.query()
+      .where('sceneId', sceneId)
+      .andWhere('characterId', characterId);
+    console.log(lines);
+    //create blueprint for createmany Line
+    let newLines: any[] = [];
+    for (let line of lines) {
+      newLines.push({
+        text: "",
+        sceneId: sceneId,
+        position: line.position,
+        versionId: version.id,
+        characterId: characterId
+      })
+    }
+
+    const created_lines = await Line.createMany(newLines);
+
+    return response.json(created_lines);
+  }
+
+
+
+
+
+
+
+
+
+
+
 
   public async store({ }: HttpContextContract) { }
 

@@ -22,7 +22,63 @@
     }
    
     .lineContainer{position:relative;}
+    @keyframes glowing {
+  0% {
+    background-color: #fde0e6;
+    box-shadow: 0 0 10px #fde0e6;
+  }
+  50% {
+    background-color: #ff0000;
+    box-shadow: 0 0 30px #ff0000;
+  }
+  100% {
+    background-color: #fde0e6;
+    box-shadow: 0 0 10px #fde0e6;
+  }
+}
+
+  .glowing {
+    animation: glowing 1300ms infinite;
+  }
+.audioPlayer {
+    display: flex;
+    justify-content: center;
+  align-items: center;
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   height: 7vh;
+   background-color: red;
+   color: white;
+   text-align: center;
+}
+.audioPlayer .controls *     {
+    display: inline;
+}
+
+.controls .play, .controls .pause {
+  margin: 15px 25px;
+  color: #6e946c;
+}
+.controls .volume {
+  margin-right: 30px;
+  font-size: 0.8em;
+}
+.inline {
+  display: inline-block;
+}
+.vertically-centered {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
 </style>
+
+
+
+
+
 <div class="container">
 <div class="level">
     <div class="level-left">
@@ -49,7 +105,7 @@
     <h2 class="subtitle">
         {{scene.description}}
     </h2>
-    
+</div>    
     <hr>
     
     {{--  LineContainer  --}}
@@ -63,9 +119,15 @@
                 @endeach
             </div>
         </div>
-        <div class="level-item" >
+        <div class="level-item" style="border-left:2px white solid;">
             <div class="lineContainer" style="text-align:center;"> 
+                @set('position',null)
+                
                 @each((line,indexLine) in scene.lines)
+                        @if(line.position!=position)
+                        @include('partials/scenes/show/newLine')  
+                        @endif
+                        @set('position',line.position)
                         @include('partials/scenes/show/line')    
                 @endeach
             @endif
@@ -73,7 +135,29 @@
         </div>
     </div>
     
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
         
     <script>
@@ -88,7 +172,7 @@
             //if it is 0=>Create a new text alternative
                 $("#characterSelect_"+characterId+" .selectAudioVersion").hide();
                 versionName=prompt("Quel est le nom de votre nouvelle version?");
-                createNewLineVersion(characterId);
+                createNewLineVersion(versionName,characterId);
             }
         })
 
@@ -104,7 +188,7 @@
             const params = { 
                 characterId,
                 versionId,
-                sceneId:{{scene.id}}
+                sceneId:{{scene.id}},
                 _csrf: token
             };
             $.get('/audio/getAudioVersions', params, function(data) {
@@ -137,7 +221,28 @@
         })
 
 
-        function createNewLineVersion(characterId){
+        function createNewLineVersion(versionName,characterId){
+            const token = $('.csrfToken').data('csrf-token');
+            const params = { 
+                characterId:characterId,
+                sceneId:{{scene.id}},
+                name:versionName,
+                _csrf: token
+            };
+            $.post("/lines/createNewVersion",params,function(data){
+                console.log(data);
+                versionId=data.versionId;
+                for(let line of data)
+                {
+                    $(".linePosition_"+line.position).hide();
+                    $(".linePosition_"+line.position+".line_newLine").show();
+                    $(".linePosition_"+line.position+".line_newLine textarea")
+                        .on("input",function(){
+                            updateText(line.id);
+                        })
+                    
+                }
+            })
             
         }
 
@@ -222,7 +327,7 @@
     }
     function sendUpdateText(lineId){
         console.log("updateText")
-        const text=$(`#lineText_${lineId}`).val();
+        const text=$(`#lineText_${lineId}`).val().trim();
         const token = $('.csrfToken').data('csrf-token');
         const params = { 
             lineId, 

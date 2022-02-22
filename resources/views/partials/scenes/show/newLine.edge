@@ -1,23 +1,25 @@
 <div 
-    style="position:relative;" 
-    id="line_{{line.id}}" 
-    class="linePosition_{{line.position}} lineCharacter_{{line.characterId}} lineVersion_{{line.versionId}}">
+    style="position:relative;display:none;"  
+    class="linePosition_{{line.position}} line_newLine lineCharacter_{{line.characterId}} lineVersion_{{line.versionId}}"
+    >
     
     <div class="field has-addons m-0">
         
         @include('partials/characters/inline')
         <div class="control">
             <div style="position:relative;width:500px;">
-                <span>line.versionId:{{line.version.name}}</span> 
-                
-                <textarea oninput="auto_grow(this);updateText({{line.id}});" 
+                <span>line.versionId:NewLineVersion</span> 
+                {{--  <textarea oninput="auto_grow(this);updateText({{line.id}});"   --}}
+                <textarea oninput="auto_grow(this);" 
                     name='text' 
-                    id ="lineText_{{line.id}}" 
+                    id ="lineText_newLine" 
                     class="lineText textarea" 
                     cols="30" 
-                    rows="3" 
-                    style="resize: none;"
-                    placeholder="{{line.text}}">{{line.text}}</textarea>
+                    rows="2" 
+                    style="resize: none;background-color:chartreuse;"
+                    placeholder="{{line.text}}">
+                    Ecrivez votre alternative ici
+                </textarea>
                
             </div>
         </div>
@@ -29,11 +31,11 @@
                       </span>
                       <span style="pointer-events: none;">Enregistrer !</span> 
                     </button> 
-                    <button data-line-id="{{line.id}}" class="button is-danger is-light is-inverted is-focused btnUpload ml-3" style="display:none;">
+                    {{--  <button data-line-id="{{line.id}}" class="button is-danger is-light is-inverted is-focused btnUpload ml-3" style="display:none;">
                       <span class="icon" style="pointer-events: none;">
                         <i class="fa fa-solid fa-upload" style="pointer-events: none;"></i>
                       </span>
-                    </button> 
+                    </button>   --}}
                     <button class="button is-danger is-light is-inverted is-focused btnCancel ml-3" style="display:none;">
                       <span class="icon" style="pointer-events: none;">
                         <i class="fa fa-solid fa-eraser" style="pointer-events: none;"></i>

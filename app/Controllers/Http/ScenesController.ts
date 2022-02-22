@@ -29,6 +29,7 @@ export default class ScenesController {
     //get all the lines from a scene
     await scene.load("lines", (linesQuery) => {
       linesQuery
+        .preload("version")
         .preload("character", (characterQuery) => {
           characterQuery.preload("image");
         })
@@ -37,16 +38,17 @@ export default class ScenesController {
 
 
     const lines = await Line.query()
-      .preload('character')
+      .preload('character', (characterQuery) => { characterQuery.preload("image") })
       .preload('version')
       .where('lines.scene_id', scene.id)
       .distinct("lines.version_id", "lines.character_id");
 
-    for (let line of lines) { line.character.serialize() };
-    //Character[].versions[]
-    const characters = lines.reduce(function (acc, cur) {
+    const linesJSON = lines.map((line) => line.serialize())
 
-      if (acc.map((char) => { char.id }).includes(cur.character.id)) {
+    //Character[].versions[]
+    const characters = linesJSON.reduce(function (acc, cur) {
+      if (cur.character == null) { return acc; }
+      if (acc.map((char) => { return char.id }).includes(cur.character.id)) {
         //push version if character is already in accumulator
         acc.filter((char) => { return char.id == cur.character.id })[0].versions.push(cur.version);
       }
@@ -58,7 +60,7 @@ export default class ScenesController {
     }, []);
 
     //const charactersArray = Object.values(characters);
-    console.log(characters)
+
 
     return view.render("scene/show", {
       scene,
