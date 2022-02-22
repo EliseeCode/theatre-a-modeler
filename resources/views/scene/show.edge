@@ -207,8 +207,9 @@
                 {
                     var selectAudioVersion=$("#characterSelect_"+characterId+" .selectAudioVersion select");
                     selectAudioVersion.find("option.audioVersionOption").remove();
-                    for(let version in data.versions)
+                    for(let version of data.versions)
                     {
+                        console.log(version);
                         selectAudioVersion.append(`<option val=${version.id}>
                             ${version.name}
                             </option>`);

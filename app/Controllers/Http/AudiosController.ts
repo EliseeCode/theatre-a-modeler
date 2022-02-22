@@ -23,7 +23,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
   public async store({ request, response, auth }: HttpContextContract) {
     const audioFile = await request.file("audio");
@@ -109,17 +109,15 @@ export default class AudiosController {
 
     //version creation
     const version = await Version.create({
-      name: versionName
-    })
+      name: versionName,
+    });
 
     return response.json(version);
   }
 
+  public async edit({}: HttpContextContract) {}
 
-
-  public async edit({ }: HttpContextContract) { }
-
-  public async update({ }: HttpContextContract) { }
+  public async update({}: HttpContextContract) {}
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete
@@ -171,11 +169,13 @@ export default class AudiosController {
       });
     lines.map((line) => {
       line.audios.map((audio) => {
+        if (!(audio.version.doublers?.size || audio.version?.doublers))
+          audio.version.doublers = new Set();
         audio.version.doublers.add(audio.creator);
         audioVersions.add(audio.version);
       });
     });
-    return response.json({ versions: audioVersions });
+    return response.json({ versions: Array.from(audioVersions) });
   }
 
   public async getAudiosFromAudioVersion({
