@@ -372,14 +372,14 @@ export default class ScenesController {
     await play.load("scenes");
     const user = await auth.authenticate();
     const name = request.body().name || "Scène sans nom";
-    await Scene.create({
+    const scene = await Scene.create({
       name: name,
       position: play.scenes.length,
       description: "",
       creatorId: user.id,
       playId: play.id,
     });
-    return response.redirect().back();
+    return response.redirect('/scene/' + scene.id + "/edit");
   }
 
   public async updateName({ request, params }: HttpContextContract) {

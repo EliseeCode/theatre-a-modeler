@@ -5,7 +5,9 @@ enum ObjectType {
     USER = 3,
     CHARACTER = 4,
     GROUP = 5,
-    LINE = 6
+    LINE = 6,
+    AUDIO = 7
+
 
 }
 export default ObjectType

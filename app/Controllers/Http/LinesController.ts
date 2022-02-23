@@ -1,6 +1,8 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import Database from "@ioc:Adonis/Lucid/Database";
 import Line from "App/Models/Line";
 import Version from "App/Models/Version";
+import ObjectType from "Contracts/enums/ObjectType";
 import Lines from "Database/migrations/1642771551381_lines";
 
 export default class LinesController {
@@ -41,20 +43,36 @@ export default class LinesController {
 
 
 
-  public async createNewVersion({ params, request, response }: HttpContextContract) {
+  public async createNewVersion({ auth, params, request, response }: HttpContextContract) {
     const sceneId = request.body().sceneId;
     const characterId = request.body().characterId;
-    const versionName = request.body().name;
-
+    //const versionName = request.body().name;
+    const user = await auth.authenticate();
+    const result = await Database.query()
+      .from('versions')
+      .select('*')
+      .join('lines', 'lines.version_id', 'versions.id')
+      .where("versions.creator_id", user.id)
+      .andWhere("lines.character_id", characterId)
+      .countDistinct('lines.version_id as nbreVersion');
+    console.log(result);
+    let nbreVersion = 0;
+    if (result.length > 0) {
+      nbreVersion = result[0].nbreVersion;
+    }
+    const newNumVersion = nbreVersion++;
+    const versionName = user.username + "-" + newNumVersion;
     //version creation
     const version = await Version.create({
-      name: versionName
+      name: versionName,
+      creatorId: user.id,
+      type: ObjectType.CHARACTER
     })
     //collect all line on this scene with this character to grab position
     const lines = await Line.query()
       .where('sceneId', sceneId)
-      .andWhere('characterId', characterId);
-    console.log(lines);
+      .andWhere('character_id', characterId)
+      .distinct('lines.position');
     //create blueprint for createmany Line
     let newLines: any[] = [];
     for (let line of lines) {
@@ -66,11 +84,11 @@ export default class LinesController {
         characterId: characterId
       })
     }
-    console.log(newLines)
+
 
     const created_lines = await Line.createMany(newLines);
 
-    return response.json({ lines: created_lines, versionId: version.id });
+    return response.json({ lines: created_lines, version: version });
   }
 
 

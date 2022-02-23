@@ -6,6 +6,7 @@ import { URL } from "url";
 import Version from "App/Models/Version";
 import Scene from "App/Models/Scene";
 import Line from "App/Models/Line";
+import ObjectType from "Contracts/enums/ObjectType";
 
 export default class AudiosController {
   public dataName = "audios";
@@ -24,7 +25,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
   public async store({ request, response, auth }: HttpContextContract) {
     const audioFile = await request.file("audio");
@@ -68,7 +69,11 @@ export default class AudiosController {
     if (!versionId) {
       console.log("No version given. Creating a new one...");
       versionId = await (
-        await Version.create({ name: "let there be light" })
+        await Version.create({
+          name: "let there be light",
+          creatorId: user.id,
+          type: ObjectType.AUDIO
+        })
       ).id;
     }
     const locationOrigin = new URL(request.completeUrl()).origin;
@@ -103,22 +108,24 @@ export default class AudiosController {
     } else return view.render("errors/not-found");
   }
 
-  public async createNewVersion({ request, response }: HttpContextContract) {
+  public async createNewVersion({ auth, request, response }: HttpContextContract) {
     const sceneId = request.body().sceneId;
     const characterId = request.body().characterId;
     const versionName = request.body().name;
-
+    const user = await auth.authenticate();
     //version creation
     const version = await Version.create({
       name: versionName,
+      type: ObjectType.AUDIO,
+      creatorId: user.id
     });
 
     return response.json(version);
   }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete

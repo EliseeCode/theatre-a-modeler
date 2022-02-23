@@ -1,23 +1,28 @@
 
-<div class='container characterSelect' id="characterSelect_{{character.id}}">
+<div class='container characterSelect characterSelect_{{character.id}}'>
     
       
-        <div class="grid" style="display: grid;grid-template-columns: 150px 200px 200px">
+        <div class="grid character_choice character_choice_{{character.id}}" style="display: grid;grid-template-columns: 150px 200px">
                                 
             <div style="display: grid; grid-template-columns: auto auto;">
+
                 
-                    <img src={{character?.image?.public_path}}
+ 
+                
+                @if(character?.image)
+                    <img src={{character?.image?.publicPath}}
                          alt="image de {{character.name}}"
                          width="30px">
-                
+                @endif
                     <div>
                     {{character.name}}
                     </div>
                 
             </div>
+            
             <div>
-                <div class="select selectLineVersion" 
-                    id="selectLineVersion_{{character.id}}">
+                <div class="select selectLineVersion selectLineVersion_{{character.id}}" 
+                    >
                     <select data-character-id={{character.id}}>
                         @each(version in character.versions)
                         <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
@@ -26,14 +31,6 @@
                     </select>
                 </div>
             </div>
-            <div>
-                <div class="select selectAudioVersion" 
-                id="selectAudioVersion_{{character.id}}">
-                    <select data-character-id={{character.id}} >
-                        <option value="-1">Enregistrer</option>
-                        <option value="0" selected>Ecouter le robot</option>
-                    </select>
-                </div>
-            </div>
+            
         </div>
   </div>

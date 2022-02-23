@@ -1,55 +1,68 @@
 <div 
     style="position:relative;display:none;"  
-    class="linePosition_{{line.position}} line_newLine lineCharacter_{{line.characterId}} lineVersion_new"
+    class="linePosition_{{line.position}} lineCharacter_{{line.characterId}} line_newLine lineVersion_new line"
     >
     
     <div class="field has-addons m-0">
         
         <div class="control">
             <div style="position:relative;width:500px;">
-              @include('partials/characters/inline')
+              {{--  @include('partials/characters/inline')  --}}
                 {{--  <textarea oninput="auto_grow(this);updateText({{line.id}});"   --}}
+               
+                @set('character',line.character)
+                @set(character,'versions',characters.filter((char)=>{return char.id==character.id})[0].versions)
+                @include('partials/scenes/show/selectCharacterVersion')
+                
                 <textarea oninput="auto_grow(this);" 
                     name='text' 
-                    id ="lineText_newLine" 
+                    id ="" 
                     class="lineText textarea" 
                     cols="30" 
                     rows="2" 
-                    style="resize: none;background-color:chartreuse;"
-                    placeholder="{{line.text}}">Ecrivez votre alternative ici</textarea>
+                    style="resize: none;"
+                    placeholder="{{line.text}}"></textarea>
                
             </div>
         </div>
         <div class="control box m-1">
+          <div>
+            <div class="select selectAudioVersion selectAudioVersion_{{character.id}}">
+                <select data-character-id={{character.id}} >
+                    <option value="-1">Enregistrer</option>
+                    <option value="0" selected>Ecouter le robot</option>
+                </select>
+            </div>
+          </div>
                   {{--  maybe we can use columns??  --}}
-                    <button class="button is-danger is-light is-inverted is-focused btnRecordControl" style="display:none;">
-                      <span class="icon" style="pointer-events: none;">
-                        <i class="fa fa-solid fa-microphone" style="pointer-events: none;"></i>
-                      </span>
-                      <span style="pointer-events: none;">Enregistrer !</span> 
-                    </button> 
-                    <button data-line-id="{{line.id}}" class="button is-danger is-light is-inverted is-focused btnUpload ml-3" style="display:none;">
-                      <span class="icon" style="pointer-events: none;">
-                        <i class="fa fa-solid fa-upload" style="pointer-events: none;"></i>
-                      </span>
-                    </button> 
-                    <button class="button is-danger is-light is-inverted is-focused btnCancel ml-3" style="display:none;">
-                      <span class="icon" style="pointer-events: none;">
-                        <i class="fa fa-solid fa-eraser" style="pointer-events: none;"></i>
-                      </span>
-                    </button>
-                    <button class="button is-info is-light is-inverted is-focused btnRobotize" style="">
-                      <span class="icon">
-                        <i class="fa fa-solid fa-robot"></i>
-                      </span>
-                      <span>Lire !</span>  
-                    </button>
-                    <button class="button is-primary is-light is-inverted is-focused btnPlay" data-position="{{line.position}}" data-version="{{line?.audios?.[0].version.id ?? ''}}" style="display:none;">
-                        <span class="icon">
-                            <i class="fa fa-solid fa-play"></i>
-                        </span>
-                        <span>Lire !</span>
-                    </button>          
+          <button class="button is-danger is-light is-inverted is-focused btnRecordControl btnAction" style="display:none;">
+            <span class="icon" style="pointer-events: none;">
+              <i class="fa fa-solid fa-microphone" style="pointer-events: none;"></i>
+            </span>
+            <span style="pointer-events: none;">Enregistrer !</span> 
+          </button> 
+          <button data-line-id="{{line.id}}" class="button is-danger is-light is-inverted is-focused btnUpload ml-3 btnAction" style="display:none;">
+            <span class="icon" style="pointer-events: none;">
+              <i class="fa fa-solid fa-upload" style="pointer-events: none;"></i>
+            </span>
+          </button> 
+          <button class="button is-danger is-light is-inverted is-focused btnCancel ml-3 btnAction" style="display:none;">
+            <span class="icon" style="pointer-events: none;">
+              <i class="fa fa-solid fa-eraser" style="pointer-events: none;"></i>
+            </span>
+          </button>
+          <button class="button is-info is-light is-inverted is-focused btnRobotize btnAction" style="">
+            <span class="icon">
+              <i class="fa fa-solid fa-robot"></i>
+            </span>
+            <span>Lire !</span>  
+          </button>
+          <button class="button is-primary is-light is-inverted is-focused btnPlay btnAction" data-position="{{line.position}}" data-version="{{line?.audios?.[0].version.id ?? ''}}" style="display:none;">
+              <span class="icon">
+                  <i class="fa fa-solid fa-play"></i>
+              </span>
+              <span>Lire !</span>
+          </button>          
         </div>
    
     </div>

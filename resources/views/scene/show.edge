@@ -111,14 +111,6 @@
     {{--  LineContainer  --}}
     
     <div class="level" style="align-items:flex-start">
-        {{--  Select of Textversions & voice version  --}}
-        <div class="level-item">
-            <div class="selectContainer">
-                @each(character in characters)
-                    @include('partials/scenes/show/selectCharacterVersion')
-                @endeach
-            </div>
-        </div>
         <div class="level-item" style="border-left:2px white solid;">
             <div class="lineContainer" style="text-align:center;"> 
                 @set('position',null)
@@ -139,24 +131,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
     <audio id="player"></audio>
         
@@ -169,15 +143,26 @@
         const characterToAudioVersion = {};
         let recording = false;
         let mediaRecorder;
+        let characterIds=new Set();
     ////////////////////
     // LINE VERSION SELECTION
     ////////////////////
+        $(".selectLineVersion select").each(function(){
+            characterIds.add($(this).data('character-id'))
+        })
+        characterIds.forEach((characterId)=>{updateLineVersion(characterId,1);}); 
+
+        
         $(".selectLineVersion select").on('change',function(e){
             const audioVersionSelect = e.target.closest(".characterSelect").querySelector(".selectAudioVersion select");
-            audioVersionSelect.length = 2;
-
             var characterId=$(this).data('character-id');
             var versionId=$(this).val();
+            updateLineVersion(characterId,versionId);
+        })
+
+        function updateLineVersion(characterId,versionId)
+        {
+            UpdateDisplaySelectLineVersion(characterId,versionId);
             //if it is a real lineVersion
             if(versionId>0){
                 console.log('versionId',versionId);
@@ -185,13 +170,12 @@
                 getAudioVersion(characterId,versionId)
             }else{
             //if it is 0=>Create a new text alternative
-                //$("#characterSelect_"+characterId+" .selectAudioVersion").hide();
-                
-                versionName=prompt("Quel est le nom de votre nouvelle version?");
-                createNewLineVersion(versionName,characterId);
+                createNewLineVersion(characterId);
             }
-        })
-
+        }
+        function UpdateDisplaySelectLineVersion(characterId,versionId){
+            $(".characterSelect_"+characterId+" .selectLineVersion select").val(versionId);
+        }
         function UpdateDisplayLineVersion(characterId,versionId)
         {
             $(".lineCharacter_"+characterId).hide();
@@ -231,21 +215,23 @@
             });
         }
 
-        function createNewLineVersion(versionName,characterId){
+        function createNewLineVersion(characterId){
             const token = $('.csrfToken').data('csrf-token');
             const params = { 
                 characterId:characterId,
                 sceneId:{{scene.id}},
-                name:versionName,
                 _csrf: token
             };
             $.post("/lines/createNewVersion",params,function(data){
                 console.log(data);
-                versionId=data.versionId;
+                versionId=data.version.id;
+                $(`.selectLineVersion_${characterId} select`).prepend(`<option value="${versionId}">${data.version.name}</option>`);
+                $(`.selectLineVersion_${characterId} select`).val(versionId);
                 for(let line of data.lines)
                 {
                     $(".linePosition_"+line.position).hide();
                     $(".linePosition_"+line.position+".line_newLine").show();
+                    $(".linePosition_"+line.position+".line_newLine textarea").attr("id","lineText_"+line.id)
                     $(".linePosition_"+line.position+".line_newLine textarea")
                         .on("input",function(){
                             updateText(line.id);
@@ -390,7 +376,7 @@
             };
 
             const cancelRecording = (event, objectURL) => {
-            console.log("canceling recording :(", objectURL)
+            console.log("canceling recording :", objectURL)
             event.target.style.display = "none";
             const uploadButton = event.target.parentNode.querySelector(".btnUpload");
             uploadButton.style.display = "none";
@@ -402,7 +388,6 @@
             player.currentTime = 0;
             player.src = "";
             URL.revokeObjectURL(objectURL); // FIXME Invalid URI. Load of media resource  failed.
-            
             }
 
             const handleMediaDevice = (event, stream, isFirstRecording) => {
@@ -486,7 +471,7 @@
                 }
             });
 
-            
+
         function robotSpeak(lineId)
         {
             var text=$("#lineText_"+lineId).val();
@@ -618,7 +603,8 @@
     }
 
     function auto_grow(element) {
-        element.style.height = "5px";
+        element.style.height = "30px";
+        element.style.minHeight = "60px";
         element.style.height = (element.scrollHeight)+"px";
     }
     [...document.getElementsByClassName('lineText')].forEach((element)=>{

@@ -9,7 +9,10 @@
         <div class="control">
             <div style="position:relative;width:500px;">
                 
-                @include('partials/characters/inline')
+                {{--  @include('partials/characters/inline')  --}}
+                @set('character',line.character)
+                @set(character,'versions',characters.filter((char)=>{return char.id==character.id})[0].versions)
+                @include('partials/scenes/show/selectCharacterVersion')
                 
                 <textarea oninput="auto_grow(this);updateText({{line.id}});" 
                     name='text' 
@@ -23,6 +26,14 @@
             </div>
         </div>
         <div class="control box m-1">
+            <div>
+                <div class="select selectAudioVersion selectAudioVersion_{{character.id}}">
+                    <select data-character-id={{character.id}} >
+                        <option value="-1">Enregistrer</option>
+                        <option value="0" selected>Ecouter le robot</option>
+                    </select>
+                </div>
+            </div>
                   {{--  maybe we can use columns??  --}}
                     <button class="button is-danger is-light is-inverted is-focused btnAction btnRecordControl" style="display:none;">
                       <span class="icon" style="pointer-events: none;">

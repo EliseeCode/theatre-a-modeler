@@ -101,6 +101,7 @@
             <button type="submit" class="button" title="">Ajouter une réplique ici</button>
         </form>
     @else
+    
         @each((line,indexLine) in scene.lines)
             @if(line.versionId==1)
                 @include('partials/scenes/edit/line')

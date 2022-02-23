@@ -18,6 +18,9 @@ export default class Version extends BaseModel {
   @column()
   public creatorId: number;
 
+  @column()
+  public type: number;
+
   @computed()
   public doublers: User[];
 
