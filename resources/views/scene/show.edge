@@ -144,15 +144,20 @@
         let recording = false;
         let mediaRecorder;
         let characterIds=new Set();
+
+    ////////////////////
+    // INITIALISATION GLOBALS
+    ////////////////////
+    $(".selectLineVersion select").each(function(){
+            characterIds.add($(this).data('character-id'))
+    })
+    characterIds.forEach((characterId)=>{updateLineVersion(characterId,1);}); 
+    
     ////////////////////
     // LINE VERSION SELECTION
     ////////////////////
-        $(".selectLineVersion select").each(function(){
-            characterIds.add($(this).data('character-id'))
-        })
-        characterIds.forEach((characterId)=>{updateLineVersion(characterId,1);}); 
-
         
+
         $(".selectLineVersion select").on('change',function(e){
             const audioVersionSelect = e.target.closest(".characterSelect").querySelector(".selectAudioVersion select");
             var characterId=$(this).data('character-id');
@@ -246,6 +251,7 @@
             //alert($(this).val()+$(this).data('character-id'))
             var characterId=$(this).data('character-id');
             var audioVersionId=parseInt($(this).val());
+            $(".selectAudioVersion_"+characterId+" select").val(audioVersionId);
             console.log($(this));
             switch(audioVersionId){
                 case "":
@@ -257,8 +263,7 @@
                 break;
                 case -1:
                 console.log("on enregistre sa voix==>Nouvelle version");
-                versionName=prompt("Quel est le nom de votre nouvelle version Audio?");
-                const newAudioVersionId = await createNewAudioVersion(versionName,characterId);
+                const newAudioVersionId = await createNewAudioVersion(characterId);
                 characterToAudioVersion[characterId] = newAudioVersionId;
                 console.log(characterToAudioVersion, "s")
                 break;
@@ -267,10 +272,7 @@
                 console.log(characterToAudioVersion, "s")
                 getAudioPaths(audioVersionId,characterId);    
                 displayAudioReader(audioVersionId,characterId);
-                
             }
-            
-            
         })
 
 
@@ -304,13 +306,12 @@
 
         
 
-        async function createNewAudioVersion(versionName,characterId){
+        async function createNewAudioVersion(characterId){
             return new Promise((resolve) => {
                 const token = $('.csrfToken').data('csrf-token');
             const params = { 
                 characterId:characterId,
                 sceneId:{{scene.id}},
-                name:versionName,
                 _csrf: token
             };
             $.post("/audios/createNewVersion",params,function(version){

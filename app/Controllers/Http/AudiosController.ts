@@ -7,6 +7,7 @@ import Version from "App/Models/Version";
 import Scene from "App/Models/Scene";
 import Line from "App/Models/Line";
 import ObjectType from "Contracts/enums/ObjectType";
+import Database from "@ioc:Adonis/Lucid/Database";
 
 export default class AudiosController {
   public dataName = "audios";
@@ -111,8 +112,24 @@ export default class AudiosController {
   public async createNewVersion({ auth, request, response }: HttpContextContract) {
     const sceneId = request.body().sceneId;
     const characterId = request.body().characterId;
-    const versionName = request.body().name;
     const user = await auth.authenticate();
+
+
+    const result = await Database.query()
+      .from('versions')
+      .select('*')
+      .join('audios', 'audios.version_id', 'versions.id')
+      .join('lines', 'lines.id', 'audios.line_id')
+      .where("versions.creator_id", user.id)
+      .andWhere("lines.character_id", characterId)
+      .countDistinct('audios.version_id as nbreVersion');
+    console.log(result);
+    let nbreVersion = 0;
+    if (result.length > 0) {
+      nbreVersion = result[0].nbreVersion;
+    }
+    const newNumVersion = nbreVersion++;
+    const versionName = user.username + "-" + newNumVersion;
     //version creation
     const version = await Version.create({
       name: versionName,
