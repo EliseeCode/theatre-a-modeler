@@ -257,7 +257,7 @@
     // AUDIO VERSION SELECTION
     ////////////////////    
         $(".selectAudioVersion select").on('change',async function(){
-            alert($(this).val()+$(this).data('character-id'))
+            //alert($(this).val()+$(this).data('character-id'))
             var characterId=$(this).data('character-id');
             var audioVersionId=parseInt($(this).val());
             console.log($(this));
@@ -485,6 +485,8 @@
                     player.play();
                 }
             });
+
+            
         function robotSpeak(lineId)
         {
             var text=$("#lineText_"+lineId).val();
