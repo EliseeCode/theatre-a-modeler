@@ -121,8 +121,10 @@ export default class AudiosController {
       .join('audios', 'audios.version_id', 'versions.id')
       .join('lines', 'lines.id', 'audios.line_id')
       .where("versions.creator_id", user.id)
+      .andWhere("versions.type", ObjectType.AUDIO)
       .andWhere("lines.character_id", characterId)
-      .countDistinct('audios.version_id as nbreVersion');
+      .countDistinct('versions.id as nbreVersion').toSQL();
+
     console.log(result);
     let nbreVersion = 0;
     if (result.length > 0) {
