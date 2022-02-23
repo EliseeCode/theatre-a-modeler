@@ -99,7 +99,7 @@ Route.post("/recoverUsername", "AuthController.recoverUsername");
 Route.post("/recoverPassword", "AuthController.recoverPassword");
 
 Route.post("/audio/upload", "AudiosController.upload");
-Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions")
+Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions");
 Route.post("/audios/createNewVersion", "AudiosController.createNewVersion");
 Route.get(
   "/audio/getAudiosFromAudioVersion",
@@ -116,6 +116,10 @@ Route.get("/recoverPassword", async ({ view }) => {
 
 Route.get("/logout", "AuthController.logout").as("auth.logout");
 Route.get("/profile", "UsersController.profile").middleware("auth");
+Route.post("/changeMail", "UsersController.changeMail").middleware("auth");
+Route.post("/changePassword", "UsersController.changePassword").middleware(
+  "auth"
+);
 Route.get(
   "/loginWithSignedUrl/:username",
   "AuthController.loginWithSignedUrl"

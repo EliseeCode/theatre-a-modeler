@@ -1,13 +1,19 @@
 @layout('layouts/master')
 
 @section('content')
-   
-  
     <section class="hero is-fullheight">
-      
+      <div class="columns is-centered">
+      <div class="notification is-warning m-5 is-half" style="display: {{'none'.repeat(+!!user.email)}};">
+        <button class="delete"></button>
+        <p class="notifMsg">Il semble que vous n'avez pas défini d'adresse électronique. Pour des raisons de récupération de compte, nous avons besoin de l'avoir. Pouvez-vous l'ajouter ?</p>
+      </div>
+      </div>
+
       <div class="hero-body">
+        
         <div class="container">
           <div class="columns is-centered">
+            <div class="column">
               <div class="card">
                 <div class="card-content">
                   <div class="media">
@@ -40,9 +46,192 @@
                 </footer>
               </div>
             </div>
+            @if(!user.email)
+            <div class="column">
+              <div class="card">
+                <header class="card-header">
+                  <h4 class="card-header-title">Change your email address:</h4>
+                </header>
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-content">
+                      <p>Your current registered email address is: <span id="email"><b>{{user.email}}</b></span></p>
+                      <br>
+                      <p>You can change it from here: </p>
+                      <br>
+                      <div class="field">
+                        <div class="columns">
+                          <div class="column is-10">
+                            <p class="control has-icons-left" id="emailInput">
+                              <input class="input" type="email" placeholder="Email">
+                              <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                              </span>
+                            </p>
+                          </div>
+                          <div class="column">
+                            <button class="button is-warning is-inverted is-focused" id="emailButton">
+                              <span class="icon is-small">
+                                <i class="fas fa-check"></i>
+                              </span>
+                            </button> 
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @endif
+            <div class="column">
+              <div class="card">
+                <header class="card-header">
+                  <h4 class="card-header-title">Change your password:</h4>
+                </header>
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-content">
+                      <p>You can change your password from here: </p>
+                      <br>
+                      <div class="field">
+                        <div class="columns is-vcentered">
+                          <div class="column is-10">
+                            <p class="control has-icons-left" id="passwordInput">
+                              <input class="input" type="password" placeholder="Type your password...">
+                              <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                              </span>
+                            </p>
+                            <p class="control has-icons-left mt-1" id="passwordCheckInput">
+                              <input class="input" type="password" placeholder="Retype your password...">
+                              <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                              </span>
+                            </p>
+                          </div>
+                          <div class="column">
+                            <button class="button is-warning is-inverted is-focused" id="passwordButton">
+                              <span class="icon is-small">
+                                <i class="fas fa-check"></i>
+                              </span>
+                            </button> 
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+              
+            </div>
         </div>
       </div>
     </section>
   
+    <script>
+      const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
+      const notification = document.querySelector(".notification");
+
+      const modifyNotification = (success, message) => {
+        notification.style.display = "inline";
+        notification.classList.remove("is-warning");
+        notification.classList.add(success ? "is-success" : "is-danger");
+        notification.querySelector(".notifMsg").textContent = message;
+        setTimeout(() => {
+          notification.style.display = "none";
+          }, 1500);
+      }
+
+      const emailSpan = document.querySelector("#email b");
+      const emailButton = document.querySelector("#emailButton");
+      const emailInput = document.querySelector("#emailInput input");
+      const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+      
+      const passwordButton = document.querySelector("#passwordButton");
+      const passwordInput = document.querySelector("#passwordInput input");
+      const passwordCheckInput = document.querySelector("#passwordCheckInput input")
+
+
+      passwordButton.addEventListener("click", (e) => {
+        const password = passwordInput.value;
+        console.log(password, passwordInput)
+        const passwordCheck = passwordCheckInput.value;
+        if (password === passwordCheck) { // FIXME: Implement a common password health check
+          const formData = new FormData();
+          formData.append("password", password);
+          fetch(`${window.location.origin}/changePassword`, {
+            method: "POST",
+            headers: {
+              'X-CSRF-Token': CSRF_TOKEN,
+              /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+              'Content-Type': `${blob.type}`,*/ 
+              'Content-Transfer-Encoding': 'base64'
+            },
+            mode: "cors",
+            body: formData
+          }).then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+          }).then((data) => {
+            modifyNotification( !!data.success, "Password successfully added!");
+          }).catch((err) => {
+            console.error(err);
+            modifyNotification(false, "There was an error during password change...");
+          })
+        } else {
+          modifyNotification(false, "Your passwords don't match!");
+        }
+      })
+
+      const deleteButtons = document.querySelectorAll(".delete");
+      deleteButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+          e.target.parentNode.remove();
+        })
+      })
+      
+
+        emailInput.addEventListener("input", (e) => {
+          const email = e.target.value.toLowerCase();
+          const assertion = emailRegex.test(email)
+          emailButton.disabled = !assertion;
+      })
+     
+      
+        emailButton.addEventListener("click", (e) => {
+        const email = emailInput.value.toLowerCase();
+        console.log(email)
+        const assertion = emailRegex.test(email);
+        if (assertion) {
+          const formData = new FormData();
+          formData.append("email", email);
+          fetch(`${window.location.origin}/changeMail`, {
+            method: "POST",
+            headers: {
+              'X-CSRF-Token': CSRF_TOKEN,
+              /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+              'Content-Type': `${blob.type}`,*/ 
+              'Content-Transfer-Encoding': 'base64'
+            },
+            mode: "cors",
+            body: formData
+          }).then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+          }).then((data) => {
+            emailSpan.innerHTML = `<b>${data.email}</b>`;
+            modifyNotification( !!data.email, "Email address successfully added!", true);
+          }).catch((err) => {
+            console.error(err);
+            modifyNotification(false, "It's an invalid email structure. Please try again later...", true);
+          })
+      }
+      
+    })
+    </script>
   
 @endsection
