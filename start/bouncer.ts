@@ -5,8 +5,7 @@
  * file.
  */
 
-import Bouncer from '@ioc:Adonis/Addons/Bouncer'
-
+import Bouncer from "@ioc:Adonis/Addons/Bouncer";
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +29,7 @@ import Bouncer from '@ioc:Adonis/Addons/Bouncer'
 | NOTE: Always export the "actions" const from this file
 |****************************************************************
 */
-export const { actions } = Bouncer
+export const { actions } = Bouncer;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,7 +55,9 @@ export const { actions } = Bouncer
 |****************************************************************
 */
 export const { policies } = Bouncer.registerPolicies({
-    GroupPolicy: () => import('App/Policies/GroupPolicy'),
-    PlayPolicy: () => import('App/Policies/PlayPolicy'),
-    ScenePolicy: () => import('App/Policies/ScenePolicy')
-})
+  GroupPolicy: () => import("App/Policies/GroupPolicy"),
+  PlayPolicy: () => import("App/Policies/PlayPolicy"),
+  ScenePolicy: () => import("App/Policies/ScenePolicy"),
+  AudioPolicy: () => import("App/Policies/AudioPolicy"),
+  LinePolicy: () => import("App/Policies/LinePolicy"),
+});

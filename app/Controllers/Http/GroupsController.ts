@@ -1,21 +1,18 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Group from 'App/Models/Group';
-import Character from 'App/Models/Character';
+import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import Group from "App/Models/Group";
+import Character from "App/Models/Character";
 import Logger from "@ioc:Adonis/Core/Logger";
-import Role from 'Contracts/enums/Role';
-import CharacterFetcher from '../helperClass/CharacterFetcher';
-
+import Role from "Contracts/enums/Role";
+import CharacterFetcher from "../helperClass/CharacterFetcher";
 
 export default class GroupsController {
-  public async index({ }: HttpContextContract) {
-  }
+  public async index({}: HttpContextContract) {}
 
   public async create({ view }: HttpContextContract) {
     return view.render("group/edit");
   }
 
   public async store({ auth, request, response }: HttpContextContract) {
-
     const user = await auth.authenticate();
     const creatorId = user.id;
     var isValidCode = false;
@@ -23,7 +20,9 @@ export default class GroupsController {
     while (!isValidCode) {
       code = this.generateCode();
       Logger.info("test code " + code);
-      isValidCode = await Group.query().where('code', code).count ? true : false;
+      isValidCode = (await Group.query().where("code", code).count)
+        ? true
+        : false;
     }
     Logger.info("code will be " + code);
 
@@ -35,35 +34,36 @@ export default class GroupsController {
       code: code,
     });
     Logger.info("Group created");
-    await user.related("groups").save(group, undefined, { 'role_id': Role.TEACHER });
+    await user
+      .related("groups")
+      .save(group, undefined, { role_id: Role.TEACHER });
 
     return response.redirect().toRoute("/dashboard");
   }
 
   public async show({ params, view, auth, bouncer }: HttpContextContract) {
-
     const group = await Group.findOrFail(params.id);
     const user = await auth.authenticate();
-    await bouncer.with('GroupPolicy').authorize('view', group);
+    await bouncer.with("GroupPolicy").authorize("view", group);
     await user.load("groups");
     if (group) {
-      await group.load('plays', (playQuery) => {
-        playQuery.preload("scenes", (sceneQuery) => {
-          sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character") })
-        })
+      await group.load("plays", (playQuery) => {
+        playQuery
+          .preload("scenes", (sceneQuery) => {
+            sceneQuery.preload("lines", (lineQuery) => {
+              lineQuery.preload("character");
+            });
+          })
           .preload("creator")
-          .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
+          .preload("groups", (groupQuery) => {
+            groupQuery.whereIn(
+              "groups.id",
+              user.groups.map((el) => el.id)
+            );
+          });
       });
 
-      for (let play of group.plays) {
-        for (let scene of play.scenes) {
-          for (let line of scene.lines) {
-            console.log(line.character.name);
-          }
-        }
-      }
-
-      const characterFetcher = new CharacterFetcher;
+      const characterFetcher = new CharacterFetcher();
 
       for (const play of group.plays) {
         await characterFetcher.getCharactersFromPlay(play);
@@ -71,15 +71,6 @@ export default class GroupsController {
           await characterFetcher.getCharactersFromScene(scene);
         }
       }
-      console.log("//////////////////")
-      for (let play of group.plays) {
-        for (let scene of play.scenes) {
-          for (let line of scene.lines) {
-            console.log(line.character.name);
-          }
-        }
-      }
-
 
       // //create a set of character's id and loop over each line to populate the set.
       // var characterIdsByPlay = Array();
@@ -99,11 +90,9 @@ export default class GroupsController {
       //   return a;
       // });
       // console.log(charactersByPlay);
-      return view.render('group/show', { group, user, Role });
+      return view.render("group/show", { group, user, Role });
     }
   }
-
-
 
   public async edit({ view, params }: HttpContextContract) {
     const groupId = params.id;
@@ -111,11 +100,17 @@ export default class GroupsController {
     return view.render("group/edit", { ...group.serialize() });
   }
 
-  public async update({ auth, params, response, request, bouncer }: HttpContextContract) {
+  public async update({
+    auth,
+    params,
+    response,
+    request,
+    bouncer,
+  }: HttpContextContract) {
     //const user = await auth.authenticate();
     const groupId = params.id;
     const group = await Group.findOrFail(groupId);
-    await bouncer.with('GroupPolicy').authorize('update', group);
+    await bouncer.with("GroupPolicy").authorize("update", group);
     group.name = request.all().name || "Groupe sans nom";
     group.color = request.all().color || "#ff0000";
     group.description = request.all().description;
@@ -127,14 +122,14 @@ export default class GroupsController {
   public async destroy({ response, params, bouncer }: HttpContextContract) {
     const groupId = params.id;
     var group = await Group.findOrFail(groupId);
-    await bouncer.with('GroupPolicy').authorize('delete', group);
+    await bouncer.with("GroupPolicy").authorize("delete", group);
     await group.delete();
     return response.redirect().back();
   }
 
   public generateCode() {
-    var characters = 'abcdefghjklmnpqrstuvwxyz0123456789';
-    var result = ""
+    var characters = "abcdefghjklmnpqrstuvwxyz0123456789";
+    var result = "";
     var charactersLength = characters.length;
 
     for (var i = 0; i < 6; i++) {
@@ -146,29 +141,30 @@ export default class GroupsController {
   public async join({ params, auth, response, request }: HttpContextContract) {
     Logger.info("join");
     if (auth.isGuest) {
-      return response.redirect().toRoute("/login")
+      return response.redirect().toRoute("/login");
     }
     const user = await auth.authenticate();
     Logger.info("code1" + params?.code);
     Logger.info("code2" + request.all().code);
     const code = params?.code || request.all().code;
     Logger.info("code" + code);
-    console.log(3)
+    console.log(3);
     var group = await Group.findByOrFail("code", code);
-    console.log(group)
-    await user.related("groups").save(group, undefined, { 'role_id': Role.STUDENT });
+    console.log(group);
+    await user
+      .related("groups")
+      .save(group, undefined, { role_id: Role.STUDENT });
 
     return response.redirect().back();
   }
 
   public async leave({ params, auth, response }: HttpContextContract) {
     if (auth.isGuest) {
-      return response.redirect().toRoute("/login")
+      return response.redirect().toRoute("/login");
     }
     const user = await auth.authenticate();
     const groupId = params.id;
-    await user.related('groups').detach([groupId]);
+    await user.related("groups").detach([groupId]);
     return response.redirect().back();
   }
-
 }
