@@ -2,7 +2,7 @@
     style="position:relative;" 
     id="line_{{line.id}}" 
     class="linePosition_{{line.position}} lineCharacter_{{line.characterId}} lineVersion_{{line.versionId}} line"
-    data-character-id="{{line.characterId}}">
+    data-character-id="{{line.characterId}}" data-position="{{line.position}}" data-line-id="{{line.id}}">
     <div class="field has-addons m-0">
         
         
@@ -41,28 +41,23 @@
                       </span>
                       <span style="pointer-events: none;">Enregistrer !</span> 
                     </button> 
-                    <button data-line-id="{{line.id}}" class="button is-danger is-light is-inverted is-focused btnAction btnUpload ml-3" style="display:none;">
-                      <span class="icon" style="pointer-events: none;">
-                        <i class="fa fa-solid fa-upload" style="pointer-events: none;"></i>
-                      </span>
-                    </button> 
-                    <button class="button is-danger is-light is-inverted is-focused btnAction btnCancel ml-3" style="display:none;">
-                      <span class="icon" style="pointer-events: none;">
-                        <i class="fa fa-solid fa-eraser" style="pointer-events: none;"></i>
-                      </span>
-                    </button>
                     <button class="button is-info is-light is-inverted is-focused btnAction btnRobotize" onclick="robotSpeak({{line.id}})">
                       <span class="icon">
                         <i class="fa fa-solid fa-robot"></i>
                       </span>
                       <span>Lire !</span>  
                     </button>
-                    <button class="button is-primary is-light is-inverted is-focused btnAction btnPlay" data-position="{{line.position}}" data-version="{{line?.audios?.[0].version.id ?? ''}}" style="display:none;">
+                    <button class="button is-primary is-light is-inverted is-focused btnAction btnPlay btnAudio" data-position="{{line.position}}" data-version="{{line?.audios?.[0].version.id ?? ''}}" style="display:none;">
                         <span class="icon">
                             <i class="fa fa-solid fa-play"></i>
                         </span>
                         <span>Lire !</span>
-                    </button>          
+                    </button> 
+                    <button class="button is-danger is-light is-inverted is-focused btnAction btnDelete btnAudio ml-3" style="display:none;">
+                      <span class="icon" style="pointer-events: none;">
+                        <i class="fa fa-solid fa-eraser" style="pointer-events: none;"></i>
+                      </span>
+                    </button>         
         </div>
    
     </div>

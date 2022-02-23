@@ -139,7 +139,7 @@
     ////////////////////
     // GLOBALS
     ////////////////////
-        const globalAudios = [];
+        const globalAudios = new Array(parseInt("{{sceneLength}}")).fill(0); // for robot
         const characterToAudioVersion = {};
         let recording = false;
         let mediaRecorder;
@@ -197,23 +197,20 @@
                 _csrf: token
             };
             $.get('/audio/getAudioVersions', params, function(data) {
-                console.log("getAudioVersionAnswer",data.versions)
                 //data: audioVersion[].id
                 //                    .doubleur:{name,id}
                 //                    .name
 
-                $("#characterSelect_"+characterId+" .selectAudioVersion").show();
+                $(".lineCharacter_"+characterId+" .selectAudioVersion").show();
+                console.log(data.versions, characterId)
                 if(data.versions)
                 {
-                    var selectAudioVersion=$("#characterSelect_"+characterId+" .selectAudioVersion select");
+                    var selectAudioVersion=$(".lineCharacter_"+characterId+" .selectAudioVersion select");
+                    console.log(selectAudioVersion)
                     selectAudioVersion.find("option.audioVersionOption").remove();
                     for(let version of data.versions)
                     {
-                        for (let doubler of version.doublers) {
-                            selectAudioVersion.append(`<option value=${version.id}>
-                            ${doubler.username} | ${version.name}
-                            </option>`);
-                        }
+                        selectAudioVersion.append(`<option value=${version.id}>${version.name}</option>`);
                         
                     }
                 }
@@ -252,7 +249,8 @@
             var characterId=$(this).data('character-id');
             var audioVersionId=parseInt($(this).val());
             $(".selectAudioVersion_"+characterId+" select").val(audioVersionId);
-            console.log($(this));
+            const position = $(this).closest(".line").attr("data-position")
+            globalAudios[position] = 0; // declaring default one as robot
             switch(audioVersionId){
                 case "":
                 break;
@@ -263,15 +261,18 @@
                 break;
                 case -1:
                 console.log("on enregistre sa voix==>Nouvelle version");
-                const newAudioVersionId = await createNewAudioVersion(characterId);
-                characterToAudioVersion[characterId] = newAudioVersionId;
-                console.log(characterToAudioVersion, "s")
+                $(".lineCharacter_"+characterId+" .btnAction").hide();
+                $(".lineCharacter_"+characterId+" .btnRecordControl").show();
                 break;
                 default:
                 characterToAudioVersion[characterId] = audioVersionId;
                 console.log(characterToAudioVersion, "s")
-                getAudioPaths(audioVersionId,characterId);    
-                displayAudioReader(audioVersionId,characterId);
+                getAudioPaths(audioVersionId,characterId); 
+                if(globalAudios[position]) {
+                    displayAudioReader(characterId);
+                } else { // no audio record found
+                    displayRecorder(characterId);
+                }
             }
         })
 
@@ -287,68 +288,86 @@
             $.get('/audio/getAudiosFromAudioVersion', params, function(data) {
                 console.log("getAudiosFromAudioVersionAnswer",data)
                 for (let audio of data) {
-                    console.log(audio.line.position);
+                    console.log(audio.line.position, "hey");
                     globalAudios[audio.line.position] = audio.public_path;
                 }
                 
                 console.log("getAudioVersionAnswer",data)
-                displayAudioReader(audioVersionId,characterId,data);
+                displayAudioReader(characterId);
             });
 
         }
-        function displayAudioReader(audioVersionId,characterId){
+        function displayRecorder(characterId){
             $(".lineCharacter_"+characterId+" .btnAction").hide();
-            $(".lineCharacter_"+characterId+" .btnPlay").show();
+            $(".lineCharacter_"+characterId+" .btnRecordControl").show();
         }
 
-
-
-
-        
-
-        async function createNewAudioVersion(characterId){
-            return new Promise((resolve) => {
-                const token = $('.csrfToken').data('csrf-token');
-            const params = { 
-                characterId:characterId,
-                sceneId:{{scene.id}},
-                _csrf: token
-            };
-            $.post("/audios/createNewVersion",params,function(version){
-                console.log(version);
-                versionId=version.id;
-                //show microphone next to character's line
-                $(".lineCharacter_"+characterId+" .btnAction").hide();
-                $(".lineCharacter_"+characterId+" .btnRecordControl").show();
-                resolve(version.id)
-            })
-            })
-            
+        function displayAudioReader(characterId){
+            $(".lineCharacter_"+characterId+" .btnAction").hide();
+            $(".lineCharacter_"+characterId+" .btnAudio").show();
         }
+
 
         ////////////////////
         // AUDIO RECORD
         ////////////////////
 
+        const createAudioVersion = async (characterID) => {
+            let form = new FormData();
+            form.append("characterId", characterID)
+            const result = await (await fetch(`${window.location.origin}/audios/createNewVersion`, {
+                method: "POST",
+                headers: {
+                    'X-CSRF-Token': $('.csrfToken').data('csrf-token'),
+                    /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+                    'Content-Type': `${blob.type}`,*/ 
+                    'Content-Transfer-Encoding': 'base64'
+                },
+                mode: "cors",
+                body: form
+            })).json()
+            return result;
+        }
+
         const uploadAudio = async (event, objectURL) => {
+            const parentContainer = $(event.target).closest(".line");
+            console.log(parentContainer)
+            const position = parentContainer.attr("data-position");
+            console.log(parentContainer.attr("data-position"))
+            const audioVersionSelect = $(event.target.parentNode).find(".selectAudioVersion select").get(0);
+            console.log(audioVersionSelect)
             const characterID = $(event.target).closest(".line").attr("data-character-id");
-            const lineID = event.target.getAttribute("data-line-id");
-            const audioVersionID = characterToAudioVersion[characterID];
-            console.log("uploading audio!!", objectURL)
-            console.log(`Here's the line_id to attach: ${lineID}`);
+            const lineID = $(parentContainer).attr("data-line-id");
+            /* console.log("uploading audio!!", objectURL)
+            console.log(`Here's the line_id to attach: ${lineID}`); */
             event.target.style.display = "none";
-            const cancelButton = event.target.parentNode.querySelector(".btnCancel");
-            cancelButton.style.display = "none";
-            const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+            const cancelButton = event.target.parentNode.querySelector(".btnDelete");
+            cancelButton.style.display = "inline";
+            /* const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
             const recordIcon = recordControlButton.querySelector("i");
             recordIcon.classList.remove("fa-play");
             recordIcon.classList.add("fa-microphone");
-            event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
+            event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !"; */
             player.currentTime = 0;
             player.src = "";
+            let audioVersionID = audioVersionSelect.options[audioVersionSelect.selectedIndex].value;
+            if (audioVersionID < 0 ) { // its value is -1
+                console.log("mapping audio version to character")
+                const result = await createAudioVersion(characterID);
+                console.log(result)
+                audioVersionID = result.id;
+                
+                const audioVersionOption = document.createElement("option");
+                audioVersionOption.value=audioVersionID;
+                audioVersionOption.text = result.name;
+                audioVersionSelect.add(audioVersionOption);
+                $(audioVersionSelect).val(audioVersionID).select().trigger("change");
+            }
+            characterToAudioVersion[characterID] = audioVersionID
+
             const blob = await fetch(objectURL).then(r => r.blob());
-            console.log(blob);
-            const form = new FormData();
+            console.log(blob, audioVersionID, lineID);
+            form = new FormData();
             form.append("audio", blob);
             form.append("lineId", lineID);
             form.append("versionId", audioVersionID);
@@ -364,37 +383,40 @@
                 body: form
             }).then(response => {
                 if (!response.ok) throw response;
+                console.log(response)
                 return response.json();
             }).then((data) => {
-                const {versionID, public_path} = data;
-                characterToAudioVersion[characterID] = versionID;
-                console.log("jsdkajlk")
+                globalAudios[position] = data.public_path;
+                $(cancelButton).attr("data-audio-id", data.id);
                 // window.location.reload();
             }).catch((err) => {
                 console.error(err);
             })
 
+
+
             };
 
-            const cancelRecording = (event, objectURL) => {
+            const deleteRecording = (event, objectURL=null) => {
+            const parentContainer = $(event.target).closest(".line");
             console.log("canceling recording :", objectURL)
-            event.target.style.display = "none";
-            const uploadButton = event.target.parentNode.querySelector(".btnUpload");
-            uploadButton.style.display = "none";
+            $(parentContainer).find(".btnAudio").hide();
+            console.log($(parentContainer).find(".btnAudio").hide())
+            displayAudioReader($(parentContainer).attr("data-character-id"));
             const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+        
             const recordIcon = recordControlButton.querySelector("i");
             recordIcon.classList.remove("fa-play");
             recordIcon.classList.add("fa-microphone");
             event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
             player.currentTime = 0;
             player.src = "";
-            URL.revokeObjectURL(objectURL); // FIXME Invalid URI. Load of media resource  failed.
+            // URL.revokeObjectURL(objectURL); // FIXME Invalid URI. Load of media resource  failed.
             }
 
-            const handleMediaDevice = (event, stream, isFirstRecording) => {
+            const handleMediaDevice = (event, stream) => {
+                const parentContainer = $(event.target).closest(".line");
                 console.log(event.target);
-                const cancelButton = event.target.parentNode.querySelector(".btnCancel");
-                const uploadButton = event.target.parentNode.querySelector(".btnUpload");
                 const options = {mimeType: "audio/webm"};
                 const recordedChunks = [];
                 let objectURL;
@@ -403,18 +425,17 @@
                 mediaRecorder.addEventListener("dataavailable", function(e) {
                     if (e.data.size > 0) recordedChunks.push(e.data);
                 })
-                mediaRecorder.addEventListener("stop", (e) => {
+                mediaRecorder.addEventListener("stop", async (e) => {
                 console.log("stopped the media recorder");
                 // make the create request here!
                 const blob = new Blob(recordedChunks, {type: mediaRecorder.mimeType});
                 objectURL = URL.createObjectURL(blob);
                 player.src = objectURL;
                 // ref: https://stackoverflow.com/questions/11455515/how-to-check-whether-dynamically-attached-event-listener-exists-or-not
-                cancelButton.onclick = (_e) => cancelRecording(_e, objectURL);
-                uploadButton.onclick = (_e) => uploadAudio(_e, objectURL);
-
-                cancelButton.style.display = "inline";
-                uploadButton.style.display = "inline";
+                // uploadButton.onclick = (_e) => uploadAudio(_e, objectURL);
+                await uploadAudio(event)
+                $(parentContainer).find(".btnAction").hide();
+                $(parentContainer).find(".btnAudio").show();
                 // FIXME how to revoke microphone permissions?
 
                 })
@@ -424,36 +445,26 @@
 
         const controlAudioRecord = (event) => { 
             const characterID = $(this).closest(".line").attr("data-character-id");
-            const cancelButton = event.target.parentNode.querySelector(".btnCancel");
+            const cancelButton = event.target.parentNode.querySelector(".btnDelete");
             const uploadButton = event.target.parentNode.querySelector(".btnUpload");
             const icon = event.target.querySelector("i");
-            const audioVersion = characterToAudioVersion[characterID];
-            const isFirstRecording = !Boolean(audioVersion);
-
             if (!recording) {
-                if (icon.classList.contains("fa-play")) { // playing the recorded one & set upload and delete button
-                console.log("now, let's play your recording!")
-                player.play();
-                } else if (icon.classList.contains("fa-microphone")) {
                 event.target.querySelector("span:nth-child(2)").textContent = "Arrêter d'enregistrer !";
                 recording = true;
                 console.log("starting recording...");
                 icon.classList.remove("fa-microphone");
                 icon.classList.add("fa-stopwatch");
                 event.target.classList.add("glowing");
-                console.log(isFirstRecording ? "be prepared! first recording!!" : "not your first one I guess...");
-                navigator.mediaDevices.getUserMedia({audio: true, video:false}).then((stream) => handleMediaDevice(event, stream, isFirstRecording))
-            }
-
+                navigator.mediaDevices.getUserMedia({audio: true, video:false}).then((stream) => handleMediaDevice(event, stream))
+            
             } else {
-                event.target.querySelector("span:nth-child(2)").textContent = "Lire votre enregistrement !";
+                event.target.querySelector("span:nth-child(2)").textContent = "Enregistrer !";
                 recording = false;
                 console.log("stopping recording...");
-                // icon.classList.add("fa-microphone");
                 icon.classList.remove("fa-stopwatch");
                 event.target.classList.remove("glowing");
-                if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
                 icon.classList.add("fa-play");
+                if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
             }
             }
 
@@ -471,6 +482,7 @@
                     player.play();
                 }
             });
+            $(".btnDelete").on("click", deleteRecording)
 
 
         function robotSpeak(lineId)
