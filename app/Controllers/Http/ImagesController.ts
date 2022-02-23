@@ -11,9 +11,9 @@ import { URL } from "url";
 import ObjectType from "Contracts/enums/ObjectType";
 
 export default class ImagesController {
-  public async index({ }: HttpContextContract) { }
+  public async index({}: HttpContextContract) {}
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
   public async store({ request, response, auth }: HttpContextContract) {
     const imageFile = await request.file("image");
@@ -26,8 +26,22 @@ export default class ImagesController {
     const user = await auth.authenticate();
     const entityType = parseInt(request.body().entityType);
     const entityId = request.body().entityId;
-    console.log(entityType, [ObjectType.PLAY, ObjectType.SCENE, ObjectType.LINE, ObjectType.CHARACTER, ObjectType.USER]);
-    if (![ObjectType.PLAY, ObjectType.SCENE, ObjectType.LINE, ObjectType.CHARACTER, ObjectType.USER].includes(entityType)) {
+    console.log(entityType, [
+      ObjectType.PLAY,
+      ObjectType.SCENE,
+      ObjectType.LINE,
+      ObjectType.CHARACTER,
+      ObjectType.USER,
+    ]);
+    if (
+      ![
+        ObjectType.PLAY,
+        ObjectType.SCENE,
+        ObjectType.LINE,
+        ObjectType.CHARACTER,
+        ObjectType.USER,
+      ].includes(entityType)
+    ) {
       let message = `Invalid entity type :(${entityType}) for upload...`;
       Logger.info(message);
       return response.json({
@@ -100,15 +114,15 @@ export default class ImagesController {
     return newImage;
   }
 
-  public async show({ }: HttpContextContract) { }
+  public async show({}: HttpContextContract) {}
 
-  public async edit({ }: HttpContextContract) { }
+  public async edit({}: HttpContextContract) {}
 
-  public async update({ }: HttpContextContract) { }
+  public async update({}: HttpContextContract) {}
 
   public async destroy({ response, params }: HttpContextContract) {
     const image = (await Image.query().where("id", params.id))[0];
-    /* if (!(await Drive.exists(image.name))) {
+    if (!(await Drive.exists(image.name))) {
       let message = `Couldn't find the image with id of ${params.id} in the drive.`;
       Logger.error(message);
     } else {
@@ -121,7 +135,7 @@ export default class ImagesController {
           let message = `Couldn't delete the image with id of ${params.id} from drive. \nHere's the error log: ${err}`;
           Logger.error(message);
         });
-    } */
+    }
     await Image.query()
       .where("id", params.id)
       .delete()
