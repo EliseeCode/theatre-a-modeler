@@ -2,10 +2,10 @@
     <div style="height:100%;" class="card play_item">
             <div class="card-header p-3 level" style="background-color:{{group.color || 'red'}};">    
                 <div class="level-left" style="max-width:300px;">
-                    <div class="level-item" title={{ group.$extras.pivot_role_id==role.TEACHER?'Professeur':'Elève'}}>
+                    <div class="level-item" title={{ group.$extras.pivot_role_id==Role.TEACHER?'Professeur':'Elève'}}>
                         <div class="m-2">
                             <span class="icon has-text-white">
-                                <i class="fas fa-2x fa-{{ group.$extras.pivot_role_id==role.TEACHER?'crown':'graduation-cap'}}"></i>
+                                <i class="fas fa-2x fa-{{ group.$extras.pivot_role_id==Role.TEACHER?'crown':'graduation-cap'}}"></i>
                             </span>
                             
                         </div>
@@ -98,7 +98,7 @@
                         @each(user in group.users)
                         <div>
                         {{user.username}}-
-                        {{user.pivot_role_id==role.STUDENT?"élève":"prof"}}
+                        {{user.pivot_role_id==Role.STUDENT?"élève":"prof"}}
                         </div>
                         @endeach
                         {{group.users.length!=0?group.users.length+" élèves":"Pas encore d'élève dans ce groupe"}}

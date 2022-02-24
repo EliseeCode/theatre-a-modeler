@@ -397,7 +397,7 @@
             console.log(parentContainer)
             const position = parentContainer.attr("data-position");
             console.log(parentContainer.attr("data-position"))
-            const audioVersionSelect = $(event.target.parentNode).find(".selectAudioVersion select").get(0);
+            const audioVersionSelect = $(parentContainer).find(".selectAudioVersion select").get(0);
             console.log(audioVersionSelect)
             const characterID = $(event.target).closest(".line").attr("data-character-id");
             const lineID = $(parentContainer).attr("data-line-id");
