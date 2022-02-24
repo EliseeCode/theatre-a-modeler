@@ -3,6 +3,7 @@
       <div class="card-header-title">
         {{play.name}}
       </div>
+      @can('PlayPolicy.update',play)
       <div class="card-header-icon" aria-label="more options">
         <div class="dropdown-trigger" id="dropdown-trigger-play-{{play.id}}" onclick="toggleDropdownMenu('play',{{play.id}})" aria-controls="dropdown-menu">
             <span class="icon">
@@ -10,6 +11,7 @@
             </span>    
         </div>
       </div>
+      @endcan
     </header>
     <div class="dropdown-play-panel" style="display:none;">
         <div class="card-content" >
@@ -28,14 +30,14 @@
                 <p>Pas encore de scene dans cette pièce</p>
             @endeach
 
-            {{--  @can('ScenePolicy.create',play)  --}}
+            @can('ScenePolicy.create',play)
             <a href=# 
                     class="icon-text js-modal-trigger button is-primary" 
                     data-target="edit-sceneCreate-modal" 
                     onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadSceneCreateInfoInModal({playId:{{play.id}}})" >
                     Nouvelle scène
             </a>
-            {{--  @endcan  --}}
+            @endcan
         </div>
     </div>
 </div>
@@ -52,7 +54,7 @@
                     Modifier
                 </a>
             </div> 
-           
+            @can('PlayPolicy.delete',play)  
             <div class="dropdown-item">
                 <form class="icon-text" action={{ '/plays/'+play.id+'?_method=DELETE' }} method="POST">
                     {{ csrfField() }} 
@@ -64,6 +66,7 @@
                     </a>
                 </form>
             </div>
+            @endcan
         </div>
     </div>
 </div>    

@@ -11,6 +11,9 @@
     .selectAudioVersion{
         display:none;
     }
+    .selectAudioVersion select{
+        background-color:transparent;
+    }
     .actionLineContainer:hover .selectAudioVersion{
         display:inline-block;
     }
@@ -18,7 +21,7 @@
     .selectLineVersion{
         display:none;
     }
-    .line:hover .selectLineVersion{
+    .textContainer:hover .selectLineVersion{
         display:inline-block;
     }
     .saved textarea{
@@ -45,7 +48,9 @@
     height:40px;
     }
    
-    .lineContainer{position:relative;}
+    .lineContainer{position:relative;
+    display:flex;
+    flex-direction: column;}
     @keyframes glowing {
   0% {
     background-color: #fde0e6;
@@ -102,7 +107,7 @@
     text-align:center;
     margin-bottom:200px;
 }
-.line{display:inline-block;}
+.line{display:inline-block;width:100%;}
 .selectAudioVersion select{
     border:none;
     font-size:1em;}
@@ -114,7 +119,38 @@
     color:grey;
     width: fit-content;
 }    
-    
+.grid-character-display{
+    display: inline-grid; 
+    grid-template-columns: 150px 140px; 
+    align-items: center;
+    position:relative;
+    left:60px;
+    height:2.5em
+}
+.line-grid
+{   width:100%;
+    display: grid; 
+    grid-template-columns: auto 200px; 
+}   
+.characterName{
+    text-transform: uppercase;
+} 
+.actionLineContainer{
+    position:relative;
+}
+.audioVersionSelectContainer{
+    display:none;
+    position:absolute;
+    top:5px;
+    width:100%;
+    text-align:center;
+}
+.actionLineContainer:hover .audioVersionSelectContainer{
+    display:block;
+}
+.btnActionContainer{margin-top:40px;}
+.line{margin:0;margin-top:-10px;}
+.textContainer{background-color:white;padding:0 10px; border-radius:5px;}
 </style>
 
 
@@ -194,16 +230,27 @@
     
     <div class="level" style="align-items:flex-start;">
         <div class="level-item" style="border-left:2px white solid;">
-            <div class="lineContainer box"> 
+            <div class="lineContainer"> 
                 @set('position',null)
                 
                 @each((line,indexLine) in scene.lines)
                         @if(line.position!=position)
-                            @include('partials/scenes/show/newLine')  
+
+                            {{--  @include('partials/scenes/show/newLine')    --}}
+                            {{--  @set('newLine',{...line,versionId:'New',text:''})  --}}
+                            @!component('partials/scenes/show/line', {
+                                newLine:true,
+                                line:line,
+                                characters:characters
+                            })
                         @endif
                         @set('position',line.position)
-                            @include('partials/scenes/show/line')    
-                            <br>
+                            @!component('partials/scenes/show/line', {
+                                newLine:false,
+                                line:line,
+                                characters:characters
+                            })
+                            {{--  @include('partials/scenes/show/line')      --}}
                 @endeach
             </div>
         </div>
@@ -320,9 +367,9 @@
                 for(let line of data.lines)
                 {
                     $(".linePosition_"+line.position).hide();
-                    $(".linePosition_"+line.position+".line_newLine").show();
-                    $(".linePosition_"+line.position+".line_newLine textarea").attr("id","lineText_"+line.id)
-                    $(".linePosition_"+line.position+".line_newLine textarea")
+                    $(".linePosition_"+line.position+".lineVersion_New").show();
+                    $(".linePosition_"+line.position+".lineVersion_New textarea").attr("id","lineText_"+line.id)
+                    $(".linePosition_"+line.position+".lineVersion_New textarea")
                         .on("input",function(){
                             updateText(line.id);
                         })

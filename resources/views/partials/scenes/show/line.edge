@@ -1,11 +1,10 @@
 <div 
     style="position:relative;" 
     id="line_{{line.id}}" 
-    class="linePosition_{{line.position}} lineCharacter_{{line.characterId}} lineVersion_{{line.versionId}} line"
+    class="linePosition_{{line.position}} lineCharacter_{{line.characterId}} lineVersion_{{newLine?'New':line.versionId}} line"
     data-character-id="{{line.characterId}}" data-position="{{line.position}}" data-line-id="{{line.id}}">
-    <div class="field has-addons m-0">
-        <div class="control">
-            <div style="position:relative;width:500px;">
+    <div class="line-grid">
+            <div class="textContainer" style="position:relative;">
                 
                 {{--  @include('partials/characters/inline')  --}}
                 @set('character',line.character)
@@ -20,14 +19,16 @@
                     rows="3" 
                     style="resize: none;"
                     @cannot('LinePolicy.update', line)
-                    readonly
+                      @if(!newLine)
+                      readonly
+                      @endif
                     @endcannot
-                    placeholder="{{line.text}}">{{line.text}}</textarea>
+                    placeholder="{{line.text}}">{{newLine?'':line.text}}</textarea>
                
             </div>
-        </div>
+        
         <div class="field actionLineContainer">
-          <div class="control">
+          <div class="control audioVersionSelectContainer">
             <div class="select selectAudioVersion selectAudioVersion_{{character.id}}">
                 <select data-character-id={{character.id}} >
                   @if(auth.isLoggedIn)
@@ -38,7 +39,7 @@
             </div>
           </div>
         
-          <div class="control ">
+          <div class="control btnActionContainer">
                     {{--  maybe we can use columns??  --}}
                       <button class="button is-danger is-light is-inverted is-focused btnAction btnStartRecord" onclick="record({{line.id}})" style="display:none;">
                         <span class="icon" style="pointer-events: none;">

@@ -26,8 +26,11 @@ export default class ScenePolicy extends BasePolicy {
 			.join('group_user', 'group_play.group_id', 'group_user.group_id')
 			.where("group_user.user_id", user.id)
 			.andWhere("group_play.play_id", scene.play.id)
-			.andWhere("group_play.status", Status.PUBLISHED).count('* as total')[0].total;
-		if (total > 0) { return true; }
+			.andWhere("group_play.status", Status.PUBLISHED).count('* as total');
+
+		if (total[0]?.total > 0) {
+			return true;
+		}
 
 	}
 	public async create(user: User, play: Play) {
@@ -42,8 +45,9 @@ export default class ScenePolicy extends BasePolicy {
 				.join('group_user', 'group_play.group_id', 'group_user.group_id')
 				.where("group_user.user_id", user.id)
 				.andWhere("group_play.play_id", play.id)
-				.andWhere("group_play.status", Status.CHANGEABLE).count('* as total')[0].total;
-			if (total > 0) {
+				.andWhere("group_play.status", Status.CHANGEABLE).count('* as total');
+
+			if (total[0]?.total > 0) {
 				return true;
 			}
 		}
@@ -60,8 +64,9 @@ export default class ScenePolicy extends BasePolicy {
 				.join('group_user', 'group_play.group_id', 'group_user.group_id')
 				.where("group_user.user_id", user.id)
 				.andWhere("group_play.play_id", scene.play.id)
-				.andWhere("group_play.status", Status.CHANGEABLE).count('* as total')[0].total;
-			if (total > 0) {
+				.andWhere("group_play.status", Status.CHANGEABLE).count('* as total');
+
+			if (total[0]?.total > 0) {
 				return true;
 			}
 		}
@@ -77,8 +82,9 @@ export default class ScenePolicy extends BasePolicy {
 				.join('group_user', 'group_play.group_id', 'group_user.group_id')
 				.where("group_user.user_id", user.id)
 				.andWhere("group_play.play_id", scene.play.id)
-				.andWhere("group_play.status", Status.CHANGEABLE).count('* as total')[0].total;
-			if (total > 0) {
+				.andWhere("group_play.status", Status.CHANGEABLE).count('* as total');
+
+			if (total[0]?.total > 0) {
 				return true;
 			}
 		}

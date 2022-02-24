@@ -94,14 +94,28 @@
                     
                                       
                     <div class="block">
+                        @set('students',group.users.filter((user)=>{return user.pivot_role_id==Role.STUDENT}))
+                        @set('teachers',group.users.filter((user)=>{return user.pivot_role_id==Role.TEACHER}))
                         
-                        @each(user in group.users)
-                        <div>
-                        {{user.username}}-
-                        {{user.pivot_role_id==Role.STUDENT?"élève":"prof"}}
+                        <div class="box">
+                            <h3>Professeur</h3>
+                            @each(user in teachers)
+                            <div>
+                            {{user.username}}
+                            </div>
+                            @endeach
                         </div>
-                        @endeach
-                        {{group.users.length!=0?group.users.length+" élèves":"Pas encore d'élève dans ce groupe"}}
+                        <div class="box">
+                            <h3>Elèves</h3>
+                            @each(user in students)
+                            <div>
+                            {{user.username}}
+                            </div>
+                            @else
+                            Pas encore d'élèves dans ce groupe
+                            @endeach
+                        </div>
+                        
                     </div>
                     <hr>
                     {{--  <p class="subtitle">Pièce</p>

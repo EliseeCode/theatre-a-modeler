@@ -6,7 +6,7 @@ import Role from "Contracts/enums/Role";
 import CharacterFetcher from "../helperClass/CharacterFetcher";
 
 export default class GroupsController {
-  public async index({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
 
   public async create({ view }: HttpContextContract) {
     return view.render("group/edit");
@@ -42,15 +42,21 @@ export default class GroupsController {
   }
 
   public async show({ params, view, auth, bouncer }: HttpContextContract) {
+
+    //const group = await Group.findOrFail(params.id);
     const group = await Group.findOrFail(params.id);
+    await group.load("users");
+    const members = group?.users;
+    //console.log(members);
+
     const user = await auth.authenticate();
-    await bouncer.with("GroupPolicy").authorize("view", group);
+    //await bouncer.with("GroupPolicy").authorize("view", group);
     await user.load("groups");
     if (group) {
       await group.load("plays", (playQuery) => {
         playQuery
           .preload("scenes", (sceneQuery) => {
-            sceneQuery.preload("lines", (lineQuery) => {
+            sceneQuery.preload("play").preload("lines", (lineQuery) => {
               lineQuery.preload("character");
             });
           })
@@ -72,25 +78,7 @@ export default class GroupsController {
         }
       }
 
-      // //create a set of character's id and loop over each line to populate the set.
-      // var characterIdsByPlay = Array();
-      // group.plays.forEach(async (play) => {
-      //   var charactersSet = new Set();
-      //   play.scenes.forEach((scene) => {
-      //     scene.lines.forEach((line) => charactersSet.add(line.characterId))
-      //   })
-      //   //transform the set in Array and get Characters from those.
-      //   var characterIds = Array.from(charactersSet);
-      //   console.log(play.id, characterIds);
-      //   characterIdsByPlay[play.id] = characterIds;
-      // });
-      // console.log(characterIdsByPlay);
-      // const charactersByPlay = characterIdsByPlay.map(async (el) => {
-      //   var a = await Character.findMany(el);
-      //   return a;
-      // });
-      // console.log(charactersByPlay);
-      return view.render("group/show", { group, user, Role });
+      return view.render("group/show", { group, members, user, Role });
     }
   }
 
@@ -128,8 +116,8 @@ export default class GroupsController {
   }
 
   public generateCode() {
-    var characters = "abcdefghjklmnpqrstuvwxyz0123456789";
-    var result = "";
+    var characters = 'ABCDEFGHJKLMNOPRSTUVWXZ';
+    var result = ""
     var charactersLength = characters.length;
 
     for (var i = 0; i < 4; i++) {

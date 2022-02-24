@@ -3,6 +3,7 @@ import Play from "App/Models/Play";
 import Status from "Contracts/enums/Status";
 import Logger from "@ioc:Adonis/Core/Logger";
 import CharacterFetcher from "../helperClass/CharacterFetcher";
+import Role from "Contracts/enums/Role";
 
 export default class PlaysController {
   public dataName = "plays";
@@ -10,13 +11,14 @@ export default class PlaysController {
   public async index({ view }: HttpContextContract) {
     const plays = await Play.query()
       .preload("scenes", (sceneQuery) => {
-        sceneQuery.preload("lines", (lineQuery) => {
+        sceneQuery.preload("play").preload("lines", (lineQuery) => {
           lineQuery.preload("character").orderBy("position");
         });
       })
       .preload("groups")
       .preload("creator")
       .preload("image");
+
     const characterFetcher = new CharacterFetcher();
 
     for (const play of plays) {
@@ -26,7 +28,7 @@ export default class PlaysController {
       }
     }
 
-    return view.render("play/index", { plays });
+    return view.render("play/index", { plays, Role });
   }
 
   public async createNew({ response, auth }: HttpContextContract) {

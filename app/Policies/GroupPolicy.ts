@@ -6,7 +6,6 @@ import Role from '../../contracts/enums/Role'
 export default class GroupPolicy extends BasePolicy {
 
 	public async before(user: User | null) {
-		console.log("group Policy:" + user?.roleId)
 		// allow admins authorization to perform all comment actions
 		if (user?.roleId == Role.ADMIN) {
 			return true;
