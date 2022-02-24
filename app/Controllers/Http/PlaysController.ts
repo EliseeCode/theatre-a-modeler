@@ -4,15 +4,20 @@ import Status from "Contracts/enums/Status";
 import Logger from "@ioc:Adonis/Core/Logger";
 import CharacterFetcher from "../helperClass/CharacterFetcher";
 
-
 export default class PlaysController {
   public dataName = "plays";
 
   public async index({ view }: HttpContextContract) {
-    const plays = await Play.query().preload("scenes", (sceneQuery) => {
-      sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character").orderBy('position') })
-    }).preload("groups").preload("creator").preload("image")
-    const characterFetcher = new CharacterFetcher;
+    const plays = await Play.query()
+      .preload("scenes", (sceneQuery) => {
+        sceneQuery.preload("lines", (lineQuery) => {
+          lineQuery.preload("character").orderBy("position");
+        });
+      })
+      .preload("groups")
+      .preload("creator")
+      .preload("image");
+    const characterFetcher = new CharacterFetcher();
 
     for (const play of plays) {
       await characterFetcher.getCharactersFromPlay(play);
@@ -26,20 +31,18 @@ export default class PlaysController {
 
   public async createNew({ response, auth }: HttpContextContract) {
     const user = await auth.authenticate();
-    const newPlay = await Play.create(
-      {
-        name: 'Nouvelle Pièce',
-        description: "description",
-        creatorId: user.id
-      }
-    );
+    const newPlay = await Play.create({
+      name: "Nouvelle Pièce",
+      description: "description",
+      creatorId: user.id,
+    });
     return response.redirect().back();
   }
 
   public async create({ view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
     await user.load("groups");
-    const status = Status
+    const status = Status;
     return view.render("play/edit", { user, status });
   }
 
@@ -51,33 +54,34 @@ export default class PlaysController {
     const play = await Play.create({
       name: name || "Pièce sans nom",
       description: description || "",
-      creatorId: creatorId
+      creatorId: creatorId,
     });
-
 
     await play.save();
 
     let publishedGroupsArray: string[] = [];
     if (!!publishedGroups) {
-      if (typeof (publishedGroups) == "string") {
+      if (typeof publishedGroups == "string") {
         publishedGroupsArray[0] = publishedGroups;
-      }
-      else {
+      } else {
         publishedGroupsArray = Object.values(publishedGroups);
       }
       await play.related("groups").attach(publishedGroupsArray);
     }
 
-
     return response.redirect().back();
-
   }
 
-  public async detach({ bouncer, view, params, response }: HttpContextContract) {
+  public async detach({
+    bouncer,
+    view,
+    params,
+    response,
+  }: HttpContextContract) {
     const groupId = params.groupId;
     const playId = params.playId;
     const play = await Play.findOrFail(playId);
-    await bouncer.with('PlayPolicy').authorize('link', play, [groupId]);
+    await bouncer.with("PlayPolicy").authorize("link", play, [groupId]);
     await play.related("groups").detach([groupId]);
 
     return response.redirect().back();
@@ -95,26 +99,32 @@ export default class PlaysController {
     return view.render("play/edit", { user, status, play });
   }
 
-  public async update({ bouncer, request, response, params }: HttpContextContract) {
+  public async update({
+    bouncer,
+    request,
+    response,
+    params,
+  }: HttpContextContract) {
     const { name, description, publishedGroups } = request.body();
     const play_id = params.id;
     var play = await Play.findOrFail(play_id);
-    await bouncer.with('PlayPolicy').authorize('update', play);
+    await bouncer.with("PlayPolicy").authorize("update", play);
     play.name = name;
     play.description = description;
     await play.save();
     //Links
 
-    let publishedGroupsArray = [];
+    let publishedGroupsArray: any[] = [];
     if (!!publishedGroups) {
-      if (typeof (publishedGroups) == "string") {
+      if (typeof publishedGroups == "string") {
         publishedGroupsArray = [publishedGroups];
-      }
-      else {
+      } else {
         publishedGroupsArray = Object.values(publishedGroups);
       }
     }
-    await bouncer.with('PlayPolicy').authorize('link', play, publishedGroupsArray);
+    await bouncer
+      .with("PlayPolicy")
+      .authorize("link", play, publishedGroupsArray);
     await play.related("groups").sync(publishedGroupsArray);
     return response.redirect().back();
   }
@@ -124,11 +134,9 @@ export default class PlaysController {
     const play_id = params.playId;
     var play = await Play.findOrFail(play_id);
     play.name = newPlayName;
-    console.log(newPlayName);
     await play.save();
     return play;
   }
-
 
   public async destroy({ response, params }: HttpContextContract) {
     const playId = params.id;
