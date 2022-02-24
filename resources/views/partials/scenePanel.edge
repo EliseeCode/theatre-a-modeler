@@ -14,13 +14,14 @@
             <span class="icon">
               <i class="fas fa-arrow-right"></i>
             </span>
-          </a>       
+          </a>   
+        @can('ScenePolicy.update',scene)      
         <div class="dropdown-trigger" id="dropdown-trigger-scene-{{scene.id}}" onclick="toggleDropdownMenu('scene',{{scene.id}})" aria-controls="dropdown-menu">
           <span class="icon">
               <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
           </span>    
-      </div>
-
+        </div>
+        @endcan
       </div>
     </header>
     <div class="dropdown-scene-panel" style="display:none;">
@@ -49,14 +50,16 @@
             <span class="icon">
               <i class="fas fa-arrow-right"></i>
             </span>
-          </a>       
+          </a> 
+          @can('ScenePolicy.update',scene)     
           <a href="/scene/{{scene.id}}/edit" class="card-footer-item icon-text">
             {{--  <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">  --}}
               <span>Edit</span>
               <span class="icon">
                 <i class="fas fa-edit"></i>
               </span>
-            </a>             
+          </a>    
+          @endcan           
         </div>
     </div>
 </div>
@@ -73,7 +76,7 @@
                   Modifier
               </a>
           </div> 
-         
+          @can('ScenePolicy.delete',scene)  
           <div class="dropdown-item">
               <form class="icon-text" action={{ '/scenes/'+scene.id+'?_method=DELETE' }} method="POST">
                   {{ csrfField() }} 
@@ -85,6 +88,7 @@
                   </a>
               </form>
           </div>
+          @endcan
       </div>
   </div>
 </div>    

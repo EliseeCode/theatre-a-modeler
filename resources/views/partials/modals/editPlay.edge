@@ -9,7 +9,7 @@
       <section class="modal-card-body">
         
         {{ csrfField() }}
-        @if(user.groups.length>0)
+        @if(user?.groups.length>0)
         <div class="field">
             <label class="label">Dans quel groupe publier</label>
             <div class="control">

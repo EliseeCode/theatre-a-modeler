@@ -22,116 +22,60 @@
         <p>Pas encore de pièce de théâtre</p>  
     @endif
 </div>
+
+@include('partials/modals/editPlay')
+@include('partials/modals/createPlay')
+@include('partials/modals/editScene')
+@include('partials/modals/createScene')
+
+<div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
+
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 <script>
-    const CSRF_TOKEN = document.getElementsByName("_csrf")[0].value;
-    const deleteButtons = Array.from(document.getElementsByClassName("delete"));
-    const fileInputs = Array.from(document.querySelectorAll("[id^='file_']"));
-    fileInputs.map((elem) => {
-        elem.addEventListener("change", (e) => {
-            const fileInput = e.target;
-            const entityType = fileInput.getAttribute("data-type")
-            const entityId = fileInput.getAttribute("data-id");
-            const file = fileInput.files[0];
-            console.log(file)
-            console.log(`Here's the entity_id to upload: ${entityId}`);
-            const form = new FormData();
-            const reader = new FileReader();
-            reader.addEventListener('load', event => {
-                const buffer = event.target.result;
-                const blob = new Blob([buffer], {type: file.type});
-                form.append("image", blob);
-                form.append("entityId", entityId);
-                form.append("entityType", entityType);
-                fetch(`${window.location.origin}/images`, {
-                    method: "POST",
-                    headers: {
-                        'X-CSRF-Token': CSRF_TOKEN,
-                        /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
-                        'Content-Type': `${blob.type}`,*/ 
-                        'Content-Transfer-Encoding': 'base64'
-                    },
-                    mode: "cors",
-                    body: form
-                }).then(response => {
-                    if (!response.ok) throw response;
-                    return response.json();
-                }).then((data) => {
-                    console.info(data);
-                    window.location.reload();
-                }).catch((err) => {
-                    console.error(err);
-                })
-            });
-            reader.readAsArrayBuffer(file);
-            
-        })
-    })
-    deleteButtons.map((elem) => {
-        elem.addEventListener("click", (e) => {
-            const id = e.target.getAttribute("data-image-id");
-            fetch(`${window.location.origin}/images/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "X-CSRF-Token": CSRF_TOKEN
-                }
-            }).then(response => {
-                if (!response.ok) throw response;
-                return response.json();
-            }).then((data) => {
-                console.info(data);
-                window.location.reload()
-            }).catch((err) => {
-                console.error(err);
-            })
-        })
-    })
-    function delete_scene(scene_id)
+
+    function toggleDropdownMenu(objectType,objectId){
+    window.event.stopPropagation();
+    $("#dropdown-option-container").html("");
+    $("#dropdown-menu-"+objectType+"-"+objectId).clone().attr('id', 'currentDropDown').appendTo("#dropdown-option-container");
+    $("#dropdown-option-container").show();
+    var positionTrigger = $("#dropdown-trigger-"+objectType+"-"+objectId).offset();
+    console.log(positionTrigger);
+    $("#dropdown-option-container").offset({top:positionTrigger.top+20, left:positionTrigger.left-200})
+}
+$(document).mouseup(function(e) 
+{
+    var container = $("#dropdown-option-container, .dropdown-trigger");
+    var stuffToHide=$("#dropdown-option-container");
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) 
     {
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            sceneId: scene_id, 
-            _csrf: token
-        };
-        $.post('/api/scene/delete',params,(resp)=>{
-            $("#scene_item_"+scene_id).remove();
-            }   
-        );
+        stuffToHide.hide();
     }
-    function toggle_scene_display(scene_id)
+});
+
+function loadPlayInfoInModal(play)
     {
-        $("#scene_item_"+scene_id+" .scene_item_display").toggle();
-        $("#scene_item_"+scene_id+" .scene_item_edit").toggle();  
-        $("#scene_item_"+scene_id+" .scene_item_edit input").focus();      
+        console.log(play.groups)
+        console.log(play);
+        $('#edit-play-modal').find('input[name="name"]').val(play.name);
+        $('#edit-play-modal').find('input[name="description"]').val(play.description);
+        var selectElement = $('#edit-play-modal').find('select[name="publishedGroups"]').eq(0);
+        var selectize = selectElement.data('selectize');
+        if (!!selectize) selectize.setValue(play.groups);
+        //$('#edit-play-modal').find('select[name="publishedGroups"]').val(play.groups);
+        $('#edit-play-modal').find('form').attr("action","/plays/"+play.id+"?_method=PUT")
     }
-    function toggle_play_display(play_id)
+function loadSceneCreateInfoInModal(scene)
     {
-        $("#play_item_"+play_id+" .play_item_display").toggle();
-        $("#play_item_"+play_id+" .play_item_edit").toggle();  
-        $("#play_item_"+play_id+" .play_item_edit input").focus();      
-    }
-    function update_scene_name(scene_id)
-    {   
-        const newSceneName=$("#scene_item_"+scene_id+" .scene_item_edit input").val();
-        $("#scene_item_"+scene_id+" .scene_item_display .scene_name").text(newSceneName);
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            newSceneName: newSceneName, 
-            _csrf: token
-        };
-        $.post('/api/scene/'+scene_id+'/updateName',params,(resp)=>console.log(resp));
-    }
-    function update_play_name(play_id)
-    {   
-        const newPlayName=$("#play_item_"+play_id+" .play_item_edit input").val();
-        $("#play_item_"+play_id+" .play_item_edit input").focus();
-        $("#play_item_"+play_id+" .play_item_display .play_name").text(newPlayName);
-        const token = $('.csrfTokenElement').data('csrf-token');
-        const params = { 
-            newPlayName: newPlayName, 
-            _csrf: token
-        };
-        $.post('/api/play/'+play_id+'/updateName',params,(resp)=>console.log(resp));
-    }
+        console.log(scene)
+        $('#edit-sceneCreate-modal').find('form').attr("action","/play/"+scene.playId+"/scene/createNew?_method=PUT")
+    }    
+function loadSceneInfoInModal(scene)
+    {
+        console.log(scene)
+        $('#edit-scene-modal').find('input[name="name"]').val(scene.name);
+        $('#edit-scene-modal').find('form').attr("action","/scenes/"+scene.id+"?_method=PUT")
+    }    
 </script>
+<script src="/js/bulma-modal.js"></script>
 @endsection
