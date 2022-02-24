@@ -14,7 +14,15 @@
                         </form>
                     </div>
                     @endif
-                    <textarea oninput="auto_grow(this);updateText({{line.id}});" name='text' id ="lineText_{{line.id}}" class="lineText textarea" cols="30" rows="1" style="resize: none">{{line.text}}</textarea>
+                    <textarea
+                        onkeydown="splitContent(event,this,{{line.id}});" 
+                        oninput="auto_grow(this);updateText({{line.id}});" 
+                        name='text' id ="lineText_{{line.id}}" 
+                        class="lineText textarea" 
+                        cols="30" 
+                        rows="1" 
+                        style="resize: none">{{line.text}}</textarea>
+
                     <div class="field buttonAddLine">
                         <form action="/scenes/{{scene.id}}/line/create/{{line.position}}" method="POST">
                             {{ csrfField() }}

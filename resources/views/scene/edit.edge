@@ -116,6 +116,39 @@
     @include('partials/modals/editScene')
     @include('partials/modals/createCharacter')
     <script>
+        
+        (function($) {
+        $.fn.getCursorPosition = function() {
+        var input = this.get(0);
+        if (!input) return; // No (input) element found
+        if ('selectionStart' in input) {
+            // Standard-compliant browsers
+            return input.selectionStart;
+        } else if (document.selection) {
+            // IE
+            input.focus();
+            var sel = document.selection.createRange();
+            var selLen = document.selection.createRange().text.length;
+            sel.moveStart('character', -input.value.length);
+            return sel.text.length - selLen;
+        }
+    }
+})(jQuery);
+
+    function splitContent(event,elem,lineId)
+    {
+        if (event.ctrlKey && event.keyCode === 13) {
+            let curs=$(elem).getCursorPosition();
+            let text=$(elem).val()
+            firstPart=text.substr(0,curs);
+            secondPart=text.substr(curs);
+            console.log(firstPart,secondPart);
+            $(elem).val(firstPart);
+            createNewLineWithTextAfterLine(secondPart,lineId);
+        }
+    }                      
+
+
     function toggleDropdownMenu(objectType,objectId){
         window.event.stopPropagation();
         $("#dropdown-option-container").html("");
@@ -154,6 +187,7 @@
         }
         timer[lineId] = setTimeout(()=>{sendUpdateText(lineId)}, 1000);
     }
+
     function sendUpdateText(lineId){
         console.log("updateText")
         const text=$(`#lineText_${lineId}`).val();
@@ -174,7 +208,34 @@
             }
         });
     }
-    
+    function createNewLineWithTextAfterLine(text,lineId){
+        console.log("createNewLineWithTextAfterLine")
+       
+        const token = $('.csrfToken').data('csrf-token');
+        const params = { 
+            lineId, 
+            text,
+            _csrf: token
+        };
+
+        var form = document.createElement('form');
+        form.setAttribute('method', post);
+        form.setAttribute('action', '/scenes/{{scene.id}}/line/splitAText/');
+
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement('input');
+                hiddenField.setAttribute('type', 'hidden');
+                hiddenField.setAttribute('name', key);
+                hiddenField.setAttribute('value', params[key]);
+
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
     function updateCharacter(characterId,lineId)
     {
         const token = $('.csrfToken').data('csrf-token');
@@ -201,6 +262,7 @@
     [...document.getElementsByClassName('lineText')].forEach((element)=>{
         auto_grow(element)
     })    
+
     </script>
     
     

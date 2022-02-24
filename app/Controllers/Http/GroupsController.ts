@@ -55,13 +55,6 @@ export default class GroupsController {
           .preload("groups", (groupQuery) => { groupQuery.whereIn("groups.id", user.groups.map((el) => el.id)) })
       });
 
-      for (let play of group.plays) {
-        for (let scene of play.scenes) {
-          for (let line of scene.lines) {
-            console.log(line.character.name);
-          }
-        }
-      }
 
       const characterFetcher = new CharacterFetcher;
 
@@ -71,14 +64,7 @@ export default class GroupsController {
           await characterFetcher.getCharactersFromScene(scene);
         }
       }
-      console.log("//////////////////")
-      for (let play of group.plays) {
-        for (let scene of play.scenes) {
-          for (let line of scene.lines) {
-            console.log(line.character.name);
-          }
-        }
-      }
+
 
 
       // //create a set of character's id and loop over each line to populate the set.
@@ -133,11 +119,11 @@ export default class GroupsController {
   }
 
   public generateCode() {
-    var characters = 'abcdefghjklmnpqrstuvwxyz0123456789';
+    var characters = 'ABCDEFGHJKLMNOPRSTUVWXZ0123456789';
     var result = ""
     var charactersLength = characters.length;
 
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
