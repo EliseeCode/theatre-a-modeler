@@ -33,6 +33,9 @@ import Route from "@ioc:Adonis/Core/Route";
 Route.on("/").render("index");
 //Route.get('/test',async({request})=>{return {domaine:request.subdomains(),hostname:request.hostname(),host:request.host(),prot:request.protocol()}});
 
+Route.get('auth/google', 'AuthController.redirect').as('social.login')
+Route.get('auth/google/callback', 'AuthController.handleCallback').as('social.login.callback')
+
 Route.resource("formation", "FormationsController").middleware({
   create: ["auth"],
   store: ["auth"],
@@ -152,3 +155,8 @@ Route.post("testImage", async ({ request }) => {
   //   await coverImage.move(Application.tmpPath('uploads'))
   // }
 });
+
+
+
+
+
