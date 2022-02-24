@@ -13,47 +13,47 @@ export default class AudioPolicy extends BasePolicy {
       return true;
     }
   }
-  public async create(user: User, audioVersion: Version) {
-    console.log(user.id, audioVersion.creatorId);
+  public async create(user: User, audioVersion: Version, group: Group) {
+    await user.load("groups", (groupQuery) => {
+      groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
+    });
+    const roleId = user.groups[0].$extras.pivot_role_id;
 
     if (user.id == audioVersion.creatorId) {
       return true;
-    } else if ([Role.TEACHER, Role.EDITOR].includes(user.roleId)) {
+    } else if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
+      return true;
+    } else {
+      return false;
     }
   }
-  public async update(user: User, audio: Audio) {
+  public async update(user: User, audio: Audio, group: Group) {
     // Normally we're going to allow audioversion creation
-    if (
-      (user.id == audio.creatorId && user.id == audio.version.id) ||
-      user.id == audio.line.scene.play.creatorId
-    ) {
+    await user.load("groups", (groupQuery) => {
+      groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
+    });
+    const roleId = user.groups[0].$extras.pivot_role_id;
+
+    if (user.id == audio.creatorId) {
       return true;
-    } else if ([Role.TEACHER, Role.EDITOR].includes(user.roleId)) {
-      const audioScene = audio.line.scene;
-      const scenePolicy = new ScenePolicy();
-      if (await scenePolicy.update(user, audioScene)) {
-        // You belong to this play
-        return true;
-      } else {
-        return false;
-      }
+    } else if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
+      return true;
+    } else {
+      return false;
     }
   }
-  public async delete(user: User, audio: Audio) {
-    if (
-      user.id == audio.creatorId ||
-      user.id == audio.line.scene.play.creatorId
-    ) {
+  public async delete(user: User, audio: Audio, group: Group) {
+    await user.load("groups", (groupQuery) => {
+      groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
+    });
+    const roleId = user.groups[0].$extras.pivot_role_id;
+
+    if (user.id == audio.creatorId) {
       return true;
-    } else if ([Role.TEACHER, Role.EDITOR].includes(user.roleId)) {
-      const audioScene = audio.line.scene;
-      const policy = new ScenePolicy();
-      if (await policy.update(user, audioScene)) {
-        // You belong to this play
-        return true;
-      } else {
-        return false;
-      }
+    } else if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
