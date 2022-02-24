@@ -15,7 +15,6 @@ import AudioFetcher from "App/Controllers/helperClass/AudioFetcher";
 import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 
 export default class ScenesController {
-
   public async show({ params, view }: HttpContextContract) {
     const scene = await Scene.findOrFail(params.id);
     //get other scene from play to navigate between scene of the same play
@@ -36,60 +35,56 @@ export default class ScenesController {
         .orderBy("lines.position", "asc");
     });
 
-
     const lines = await Line.query()
-      .preload('character', (characterQuery) => { characterQuery.preload("image") })
-      .preload('version')
-      .where('lines.scene_id', scene.id)
+      .preload("character", (characterQuery) => {
+        characterQuery.preload("image");
+      })
+      .preload("version")
+      .where("lines.scene_id", scene.id)
       .distinct("lines.version_id", "lines.character_id");
 
-    const linesJSON = lines.map((line) => line.serialize())
+    const linesJSON = lines.map((line) => {
+      console.log(line);
+      return line.serialize();
+    });
+
+    console.log(linesJSON[0]);
+
+    const sceneLength = scene.lines[scene.lines.length - 1].position;
 
     //Character[].versions[]
     const characters = linesJSON.reduce(function (acc, cur) {
-      if (cur.character == null) { return acc; }
-      if (acc.map((char) => { return char.id }).includes(cur.character.id)) {
-        //push version if character is already in accumulator
-        acc.filter((char) => { return char.id == cur.character.id })[0].versions.push(cur.version);
+      if (cur.character == null) {
+        return acc;
       }
-      else {
+      if (
+        acc
+          .map((char) => {
+            return char.id;
+          })
+          .includes(cur.character.id)
+      ) {
+        //push version if character is already in accumulator
+        acc
+          .filter((char) => {
+            return char.id == cur.character.id;
+          })[0]
+          .versions.push(cur.version);
+      } else {
         cur.character.versions = [cur.version];
-        acc.push(cur.character)
+        acc.push(cur.character);
       }
       return acc;
     }, []);
 
     //const charactersArray = Object.values(characters);
-
-
+    console.log(sceneLength);
     return view.render("scene/show", {
       scene,
-      characters: characters
+      characters,
+      sceneLength,
     });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   private async selectCharacters(scene_id) {
     // We want to know which personnage will be animated by who. So, we need to list each possible animator/doubler for a personnage. But! We do accept different improvisations in each line. You can say either "Hi!" or "Hello!". So, we need to track of each version (with its own id & name). And we want to get the doubler ids to know who we're attaching the personnage. But! Again, we do accept multiple audio sets/versions for each line. Like you can say "Hello!" in a rush or calmly.
@@ -161,20 +156,11 @@ export default class ScenesController {
     });
   }
 
+  public async index({}: HttpContextContract) {}
 
-  public async index({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
-  public async create({ }: HttpContextContract) { }
-
-  public async store({ }: HttpContextContract) { }
-
-
-
-
-
-
-
-
+  public async store({}: HttpContextContract) {}
 
   public async change({
     params,
@@ -204,9 +190,12 @@ export default class ScenesController {
     let [characterID, lineVersionID, doublerID, audioVersionID] =
       version.split("-");
     console.log(
-      `Character ID: ${characterID}\nLine Version ID:${lineVersionID == 0 ? "Alternative Text" : lineVersionID
-      }\nDoubler ID:${typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
-      }\nAudio Version ID:${audioVersionID == 0 ? "To be recorded" : audioVersionID
+      `Character ID: ${characterID}\nLine Version ID:${
+        lineVersionID == 0 ? "Alternative Text" : lineVersionID
+      }\nDoubler ID:${
+        typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
+      }\nAudio Version ID:${
+        audioVersionID == 0 ? "To be recorded" : audioVersionID
       }\n`
     );
     const character = await Character.findOrFail(characterID);
@@ -353,12 +342,6 @@ export default class ScenesController {
     });
   }
 
-
-
-
-
-
-
   public async createNew({
     bouncer,
     response,
@@ -379,7 +362,7 @@ export default class ScenesController {
       creatorId: user.id,
       playId: play.id,
     });
-    return response.redirect('/scene/' + scene.id + "/edit");
+    return response.redirect("/scene/" + scene.id + "/edit");
   }
 
   public async updateName({ request, params }: HttpContextContract) {
@@ -391,7 +374,6 @@ export default class ScenesController {
     await scene.save();
     return scene;
   }
-
 
   public async edit({ params, view, auth }: HttpContextContract) {
     const scene = await Scene.findOrFail(params.id);

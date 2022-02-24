@@ -26,9 +26,18 @@ export default class AudiosController {
       });
   }
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
-  public async store({ request, response, auth }: HttpContextContract) {
+  public async store({
+    bouncer,
+    request,
+    response,
+    auth,
+  }: HttpContextContract) {
+    const user = await auth.authenticate();
+    const versionId = request.body().versionId;
+    const audioVersion = await Version.findOrFail(versionId);
+    await bouncer.with("AudioPolicy").authorize("create", audioVersion);
     const audioFile = await request.file("audio");
 
     if (!audioFile)
@@ -37,9 +46,8 @@ export default class AudiosController {
         message: "No audio file specified for upload...",
       });
 
-    const user = await auth.authenticate();
     const lineId = request.body().lineId;
-    const versionId = request.body().versionId;
+
     // Won't use a custom name instead Adonis will auto-generate a random name
     /*const fileName = `${user.id}_${lineId}_${await Hash.make(
       new Date().getTime().toString()
@@ -67,16 +75,6 @@ export default class AudiosController {
       return response.json({ status: 0, message });
     }
 
-    if (!versionId) {
-      console.log("No version given. Creating a new one...");
-      versionId = await (
-        await Version.create({
-          name: "let there be light",
-          creatorId: user.id,
-          type: ObjectType.AUDIO
-        })
-      ).id;
-    }
     const locationOrigin = new URL(request.completeUrl()).origin;
     const newAudio = await Audio.create({
       name: audioFile.fileName,
@@ -92,6 +90,7 @@ export default class AudiosController {
       mimeType: `${audioFile.fieldName}/${audioFile.extname}`,
     });
     return response.json({
+      id: newAudio.id,
       version: versionId,
       public_path: newAudio.publicPath,
     });
@@ -109,21 +108,25 @@ export default class AudiosController {
     } else return view.render("errors/not-found");
   }
 
-  public async createNewVersion({ auth, request, response }: HttpContextContract) {
-    const sceneId = request.body().sceneId;
+  public async createNewVersion({
+    auth,
+    request,
+    response,
+  }: HttpContextContract) {
+    console.log("creating new version");
     const characterId = request.body().characterId;
     const user = await auth.authenticate();
 
-
     const result = await Database.query()
-      .from('versions')
-      .select('*')
-      .join('audios', 'audios.version_id', 'versions.id')
-      .join('lines', 'lines.id', 'audios.line_id')
+      .from("versions")
+      .select("*")
+      .join("audios", "audios.version_id", "versions.id")
+      .join("lines", "lines.id", "audios.line_id")
       .where("versions.creator_id", user.id)
       .andWhere("versions.type", ObjectType.AUDIO)
       .andWhere("lines.character_id", characterId)
-      .countDistinct('versions.id as nbreVersion').toSQL();
+      .countDistinct("versions.id as nbreVersion");
+    // .toSQL();
 
     console.log(result);
     let nbreVersion = 0;
@@ -136,15 +139,15 @@ export default class AudiosController {
     const version = await Version.create({
       name: versionName,
       type: ObjectType.AUDIO,
-      creatorId: user.id
+      creatorId: user.id,
     });
 
     return response.json(version);
   }
 
-  public async edit({ }: HttpContextContract) { }
+  public async edit({}: HttpContextContract) {}
 
-  public async update({ }: HttpContextContract) { }
+  public async update({}: HttpContextContract) {}
 
   public async destroy({ response, params }: HttpContextContract) {
     // Need an authorization (permission) check for delete

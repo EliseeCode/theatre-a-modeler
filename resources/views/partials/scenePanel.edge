@@ -5,9 +5,9 @@
       </div>
       <div class="card-header-icon" aria-label="more options">
         @if(group?.id)
-          <a href={{'/group/'+group.id+'/scene/'+scene.id+'/select'}} class="card-header-item icon-text">
+          <a href={{'/group/'+group.id+'/scene/'+scene.id}} class="card-header-item icon-text">
           @else
-          <a href={{'/scene/'+scene.id+'/select'}} class="card-header-item icon-text">
+          <a href={{'/scene/'+scene.id}} class="card-header-item icon-text">
           @endif
           {{--  <a href="/scenes/{{scene.id}}" class="card-footer-item icon-text">  --}}
             <span>Explorer</span>
