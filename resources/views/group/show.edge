@@ -12,11 +12,11 @@
               <div class="level-item">
                   <div>
                     <span class="has-text-white title">
-                        {{group.name}}
+                        {{group.name || 'Groupe sans nom'}}
                     </span>    
                     <br/>
                     <span class="has-text-white subtitle">
-                        {{group.description}}
+                        {{group.description || ""}}
                     </span>
                   </div>
               </div>
@@ -24,12 +24,22 @@
           <div class="level-right">
               <div class="level-item">
                   Code pour rejoindre le groupe : 
-                  <span class="is-size-1">
+                  <span class="is-size-1" style="text-transform: uppercase;">
                      {{group.code}}
                   </span>
               </div>
           </div>
       </div>
+      <div class="level">
+          <div class="level-right">
+              <div class="level-item">
+                <button class="button js-modal-trigger" data-target="participant-modal">
+                    Membres du groupe
+                  </button>
+              </div>
+          </div>
+      </div>
+     
     </div>
   
 
@@ -51,7 +61,7 @@
     
     @endif
 </div>
-
+@include('partials/modals/Participant')
 @include('partials/modals/editPlay')
 @include('partials/modals/createPlay')
 @include('partials/modals/editScene')
