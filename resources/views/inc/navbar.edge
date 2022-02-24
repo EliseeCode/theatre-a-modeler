@@ -13,8 +13,18 @@
     </div>
   
     
-      @if(!auth.isLoggedIn)
+      @if(auth.isGuest)
       <div class="navbar-menu">
+        <div id="nav-start" class="navbar-menu">
+          <a class="navbar-item" href="/plays">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-glasses"></i>
+              </span>
+              <span>Explorer</span>
+            </span>
+          </a>
+        </div>
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">

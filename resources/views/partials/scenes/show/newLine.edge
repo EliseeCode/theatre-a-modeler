@@ -29,7 +29,9 @@
           <div>
             <div class="select selectAudioVersion selectAudioVersion_{{character.id}}">
                 <select data-character-id={{character.id}} >
+                  @if(auth.isLoggedIn)
                     <option value="-1">Enregistrer</option>
+                  @endif  
                     <option value="0" selected>Ecouter le robot</option>
                 </select>
             </div>

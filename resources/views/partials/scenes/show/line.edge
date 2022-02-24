@@ -21,6 +21,9 @@
                     cols="30" 
                     rows="3" 
                     style="resize: none;"
+                    @cannot('LinePolicy.update', line)
+                    readonly
+                    @endcannot
                     placeholder="{{line.text}}">{{line.text}}</textarea>
                
             </div>
@@ -29,7 +32,9 @@
             <div>
                 <div class="select selectAudioVersion selectAudioVersion_{{character.id}}">
                     <select data-character-id={{character.id}} >
+                      @if(auth.isLoggedIn)
                         <option value="-1">Enregistrer</option>
+                      @endif  
                         <option value="0" selected>Ecouter le robot</option>
                     </select>
                 </div>

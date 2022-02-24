@@ -16,6 +16,7 @@ import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 
 export default class ScenesController {
   public async show({ params, view }: HttpContextContract) {
+
     const scene = await Scene.findOrFail(params.id);
     //get other scene from play to navigate between scene of the same play
     await scene.load("play", (playQuery) => {
@@ -52,7 +53,7 @@ export default class ScenesController {
 
     const sceneLength = scene.lines[scene.lines.length - 1].position;
 
-    //Character[].versions[]
+    //Make Character[].versions[]
     const characters = linesJSON.reduce(function (acc, cur) {
       if (cur.character == null) {
         return acc;
@@ -156,11 +157,11 @@ export default class ScenesController {
     });
   }
 
-  public async index({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
-  public async store({}: HttpContextContract) {}
+  public async store({ }: HttpContextContract) { }
 
   public async change({
     params,
@@ -190,12 +191,9 @@ export default class ScenesController {
     let [characterID, lineVersionID, doublerID, audioVersionID] =
       version.split("-");
     console.log(
-      `Character ID: ${characterID}\nLine Version ID:${
-        lineVersionID == 0 ? "Alternative Text" : lineVersionID
-      }\nDoubler ID:${
-        typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
-      }\nAudio Version ID:${
-        audioVersionID == 0 ? "To be recorded" : audioVersionID
+      `Character ID: ${characterID}\nLine Version ID:${lineVersionID == 0 ? "Alternative Text" : lineVersionID
+      }\nDoubler ID:${typeof doublerID === "string" ? doublerID.toUpperCase() : doublerID
+      }\nAudio Version ID:${audioVersionID == 0 ? "To be recorded" : audioVersionID
       }\n`
     );
     const character = await Character.findOrFail(characterID);

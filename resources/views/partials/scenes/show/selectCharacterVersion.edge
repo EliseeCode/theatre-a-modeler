@@ -27,7 +27,9 @@
                         @each(version in character.versions)
                         <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
                         @endeach
+                        @if(auth.isLoggedIn)
                         <option id='newLineVersionCreationOption' value="0">Créer une alternative</option>
+                        @endif
                     </select>
                 </div>
             </div>

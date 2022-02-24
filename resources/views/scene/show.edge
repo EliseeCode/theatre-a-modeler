@@ -8,9 +8,16 @@
 @endsection
 @section('content')
 <style>
-    .saved{
+    .saved textarea{
         background-color:#00FF8050;
+        position:relative;
     }
+    .saved::after{
+        content:"Enregistré";
+        color:green;
+        position:absolute;
+        bottom:5px;
+        right:5px;}
     
     .lineText{
         margin-bottom:3px;
@@ -144,6 +151,7 @@
         let recording = false;
         let mediaRecorder;
         let characterIds=new Set();
+        const userId={{auth.user?.id || 0}};
 
     ////////////////////
     // INITIALISATION GLOBALS
@@ -210,7 +218,7 @@
                     selectAudioVersion.find("option.audioVersionOption").remove();
                     for(let version of data.versions)
                     {
-                        selectAudioVersion.append(`<option value=${version.id}>${version.name}</option>`);
+                        selectAudioVersion.prepend(`<option class="versionOption" value=${version.id}>${version.name}</option>`);
                         
                     }
                 }
@@ -224,6 +232,7 @@
                 sceneId:{{scene.id}},
                 _csrf: token
             };
+            $(".selectAudioVersion_"+characterId+" select .versionOption").remove();
             $.post("/lines/createNewVersion",params,function(data){
                 console.log(data);
                 versionId=data.version.id;
@@ -255,24 +264,29 @@
                 case "":
                 break;
                 case 0:
-                console.log("on écoute le robot");
-                $(".lineCharacter_"+characterId+" .btnAction").hide();
-                $(".lineCharacter_"+characterId+" .btnRobotize").show();
+                    console.log("on écoute le robot");
+                    $(".lineCharacter_"+characterId+" .btnAction").hide();
+                    $(".lineCharacter_"+characterId+" .btnRobotize").show();
                 break;
                 case -1:
-                console.log("on enregistre sa voix==>Nouvelle version");
-                $(".lineCharacter_"+characterId+" .btnAction").hide();
-                $(".lineCharacter_"+characterId+" .btnRecordControl").show();
+                    console.log("on enregistre sa voix==> Nouvelle version");
+                    let version=await createAudioVersion(characterId);
+                    console.log(version);
+                    $(`.selectAudioVersion_${characterId} select`).prepend(`<option class="versionOption" value="${version.id}">${version.name}</option>`);
+                    $(`.selectAudioVersion_${characterId} select`).val(version.id);
+
+                    $(".lineCharacter_"+characterId+" .btnAction").hide();
+                    $(".lineCharacter_"+characterId+" .btnRecordControl").show();
                 break;
                 default:
-                characterToAudioVersion[characterId] = audioVersionId;
-                console.log(characterToAudioVersion, "s")
-                getAudioPaths(audioVersionId,characterId); 
-                if(globalAudios[position]) {
-                    displayAudioReader(characterId);
-                } else { // no audio record found
-                    displayRecorder(characterId);
-                }
+                    characterToAudioVersion[characterId] = audioVersionId;
+                    console.log(characterToAudioVersion, "s")
+                    getAudioPaths(audioVersionId,characterId); 
+                    if(globalAudios[position]) {
+                        displayAudioReader(characterId);
+                    } else { // no audio record found
+                        displayRecorder(characterId);
+                    }
             }
         })
 
@@ -587,7 +601,7 @@
             console.log("updateTextData")
             if(data)
             {
-                $(`#lineText_${lineId}`).addClass('saved');
+                $(`#lineText_${lineId}`).parent().addClass('saved');
                 setTimeout(function(){
                     $('.saved').removeClass('saved')
                 }, 500);
