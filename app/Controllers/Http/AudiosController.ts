@@ -8,6 +8,7 @@ import Scene from "App/Models/Scene";
 import Line from "App/Models/Line";
 import ObjectType from "Contracts/enums/ObjectType";
 import Database from "@ioc:Adonis/Lucid/Database";
+import Group from "App/Models/Group";
 
 export default class AudiosController {
   public dataName = "audios";
@@ -37,7 +38,9 @@ export default class AudiosController {
     const user = await auth.authenticate();
     const versionId = request.body().versionId;
     const audioVersion = await Version.findOrFail(versionId);
-    await bouncer.with("AudioPolicy").authorize("create", audioVersion);
+    const groupId = request.body().groupId;
+    const group = await Group.findOrFail(groupId);
+    await bouncer.with("AudioPolicy").authorize("create", audioVersion, group);
     const audioFile = await request.file("audio");
 
     if (!audioFile)
@@ -128,7 +131,6 @@ export default class AudiosController {
       .countDistinct("versions.id as nbreVersion");
     // .toSQL();
 
-    console.log(result);
     let nbreVersion = 0;
     if (result.length > 0) {
       nbreVersion = result[0].nbreVersion;
@@ -149,9 +151,18 @@ export default class AudiosController {
 
   public async update({}: HttpContextContract) {}
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({
+    request,
+    response,
+    params,
+    bouncer,
+  }: HttpContextContract) {
     // Need an authorization (permission) check for delete
-    const audio = (await Audio.query().where("id", params.id))[0];
+    const groupId = request.all().groupId;
+    const group = await Group.findOrFail(groupId);
+    const audioId = params.id;
+    const audio = await Audio.findOrFail(audioId);
+    await bouncer.with("AudioPolicy").authorize("delete", audio, group);
     await Drive.delete(audio.name)
       .then(() => {
         let message = `Successfully deleted the file with id of ${params.id} from drive.`;
@@ -215,7 +226,6 @@ export default class AudiosController {
   }: HttpContextContract) {
     const user = await auth.authenticate();
     const { audioVersionId } = request.all();
-    console.log(audioVersionId);
     const audios = await Audio.query()
       .where("version_id", audioVersionId)
       .preload("line");

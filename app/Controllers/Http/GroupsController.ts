@@ -63,12 +63,7 @@ export default class GroupsController {
           });
       });
 
-<<<<<<< HEAD
-
-      const characterFetcher = new CharacterFetcher;
-=======
       const characterFetcher = new CharacterFetcher();
->>>>>>> 137252bf87631ea725f8ff77a1bddd6e662c8407
 
       for (const play of group.plays) {
         await characterFetcher.getCharactersFromPlay(play);
@@ -76,11 +71,6 @@ export default class GroupsController {
           await characterFetcher.getCharactersFromScene(scene);
         }
       }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 137252bf87631ea725f8ff77a1bddd6e662c8407
 
       // //create a set of character's id and loop over each line to populate the set.
       // var characterIdsByPlay = Array();
@@ -138,13 +128,8 @@ export default class GroupsController {
   }
 
   public generateCode() {
-<<<<<<< HEAD
-    var characters = 'ABCDEFGHJKLMNOPRSTUVWXZ0123456789';
-    var result = ""
-=======
     var characters = "abcdefghjklmnpqrstuvwxyz0123456789";
     var result = "";
->>>>>>> 137252bf87631ea725f8ff77a1bddd6e662c8407
     var charactersLength = characters.length;
 
     for (var i = 0; i < 4; i++) {

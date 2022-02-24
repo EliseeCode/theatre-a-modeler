@@ -255,6 +255,8 @@
     ////////////////////    
         $(".selectAudioVersion select").on('change',async function(){
             //alert($(this).val()+$(this).data('character-id'))
+            const parentContainer = $(this).closest(".line");
+            const deleteButton = parentContainer.find(".btnDelete").get(0);
             var characterId=$(this).data('character-id');
             var audioVersionId=parseInt($(this).val());
             $(".selectAudioVersion_"+characterId+" select").val(audioVersionId);
@@ -302,14 +304,16 @@
             $.get('/audio/getAudiosFromAudioVersion', params, function(data) {
                 console.log("getAudiosFromAudioVersionAnswer",data)
                 for (let audio of data) {
-                    console.log(audio.line.position, "hey");
+                    
                     globalAudios[audio.line.position] = audio.public_path;
+                    const parentElement = document.getElementById(`line_${audio.line.id}`);
+                    const deleteButton = $(parentElement).find(".btnDelete").get(0);
+                    $(deleteButton).attr("data-audio-id", audio.id)
                 }
                 
                 console.log("getAudioVersionAnswer",data)
                 displayAudioReader(characterId);
             });
-
         }
         function displayRecorder(characterId){
             $(".lineCharacter_"+characterId+" .btnAction").hide();
@@ -344,6 +348,7 @@
         }
 
         const uploadAudio = async (event, objectURL) => {
+            const groupId = window.location.pathname.match(/group\/(\d+)/)[1]; // this is for authorization feature
             const parentContainer = $(event.target).closest(".line");
             console.log(parentContainer)
             const position = parentContainer.attr("data-position");
@@ -355,8 +360,8 @@
             /* console.log("uploading audio!!", objectURL)
             console.log(`Here's the line_id to attach: ${lineID}`); */
             event.target.style.display = "none";
-            const cancelButton = event.target.parentNode.querySelector(".btnDelete");
-            cancelButton.style.display = "inline";
+            const deleteButton = event.target.parentNode.querySelector(".btnDelete");
+            deleteButton.style.display = "inline";
             /* const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
             const recordIcon = recordControlButton.querySelector("i");
             recordIcon.classList.remove("fa-play");
@@ -378,13 +383,14 @@
                 $(audioVersionSelect).val(audioVersionID).select().trigger("change");
             }
             characterToAudioVersion[characterID] = audioVersionID
-
+            console.log("deneme", objectURL)
             const blob = await fetch(objectURL).then(r => r.blob());
             console.log(blob, audioVersionID, lineID);
             form = new FormData();
             form.append("audio", blob);
             form.append("lineId", lineID);
             form.append("versionId", audioVersionID);
+            form.append("groupId", groupId);
             fetch(`${window.location.origin}/audios`, {
                 method: "POST",
                 headers: {
@@ -401,7 +407,7 @@
                 return response.json();
             }).then((data) => {
                 globalAudios[position] = data.public_path;
-                $(cancelButton).attr("data-audio-id", data.id);
+                $(deleteButton).attr("data-audio-id", data.id);
                 // window.location.reload();
             }).catch((err) => {
                 console.error(err);
@@ -412,20 +418,49 @@
             };
 
             const deleteRecording = (event, objectURL=null) => {
-            const parentContainer = $(event.target).closest(".line");
-            console.log("canceling recording :", objectURL)
-            $(parentContainer).find(".btnAudio").hide();
-            console.log($(parentContainer).find(".btnAudio").hide())
-            displayAudioReader($(parentContainer).attr("data-character-id"));
-            const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
-        
-            const recordIcon = recordControlButton.querySelector("i");
-            recordIcon.classList.remove("fa-play");
-            recordIcon.classList.add("fa-microphone");
-            event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
-            player.currentTime = 0;
-            player.src = "";
-            // URL.revokeObjectURL(objectURL); // FIXME Invalid URI. Load of media resource  failed.
+                const groupId = window.location.pathname.match(/group\/(\d+)/)[1]; // this is for authorization feature
+                const parentContainer = $(event.target).closest(".line");
+                console.log(parentContainer)
+                const deleteButton = $(parentContainer).find(".btnDelete").get(0);
+                const position = parentContainer.attr("data-position");
+                const audioId = $(event.target).attr("data-audio-id");
+                console.log("canceling recording :", objectURL)
+                $(parentContainer).find(".btnAudio").hide();
+                console.log($(parentContainer).find(".btnAudio").hide())
+                displayRecorder($(parentContainer).attr("data-character-id"));
+                const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+                
+                const form = new FormData();
+                form.append("groupId", groupId);
+                const recordIcon = recordControlButton.querySelector("i");
+                recordIcon.classList.remove("fa-play");
+                recordIcon.classList.add("fa-microphone");
+                event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
+                player.currentTime = 0;
+                player.src = "";
+
+                URL.revokeObjectURL(objectURL); // FIXME Invalid URI. Load of media resource  failed.
+                fetch(`${window.location.origin}/audios/${audioId}`, {
+                    method: "DELETE",
+                    headers: {
+                        'X-CSRF-Token': $('.csrfToken').data('csrf-token'),
+                        /* 'Accept': `${blob.type}`, // FIXME: Not working while file transfer?
+                        'Content-Type': `${blob.type}`,*/ 
+                        'Content-Transfer-Encoding': 'base64'
+                    },
+                    mode: "cors",
+                    body: form
+                }).then(response => {
+                    if (!response.ok) throw response;
+                    console.log(response)
+                    return response.json();
+                }).then((data) => {
+                    globalAudios[position] = 0;
+                    $(deleteButton).attr("data-audio-id", "");
+                    // window.location.reload();
+                }).catch((err) => {
+                    console.error(err);
+                })
             }
 
             const handleMediaDevice = (event, stream) => {
@@ -447,7 +482,7 @@
                 player.src = objectURL;
                 // ref: https://stackoverflow.com/questions/11455515/how-to-check-whether-dynamically-attached-event-listener-exists-or-not
                 // uploadButton.onclick = (_e) => uploadAudio(_e, objectURL);
-                await uploadAudio(event)
+                await uploadAudio(event, objectURL)
                 $(parentContainer).find(".btnAction").hide();
                 $(parentContainer).find(".btnAudio").show();
                 // FIXME how to revoke microphone permissions?
@@ -459,7 +494,7 @@
 
         const controlAudioRecord = (event) => { 
             const characterID = $(this).closest(".line").attr("data-character-id");
-            const cancelButton = event.target.parentNode.querySelector(".btnDelete");
+            const deleteButton = event.target.parentNode.querySelector(".btnDelete");
             const uploadButton = event.target.parentNode.querySelector(".btnUpload");
             const icon = event.target.querySelector("i");
             if (!recording) {
