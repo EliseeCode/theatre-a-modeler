@@ -1,31 +1,27 @@
 
-<div class='container characterSelect characterSelect_{{character.id}}'>
-    
-      
-        <div class="grid character_choice character_choice_{{character.id}}" style="display: grid;grid-template-columns: 150px 200px">
-            <div class="level">
-                <div class="level-item">
-                    <div style="display: grid; grid-template-columns: 30px 150px 200px; align-items: center;">
-                            <img src={{character?.image?.publicPath || '/img/userBlanc.png'}}
+<div style="text-align:center;" class='characterSelect characterSelect_{{character.id}}'>
+        <div class="character_choice character_choice_{{character.id}}" style="display: inline-grid;grid-template-columns: 250px 0px">
+            
+                
+                    <div class="grid-character-display">
+                            {{--  <img src={{character?.image?.publicPath || '/img/userBlanc.png'}}
                                  alt="image de {{character.name}}"
-                                 width="30px">
-                            <div>
+                                 width="30px">  --}}
+                            <div class="characterName">
                             {{character.name}}
                             </div>
-                            <div class="select selectLineVersion selectLineVersion_{{character.id}}">
-                                <select data-character-id={{character.id}}>
-                                    @each(version in character.versions)
-                                    <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
-                                    @endeach
-                                    @if(auth.isLoggedIn)
-                                    <option id='newLineVersionCreationOption' value="0">Créer une alternative</option>
-                                    @endif
-                                </select>
+                            <div style="">
+                                <div class="ml-2 select selectLineVersion selectLineVersion_{{character.id}}">
+                                    <select data-character-id={{character.id}}>
+                                        @each(version in character.versions)
+                                        <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
+                                        @endeach
+                                        @if(auth.isLoggedIn)
+                                        <option id='newLineVersionCreationOption' value="0">Créer une alternative</option>
+                                        @endif
+                                    </select>
+                                </div>
                             </div>
                     </div>
-                </div>
-            </div>
-            
-            
         </div>
   </div>
