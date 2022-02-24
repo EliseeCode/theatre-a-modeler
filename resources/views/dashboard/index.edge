@@ -32,22 +32,64 @@
         <p>Vous n'avez pas encore rejoins de groupe</p>  
     
     @endif
-    
+    <hr>
+    @can('PlayPolicy.create')
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item"><a href='#' data-target="new-play-modal" class='button is-primary js-modal-trigger'>Créer une pièce de théâtre</a></div>
+        </div>
+    </div>
+    @endcan
+
+    @if(user.plays.length>0)
+            @each((play,index) in user.plays)
+            @include('partials/playPanel')
+            @endeach  
+    @else   
+        <p>Vous n'avez pas encore de pièce de théâtre</p>  
+    @endif
     
 
       @include('partials/modals/joinGroup')
       @include('partials/modals/createGroup')
       @include('partials/modals/editGroup')
-      
+
+      @include('partials/modals/editPlay')
+      @include('partials/modals/createPlay')
+
+      @include('partials/modals/editScene')
+      @include('partials/modals/createScene')
     
+      
 </div>
+
+<div id="dropdown-option-container" style="width:200px;position:absolute;"></div>
 
 <div class="csrfTokenElement" data-csrf-token="{{ csrfToken }}"></div>
 <script src="/js/bulma-modal.js"></script>
 <script src="js/copyClipboard.js"></script>
 <script>
-
-    function loadGroupInfoInModal(group)
+   
+    function toggleDropdownMenu(objectType,objectId){
+    window.event.stopPropagation();
+    $("#dropdown-option-container").html("");
+    $("#dropdown-menu-"+objectType+"-"+objectId).clone().attr('id', 'currentDropDown').appendTo("#dropdown-option-container");
+    $("#dropdown-option-container").show();
+    var positionTrigger = $("#dropdown-trigger-"+objectType+"-"+objectId).offset();
+    console.log(positionTrigger);
+    $("#dropdown-option-container").offset({top:positionTrigger.top+20, left:positionTrigger.left-200})
+}
+$(document).mouseup(function(e) 
+{
+    var container = $("#dropdown-option-container, .dropdown-trigger");
+    var stuffToHide=$("#dropdown-option-container");
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) 
+    {
+        stuffToHide.hide();
+    }
+});
+function loadGroupInfoInModal(group)
     {
         console.log(group);
         $('#edit-group-modal').find('input[name="name"]').val(group.name);
@@ -55,7 +97,29 @@
         $('#edit-group-modal').find('input[value="'+group.color+'"]').prop("checked",true);
         $('#edit-group-modal').find('form').attr("action","groups/"+group.id+"?_method=PUT")
     }
-   
+function loadPlayInfoInModal(play)
+    {
+        console.log(play.groups)
+        console.log(play);
+        $('#edit-play-modal').find('input[name="name"]').val(play.name);
+        $('#edit-play-modal').find('input[name="description"]').val(play.description);
+        var selectElement = $('#edit-play-modal').find('select[name="publishedGroups"]').eq(0);
+        var selectize = selectElement.data('selectize');
+        if (!!selectize) selectize.setValue(play.groups);
+        //$('#edit-play-modal').find('select[name="publishedGroups"]').val(play.groups);
+        $('#edit-play-modal').find('form').attr("action","/plays/"+play.id+"?_method=PUT")
+    }
+function loadSceneCreateInfoInModal(scene)
+    {
+        console.log(scene)
+        $('#edit-sceneCreate-modal').find('form').attr("action","/play/"+scene.playId+"/scene/createNew?_method=PUT")
+    }    
+function loadSceneInfoInModal(scene)
+    {
+        console.log(scene)
+        $('#edit-scene-modal').find('input[name="name"]').val(scene.name);
+        $('#edit-scene-modal').find('form').attr("action","/scenes/"+scene.id+"?_method=PUT")
+    }    
     
 </script>
 @endsection

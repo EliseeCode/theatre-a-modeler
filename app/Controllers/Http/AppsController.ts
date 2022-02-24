@@ -8,7 +8,7 @@ export default class AppsController {
         }
         const user = await auth.authenticate();
         await user.load('plays', (Query) => {
-            Query.preload('creator').preload('scenes', (sceneQuery) => {
+            Query.preload('groups').preload('creator').preload('scenes', (sceneQuery) => {
                 sceneQuery.preload("lines", (lineQuery) => { lineQuery.preload("character").orderBy('position') })
             })
         });

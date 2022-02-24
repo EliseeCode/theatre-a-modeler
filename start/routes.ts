@@ -87,6 +87,7 @@ Route.get("scene/:scene_id/select", "ScenesController.select");
 Route.post("line/:lineId/characters/create", "CharactersController.store");
 Route.post("line/updateCharacter", "LinesController.updateCharacter");
 Route.post("line/updateText", "LinesController.updateText");
+Route.post("line/splitAText", "LinesController.splitAText");
 Route.post("/lines/createNewVersion", "LinesController.createNewVersion");
 Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
 
