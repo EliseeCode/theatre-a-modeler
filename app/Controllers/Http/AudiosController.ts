@@ -219,7 +219,7 @@ export default class AudiosController {
         audioVersions.add(audio.version);
       });
     });
-    return response.json({ versions: Array.from(audioVersions) });
+    return response.json({ lines, versions: Array.from(audioVersions) });
   }
 
   public async getAudiosFromAudioVersion({

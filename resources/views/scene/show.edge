@@ -262,7 +262,7 @@
                     //selectAudioVersion.find("option.audioVersionOption").remove();
                     for(let version of data.versions)
                     {
-                        selectAudioVersion.prepend(`<option class="versionOption" value=${version.id}>${version.name}</option>`);
+                        selectAudioVersion.prepend(`<option class="versionOption" value=${version.id}>${version.name}-${version.audios.length()}/${data.lines.length()}</option>`);
                         
                     }
                 }
