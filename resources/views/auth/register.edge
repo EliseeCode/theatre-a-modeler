@@ -7,6 +7,16 @@
       </div>
       <div class="card-content">
         @include('partials/auth/registerForm')
+
+        <div style="" class="subtitle" > 
+          <a href="{{ route('social.login')}}" style="text-decoration:none;" class="button   is-outlined">
+            <span class="icon">
+              <i class="fab fa-google"></i>
+            </span>
+            <span>Créer un compte avec Google</span>
+          </a> 
+        </div>
+
         <p>Vous avez déjà un compte ? <a href="/login">cliquez ici.</a></p>
       </div>  
     </div>

@@ -8,6 +8,19 @@
       </div>
       <div class="card-content">
         @include('partials/auth/loginForm')
+
+
+        <div style="" class="subtitle" > 
+          <a href="{{ route('social.login')}}" style="text-decoration:none;" class="button   is-outlined">
+            <span class="icon">
+              <i class="fab fa-google"></i>
+            </span>
+            <span>Se connecter avec Google</span>
+          </a> 
+        </div>
+
+
+
         <p>Vous n'avez pas encore de compte ? <a href="/register">cliquez ici.</a></p>
       </div>  
     </div>

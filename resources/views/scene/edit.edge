@@ -8,9 +8,16 @@
 @endsection
 @section('content')
 <style>
-    .saved{
+    .saved textarea{
         background-color:#00FF8050;
+        position:relative;
     }
+    .saved::after{
+        content:"Enregistré";
+        color:green;
+        position:absolute;
+        bottom:5px;
+        right:5px;}
     
     .lineText{
         margin-bottom:3px;
@@ -144,7 +151,7 @@
             secondPart=text.substr(curs);
             console.log(firstPart,secondPart);
             $(elem).val(firstPart);
-            createNewLineWithTextAfterLine(secondPart,lineId);
+            createNewLineWithTextAfterLine(firstPart,secondPart,lineId);
         }
     }                      
 
@@ -201,26 +208,28 @@
             console.log("updateTextData")
             if(data)
             {
-                $(`#lineText_${lineId}`).addClass('saved');
+                $(`#lineText_${lineId}`).parent().addClass('saved');
                 setTimeout(function(){
                     $('.saved').removeClass('saved')
                 }, 500);
             }
         });
     }
-    function createNewLineWithTextAfterLine(text,lineId){
+    function createNewLineWithTextAfterLine(firstPart,secondPart,lineId){
         console.log("createNewLineWithTextAfterLine")
        
         const token = $('.csrfToken').data('csrf-token');
         const params = { 
             lineId, 
-            text,
+            firstPart,
+            secondPart,
+            sceneId:"{{scene.id}}",
             _csrf: token
         };
 
         var form = document.createElement('form');
-        form.setAttribute('method', post);
-        form.setAttribute('action', '/scenes/{{scene.id}}/line/splitAText/');
+        form.setAttribute('method', 'POST');
+        form.setAttribute('action', '/line/splitAText/');
 
         for (var key in params) {
             if (params.hasOwnProperty(key)) {

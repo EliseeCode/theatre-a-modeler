@@ -1,12 +1,14 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Line from "App/Models/Line";
+import User from "App/Models/User";
 import Version from "App/Models/Version";
 import ObjectType from "Contracts/enums/ObjectType";
 import Lines from "Database/migrations/1642771551381_lines";
 
 export default class LinesController {
   public dataName = "lines";
+
   public async index({ view, auth }: HttpContextContract) {
     const user = await auth.authenticate();
     const lines = (
@@ -122,6 +124,7 @@ export default class LinesController {
     const { characterId, lineId } = request.body();
     let line = await Line.findOrFail(lineId);
     line.characterId = characterId;
+    console.log(line);
     await line.save();
     return "ok";
   }
@@ -129,9 +132,28 @@ export default class LinesController {
 
     const { text, lineId } = request.body();
     let line = await Line.findOrFail(lineId);
-    line.text = text;
+    line.text = text || "";
     await line.save();
     return "ok";
+  }
+
+  public async splitAText({ auth, params, response, request }: HttpContextContract) {
+
+    const user = await auth.authenticate();
+    const { firstPart, secondPart, lineId, sceneId } = request.body();
+    let line = await Line.findOrFail(lineId);
+    line.text = firstPart || "";
+    await line.save();
+    let position = line.position;
+    await Line.query().where('sceneId', sceneId).andWhere('position', ">", position).increment("position", 1);
+    await Line.create({
+      text: secondPart || "",
+      sceneId: sceneId,
+      position: position + 1,
+      versionId: 1,
+      creatorId: user.id
+    });
+    return response.redirect().back();
   }
 
   public async destroy({ params, response }: HttpContextContract) {

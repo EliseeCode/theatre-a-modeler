@@ -18,17 +18,17 @@ import { AllyConfig } from '@ioc:Adonis/Addons/Ally'
 |
 */
 const allyConfig: AllyConfig = {
-	/*
-	|--------------------------------------------------------------------------
-	| Google driver
-	|--------------------------------------------------------------------------
-	*/
-	google: {
-		driver: 'google',
-		clientId: Env.get('GOOGLE_CLIENT_ID'),
-		clientSecret: Env.get('GOOGLE_CLIENT_SECRET'),
-		callbackUrl: 'http://localhost:3333/google/callback',
-	},
+  /*
+  |--------------------------------------------------------------------------
+  | Google driver
+  |--------------------------------------------------------------------------
+  */
+  google: {
+    driver: 'google',
+    clientId: Env.get('GOOGLE_CLIENT_ID'),
+    clientSecret: Env.get('GOOGLE_CLIENT_SECRET'),
+    callbackUrl: Env.get('PROTOCOL') + '://' + Env.get('DOMAIN') + ":" + Env.get('PORT') + '/auth/google/callback',
+  },
   /*
   |--------------------------------------------------------------------------
   | Facebook driver

@@ -30,7 +30,7 @@ export default class Lines extends BaseSchema {
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
-      table.unique(["creator_id", "scene_id", "character_id", "version_id"]);
+      table.unique(["position", "scene_id", "character_id", "version_id"]);
       table.timestamp("created_at", { useTz: true });
       table.timestamp("updated_at", { useTz: true });
     });

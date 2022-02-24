@@ -56,6 +56,65 @@ export default class AuthController {
   }
 
 
+  public async redirect({ ally }: HttpContextContract) {
+    return ally.use('google').redirect()
+    //await ally.driver('google').scope(['profile', 'email', 'https://www.googleapis.com/auth/drive']).redirect()
+  }
+
+  async handleCallback({ params, ally, auth, response, session }: HttpContextContract) {
+    const provider = 'google';
+    const google = await ally.use(provider)
+    try {
+      if (google.accessDenied()) {
+        return 'Access was denied'
+      }
+
+      /**
+       * Unable to verify the CSRF state
+       */
+      if (google.stateMisMatch()) {
+        return 'Request expired. Retry again'
+      }
+
+      /**
+       * There was an unknown error during the redirect
+       */
+      if (google.hasError()) {
+        return google.getError()
+      }
+
+      /**
+       * Finally, access the user
+       */
+      const googleUser = await google.user()
+
+      /**
+       * Find the user by email or create
+       * a new one
+       */
+      if (googleUser.emailVerificationState === 'verified') {
+        const user = await User.firstOrCreate({
+          loginId: googleUser.id
+        }, {
+          username: googleUser.nickName,
+          email: googleUser.email == undefined ? undefined : googleUser.email,
+          loginId: googleUser.id,
+          password: ''
+        })
+        await auth.use('web').login(user)
+        response.redirect('/')
+      }
+      response.redirect('/')
+      /**
+       * Login user using the web guard
+       */
+
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
   public async loginWithSignedUrl({ view, request, auth, params }: HttpContextContract) {
     if (request.hasValidSignature()) {
       const username = params.username;
