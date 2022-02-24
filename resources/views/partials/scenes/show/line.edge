@@ -52,7 +52,7 @@
                         </span>
                         <span style="pointer-events: none;">Arrêter !</span> 
                       </button> 
-                      <button class="button is-info is-light is-inverted is-focused btnAction btnRobotizeStart" onclick="robotSpeak({{line.id}})">
+                      <button class="button is-info is-light is-inverted is-focused btnAction btnRobotizeStart" onclick="robotSpeak({{line.position}})">
                         <span class="icon">
                           <i class="fa fa-solid fa-robot"></i>
                         </span>
@@ -70,7 +70,7 @@
                           </span>
                           <span>Lire !</span>
                       </button> 
-                      <button class="button is-info is-light is-inverted is-focused btnAction btnPause" onclick="robotStop({{line.id}})">
+                      <button class="button is-info is-light is-inverted is-focused btnAction btnPause" onclick="robotStop({{line.position}})">
                         <span class="icon">
                           <i class="fa fa-solid fa-pause"></i>
                         </span>

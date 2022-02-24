@@ -154,6 +154,41 @@
     </h2>
 </div>    
     <hr>
+    <div class="columns has-text-centered is-centered">
+        <div class="column">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoPlay">
+                <span class="icon">
+                    <i class="fa fa-solid fa-play"></i>
+                </span>
+                <span>Lire !</span>
+            </button> 
+        </div>
+        <div class="column" style="display: none">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoPause">
+                <span class="icon">
+                    <i class="fa fa-solid fa-play"></i>
+                </span>
+                <span>Pause !</span>
+            </button> 
+        </div>
+        <div class="column" style="display: none">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoResume">
+                <span class="icon">
+                    <i class="fa fa-solid fa-resume"></i>
+                </span>
+                <span>Resume !</span>
+            </button> 
+        </div>
+        <div class="column" style="display: none">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoReplay">
+                <span class="icon">
+                    <i class="fa fa-solid fa-resume"></i>
+                </span>
+                <span>Replay !</span>
+            </button> 
+        </div>
+    </div>
+    <hr>
     
     {{--  LineContainer  --}}
     
@@ -189,7 +224,8 @@
     ////////////////////
         const globalAudios = new Array(parseInt("{{sceneLength}}")).fill(0); // for robot
         const characterToAudioVersion = {};
-        let recording = false;
+        let isRecording, isPaused = false;
+
         let mediaRecorder;
         let characterIds=new Set();
         const userId={{auth.user?.id || 0}};
@@ -334,7 +370,7 @@
             $(`.selectAudioVersion_${characterId} select`).val(version.id);
 
             $(".lineCharacter_"+characterId+" .btnAction").hide();
-            $(".lineCharacter_"+characterId+" .btnRecordControl").show();
+            $(".lineCharacter_"+characterId+" .btnStartRecord").show();
         }
 
         function getLineIds(characterId){
@@ -346,7 +382,23 @@
         {
             return $('#line_'+lineId)[0].dataset['position'];
         }
-        function updateAudioActionBtnDisplay(status,position){
+        function updateAutoAudioActionBtnDisplay(status) {
+            switch(status) {
+            case "AutoPlaying":
+                $("#btnAutoPlay").parent().hide();
+                $("#btnAutoResume").parent().show()
+                $("#btnAutoReplay").parent().show()
+                $("#btnAutoPause").parent().show()
+            break;
+            case "AutoPlayFinished":
+                $("#btnAutoPlay").parent().hide();
+                $("#btnAutoResume").parent().hide()
+                $("#btnAutoReplay").parent().show()
+                $("#btnAutoPause").parent().hide()
+            break;
+            }
+        }
+        function updateAudioActionBtnDisplay(status,position=null){
             switch(status){
                 case "robotStart":
                     $(".linePosition_"+position+" .btnAction").hide();
@@ -407,7 +459,7 @@
         }
         function displayRecorder(characterId){
             $(".lineCharacter_"+characterId+" .btnAction").hide();
-            $(".lineCharacter_"+characterId+" .btnRecordControl").show();
+            $(".lineCharacter_"+characterId+" .btnStartRecord").show();
         }
 
         function displayAudioReader(characterId){
@@ -452,11 +504,11 @@
             event.target.style.display = "none";
             const deleteButton = event.target.parentNode.querySelector(".btnDelete");
             deleteButton.style.display = "inline";
-            /* const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+            /* const recordControlButton = event.target.parentNode.querySelector(".btnStartRecord");
             const recordIcon = recordControlButton.querySelector("i");
             recordIcon.classList.remove("fa-play");
             recordIcon.classList.add("fa-microphone");
-            event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !"; */
+            event.target.parentNode.querySelector(".btnStartRecord span:nth-child(2)").textContent = "Enregistrer !"; */
             player.currentTime = 0;
             player.src = "";
             let audioVersionID = audioVersionSelect.options[audioVersionSelect.selectedIndex].value;
@@ -518,14 +570,14 @@
                 $(parentContainer).find(".btnAudio").hide();
                 console.log($(parentContainer).find(".btnAudio").hide())
                 displayRecorder($(parentContainer).attr("data-character-id"));
-                const recordControlButton = event.target.parentNode.querySelector(".btnRecordControl");
+                const recordControlButton = event.target.parentNode.querySelector(".btnStartRecord");
                 
                 const form = new FormData();
                 form.append("groupId", groupId);
                 const recordIcon = recordControlButton.querySelector("i");
                 recordIcon.classList.remove("fa-play");
                 recordIcon.classList.add("fa-microphone");
-                event.target.parentNode.querySelector(".btnRecordControl span:nth-child(2)").textContent = "Enregistrer !";
+                event.target.parentNode.querySelector(".btnStartRecord span:nth-child(2)").textContent = "Enregistrer !";
                 player.currentTime = 0;
                 player.src = "";
 
@@ -587,9 +639,9 @@
             const deleteButton = event.target.parentNode.querySelector(".btnDelete");
             const uploadButton = event.target.parentNode.querySelector(".btnUpload");
             const icon = event.target.querySelector("i");
-            if (!recording) {
+            if (!isRecording) {
                 event.target.querySelector("span:nth-child(2)").textContent = "Arrêter d'enregistrer !";
-                recording = true;
+                isRecording = true;
                 console.log("starting recording...");
                 icon.classList.remove("fa-microphone");
                 icon.classList.add("fa-stopwatch");
@@ -598,7 +650,7 @@
             
             } else {
                 event.target.querySelector("span:nth-child(2)").textContent = "Enregistrer !";
-                recording = false;
+                isRecording = false;
                 console.log("stopping recording...");
                 icon.classList.remove("fa-stopwatch");
                 event.target.classList.remove("glowing");
@@ -607,6 +659,70 @@
             }
             }
 
+            ////////////////////
+            // AUTO PLAYER
+            ////////////////////
+            const resumeAuto = () => {
+                if (isPaused) {
+                    console.log("[INFO] Was paused, resuming...");
+                    speechSynthesis.resume();
+                    return player.play();
+                }
+            }
+            const playAuto = (i) => {
+               
+                if (i == globalAudios.length) {
+                    console.log("The album is over...");
+                    return
+                }
+                console.log("[INFO] Setting up the auto player...");
+                const audioPath = globalAudios[i];
+                updateAutoAudioActionBtnDisplay("AutoPlaying")
+                try {
+                    isPaused = false;
+                    player.currentTime = 0;
+                    const dummyURL = new URL(audioPath); // if it doesn't fail, it's a url
+                    player.src = audioPath;
+                    player.play();
+                    player.onended = () => {
+                        console.log(`The ${i+1}th track is over, playing the next if there's one...`);
+                        return playAuto(++i);
+                    }
+
+                } catch (e) {
+                    if (audioPath == 0) { // Text to speech
+                    console.log("[INFO] Setting up the text-to-speech engine...");
+                    const speechSyntheser = robotSpeak(i);
+                    console.log(speechSyntheser)
+                    speechSyntheser.onend = () => {
+                        console.log("[INFO] Speech ended. Passing to the following...")
+                        return playAuto(++i);
+                    }
+                    return;
+                    } else if (audioPath == -1) {
+                        console.log("[INFO] Starting auto registration...");
+                    } 
+                    else {
+                        console.log("[ERROR] Audio path is null... Skipping it.");
+                        return playAuto(++i);
+                    }
+                }
+                
+            }
+
+            const pauseAuto = (e) => {
+                console.log("[INFO] Stopping the player...");
+                isPaused = true;
+                speechSynthesis.pause();
+                player.pause();
+            }
+
+            const replayAuto = (e) => {
+                pauseAuto();
+                player.currentTime = 0;
+                player.src = "";
+                playAuto(0);
+            };
 
 
             ////////////////////
@@ -623,17 +739,26 @@
             });
             $(".btnDelete").on("click", deleteRecording)
 
+            $("#btnAutoPlay").on("click", () => playAuto(0));
+            $("#btnAutoPause").on("click", pauseAuto);
+            $("#btnAutoResume").on("click", resumeAuto);
+            $("#btnAutoReplay").on("click", replayAuto)
 
-        function robotSpeak(lineId)
+
+
+
+
+        function robotSpeak(linePos)
         {
-            var text=$("#lineText_"+lineId).val();
+            var text=$(`.linePosition_${linePos}:not([style*="display:none"]) textarea`).val();
             let message = new SpeechSynthesisUtterance(text)
             message.lang = 'fr-FR'
             speechSynthesis.speak(message);
+            return message;
         }
 
 
-            $(".btnRecordControl").on("click", controlAudioRecord);
+            $(".btnStartRecord").on("click", controlAudioRecord);
 
 
 
