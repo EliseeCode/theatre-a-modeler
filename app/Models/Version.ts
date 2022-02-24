@@ -5,8 +5,11 @@ import {
   belongsTo,
   column,
   computed,
+  HasMany,
+  hasMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import User from "App/Models/User";
+import Audio from "./Audio";
 
 export default class Version extends BaseModel {
   @column({ isPrimary: true })
@@ -23,6 +26,9 @@ export default class Version extends BaseModel {
 
   @computed()
   public doublers: User[];
+
+  @hasMany(() => Audio)
+  public audios: HasMany<typeof Audio>
 
   @belongsTo(() => User, { localKey: "id", foreignKey: "creatorId" })
   public creator: BelongsTo<typeof User>;

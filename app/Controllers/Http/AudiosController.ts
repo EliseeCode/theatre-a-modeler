@@ -27,7 +27,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
   public async store({
     bouncer,
@@ -147,9 +147,9 @@ export default class AudiosController {
     return response.json(version);
   }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async destroy({
     request,
@@ -200,12 +200,15 @@ export default class AudiosController {
     const { characterId, versionId, sceneId } = request.all();
     //const scene = await Scene.findOrFail(sceneId);
     const audioVersions = new Set();
+
     const lines = await Line.query()
       .where("character_id", characterId)
       .andWhere("version_id", versionId)
       .andWhere("scene_id", sceneId)
       .preload("audios", (audioQuery) => {
-        audioQuery.preload("version").preload("creator");
+        audioQuery.preload("version", (audioVersion) => {
+          audioVersion.preload("audios")
+        }).preload("creator");
       });
     lines.map((line) => {
       line.audios.map((audio) => {
