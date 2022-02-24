@@ -262,8 +262,7 @@
                     //selectAudioVersion.find("option.audioVersionOption").remove();
                     for(let version of data.versions)
                     {
-                        selectAudioVersion.prepend(`<option class="versionOption" value=${version.id}>${version.name}-${version.audios.length()}/${data.lines.length()}</option>`);
-                        
+                        selectAudioVersion.prepend(`<option class="versionOption" value=${version.id}>${version.name}-${version.audios.length}/${data.lines.length}</option>`);
                     }
                 }
             });
@@ -312,17 +311,11 @@
                 case 0:
                     console.log("on écoute le robot");
                     $(".lineCharacter_"+characterId+" .btnAction").hide();
-                    $(".lineCharacter_"+characterId+" .btnRobotize").show();
+                    $(".lineCharacter_"+characterId+" .btnRobotizeStart").show();
                 break;
                 case -1:
-                    console.log("on enregistre sa voix==> Nouvelle version");
                     let version=await createAudioVersion(characterId);
-                    console.log(version);
-                    $(`.selectAudioVersion_${characterId} select`).prepend(`<option class="versionOption" value="${version.id}">${version.name}</option>`);
-                    $(`.selectAudioVersion_${characterId} select`).val(version.id);
-
-                    $(".lineCharacter_"+characterId+" .btnAction").hide();
-                    $(".lineCharacter_"+characterId+" .btnRecordControl").show();
+                    updateAudioVersionSelectDisplay(characterId,version)
                 break;
                 default:
                     characterToAudioVersion[characterId] = audioVersionId;
@@ -335,6 +328,59 @@
                     }
             }
         })
+        function updateAudioVersionSelectDisplay(characterId,version)
+        {
+            $(`.selectAudioVersion_${characterId} select`).prepend(`<option class="versionOption" value="${version.id}">${version.name}</option>`);
+            $(`.selectAudioVersion_${characterId} select`).val(version.id);
+
+            $(".lineCharacter_"+characterId+" .btnAction").hide();
+            $(".lineCharacter_"+characterId+" .btnRecordControl").show();
+        }
+
+        function getLineIds(characterId){
+            console.log($(".lineCharacter_"+characterId).length);
+            return $(".lineCharacter_"+characterId).map((el)=>{return $(el).data('lineId')});
+        }
+
+        function getPosition(lineId)
+        {
+            return $('#line_'+lineId)[0].dataset['position'];
+        }
+        function updateAudioActionBtnDisplay(status,position){
+            switch(status){
+                case "robotStart":
+                    $(".linePosition_"+position+" .btnAction").hide();
+                    $(".linePosition_"+position+" .btnRobotizeStart").show();
+                break;
+                case "robotPause":
+                    $(".linePosition_"+position+" .btnAction").hide();
+                    $(".linePosition_"+position+" .btnRobotizePause").show();
+                break;
+                case "waitForRecording":
+                    $(".linePosition_"+position+" .btnAction").hide();
+                    $(".linePosition_"+position+" .btnStartRecord").show();
+                break;  
+                case "Recording":
+                    $(".linePosition_"+position+" .btnAction").hide();
+                    $(".linePosition_"+position+" .btnStopRecord").show();
+                break;   
+                case "HaveMyAudio":
+                    $(".linePosition_"+position+" .btnAction").hide();
+                    $(".linePosition_"+position+" .btnPlay").show();
+                    $(".linePosition_"+position+" .btnDelete").show();
+                break;
+                case "isPlaying":
+                    $(".linePosition_"+position+" .btnAction").hide();
+                    $(".linePosition_"+position+" .btnPause").show();
+                break;
+                case "HaveOtherAudio":
+                    $(".linePosition_"+position+" .btnAction").hide();
+                    $(".linePosition_"+position+" .btnPlay").show();
+                break;
+            }
+
+        }
+
 
 
         function getAudioPaths(audioVersionId,characterId){
