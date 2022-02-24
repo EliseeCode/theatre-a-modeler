@@ -3,36 +3,29 @@
     
       
         <div class="grid character_choice character_choice_{{character.id}}" style="display: grid;grid-template-columns: 150px 200px">
-                                
-            <div style="display: grid; grid-template-columns: 30px auto;">
-
-                
- 
-                
-                @if(character?.image)
-                    <img src={{character?.image?.publicPath}}
-                         alt="image de {{character.name}}"
-                         width="30px">
-                @endif
-                    <div>
-                    {{character.name}}
+            <div class="level">
+                <div class="level-item">
+                    <div style="display: grid; grid-template-columns: 30px 150px 200px; align-items: center;">
+                            <img src={{character?.image?.publicPath || '/img/userBlanc.png'}}
+                                 alt="image de {{character.name}}"
+                                 width="30px">
+                            <div>
+                            {{character.name}}
+                            </div>
+                            <div class="select selectLineVersion selectLineVersion_{{character.id}}">
+                                <select data-character-id={{character.id}}>
+                                    @each(version in character.versions)
+                                    <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
+                                    @endeach
+                                    @if(auth.isLoggedIn)
+                                    <option id='newLineVersionCreationOption' value="0">Créer une alternative</option>
+                                    @endif
+                                </select>
+                            </div>
                     </div>
-                
-            </div>
-            
-            <div>
-                <div class="select selectLineVersion selectLineVersion_{{character.id}}" 
-                    >
-                    <select data-character-id={{character.id}}>
-                        @each(version in character.versions)
-                        <option value="{{version.id}}">{{version.id+"-"+version.name}}</option>
-                        @endeach
-                        @if(auth.isLoggedIn)
-                        <option id='newLineVersionCreationOption' value="0">Créer une alternative</option>
-                        @endif
-                    </select>
                 </div>
             </div>
+            
             
         </div>
   </div>

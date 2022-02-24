@@ -8,6 +8,19 @@
 @endsection
 @section('content')
 <style>
+    .selectAudioVersion{
+        display:none;
+    }
+    .actionLineContainer:hover .selectAudioVersion{
+        display:inline-block;
+    }
+
+    .selectLineVersion{
+        display:none;
+    }
+    .line:hover .selectLineVersion{
+        display:inline-block;
+    }
     .saved textarea{
         background-color:#00FF8050;
         position:relative;
@@ -22,6 +35,10 @@
     .lineText{
         margin-bottom:3px;
         overflow:hidden;
+    }
+    .lineText:read-only{
+        border:none;
+        box-shadow:none;
     }
     .image-character{
     width:40px;
@@ -80,6 +97,24 @@
   vertical-align: middle;
   line-height: normal;
 }
+.lineContainer{
+    min-width:80%;
+    text-align:center;
+    margin-bottom:200px;
+}
+.line{display:inline-block;}
+.selectAudioVersion select{
+    border:none;
+    font-size:1em;}
+.selectLineVersion select{
+    border:none;
+    font-size:1em;}
+.selectLineVersion,.selectAudioVersion{
+    font-size: 0.8em;
+    color:grey;
+    width: fit-content;
+}    
+    
 </style>
 
 
@@ -88,7 +123,6 @@
 
 <div class="container mt-3">
 <div class="level">
-    <div class="level-left">
         <div class="level-item">
             <div>
             <h1 class="title">
@@ -96,18 +130,24 @@
             </h1>
             </div>
         </div>
-    </div>
 </div>    
 {{--  Select other scene from this play  --}}
-    <h2 class="subtitle">
-        <div class="select">
-            <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value">
-                @each(sceneFromPlay in scene.play.scenes)
-                <option value="{{sceneFromPlay.id}}" {{sceneFromPlay.id==scene.id?'selected':''}}>{{sceneFromPlay.name}}</option>
-                @endeach
-            </select>
+<div class="level">
+    <div class="level-item">
+        <div>
+            <h2 class="subtitle">
+                <div class="select">
+                    <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value">
+                        @each(sceneFromPlay in scene.play.scenes)
+                        <option value="{{sceneFromPlay.id}}" {{sceneFromPlay.id==scene.id?'selected':''}}>{{sceneFromPlay.name}}</option>
+                        @endeach
+                    </select>
+                </div>
+            </h2>
         </div>
-    </h2>
+    </div>
+</div>    
+    
 
     <h2 class="subtitle">
         {{scene.description}}
@@ -117,9 +157,9 @@
     
     {{--  LineContainer  --}}
     
-    <div class="level" style="align-items:flex-start">
+    <div class="level" style="align-items:flex-start;">
         <div class="level-item" style="border-left:2px white solid;">
-            <div class="lineContainer" style="text-align:center;"> 
+            <div class="lineContainer box"> 
                 @set('position',null)
                 
                 @each((line,indexLine) in scene.lines)
@@ -128,6 +168,7 @@
                         @endif
                         @set('position',line.position)
                             @include('partials/scenes/show/line')    
+                            <br>
                 @endeach
             </div>
         </div>
@@ -214,8 +255,11 @@
                 if(data.versions)
                 {
                     var selectAudioVersion=$(".lineCharacter_"+characterId+" .selectAudioVersion select");
+                    var selectAudioVersion=$(".selectAudioVersion_"+characterId+" select");
+                    
                     console.log(selectAudioVersion)
-                    selectAudioVersion.find("option.audioVersionOption").remove();
+                    $(".selectAudioVersion_"+characterId+" select .versionOption").remove();
+                    //selectAudioVersion.find("option.audioVersionOption").remove();
                     for(let version of data.versions)
                     {
                         selectAudioVersion.prepend(`<option class="versionOption" value=${version.id}>${version.name}</option>`);
