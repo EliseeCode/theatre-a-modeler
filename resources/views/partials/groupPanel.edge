@@ -94,11 +94,11 @@
                     
                                       
                     <div class="block">
-                        @set('students',group.users.filter((user)=>{return user.pivot_role_id==Role.STUDENT}))
-                        @set('teachers',group.users.filter((user)=>{return user.pivot_role_id==Role.TEACHER}))
+                        @set('students',group.users.filter((user)=>{return user.$extras.pivot_role_id==Role.STUDENT}))
+                        @set('teachers',group.users.filter((user)=>{return user.$extras.pivot_role_id==Role.TEACHER}))
                         
                         <div class="box">
-                            <h3>Professeur</h3>
+                            <h3>Professeurs</h3>
                             @each(user in teachers)
                             <div>
                             {{user.username}}
