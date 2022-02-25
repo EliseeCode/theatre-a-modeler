@@ -194,15 +194,15 @@
         <div class="column">
             <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoPlay">
                 <span class="icon">
-                    <i class="fa fa-solid fa-play"></i>
+                    <i class="fa fa-solid fa-comments"></i>
                 </span>
-                <span>Lire !</span>
+                <span>Start !</span>
             </button> 
         </div>
         <div class="column" style="display: none">
             <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoPause">
                 <span class="icon">
-                    <i class="fa fa-solid fa-play"></i>
+                    <i class="fa fa-solid fa-pause"></i>
                 </span>
                 <span>Pause !</span>
             </button> 
@@ -210,7 +210,7 @@
         <div class="column" style="display: none">
             <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoResume">
                 <span class="icon">
-                    <i class="fa fa-solid fa-resume"></i>
+                    <i class="fa fa-solid fa-play"></i>
                 </span>
                 <span>Resume !</span>
             </button> 
@@ -218,7 +218,7 @@
         <div class="column" style="display: none">
             <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoReplay">
                 <span class="icon">
-                    <i class="fa fa-solid fa-resume"></i>
+                    <i class="fa fa-solid fa-backward"></i>
                 </span>
                 <span>Replay !</span>
             </button> 
@@ -272,6 +272,7 @@
         const globalAudios = new Array(parseInt("{{sceneLength}}")).fill(0); // for robot
         const characterToAudioVersion = {};
         let isRecording, isPaused = false;
+        let globalSynthesedSpeech; // this is for accessing the contents of playing text2speech.
 
         let mediaRecorder;
         let characterIds=new Set();
@@ -399,6 +400,7 @@
                 case -1:
                     let version=await createAudioVersion(characterId);
                     updateAudioVersionSelectDisplay(characterId,version)
+                    globalAudios[position] = -1;
                 break;
                 default:
                     characterToAudioVersion[characterId] = audioVersionId;
@@ -716,6 +718,7 @@
                     return player.play();
                 }
             }
+
             const playAuto = (i) => {
                
                 if (i == globalAudios.length) {
@@ -732,6 +735,8 @@
                     player.src = audioPath;
                     player.play();
                     player.onended = () => {
+                        player.currentTime = 0;
+                        player.src = "";
                         console.log(`The ${i+1}th track is over, playing the next if there's one...`);
                         return playAuto(++i);
                     }
@@ -739,15 +744,16 @@
                 } catch (e) {
                     if (audioPath == 0) { // Text to speech
                     console.log("[INFO] Setting up the text-to-speech engine...");
-                    const speechSyntheser = robotSpeak(i);
-                    console.log(speechSyntheser)
-                    speechSyntheser.onend = () => {
+                    globalSynthesedSpeech = robotSpeak(i);
+
+                    globalSynthesedSpeech.onend = () => {
                         console.log("[INFO] Speech ended. Passing to the following...")
                         return playAuto(++i);
                     }
                     return;
                     } else if (audioPath == -1) {
                         console.log("[INFO] Starting auto registration...");
+                        return;
                     } 
                     else {
                         console.log("[ERROR] Audio path is null... Skipping it.");
@@ -766,6 +772,9 @@
 
             const replayAuto = (e) => {
                 pauseAuto();
+                globalSynthesedSpeech.text = "";
+                globalSynthesedSpeech.onend = null;
+                speechSynthesis.cancel();
                 player.currentTime = 0;
                 player.src = "";
                 playAuto(0);
@@ -797,7 +806,8 @@
 
         function robotSpeak(linePos)
         {
-            var text=$(`.linePosition_${linePos}:not([style*="display:none"]) textarea`).val();
+            var text=$(`.linePosition_${linePos}:not([style*="display: none"]) textarea`).val();
+            console.log(linePos, text);
             let message = new SpeechSynthesisUtterance(text)
             message.lang = 'fr-FR'
             speechSynthesis.speak(message);
