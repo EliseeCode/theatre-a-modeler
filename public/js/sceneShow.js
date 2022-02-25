@@ -116,6 +116,7 @@ function createNewLineVersion(characterId) {
 // AUDIO VERSION SELECTION
 ////////////////////
 $(".selectAudioVersion select").on("change", async function () {
+  HARDRESET();
   //alert($(this).val()+$(this).data('character-id'))
   const parentContainer = $(this).closest(".line");
   var characterId = $(this).data("character-id");
@@ -128,8 +129,7 @@ $(".selectAudioVersion select").on("change", async function () {
       break;
     case 0:
       console.log("on écoute le robot");
-      $(".lineCharacter_" + characterId + " .btnAction").hide();
-      $(".lineCharacter_" + characterId + " .btnRobotizeStart").show();
+      updateAudioActionBtnDisplay("waitRobotAudio", position);
       break;
     case -1:
       let version = await createAudioVersion(characterId);
@@ -140,12 +140,14 @@ $(".selectAudioVersion select").on("change", async function () {
     default:
       characterToAudioVersion[characterId] = audioVersionId;
       console.log(characterToAudioVersion, "s");
-      getAudioPaths(audioVersionId, characterId);
+      await getAudioPaths(audioVersionId, characterId);
       if (globalAudios[position]) {
-        displayAudioReader(characterId);
+        console.log("haveMyAudio", position);
+        updateAudioActionBtnDisplay("haveMyAudio", position);
       } else {
         // no audio record found
-        displayRecorder(characterId);
+        console.log("waitRecord", globalAudios[position]);
+        updateAudioActionBtnDisplay("waitRecord", position);
       }
   }
 });
@@ -187,13 +189,17 @@ function updateAutoAudioActionBtnDisplay(status) {
 }
 function updateAudioActionBtnDisplay(status, position = null) {
   switch (status) {
-    case "robotStart":
+    case "waitRobotAudio":
       $(`.linePosition_${position} .btnAction`).hide();
       $(`.linePosition_${position} .btnRobotize.btnStart`).show();
       break;
-    case "robotPause":
+    case "robotIsPlaying":
       $(`.linePosition_${position} .btnAction`).hide();
       $(`.linePosition_${position} .btnRobotize.btnPause`).show();
+      break;
+    case "robotIsPaused":
+      $(`.linePosition_${position} .btnAction`).hide();
+      $(`.linePosition_${position} .btnRobotize.btnResume`).show();
       break;
     case "waitRecord":
     case "stopRecord":
@@ -209,9 +215,14 @@ function updateAudioActionBtnDisplay(status, position = null) {
       $(`.linePosition_${position} .btnPlay.btnAudio`).show();
       $(`.linePosition_${position} .btnDelete.btnAudio`).show();
       break;
-    case "isPlaying":
+    case "audioIsPlaying":
       $(`.linePosition_${position} .btnAction`).hide();
       $(`.linePosition_${position} .btnPause.btnAudio`).show();
+      $(`.linePosition_${position} .btnDelete.btnAudio`).show();
+      break;
+    case "audioIsPaused":
+      $(`.linePosition_${position} .btnAction`).hide();
+      $(`.linePosition_${position} .btnResume.btnAudio`).show();
       $(`.linePosition_${position} .btnDelete.btnAudio`).show();
       break;
     case "haveOtherAudio":
@@ -221,7 +232,7 @@ function updateAudioActionBtnDisplay(status, position = null) {
   }
 }
 
-function getAudioPaths(audioVersionId, characterId) {
+async function getAudioPaths(audioVersionId, characterId) {
   const token = $(".csrfToken").data("csrf-token");
   const params = {
     characterId,
@@ -229,33 +240,24 @@ function getAudioPaths(audioVersionId, characterId) {
     sceneId: sceneID,
     _csrf: token,
   };
-  $.get("/audio/getAudiosFromAudioVersion", params, function (data) {
-    console.log("getAudiosFromAudioVersionAnswer", data);
-    for (let audio of data) {
-      globalAudios[audio.line.position] = audio.public_path;
-      // const parentElement = document.getElementById(`line_${audio.line.id}`); // it doesn't work, because a same line can have multiple line version, thus conflicting ids!
-      const parentElement = $(
-        `.linePosition_${audio.line.position}:not([style*="display: none"])`
-      );
+  const data = await $.get(
+    "/audio/getAudiosFromAudioVersion",
+    params
+  ).promise();
+  console.log("getAudiosFromAudioVersionAnswer", data);
+  for (let audio of data) {
+    globalAudios[audio.line.position] = audio.public_path;
+    // const parentElement = document.getElementById(`line_${audio.line.id}`); // it doesn't work, because a same line can have multiple line version, thus conflicting ids!
+    const parentElement = $(
+      `.linePosition_${audio.line.position}:not([style*="display: none"])`
+    );
 
-      const deleteButton = $(parentElement).find(".btnDelete.btnAudio").get(0);
-      console.log("AREQLŞERQL", parentElement);
-      $(deleteButton).attr("data-audio-id", audio.id);
-      console.log("AAA", audio.id);
-    }
+    const deleteButton = $(parentElement).find(".btnDelete.btnAudio").get(0);
+    $(deleteButton).attr("data-audio-id", audio.id);
+    console.log("AAA", audio.id);
+  }
 
-    console.log("getAudioVersionAnswer", data);
-    displayAudioReader(characterId);
-  });
-}
-function displayRecorder(characterId) {
-  $(".lineCharacter_" + characterId + " .btnAction").hide();
-  $(".lineCharacter_" + characterId + " .btnStartRecord").show();
-}
-
-function displayAudioReader(characterId) {
-  $(".lineCharacter_" + characterId + " .btnAction").hide();
-  $(".lineCharacter_" + characterId + " .btnAudio").show();
+  console.log("getAudioVersionAnswer", data);
 }
 
 ////////////////////
@@ -424,11 +426,43 @@ const handleMediaDevice = (event, stream) => {
     mediaRecorder.start();
 };
 
+const playAudio = (linePosition) => {
+  const player = $("#player").get(0);
+  updateAudioActionBtnDisplay("audioIsPlaying", linePosition);
+
+  if (globalAudios[linePosition]) {
+    player.src = globalAudios[linePosition];
+    player.onended = () =>
+      updateAudioActionBtnDisplay("haveMyAudio", linePosition);
+    player.play();
+  }
+  return;
+};
+
+const pauseAudio = (linePosition) => {
+  const player = $("#player").get(0);
+  updateAudioActionBtnDisplay("audioIsPaused", linePosition);
+
+  if (globalAudios[linePosition]) {
+    player.pause();
+  }
+  return;
+};
+
+const resumeAudio = (linePosition) => {
+  const player = $("#player").get(0);
+  updateAudioActionBtnDisplay("audioIsPlaying", linePosition);
+  if (globalAudios[linePosition]) {
+    player.play();
+  }
+  return;
+};
+
 ////////////////////
 // AUTO PLAYER
 ////////////////////
 const resumeAuto = () => {
-  if (isPaused) {
+  if (audioIsPaused) {
     console.log("[INFO] Was paused, resuming...");
     speechSynthesis.resume();
     return player.play();
@@ -444,7 +478,7 @@ const playAuto = (i) => {
   const audioPath = globalAudios[i];
   updateAutoAudioActionBtnDisplay("AutoPlaying");
   try {
-    isPaused = false;
+    audioIsPaused = false;
     player.currentTime = 0;
     const dummyURL = new URL(audioPath); // if it doesn't fail, it's a url
     player.src = audioPath;
@@ -480,7 +514,7 @@ const playAuto = (i) => {
 
 const pauseAuto = (e) => {
   console.log("[INFO] Stopping the player...");
-  isPaused = true;
+  audioIsPaused = true;
   speechSynthesis.pause();
   player.pause();
 };
@@ -495,16 +529,45 @@ const replayAuto = (e) => {
   playAuto(0);
 };
 
-function robotSpeak(linePos) {
-  var text = $(
-    `.linePosition_${linePos}:not([style*="display: none"]) textarea`
+////////////////////
+// HARD RESET
+////////////////////
+const HARDRESET = () => {
+  speechSynthesis.pause();
+  if (globalSynthesedSpeech) globalSynthesedSpeech.onend = null;
+  speechSynthesis.cancel();
+  player.pause();
+  player.currentTime = 0;
+  player.src = "";
+  return;
+};
+
+////////////////////
+// Text2Speech
+////////////////////
+const robotSpeak = (linePosition) => {
+  updateAudioActionBtnDisplay("robotIsPlaying", linePosition);
+  const text = $(
+    `.linePosition_${linePosition}:not([style*="display: none"]) textarea`
   ).val();
-  console.log(linePos, text);
+  console.log(linePosition, text);
   let message = new SpeechSynthesisUtterance(text);
   message.lang = "fr-FR";
   speechSynthesis.speak(message);
+  message.onend = () =>
+    updateAudioActionBtnDisplay("waitRobotAudio", linePosition);
   return message;
-}
+};
+
+const robotPause = (linePosition) => {
+  updateAudioActionBtnDisplay("robotIsPaused", linePosition);
+  speechSynthesis.pause();
+};
+
+const robotResume = (linePosition) => {
+  updateAudioActionBtnDisplay("robotIsPlaying", linePosition);
+  speechSynthesis.resume();
+};
 
 ////////////////////
 // BUTTON LISTENERS
@@ -532,17 +595,25 @@ const stopRecordButtonCallback = (event) => {
 };
 
 const playAudioButtonCallback = (event) => {
-  const player = $("#player").get(0);
   const parentContainer = $(event.target).closest(".line");
   const linePosition = parentContainer.attr("data-position");
-  console.log(player, globalAudios[linePosition]);
-  if (globalAudios[linePosition]) {
-    player.src = globalAudios[linePosition];
-    player.play();
-  }
+  playAudio(linePosition);
+  return;
 };
 
-const pauseAudioButtonCallback = (event) => {};
+const pauseAudioButtonCallback = (event) => {
+  const parentContainer = $(event.target).closest(".line");
+  const linePosition = parentContainer.attr("data-position");
+  pauseAudio(linePosition);
+  return;
+};
+
+const resumeAudioButtonCallback = (event) => {
+  const parentContainer = $(event.target).closest(".line");
+  const linePosition = parentContainer.attr("data-position");
+  resumeAudio(linePosition);
+  return;
+};
 
 const deleteAudioButtonCallback = (event) => {
   const groupId = window.location.pathname.match(/group\/(\d+)/)[1]; // this is for authorization feature
@@ -556,6 +627,27 @@ const deleteAudioButtonCallback = (event) => {
   return $(event.target).attr("data-audio-id", "");
 };
 
+const startRobotizeButtonCallback = (event) => {
+  const parentContainer = $(event.target).closest(".line");
+  const linePosition = parentContainer.attr("data-position");
+  robotSpeak(linePosition);
+  return;
+};
+
+const pauseRobotizeButtonCallback = (event) => {
+  const parentContainer = $(event.target).closest(".line");
+  const linePosition = parentContainer.attr("data-position");
+  robotPause(linePosition);
+  return;
+};
+
+const resumeRobotizeButtonCallback = (event) => {
+  const parentContainer = $(event.target).closest(".line");
+  const linePosition = parentContainer.attr("data-position");
+  robotResume(linePosition);
+  return;
+};
+
 $("#btnAutoPlay").on("click", () => playAuto(0));
 $("#btnAutoPause").on("click", pauseAuto);
 $("#btnAutoResume").on("click", resumeAuto);
@@ -563,11 +655,13 @@ $("#btnAutoReplay").on("click", replayAuto);
 
 $(".btnStart.btnRecord").on("click", startRecordButtonCallback);
 $(".btnStop.btnRecord").on("click", stopRecordButtonCallback);
-/* $(".btnStart.btnRobotize").on("click", startRobotizeButtonCallback);
-        $(".btnStop.btnRobotize").on("click", stopRobotizeButtonCallback); */
+$(".btnStart.btnRobotize").on("click", startRobotizeButtonCallback);
+$(".btnPause.btnRobotize").on("click", pauseRobotizeButtonCallback);
+$(".btnResume.btnRobotize").on("click", resumeRobotizeButtonCallback);
 $(".btnPlay.btnAudio").on("click", playAudioButtonCallback);
 $(".btnPause.btnAudio").on("click", pauseAudioButtonCallback);
 $(".btnDelete.btnAudio").on("click", deleteAudioButtonCallback);
+$(".btnResume.btnAudio").on("click", resumeAudioButtonCallback);
 
 function toggleDropdownMenu(objectType, objectId) {
   window.event.stopPropagation();

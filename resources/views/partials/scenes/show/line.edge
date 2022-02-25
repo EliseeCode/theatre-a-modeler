@@ -70,6 +70,13 @@
               </span>
               <span>Pause</span>  
             </button>
+            {{--  Button for resuming text2speech  --}}
+            <button class="button is-info is-light is-inverted is-focused btnAction btnRobotize btnResume" style="display: none;">
+              <span class="icon">
+                <i class="fa fa-solid fa-play"></i>
+              </span>
+              <span>Resume</span>  
+            </button>
             {{--  Button for playing uploaded audio  --}}
             <button class="button is-primary is-light is-inverted is-focused btnAction btnPlay btnAudio" data-position="{{line.position}}" data-version="{{line?.audios?.[0].version.id ?? ''}}" style="display:none;">
                 <span class="icon">
@@ -83,6 +90,13 @@
                 <i class="fa fa-solid fa-pause"></i>
               </span>
               <span>Pause</span>  
+            </button>
+            {{--  Button for resuming audio player  --}}
+            <button class="button is-info is-light is-inverted is-focused btnAction btnAudio btnResume" style="display:none;">
+              <span class="icon">
+                <i class="fa fa-solid fa-play"></i>
+              </span>
+              <span>Resume</span>  
             </button>
             {{--  Button for deleting uploaded audio  --}}
             <button class="ml-3 button is-danger is-light is-inverted is-focused btnAction btnAudio btnDelete" style="display:none;">
