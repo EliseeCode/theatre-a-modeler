@@ -13,7 +13,11 @@ export default class AudioPolicy extends BasePolicy {
       return true;
     }
   }
-  public async create(user: User, audioVersion: Version, group: Group) {
+  public async create(
+    user: User,
+    audioVersion: Version,
+    group: Group | null = null
+  ) {
     if (user.id == audioVersion.creatorId) {
       return true;
     } else {
@@ -33,11 +37,7 @@ export default class AudioPolicy extends BasePolicy {
       }
     }
   }
-  public async update(
-    user: User,
-    audio: Audio,
-    group: Group | undefined = undefined
-  ) {
+  public async update(user: User, audio: Audio, group: Group | null = null) {
     if (user.id == audio.creatorId) {
       return true;
     } else {
@@ -57,11 +57,7 @@ export default class AudioPolicy extends BasePolicy {
       }
     }
   }
-  public async delete(
-    user: User,
-    audio: Audio,
-    group: Group | undefined = undefined
-  ) {
+  public async delete(user: User, audio: Audio, group: Group | null = null) {
     if (user.id == audio.creatorId) {
       return true;
     } else {

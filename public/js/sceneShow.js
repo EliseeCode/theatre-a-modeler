@@ -297,7 +297,8 @@ const createAudioVersion = async (characterID) => {
 };
 
 const uploadAudio = async (event, objectURL) => {
-  const groupId = window.location.pathname.match(/group\/(\d+)/)[1]; // this is for authorization feature
+  const groupId =
+    window.location.pathname.match(/group\/(\d+)/)?.[1] || undefined; // this is for authorization feature
   const parentContainer = $(event.target).closest(".line");
   console.log(parentContainer);
   const position = parentContainer.attr("data-position");
@@ -626,7 +627,8 @@ const resumeAudioButtonCallback = (event) => {
 };
 
 const deleteAudioButtonCallback = (event) => {
-  const groupId = window.location.pathname.match(/group\/(\d+)/)[1]; // this is for authorization feature
+  const groupId =
+    window.location.pathname.match(/group\/(\d+)/)?.[1] || undefined; // this is for authorization feature
   const parentContainer = $(event.target).closest(".line");
   const linePosition = parentContainer.attr("data-position");
   const audioId = $(event.target).attr("data-audio-id");

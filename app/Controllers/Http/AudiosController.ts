@@ -27,7 +27,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
   public async store({
     bouncer,
@@ -39,7 +39,7 @@ export default class AudiosController {
     const versionId = request.body().versionId;
     const audioVersion = await Version.findOrFail(versionId);
     const groupId = request.body().groupId;
-    const group = await Group.findOrFail(groupId);
+    const group = await Group.find(groupId);
     await bouncer.with("AudioPolicy").authorize("create", audioVersion, group);
     const audioFile = await request.file("audio");
 
@@ -147,9 +147,9 @@ export default class AudiosController {
     return response.json(version);
   }
 
-  public async edit({ }: HttpContextContract) { }
+  public async edit({}: HttpContextContract) {}
 
-  public async update({ }: HttpContextContract) { }
+  public async update({}: HttpContextContract) {}
 
   public async destroy({
     request,
@@ -206,9 +206,11 @@ export default class AudiosController {
       .andWhere("version_id", versionId)
       .andWhere("scene_id", sceneId)
       .preload("audios", (audioQuery) => {
-        audioQuery.preload("version", (audioVersion) => {
-          audioVersion.preload("audios")
-        }).preload("creator");
+        audioQuery
+          .preload("version", (audioVersion) => {
+            audioVersion.preload("audios");
+          })
+          .preload("creator");
       });
     lines.map((line) => {
       line.audios.map((audio) => {
