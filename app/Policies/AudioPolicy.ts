@@ -14,46 +14,73 @@ export default class AudioPolicy extends BasePolicy {
     }
   }
   public async create(user: User, audioVersion: Version, group: Group) {
-    await user.load("groups", (groupQuery) => {
-      groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
-    });
-    const roleId = user.groups[0].$extras.pivot_role_id;
-
     if (user.id == audioVersion.creatorId) {
       return true;
-    } else if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
-      return true;
     } else {
-      return false;
+      if (group) {
+        await user.load("groups", (groupQuery) => {
+          groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
+        });
+        const roleId = user.groups[0].$extras.pivot_role_id;
+
+        if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
     }
   }
-  public async update(user: User, audio: Audio, group: Group) {
-    // Normally we're going to allow audioversion creation
-    await user.load("groups", (groupQuery) => {
-      groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
-    });
-    const roleId = user.groups[0].$extras.pivot_role_id;
-
+  public async update(
+    user: User,
+    audio: Audio,
+    group: Group | undefined = undefined
+  ) {
     if (user.id == audio.creatorId) {
       return true;
-    } else if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
-      return true;
     } else {
-      return false;
+      if (group) {
+        await user.load("groups", (groupQuery) => {
+          groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
+        });
+        const roleId = user.groups[0].$extras.pivot_role_id;
+
+        if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   }
-  public async delete(user: User, audio: Audio, group: Group) {
-    await user.load("groups", (groupQuery) => {
-      groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
-    });
-    const roleId = user.groups[0].$extras.pivot_role_id;
-
+  public async delete(
+    user: User,
+    audio: Audio,
+    group: Group | undefined = undefined
+  ) {
     if (user.id == audio.creatorId) {
       return true;
-    } else if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
-      return true;
     } else {
-      return false;
+      if (group) {
+        await user.load("groups", (groupQuery) => {
+          groupQuery.where("group_id", group.id).pivotColumns(["role_id"]);
+        });
+        const roleId = user.groups[0].$extras.pivot_role_id;
+
+        if (user.id == audio.creatorId) {
+          return true;
+        } else if ([Role.TEACHER, Role.EDITOR].includes(roleId)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   }
 }
