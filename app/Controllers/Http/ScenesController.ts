@@ -16,7 +16,6 @@ import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 
 export default class ScenesController {
   public async show({ params, view }: HttpContextContract) {
-
     const scene = await Scene.findOrFail(params.id);
     //get other scene from play to navigate between scene of the same play
     await scene.load("play", (playQuery) => {
@@ -51,7 +50,7 @@ export default class ScenesController {
 
     console.log(linesJSON[0]);
 
-    const sceneLength = scene.lines[scene.lines.length - 1].position;
+    const sceneLength = scene.lines[scene.lines.length - 1].position + 1;
 
     //Make Character[].versions[]
     const characters = linesJSON.reduce(function (acc, cur) {
@@ -157,11 +156,11 @@ export default class ScenesController {
     });
   }
 
-  public async index({ }: HttpContextContract) { }
+  public async index({}: HttpContextContract) {}
 
-  public async create({ }: HttpContextContract) { }
+  public async create({}: HttpContextContract) {}
 
-  public async store({ }: HttpContextContract) { }
+  public async store({}: HttpContextContract) {}
 
   public async createNew({
     bouncer,
