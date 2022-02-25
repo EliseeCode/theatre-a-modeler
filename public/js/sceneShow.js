@@ -120,34 +120,47 @@ $(".selectAudioVersion select").on("change", async function () {
   //alert($(this).val()+$(this).data('character-id'))
   const parentContainer = $(this).closest(".line");
   var characterId = $(this).data("character-id");
+  const totalPositions = [];
+  $(`.lineCharacter_${characterId}:not([style*="display: none"])`).each(
+    function () {
+      console.log($(this));
+      totalPositions.push($(this).attr("data-position"));
+    }
+  ); // This is for updating buttons of the same character in different lines.
+  console.log("total pos", totalPositions, characterId);
   var audioVersionId = parseInt($(this).val());
   $(".selectAudioVersion_" + characterId + " select").val(audioVersionId);
-  const position = $(this).closest(".line").attr("data-position");
-  globalAudios[position] = 0; // declaring default one as robot
+  for (let position of totalPositions) globalAudios[position] = 0; // declaring default one as robot
   switch (audioVersionId) {
     case "":
       break;
     case 0:
       console.log("on écoute le robot");
-      updateAudioActionBtnDisplay("waitRobotAudio", position);
+      for (let position of totalPositions)
+        updateAudioActionBtnDisplay("waitRobotAudio", position);
       break;
     case -1:
       let version = await createAudioVersion(characterId);
-      updateAudioVersionSelectDisplay(characterId, version);
-      updateAudioActionBtnDisplay("waitRecord", position);
-      globalAudios[position] = -1;
+      updateAudioVersionSelectDisplay(characterId, version); // prepend loops over the selector, but attr not
+      for (let position of totalPositions) {
+        updateAudioActionBtnDisplay("waitRecord", position);
+        globalAudios[position] = -1;
+      }
+
       break;
     default:
       characterToAudioVersion[characterId] = audioVersionId;
       console.log(characterToAudioVersion, "s");
       await getAudioPaths(audioVersionId, characterId);
-      if (globalAudios[position]) {
-        console.log("haveMyAudio", position);
-        updateAudioActionBtnDisplay("haveMyAudio", position);
-      } else {
-        // no audio record found
-        console.log("waitRecord", globalAudios[position]);
-        updateAudioActionBtnDisplay("waitRecord", position);
+      for (let position of totalPositions) {
+        if (globalAudios[position]) {
+          console.log("haveMyAudio", position);
+          updateAudioActionBtnDisplay("haveMyAudio", position);
+        } else {
+          // no audio record found
+          console.log("waitRecord", globalAudios[position]);
+          updateAudioActionBtnDisplay("waitRecord", position);
+        }
       }
   }
 });
@@ -299,9 +312,7 @@ const uploadAudio = async (event, objectURL) => {
   const lineID = $(parentContainer).attr("data-line-id");
   /* console.log("uploading audio!!", objectURL)
         console.log(`Here's the line_id to attach: ${lineID}`); */
-  event.target.style.display = "none";
   const deleteButton = event.target.parentNode.querySelector(".btnDelete");
-  deleteButton.style.display = "inline";
   /* const recordControlButton = event.target.parentNode.querySelector(".btnStartRecord");
         const recordIcon = recordControlButton.querySelector("i");
         recordIcon.classList.remove("fa-play");
@@ -311,6 +322,7 @@ const uploadAudio = async (event, objectURL) => {
   player.src = "";
   let audioVersionID =
     audioVersionSelect.options[audioVersionSelect.selectedIndex].value;
+  updateAudioActionBtnDisplay("haveMyAudio", position);
   if (audioVersionID < 0) {
     // its value is -1
     console.log("mapping audio version to character");
@@ -418,8 +430,6 @@ const handleMediaDevice = (event, stream) => {
     // ref: https://stackoverflow.com/questions/11455515/how-to-check-whether-dynamically-attached-event-listener-exists-or-not
     // uploadButton.onclick = (_e) => uploadAudio(_e, objectURL);
     await uploadAudio(event, objectURL);
-    $(parentContainer).find(".btnAction").hide();
-    $(parentContainer).find(".btnAudio").show();
     // FIXME how to revoke microphone permissions?
   });
   if (mediaRecorder && mediaRecorder.state !== "recording")
@@ -470,7 +480,7 @@ const resumeAuto = () => {
 };
 
 const playAuto = (i) => {
-  if (i == globalAudios.length) {
+  if (i == globalAudios.length + 1) {
     console.log("The album is over...");
     return;
   }
