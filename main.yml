@@ -53,6 +53,7 @@ jobs:
             #pm2 delete my-project-repo
             #pm2 start build/server.js --name my-project-repo
             #rm -rf ../my-project-repo-old
+            #just to test slack
 	    cd toto
 
       - name: Slack success notification
