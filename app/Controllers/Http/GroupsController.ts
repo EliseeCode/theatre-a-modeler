@@ -1,6 +1,5 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Group from "App/Models/Group";
-import Character from "App/Models/Character";
 import Logger from "@ioc:Adonis/Core/Logger";
 import Role from "Contracts/enums/Role";
 import CharacterFetcher from "../helperClass/CharacterFetcher";
@@ -41,7 +40,7 @@ export default class GroupsController {
     return response.redirect().toRoute("/dashboard");
   }
 
-  public async show({ params, view, auth, bouncer }: HttpContextContract) {
+  public async show({ params, view, auth }: HttpContextContract) {
 
     //const group = await Group.findOrFail(params.id);
     const group = await Group.findOrFail(params.id);
@@ -89,7 +88,6 @@ export default class GroupsController {
   }
 
   public async update({
-    auth,
     params,
     response,
     request,

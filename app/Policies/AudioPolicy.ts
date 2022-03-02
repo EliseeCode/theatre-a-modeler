@@ -2,7 +2,6 @@ import { BasePolicy } from "@ioc:Adonis/Addons/Bouncer";
 import User from "App/Models/User";
 import Audio from "App/Models/Audio";
 import Role from "Contracts/enums/Role";
-import ScenePolicy from "App/Policies/ScenePolicy";
 import Version from "App/Models/Version";
 import Group from "App/Models/Group";
 

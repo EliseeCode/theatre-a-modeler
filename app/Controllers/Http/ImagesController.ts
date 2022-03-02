@@ -4,16 +4,15 @@ import Play from "App/Models/Play";
 import Scene from "App/Models/Scene";
 import User from "App/Models/User";
 import Character from "App/Models/Character";
-import Line from "App/Models/Line";
 import Logger from "@ioc:Adonis/Core/Logger";
 import Drive from "@ioc:Adonis/Core/Drive";
 import { URL } from "url";
 import ObjectType from "Contracts/enums/ObjectType";
 
 export default class ImagesController {
-  public async index({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
   public async store({ request, response, auth }: HttpContextContract) {
     const imageFile = await request.file("image");
@@ -54,18 +53,16 @@ export default class ImagesController {
     /*const fileName = `${user.id}_${lineId}_${await Hash.make(
       new Date().getTime().toString()
     )}.${imageFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
-    let message: string, status: boolean;
+    let message: string;
     try {
       await imageFile?.moveToDisk(
         "./images/",
         { contentType: request.header("Content-Type") },
         "local"
       );
-      status = true;
       message = `The image file has been successfully saved!`;
       Logger.info(message);
     } catch (err) {
-      status = false;
       message = `An error occured during the save of the image file.\nHere's the details: ${err} `;
       Logger.error(message);
       return response.json({ status: 0, message });
@@ -114,11 +111,11 @@ export default class ImagesController {
     return newImage;
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ }: HttpContextContract) { }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async destroy({ response, params }: HttpContextContract) {
     const image = (await Image.query().where("id", params.id))[0];

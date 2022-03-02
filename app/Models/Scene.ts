@@ -9,10 +9,7 @@ import {
   belongsTo,
   BelongsTo,
   hasMany,
-  HasMany,
-  computed,
-  afterFetch,
-  afterFind,
+  HasMany
 } from "@ioc:Adonis/Lucid/Orm";
 import Character from "./Character";
 

@@ -1,7 +1,6 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import User from 'App/Models/User'
 import Play from 'App/Models/Play'
-import Group from 'App/Models/Group'
 import Role from 'Contracts/enums/Role'
 import Status from 'Contracts/enums/Status'
 import Database from '@ioc:Adonis/Lucid/Database'
@@ -13,7 +12,7 @@ export default class PlayPolicy extends BasePolicy {
 			return true
 		}
 	}
-	public async create(user: User) {
+	public async create() {
 		return true;
 	}
 	public async update(user: User, play: Play) {

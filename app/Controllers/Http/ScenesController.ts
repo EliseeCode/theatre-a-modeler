@@ -1,18 +1,10 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Scene from "App/Models/Scene";
 import Play from "App/Models/Play";
-import Logger from "@ioc:Adonis/Core/Logger";
-import Group from "App/Models/Group";
-import Image from "App/Models/Image";
-import Character from "App/Models/Character";
-import Status from "Contracts/enums/Status";
 import Line from "App/Models/Line";
 import CharacterFetcher from "App/Controllers/helperClass/CharacterFetcher";
 import LineVersionFetcher from "App/Controllers/helperClass/LineVersionFetcher";
-import Version from "App/Models/Version";
-import User from "App/Models/User";
 import AudioFetcher from "App/Controllers/helperClass/AudioFetcher";
-import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 
 export default class ScenesController {
   public async show({ params, view }: HttpContextContract) {
@@ -150,17 +142,17 @@ export default class ScenesController {
     return serializedCharacters;
   }
 
-  public async select({ params, view, auth }: HttpContextContract) {
+  public async select({ params, view }: HttpContextContract) {
     return view.render("scene/test", {
       characters: await this.selectCharacters(params.scene_id),
     });
   }
 
-  public async index({}: HttpContextContract) {}
+  public async index({ }: HttpContextContract) { }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
-  public async store({}: HttpContextContract) {}
+  public async store({ }: HttpContextContract) { }
 
   public async createNew({
     bouncer,
@@ -195,7 +187,7 @@ export default class ScenesController {
     return scene;
   }
 
-  public async edit({ params, view, auth }: HttpContextContract) {
+  public async edit({ params, view }: HttpContextContract) {
     const scene = await Scene.findOrFail(params.id);
 
     await scene.load("play", (playQuery) => {

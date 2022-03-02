@@ -3,7 +3,6 @@ import User from 'App/Models/User'
 import Scene from 'App/Models/Scene'
 import Role from 'Contracts/enums/Role'
 import Play from 'App/Models/Play'
-import Group from 'App/Models/Group'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Status from 'Contracts/enums/Status'
 
@@ -14,7 +13,7 @@ export default class ScenePolicy extends BasePolicy {
 			return true
 		}
 	}
-	public async viewList(user: User) { }
+	//public async viewList(user: User) { }
 	public async view(user: User, scene: Scene) {
 		if (scene.play.creatorId != user.id) { return true; }
 		if (scene.play.status == Status.PUBLIC) {

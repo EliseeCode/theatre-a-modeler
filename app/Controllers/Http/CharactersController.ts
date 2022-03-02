@@ -3,30 +3,11 @@ import Database from "@ioc:Adonis/Lucid/Database";
 import Character from "App/Models/Character";
 import Image from "App/Models/Image";
 import Line from "App/Models/Line";
-import Play from "App/Models/Play";
 import ObjectType from "Contracts/enums/ObjectType";
-
+import { URL } from 'url'
 
 export default class CharactersController {
   public dataName = "characters";
-
-  public async index({ view }: HttpContextContract) {
-    const characters = await Character.all();
-    const columnsDefinitions = Character.$columnsDefinitions;
-    return view.render("defaultViews/index", {
-      columnsDefinitions: Character.$columnsDefinitions,
-      data: characters,
-      dataName: this.dataName,
-    });
-  }
-
-  public async create({ view }: HttpContextContract) {
-    const creationType = await Character.$computedDefinitions;
-    return view.render("defaultViews/create", {
-      creationType,
-      dataName: this.dataName,
-    });
-  }
 
   public async store({ auth, params, request, response }: HttpContextContract) {
     const user = await auth.authenticate();
@@ -49,18 +30,16 @@ export default class CharactersController {
         new Date().getTime().toString()
       )}.${imageFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
 
-      let message: string, status: boolean;
+      let message: string;
       try {
         await imageCharacter?.moveToDisk(
           "./images/",
           { contentType: request.header("Content-Type") },
           "local"
         );
-        status = true;
         message = `The image file has been successfully saved!`;
         console.log(message);
       } catch (err) {
-        status = false;
         message = `An error occured during the save of the image file.\nHere's the details: ${err} `;
         console.log(message);
         return response.json({ status: 0, message });

@@ -4,7 +4,6 @@ import Logger from "@ioc:Adonis/Core/Logger";
 import Drive from "@ioc:Adonis/Core/Drive";
 import { URL } from "url";
 import Version from "App/Models/Version";
-import Scene from "App/Models/Scene";
 import Line from "App/Models/Line";
 import ObjectType from "Contracts/enums/ObjectType";
 import Database from "@ioc:Adonis/Lucid/Database";
@@ -27,7 +26,7 @@ export default class AudiosController {
       });
   }
 
-  public async create({}: HttpContextContract) {}
+  public async create({ }: HttpContextContract) { }
 
   public async store({
     bouncer,
@@ -55,18 +54,18 @@ export default class AudiosController {
     /*const fileName = `${user.id}_${lineId}_${await Hash.make(
       new Date().getTime().toString()
     )}.${audioFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
-    let message: string, status: boolean;
+    let message: string;
     try {
       await audioFile?.moveToDisk(
         "./audios/",
         { contentType: request.header("Content-Type") },
         "local"
       );
-      status = true;
+
       message = `The audio file has been successfully saved!`;
       Logger.info(message);
     } catch (err) {
-      status = false;
+
       message = `An error occured during the save of the audio file.\nHere's the details: ${err} `;
       Logger.error(message);
       return response.json({ status: 0, message });
@@ -147,9 +146,9 @@ export default class AudiosController {
     return response.json(version);
   }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ }: HttpContextContract) { }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ }: HttpContextContract) { }
 
   public async destroy({
     request,
@@ -196,7 +195,7 @@ export default class AudiosController {
     auth,
     response,
   }: HttpContextContract) {
-    const user = await auth.authenticate();
+    await auth.authenticate();
     const { characterId, versionId, sceneId } = request.all();
     //const scene = await Scene.findOrFail(sceneId);
     const audioVersions = new Set();
@@ -226,10 +225,8 @@ export default class AudiosController {
 
   public async getAudiosFromAudioVersion({
     request,
-    auth,
     response,
   }: HttpContextContract) {
-    const user = await auth.authenticate();
     const { audioVersionId } = request.all();
     const audios = await Audio.query()
       .where("version_id", audioVersionId)

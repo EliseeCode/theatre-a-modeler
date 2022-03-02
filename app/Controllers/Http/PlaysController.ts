@@ -1,7 +1,6 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Play from "App/Models/Play";
 import Status from "Contracts/enums/Status";
-import Logger from "@ioc:Adonis/Core/Logger";
 import CharacterFetcher from "../helperClass/CharacterFetcher";
 import Role from "Contracts/enums/Role";
 
@@ -33,7 +32,7 @@ export default class PlaysController {
 
   public async createNew({ response, auth }: HttpContextContract) {
     const user = await auth.authenticate();
-    const newPlay = await Play.create({
+    await Play.create({
       name: "Nouvelle Pièce",
       description: "description",
       creatorId: user.id,
@@ -76,7 +75,6 @@ export default class PlaysController {
 
   public async detach({
     bouncer,
-    view,
     params,
     response,
   }: HttpContextContract) {

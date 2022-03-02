@@ -9,9 +9,7 @@ import {
   manyToMany,
   ManyToMany,
   hasMany,
-  HasMany,
-  hasOne,
-  HasOne,
+  HasMany
 } from "@ioc:Adonis/Lucid/Orm";
 import Scene from "App/Models/Scene";
 import Image from "App/Models/Image";

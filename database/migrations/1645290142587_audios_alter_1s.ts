@@ -10,7 +10,7 @@ export default class AudiosAlter_1s extends BaseSchema {
   }
 
   public async down() {
-    this.schema.alterTable(this.tableName, (table) => {
+    this.schema.alterTable(this.tableName, () => {
       // table.dropIndex(["line_id", "creator_id", "version_id"]);
       //table.dropUnique(["line_id", "creator_id", "version_id"]);
     });

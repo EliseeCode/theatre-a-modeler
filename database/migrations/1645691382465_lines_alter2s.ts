@@ -20,3 +20,4 @@ export default class LinesAlter_1s extends BaseSchema {
     //     });
     //   }
   }
+}

@@ -61,7 +61,7 @@ export default class AuthController {
     //await ally.driver('google').scope(['profile', 'email', 'https://www.googleapis.com/auth/drive']).redirect()
   }
 
-  async handleCallback({ params, ally, auth, response, session }: HttpContextContract) {
+  async handleCallback({ ally, auth, response }: HttpContextContract) {
     const provider = 'google';
     const google = await ally.use(provider)
     try {
@@ -167,7 +167,7 @@ export default class AuthController {
     }
   }
 
-  public async recoverUsername({ session, request, auth, response, view }: HttpContextContract) {
+  public async recoverUsername({ session, request, response }: HttpContextContract) {
     const email = request.input("email");
     if (email == null) { return response.redirect().back(); }
 

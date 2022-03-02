@@ -1,12 +1,9 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import Logger from "@ioc:Adonis/Core/Logger";
 import Role from "Contracts/enums/Role";
 export default class AppsController {
   public async index({
-    request,
     auth,
     response,
-    session,
     view,
   }: HttpContextContract) {
     if (!auth.isLoggedIn) {

@@ -2,7 +2,6 @@ import BaseSeeder from "@ioc:Adonis/Lucid/Seeder";
 import Character from "App/Models/Character";
 import User from "App/Models/User";
 import Version from "App/Models/Version";
-import Role from "Contracts/enums/Role";
 import {
   AudioFactory,
   CharacterFactory,
@@ -12,7 +11,6 @@ import {
   PlayFactory,
   SceneFactory,
   UserFactory,
-  VersionFactory,
 } from "Database/factories";
 import { DateTime } from "luxon";
 
