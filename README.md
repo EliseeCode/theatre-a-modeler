@@ -16,7 +16,7 @@ This project is a personal project made with a lot of love to help founders to s
 - [x] Choosing a stack for the developpement of the new version
 - [x] Start to code.
 - [x] Present Alpha version at "Printemps Numérique International" in Istanbul
-- [ ] Create CI/CD automatic action on main push
+- [x] Create CI/CD automatic action on main push
 - [ ] Make it work
 - [ ] Clean the code
 - [ ] Inject some React
