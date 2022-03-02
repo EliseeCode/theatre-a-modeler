@@ -1,0 +1,82 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploying
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script_stop: true
+          script: |
+            # Copy and build new version
+
+            #rm -rf my-project-repo-new
+            #cp -r my-project-repo my-project-repo-new
+            #cd my-project-repo-new
+            #git checkout production
+            #git reset --hard origin/production
+            #git pull
+            #npm rebuild
+            #npm install
+
+            # Build the api
+
+            #npm run build
+            #cp .env build/.env
+
+            # Run migrations
+
+            #node ace migration:run --force
+            #node ace db:seed --force
+
+            # Replace current version with the new one
+
+            #cd ..
+            #mv my-project-repo my-project-repo-old
+            #mv my-project-repo-new my-project-repo
+
+            # Restart server
+
+            #cd my-project-repo
+            #pm2 delete my-project-repo
+            #pm2 start build/server.js --name my-project-repo
+            #rm -rf ../my-project-repo-old
+            #just to test slack
+            echo "test githubAction is working"
+	    cd toto
+
+      - name: Slack success notification
+        if: success()
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_CHANNEL: my-channel
+          SLACK_COLOR: good
+          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          SLACK_MESSAGE: 'Deployment achieved with success'
+          SLACK_TITLE: CI
+          SLACK_USERNAME: GitHub
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Slack error notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_CHANNEL: my-channel
+          SLACK_COLOR: danger
+          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          SLACK_MESSAGE: 'The deployment has failed @channel'
+          SLACK_TITLE: CI
+          SLACK_USERNAME: GitHub
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
