@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script_stop: true
           script: |
-            echo "test githubAction is working"
+            echo "test githubAction is working2"
 
       - name: Slack success notification
         if: success()
