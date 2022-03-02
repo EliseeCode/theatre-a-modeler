@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: debian-9
     timeout-minutes: 60
 
     steps:
@@ -20,7 +20,39 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script_stop: true
           script: |
-            echo "test githubAction is working2"
+            # Copy and build new version
+            cd /home/elisee/www
+            rm -rf theatre-a-modeler-new
+            cp -r theatre-a-modeler theatre-a-modeler-new
+            cd theatre-a-mododeler-new
+            git checkout main
+            git reset --hard origin/main
+            git pull
+            npm rebuild
+            npm install
+
+            # Build the api
+
+            npm run build
+            cp .env build/.env
+
+            # Run migrations
+
+            #node ace migration:run --force
+            #node ace db:seed --force
+
+            # Replace current version with the new one
+
+            cd ..
+            mv theatre-a-modeler theatre-a-modeler-old
+            mv theatre-a-modeler-new theatre-a-modeler
+
+            # Restart server
+
+            cd theatre-a-modeler
+            pm2 delete theatre-a-modeler
+            pm2 start build/server.js --name theatre-a-modeler
+            rm -rf ../theatre-a-modeler-old
 
       - name: Slack success notification
         if: success()
