@@ -31,3 +31,27 @@ display:flex;
   box-shadow: 0 0 40px #00000040;
   border-radius: 10px;}
 .auth-sidebar-content{max-width:30%;}   
+
+@media (min-width: 960px)
+{
+.auth-sidebar-content {
+  display: -ms-flexbox;
+  display: flex;
+  flex:2;
+  text-align:center;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  min-height: 100vh;
+  background-image:url('../img/curtain.png');
+  background-size:contain;
+  background-position:top left;
+  background-repeat:no-repeat;}
+}
+
+@media (max-width: 960px)
+{
+.auth-sidebar-content {
+    display: none};
+}
