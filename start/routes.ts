@@ -17,39 +17,16 @@
 | import './routes/customer''
 |
 */
-//import I18n from '@ioc:Adonis/Addons/I18n'
 import Route from "@ioc:Adonis/Core/Route";
 
-// Route.post('language/:locale', async ({ session, response, params }) => {
-//   /**
-//    * Only update locale when it is part of the supportedLocales
-//    */
-//   if (I18n.supportedLocales().includes(params.locale)) {
-//     session.put('locale', params.locale)
-//   }
-//   response.redirect().back()
-// }).as('language.update')
-
 Route.on("/").render("index");
-//Route.get('/test',async({request})=>{return {domaine:request.subdomains(),hostname:request.hostname(),host:request.host(),prot:request.protocol()}});
 
-Route.get('auth/google', 'AuthController.redirect').as('social.login')
-Route.get('auth/google/callback', 'AuthController.handleCallback').as('social.login.callback')
+// Route.resource("formation", "FormationsController").middleware({
+//   create: ["auth"],
+//   store: ["auth"],
+//   destroy: ["auth"],
+// });
 
-Route.resource("formation", "FormationsController").middleware({
-  create: ["auth"],
-  store: ["auth"],
-  destroy: ["auth"],
-});
-// Route.resource('users','UsersController').middleware({
-// })
-// Route.resource('classes','ClassesController');
-// Route.post('/user/:id/admin','UsersController.giveAdminRole');
-// Route.post('/user/:id/notAdmin','UsersController.removeAdminRole');
-
-// Route.get('/auth/recovery',async({ view }) => {
-//   return view.render('auth/recovery')
-// })
 Route.get("groups/:code/join", "GroupsController.join");
 Route.get("groups/join", "GroupsController.join");
 
@@ -59,6 +36,8 @@ Route.resource("groups", "GroupsController");
 Route.resource("lines", "LinesController");
 Route.resource("images", "ImagesController");
 Route.resource("characters", "CharactersController");
+
+
 Route.get("dashboard", "AppsController.index");
 
 Route.get("groups/:id/leave", "GroupsController.leave");
@@ -73,10 +52,7 @@ Route.resource("group/:group_id/scene", "ScenesController");
 Route.resource("scenes", "ScenesController");
 Route.get("group/:group_id/scene/:scene_id/action", "ScenesController.action");
 Route.post("group/:group_id/scene/:scene_id/change", "ScenesController.change");
-/* Route.post(
-  "group/:group_id/scene/:scene_id/character/:character_id/lineVersion/:line_version_id/doubler/:doubler_id/audioVersion/:audio_version:id/change",
-  "ScenesController.change"
-); */ // FIXME
+
 Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
 Route.put("play/:id/scene/createNew", "ScenesController.createNew");
 //WITHOUT GROUP
@@ -97,10 +73,6 @@ Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
 Route.post("api/play/:playId/updateName", "PlaysController.updateName");
 Route.post("api/scene/delete", "ScenesController.destroy");
 
-//Route.post('/auth/recovery',async({view,request})=>{return view.render('auth/recovery',{username:request.input("username")});})
-// Route.get('/checkRecoveryMethod', async({view,request})=>{return view.render('auth/recovery')});
-Route.post("/recoverUsername", "AuthController.recoverUsername");
-Route.post("/recoverPassword", "AuthController.recoverPassword");
 
 Route.post("/audio/upload", "AudiosController.upload");
 Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions");
@@ -110,20 +82,20 @@ Route.get(
   "AudiosController.getAudiosFromAudioVersion"
 );
 
-Route.get("/recoverUsername", async ({ view }) => {
-  return view.render("auth/recoverUsername");
-});
-Route.get("/recoverPassword", async ({ view }) => {
-  return view.render("auth/recoverPassword");
-});
-// Route.get('/verifyResetPassword/:username/', 'AuthController.verifyResetPassword');
-
-Route.get("/logout", "AuthController.logout").as("auth.logout");
+//PROFILE
 Route.get("/profile", "UsersController.profile").middleware("auth");
 Route.post("/changeMail", "UsersController.changeMail").middleware("auth");
 Route.post("/changePassword", "UsersController.changePassword").middleware(
   "auth"
 );
+
+// AUTH
+
+Route.get('auth/google', 'AuthController.redirect').as('social.login')
+Route.get('auth/google/callback', 'AuthController.handleCallback').as('social.login.callback')
+
+Route.get("/logout", "AuthController.logout").as("auth.logout");
+
 Route.get(
   "/loginWithSignedUrl/:username",
   "AuthController.loginWithSignedUrl"
@@ -146,6 +118,20 @@ Route.get("/register", async ({ response, view, auth }) => {
 
 Route.post("/login", "AuthController.login").as("auth.login");
 Route.post("/register", "AuthController.register").as("auth.register");
+
+
+//RECOVERY METHODS
+Route.post("/recoverUsername", "AuthController.recoverUsername");
+Route.post("/recoverPassword", "AuthController.recoverPassword");
+Route.get("/recoverUsername", async ({ view }) => {
+  return view.render("auth/recoverUsername");
+});
+Route.get("/recoverPassword", async ({ view }) => {
+  return view.render("auth/recoverPassword");
+});
+
+
+
 
 //TEST ROUTES
 Route.get("/test", "testController.index");
