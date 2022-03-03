@@ -24,7 +24,7 @@ jobs:
             cd /home/elisee/www
             rm -rf theatre-a-modeler-new
             cp -r theatre-a-modeler theatre-a-modeler-new
-            cd theatre-a-mododeler-new
+            cd theatre-a-modeler-new
             git checkout main
             git reset --hard origin/main
             git pull
