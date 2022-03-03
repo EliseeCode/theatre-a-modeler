@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - prod
 
 jobs:
   deploy:
@@ -17,24 +17,24 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          password: ${{ secrets.PASSWORD }}
           script_stop: true
           script: |
             # Copy and build new version
-
-            #rm -rf my-project-repo-new
-            #cp -r my-project-repo my-project-repo-new
-            #cd my-project-repo-new
-            #git checkout production
-            #git reset --hard origin/production
-            #git pull
-            #npm rebuild
-            #npm install
+            cd /home/elisee/www
+            rm -rf theatre-a-modeler-new
+            cp -r theatre-a-modeler theatre-a-modeler-new
+            cd theatre-a-modeler-new
+            git checkout main
+            git reset --hard origin/main
+            git pull
+            npm rebuild
+            npm install
 
             # Build the api
 
-            #npm run build
-            #cp .env build/.env
+            npm run build
+            cp .env build/.env
 
             # Run migrations
 
@@ -43,18 +43,16 @@ jobs:
 
             # Replace current version with the new one
 
-            #cd ..
-            #mv my-project-repo my-project-repo-old
-            #mv my-project-repo-new my-project-repo
+            cd ..
+            mv theatre-a-modeler theatre-a-modeler-old
+            mv theatre-a-modeler-new theatre-a-modeler
 
             # Restart server
 
-            #cd my-project-repo
-            #pm2 delete my-project-repo
-            #pm2 start build/server.js --name my-project-repo
-            #rm -rf ../my-project-repo-old
-            #just to test slack
-	    cd toto
+            cd theatre-a-modeler
+            pm2 delete theatre-a-modeler
+            pm2 start build/server.js --name theatre-a-modeler
+            rm -rf ../theatre-a-modeler-old
 
       - name: Slack success notification
         if: success()

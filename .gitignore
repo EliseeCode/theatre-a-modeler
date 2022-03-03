@@ -4,7 +4,7 @@ coverage
 .vscode
 .DS_STORE
 .env
-.*
+.env*
 tmp
 uploads/audios/*
 uploads/images/*
