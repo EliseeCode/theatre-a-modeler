@@ -126,7 +126,7 @@ html, body{background: var(--fond);}
 .ripple:active:before {
   visibility: visible;
 }
-body{margin:0;padding:0; font-family:caviar;min-height:100vh;}
+body{margin:0;padding:0;min-height:100vh;}
 .jumbotron
 {background-color:var(--mycolor1);
  color:var(--mycolor4);
@@ -134,20 +134,7 @@ body{margin:0;padding:0; font-family:caviar;min-height:100vh;}
 }
 .border_jaune{border-bottom: 8px solid var(--mycolor3);}
 .fond{background-color:var(--fond);}
-/* .fondDeck{
-  background-image: url(../img/fond2.svg);
-      background-repeat: no-repeat;
-      background-position: top right;
-      background-size: max(200px,20%);}
-.fondDeck:before{content:"";position:absolute;
-      background-image:url(../img/fond3.svg);
-      background-repeat:no-repeat;
-      background-position:200px left;
-      background-size:15%;
-      width:100%;
-      top:63%;
-      left:0;
-      bottom:0;} */
+
 input{color:black;}
 .titre1{color:var(--mycolor2);}
 .btn-primary{background-color:var(--mycolor2);}
