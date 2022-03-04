@@ -213,6 +213,23 @@ export default class ScenesController {
       play,
     });
   }
+  public async lines({ params }: HttpContextContract) {
+    const sceneId = params.sceneId;
+    const versionId = params.versionId;
+    const scene = await Scene.findOrFail(sceneId);
+    //get all the lines from a scene and version
+    const lines = await Line.query()
+      .where('lines.version_id', versionId)
+      .andWhere('lines.scene_id', sceneId)
+      .preload("character", (characterQuery) => {
+        characterQuery.preload("image");
+      })
+      .orderBy("lines.position", "asc");
+
+    const characterFetcher = new CharacterFetcher();
+    const characters = await characterFetcher.getCharactersFromScene(scene);
+    return { lines, characters }
+  }
 
   public async update({ request, params, response }: HttpContextContract) {
     const name = request.all().name;

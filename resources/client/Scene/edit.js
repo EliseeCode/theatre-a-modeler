@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import LinesContainer from './LinesContainer';
 ReactDOM.render(
     <React.StrictMode>
-        <App />
+        <LinesContainer />
     </React.StrictMode>,
     document.getElementById('root')
 );

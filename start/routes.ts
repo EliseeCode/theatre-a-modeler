@@ -57,8 +57,7 @@ Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
 Route.put("play/:id/scene/createNew", "ScenesController.createNew");
 //WITHOUT GROUP
 Route.resource("scene", "ScenesController");
-Route.post("scene/:scene_id/action", "ScenesController.action");
-Route.get("scene/:scene_id/select", "ScenesController.select");
+Route.get("api/scene/:sceneId/version/:versionId/lines", "ScenesController.lines");
 //CHARACTER
 Route.post("line/:lineId/characters/create", "CharactersController.store");
 Route.post("line/updateCharacter", "LinesController.updateCharacter");

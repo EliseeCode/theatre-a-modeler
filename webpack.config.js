@@ -46,7 +46,7 @@ Encore.setPublicPath('/assets')
 |
 */
 Encore.addEntry('app', './resources/js/app.js')
-Encore.addEntry('SceneEdit', './resources/client/index.js')
+Encore.addEntry('SceneEdit', './resources/client/Scene/edit.js')
 
 /*
 |--------------------------------------------------------------------------
