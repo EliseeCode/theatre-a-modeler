@@ -13,22 +13,25 @@ export default function EditableLine(props) {
 
                     <CharacterSelect characterSelected={props.line.character} characters={props.characters} />
                     <div className="control">
+                        {props.line.position == 0 ?? <NewLineButton setLines={props.setLines} afterPosition={props.line.position} />}
                         <div>
                             <textarea value={props.line.text} className="lineText textarea"></textarea>
                             {/* onkeydown="splitContent(event,this);"
-                                oninput="auto_grow(this);updateText();"
-                                name='text' id="lineText_"
-                                className="lineText textarea"
-                                cols="30"
-                                rows="1"
-                                style="resize: none">test</textarea> */}
+                                    oninput="auto_grow(this);updateText();"
+                                    name='text' id="lineText_"
+                                    className="lineText textarea"
+                                    cols="30"
+                                    rows="1"
+                                    style="resize: none">test</textarea> */}
 
                         </div>
+                        <NewLineButton setLines={props.setLines} afterPosition={props.line.position} />
                     </div>
+
                 </div>
-                <DeleteLineButton lineId={props.line.id} />
+                <DeleteLineButton setLines={props.setLines} line={props.line} />
             </div>
-            <NewLineButton afterPosition={props.line.position} />
+
         </>
     )
 }

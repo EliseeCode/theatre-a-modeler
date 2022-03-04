@@ -5,9 +5,9 @@
         "http://localhost:8080/assets/app.js"
       ]
     },
-    "SceneEdit": {
+    "scene": {
       "js": [
-        "http://localhost:8080/assets/SceneEdit.js"
+        "http://localhost:8080/assets/scene.js"
       ]
     }
   }

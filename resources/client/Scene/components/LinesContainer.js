@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import EditableLine from './EditableLine.js'
 import NewLineButton from './NewLineButton'
-
-export default function LinesContainer() {
+import { useParams } from 'react-router-dom';
+export default function LinesContainer(props) {
+    const { sceneId } = useParams();
+    console.log(sceneId);
     const [lines, setLines] = useState([]);
+    const [scene, setScene] = useState({});
     const [characters, setCharacters] = useState([]);
     useEffect(() => {
-        $.get('/api/scene/1/version/1/lines', function (data) {
+        $.get('/api/scene/' + sceneId + '/version/1/lines', function (data) {
             console.log(data);
-            setLines(data.lines)
-            setCharacters(data.characters)
+            setLines(data.lines);
+            setCharacters(data.characters);
+            setScene(data.scene);
         })
     }, []);
 
@@ -19,7 +23,7 @@ export default function LinesContainer() {
             {
                 lines.map((line, index) => {
                     return (
-                        <EditableLine key={index} line={line} characters={characters} />
+                        <EditableLine key={index} setLines={setLines} line={line} characters={characters} />
                     );
                 })
             }

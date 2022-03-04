@@ -64,13 +64,15 @@ Route.post("line/updateCharacter", "LinesController.updateCharacter");
 Route.post("line/updateText", "LinesController.updateText");
 Route.post("line/splitAText", "LinesController.splitAText");
 Route.post("/lines/createNewVersion", "LinesController.createNewVersion");
-Route.post("scenes/:scene_id/line/create/:position", "LinesController.create");
+Route.post("scenes/:sceneId/line/create/:position", "LinesController.create");
 
 Route.post("play/createNew", "PlaysController.createNew");
 
 Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
 Route.post("api/play/:playId/updateName", "PlaysController.updateName");
 Route.post("api/scene/delete", "ScenesController.destroy");
+Route.post("api/scenes/:sceneId/line/create/:position", "LinesController.create");
+Route.post("api/line/:lineId/destroy", "LinesController.destroy");
 
 
 Route.post("/audio/upload", "AudiosController.upload");

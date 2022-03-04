@@ -1,6 +1,6 @@
 {
   "assets/app.js": "http://localhost:8080/assets/app.js",
-  "assets/SceneEdit.js": "http://localhost:8080/assets/SceneEdit.js",
+  "assets/scene.js": "http://localhost:8080/assets/scene.js",
   "assets/img/screen.svg": "http://localhost:8080/assets/img/screen.57af4e27.svg",
   "assets/img/screen2.png": "http://localhost:8080/assets/img/screen2.2d9cba78.png",
   "assets/img/screenshot.png": "http://localhost:8080/assets/img/screenshot.f761394a.png",

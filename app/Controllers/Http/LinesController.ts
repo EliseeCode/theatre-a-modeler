@@ -26,14 +26,13 @@ export default class LinesController {
 
   public async create({ auth, params, response }: HttpContextContract) {
     const user = await auth.authenticate();
-    const scene_id = params.scene_id;
+    const scene_id = params.sceneId;
     const position = parseInt(params.position);
     console.log("creation line at pos:" + position);
 
-    const lines = await Line.query().where('sceneId', scene_id)
+    await Line.query().where('sceneId', scene_id)
       .andWhere('version_id', 1)
       .andWhere('position', ">", position)
-    console.log(lines.map((line) => { return { id: line.id, creatorId: line.creatorId, sceneId: line.sceneId, position: line.position, versionId: line.versionId } }))
 
     await Line.query().where('sceneId', scene_id)
       .andWhere('version_id', 1)
@@ -46,7 +45,9 @@ export default class LinesController {
       versionId: 1,
       creatorId: user.id
     });
-    return response.redirect().back();
+    const lines = await Line.query().where('scene_id', scene_id)
+      .andWhere('version_id', 1);
+    return { lines };
   }
 
 
@@ -168,9 +169,13 @@ export default class LinesController {
   }
 
   public async destroy({ params, response }: HttpContextContract) {
-    let line = await Line.findOrFail(params.id);
+    let line = await Line.findOrFail(params.lineId);
+    const sceneId = line.sceneId;
     await Line.query().where('sceneId', line.sceneId).andWhere('position', ">", line.position).decrement("position", 1);
     await line.delete();
-    return response.redirect().back();
+
+    const lines = await Line.query().where('scene_id', sceneId)
+      .andWhere('version_id', 1);
+    return { lines };
   }
 }
