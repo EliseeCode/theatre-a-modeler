@@ -46,6 +46,7 @@ Encore.setPublicPath('/assets')
 |
 */
 Encore.addEntry('app', './resources/js/app.js')
+Encore.addEntry('SceneEdit', './resources/client/index.js')
 
 /*
 |--------------------------------------------------------------------------
@@ -57,10 +58,10 @@ Encore.addEntry('app', './resources/js/app.js')
 | we must copy them manually.
 |
 */
- Encore.copyFiles({
-   from: './resources/img',
-   to: 'img/[path][name].[hash:8].[ext]',
- })
+Encore.copyFiles({
+  from: './resources/img',
+  to: 'img/[path][name].[hash:8].[ext]',
+})
 
 /*
 |--------------------------------------------------------------------------
@@ -107,6 +108,21 @@ Encore.cleanupOutputBeforeBuild()
 */
 Encore.enableSourceMaps(!Encore.isProduction())
 
+
+
+Encore.configureBabel(function (babelConfig) {
+  // add additional presets
+  babelConfig.presets.push('@babel/preset-react');
+
+  // no plugins are added by default, but you can add some
+  //babelConfig.plugins.push('styled-jsx/babel');
+  babelConfig.plugins.push('@babel/plugin-transform-runtime');
+}, {
+  // or completely control the exclude rule (note that you
+  // can't use both "includeNodeModules" and "exclude" at
+  // the same time)
+  exclude: /node_modules/
+})
 /*
 |--------------------------------------------------------------------------
 | Assets versioning
