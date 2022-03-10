@@ -46,7 +46,7 @@ export default class LinesController {
       creatorId: user.id
     });
     const lines = await Line.query().where('scene_id', scene_id)
-      .andWhere('version_id', 1);
+      .andWhere('version_id', 1).orderBy("position", "asc");
     return { lines };
   }
 
@@ -142,21 +142,23 @@ export default class LinesController {
   }
   public async updateText({ request }: HttpContextContract) {
 
-    const { text, lineId } = request.body();
-    let line = await Line.findOrFail(lineId);
-    line.text = text || "";
-    await line.save();
+    const { line } = request.body();
+    let lineObj = await Line.findOrFail(line.id);
+    lineObj.text = line.text || "";
+    await lineObj.save();
     return "ok";
   }
 
-  public async splitAText({ auth, response, request }: HttpContextContract) {
+  public async splitAText({ auth, request }: HttpContextContract) {
 
     const user = await auth.authenticate();
-    const { firstPart, secondPart, lineId, sceneId } = request.body();
-    let line = await Line.findOrFail(lineId);
+    const { firstPart, secondPart, prevLine } = request.body();
+    let line = await Line.findOrFail(prevLine.id);
     line.text = firstPart || "";
     await line.save();
     let position = line.position;
+    let sceneId = line.sceneId;
+
     await Line.query().where('sceneId', sceneId).andWhere('position', ">", position).increment("position", 1);
     await Line.create({
       text: secondPart || "",
@@ -165,10 +167,12 @@ export default class LinesController {
       versionId: 1,
       creatorId: user.id
     });
-    return response.redirect().back();
+    const lines = await Line.query().where('scene_id', sceneId)
+      .andWhere('version_id', 1).orderBy("position", "asc");
+    return { lines };
   }
 
-  public async destroy({ params, response }: HttpContextContract) {
+  public async destroy({ params }: HttpContextContract) {
     let line = await Line.findOrFail(params.lineId);
     const sceneId = line.sceneId;
     await Line.query().where('sceneId', line.sceneId).andWhere('position', ">", line.position).decrement("position", 1);

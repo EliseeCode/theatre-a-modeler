@@ -1,21 +1,29 @@
 
 import React, { useState } from 'react'
+import NewCharacterModal from './NewCharacterModal';
 
 export default function CharacterSelect(props) {
     const [isDropdownActive, setDropdownActive] = useState(false);
+    const [characterSelected, setCharacterSelected] = useState(props.characterSelected);
 
+    const [showCharacterModal, setShowCharacterModal] = useState(false);
+    function toggleModal() {
+        setShowCharacterModal(!showCharacterModal);
+    }
     return (
+
         <div className="control">
+
             <div className={(isDropdownActive ? "is-active" : "") + ' dropdown'} style={{ height: "38px" }}>
                 <div onClick={() => setDropdownActive(!isDropdownActive)} className="dropdown-trigger button" aria-haspopup="true" aria-controls="dropdown-menu" style={{ width: '300px' }}>
                     <div className="level" style={{ width: '300px' }}>
                         <div className="level-left">
                             <div className="level-item">
-                                {props.characterSelected?.image ?? <img className="image-character" src={props.characterSelected?.image?.publicPath} />}
+                                {characterSelected?.image ?? <img className="image-character" src={characterSelected?.image?.publicPath} />}
                             </div>
                         </div>
                         <div className="level-item">
-                            {props.characterSelected?.name || 'Choisir un personnage'}
+                            {characterSelected?.name || 'Choisir un personnage'}
                         </div>
                         <div className="level-right">
                             <div className="level-item">
@@ -37,12 +45,19 @@ export default function CharacterSelect(props) {
                                 );
                             })
                         }
-                        <div className="dropdown-item">Nouveau personnage</div>
+                        <div className="dropdown-item" onClick={toggleModal}>Nouveau personnage</div>
                     </div>
 
 
                 </div>
             </div>
+            {showCharacterModal && <NewCharacterModal
+                closeModal={toggleModal}
+                showCharacterModal={showCharacterModal}
+                setCharacterSelected={setCharacterSelected}
+                setLine={props.setLine}
+                line={props.line}
+            />}
         </div>
     )
 }

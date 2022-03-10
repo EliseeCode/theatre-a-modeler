@@ -9,7 +9,9 @@ import {
   belongsTo,
   BelongsTo,
   hasMany,
-  HasMany
+  HasMany,
+  manyToMany,
+  ManyToMany
 } from "@ioc:Adonis/Lucid/Orm";
 import Character from "./Character";
 
@@ -53,7 +55,9 @@ export default class Scene extends BaseModel {
   @hasMany(() => Line, { localKey: "id", foreignKey: "sceneId" })
   public lines: HasMany<typeof Line>;
 
-  public characters: Character[];
+  @manyToMany(() => Character)
+  public characters: ManyToMany<typeof Character>;
+
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

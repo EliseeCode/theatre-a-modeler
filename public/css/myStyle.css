@@ -1694,3 +1694,10 @@ grid-template-rows:40px auto;}
 .page_container{grid-row: 2/3;}
 .tab_container{display:none;}
 }
+
+.characterImageContainer{
+  width:200px;height:200px;display:inline-block;
+}
+.imagePreviewNewCharacter{
+  border-radius: 50%;object-fit: cover;width:200px;height:200px;display:inline-block;
+}

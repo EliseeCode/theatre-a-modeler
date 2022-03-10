@@ -11,7 +11,7 @@ export default class CharactersController {
 
   public async store({ auth, params, request, response }: HttpContextContract) {
     const user = await auth.authenticate();
-    const lineId = params.lineId;
+    const lineId = request.body().lineId;
     const { name, gender, description } = request.body();
     const imageCharacter = request.file('imageCharacter')
     const character = await Character.create(
@@ -69,6 +69,7 @@ export default class CharactersController {
       await character.related('image').associate(newImage);
     }
     return response.redirect().back();
+    //return { character };
   }
 
   public async show({ view, params }: HttpContextContract) {
