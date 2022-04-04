@@ -1,41 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import EditableLine from './EditableLine.js'
-import NewLineButton from './NewLineButton'
-
 import { useParams } from 'react-router-dom';
-export default function LinesContainer(props) {
+import { initialLoadLine } from "../actions/lineAction";
+import { connect } from "react-redux"
+
+const LinesContainer = (props) => {
     const { sceneId } = useParams();
-    console.log(sceneId);
-    const [lines, setLines] = useState([]);
-    const [scene, setScene] = useState({});
-    const [characters, setCharacters] = useState([]);
-
-    //load all lines data when initialising.
-
-
     useEffect(() => {
-        $.get('/api/scene/' + sceneId + '/version/1/lines', function (data) {
-            console.log(data);
-            setLines(data.lines);
-            setCharacters(data.characters);
-            setScene(data.scene);
-        })
-    }, []);
-
+        props.initialLoadLine(sceneId);
+    }, [])
+    console.log(props)
     return (
         <div>
-            <NewLineButton afterPosition="-1" />
+            Hello there here are {props.lines.length}
             {
-                lines
-                    .map((line, index) => {
-                        return (
-                            <EditableLine key={index} setLines={setLines} line={line} characters={characters} />
-                        );
-                    })
+                props.lines.map((line) => {
+                    return (
+                        <EditableLine key={line.id} sceneId={sceneId} lineId={line.id} />
+                    );
+                })
             }
-
-
-
         </div >
     )
 }
+
+const mapStateToProps = (state) => {
+    return {
+        lines: state.lines,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        initialLoadLine: (sceneId) => {
+            dispatch(initialLoadLine(sceneId));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LinesContainer);

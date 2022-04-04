@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import {
     BrowserRouter as Router,
@@ -6,15 +6,11 @@ import {
     Route
 } from "react-router-dom";
 
-import LinesContainer from './components/LinesContainer';
+import EditScene from './EditScene';
 ReactDOM.render(
     <Router>
         <Routes>
-            <Route path="/scene/:sceneId/edit" element={<LinesContainer />}>
-
-            </Route>
-            <Route path="/scene/:sceneId" element={<LinesContainer />}>
-
+            <Route path="/scene/:sceneId/edit" element={<EditScene />}>
             </Route>
         </Routes>
     </Router>,

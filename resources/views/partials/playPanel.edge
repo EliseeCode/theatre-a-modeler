@@ -13,17 +13,17 @@
       </div>
       @endcan
     </header>
-    <div class="dropdown-play-panel" style="display:none;">
+    <div class="dropdown-play-panel">
         <div class="card-content" >
             <div class="content" style="color:darkgrey;font-style:italic;">
             {{play.description || ""}}
             </div>  
-            <ul>
+            {{--  <ul>
             @each(character in play.characters)
                 <li><a href="/characters/{{character.id}}">{{character.name}}</a></li>
             @endeach
             </ul>
-            <hr>
+            <hr>  --}}
             @each(scene in play.scenes)
                 @include('partials/scenePanel')         
             @else

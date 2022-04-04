@@ -24,30 +24,27 @@ export default class LinesController {
     });
   }
 
-  public async create({ auth, params, response }: HttpContextContract) {
+  public async create({ auth, params }: HttpContextContract) {
     const user = await auth.authenticate();
-    const scene_id = params.sceneId;
-    const position = parseInt(params.position);
-    console.log("creation line at pos:" + position);
+    const afterLineId = parseInt(params.afterLineId);
+    const prevLine = await Line.findOrFail(afterLineId);
+    const position = prevLine.position;
+    const sceneId = prevLine.sceneId;
 
-    await Line.query().where('sceneId', scene_id)
-      .andWhere('version_id', 1)
-      .andWhere('position', ">", position)
-
-    await Line.query().where('sceneId', scene_id)
+    await Line.query().where('sceneId', sceneId)
       .andWhere('version_id', 1)
       .andWhere('position', ">", position)
       .increment("position", 1);
-    await Line.create({
+
+    const newLine = await Line.create({
       text: "",
-      sceneId: scene_id,
+      sceneId: sceneId,
       position: position + 1,
       versionId: 1,
       creatorId: user.id
     });
-    const lines = await Line.query().where('scene_id', scene_id)
-      .andWhere('version_id', 1).orderBy("position", "asc");
-    return { lines };
+
+    return newLine;
   }
 
 
