@@ -59,20 +59,22 @@ Route.put("play/:id/scene/createNew", "ScenesController.createNew");
 Route.resource("scene", "ScenesController");
 Route.get("api/scene/:sceneId/version/:versionId/lines", "ScenesController.lines");
 //CHARACTER
+
+Route.post("/character/detach", "CharactersController.detach");
 Route.post("line/:lineId/characters/create", "CharactersController.store");
 Route.post("line/updateCharacter", "LinesController.updateCharacter");
-Route.post("line/updateText", "LinesController.updateText");
+Route.post("/line/updateText", "LinesController.updateText");
 Route.post("line/splitAText", "LinesController.splitAText");
-Route.post("/lines/createNewVersion", "LinesController.createNewVersion");
-Route.post("scenes/:sceneId/line/create/:position", "LinesController.create");
-
+Route.post("lines/createNewVersion", "LinesController.createNewVersion");
+Route.post("line/create", "LinesController.create");
+Route.post("/line/:lineId/destroy", "LinesController.destroy");
 Route.post("play/createNew", "PlaysController.createNew");
 
 Route.post("api/scene/:sceneId/updateName", "ScenesController.updateName");
 Route.post("api/play/:playId/updateName", "PlaysController.updateName");
 Route.post("api/scene/delete", "ScenesController.destroy");
 Route.post("api/line/create/:afterLineId", "LinesController.create");
-Route.post("api/line/:lineId/destroy", "LinesController.destroy");
+
 
 
 Route.post("/audio/upload", "AudiosController.upload");

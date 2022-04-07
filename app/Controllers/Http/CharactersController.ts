@@ -3,13 +3,15 @@ import Database from "@ioc:Adonis/Lucid/Database";
 import Character from "App/Models/Character";
 import Image from "App/Models/Image";
 import Line from "App/Models/Line";
+import Scene from "App/Models/Scene";
 import ObjectType from "Contracts/enums/ObjectType";
 import { URL } from 'url'
 
 export default class CharactersController {
   public dataName = "characters";
 
-  public async store({ auth, params, request, response }: HttpContextContract) {
+  public async store({ auth, request, response }: HttpContextContract) {
+    console.log('store Character');
     const user = await auth.authenticate();
     const lineId = request.body().lineId;
     const { name, gender, description } = request.body();
@@ -19,16 +21,14 @@ export default class CharactersController {
         name,
         gender,
         description,
-      })
-    await (await Line.findOrFail(lineId)).related('character').associate(character);
+      });
+    const line = await Line.findOrFail(lineId)
+    await line.related('character').associate(character);
+    await (await (Scene.findOrFail(line.sceneId))).related('characters').attach([character.id]);
+
     console.log(imageCharacter)
     if (imageCharacter) {
       console.log("Image à uploader");
-
-      // Won't use a custom name instead Adonis will auto-generate a random name
-      /*const fileName = `${user.id}_${lineId}_${await Hash.make(
-        new Date().getTime().toString()
-      )}.${imageFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
 
       let message: string;
       try {
@@ -68,9 +68,20 @@ export default class CharactersController {
       character.imageId = newImage.id;
       await character.related('image').associate(newImage);
     }
-    return response.redirect().back();
+
+    return { character, status: "success" };
     //return { character };
   }
+
+  public async detach({ request }: HttpContextContract) {
+    const { characterId, sceneId } = request.body();
+    console.log(characterId);
+    console.log(sceneId);
+    await (await Scene.findOrFail(sceneId)).related("characters").detach([characterId]);
+    return { status: "success" };
+  }
+
+
 
   public async show({ view, params }: HttpContextContract) {
     const characterId = params.id;

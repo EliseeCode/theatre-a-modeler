@@ -1,21 +1,12 @@
 import React from 'react'
-import { useParams } from 'react-router-dom';
 
 export default function NewLineButton(props) {
-    const { sceneId } = useParams();
     function NewLineHandler() {
-        const token = $('.csrfToken').data('csrf-token');
-        const params = {
-            _csrf: token
-        };
-        const afterPosition = props.afterPosition;
-        $.post('/api/scenes/' + sceneId + '/line/create/' + afterPosition, params, function (data) {
-            console.log(data);
-            props.setLines(data.lines);
-        })
+        props.addLine(props.afterLinePos, props.sceneId);
     }
+
     return (
-        <div className="field buttonAddLine buttonAddLineFirst">
+        <div className="field buttonAddLine">
             <button onClick={NewLineHandler} className="fas fa-plus" type="submit" title="Ajouter une réplique ici"></button>
         </div>
     )

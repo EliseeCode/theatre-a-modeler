@@ -20,31 +20,17 @@ export default class CharacterFetcher {
     }
 
     public async getCharactersFromScene(scene: Scene) {
+
         const charactersTable = await Database.query()
-            .select('lines.character_id')
-            .from('lines')
-            .where('lines.scene_id', scene.id)
-            .distinct('character_id');
+            .select('character_id')
+            .from('character_scene')
+            .where('scene_id', scene.id);
 
         let charactersArray = charactersTable.map((el) => el.character_id)
-        const res = await Character.query().preload('image').whereIn('id', charactersArray);
-        scene.characters = res;
+
+        const res = await Character.query().whereIn('id', charactersArray).preload('image');
+
         return res;
     }
-    // public async getCharactersFromSceneWithCharacterVersion(scene: Scene) {
-    //     const charactersTable = await Database.query()
-    //         .select('lines.character_id', 'versions.id', 'versions.name')
-    //         .from('lines')
-    //         .join('versions', 'versions.id', 'lines.version_id')
-    //         .where('lines.scene_id', scene.id)
-    //         .distinct('lines.version_id');
 
-    //     let charactersArray = charactersTable.map((el) => el.character_id)
-    //     //remove duplicates
-    //     charactersArray = [...new Set(charactersArray)];
-
-    //     const res = await Character.query().preload('image').whereIn('id', charactersArray);
-    //     scene.characters = res;
-    //     return res;
-    // }
 }

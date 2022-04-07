@@ -24,27 +24,30 @@ export default class LinesController {
     });
   }
 
-  public async create({ auth, params }: HttpContextContract) {
+  public async create({ auth, request, params }: HttpContextContract) {
     const user = await auth.authenticate();
-    const afterLineId = parseInt(params.afterLineId);
-    const prevLine = await Line.findOrFail(afterLineId);
-    const position = prevLine.position;
-    const sceneId = prevLine.sceneId;
+    const afterLinePos = parseInt(request.body().afterLinePos);
+    const sceneId = parseInt(request.body().sceneId);
 
     await Line.query().where('sceneId', sceneId)
       .andWhere('version_id', 1)
-      .andWhere('position', ">", position)
+      .andWhere('position', ">", afterLinePos)
       .increment("position", 1);
 
-    const newLine = await Line.create({
+    await Line.create({
       text: "",
       sceneId: sceneId,
-      position: position + 1,
+      position: afterLinePos + 1,
       versionId: 1,
       creatorId: user.id
     });
 
-    return newLine;
+    const lines = await Line.query()
+      .where('lines.version_id', 1)
+      .andWhere('lines.scene_id', sceneId)
+      .orderBy("lines.position", "asc");
+
+    return lines;
   }
 
 
@@ -104,15 +107,6 @@ export default class LinesController {
 
 
 
-
-
-
-
-
-
-
-
-
   public async store({ }: HttpContextContract) { }
 
   public async show({ }: HttpContextContract) { }
@@ -139,9 +133,9 @@ export default class LinesController {
   }
   public async updateText({ request }: HttpContextContract) {
 
-    const { line } = request.body();
-    let lineObj = await Line.findOrFail(line.id);
-    lineObj.text = line.text || "";
+    const { lineId, text } = request.body();
+    let lineObj = await Line.findOrFail(lineId);
+    lineObj.text = text || "";
     await lineObj.save();
     return "ok";
   }
@@ -177,6 +171,6 @@ export default class LinesController {
 
     const lines = await Line.query().where('scene_id', sceneId)
       .andWhere('version_id', 1);
-    return { lines };
+    return lines;
   }
 }

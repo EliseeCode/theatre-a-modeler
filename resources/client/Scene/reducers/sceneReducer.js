@@ -8,6 +8,12 @@ const sceneReducer = (state = null, action) => {
                 scene: action.payload
             };
             break
+        case "LOAD_SCENEID":
+            state = {
+                ...state,
+                id: action.payload
+            };
+            break
     }
     return state
 }

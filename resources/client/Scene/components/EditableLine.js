@@ -6,8 +6,9 @@ import { deleteLine, addLine, updateText } from "../actions/lineAction";
 
 const EditableLine = (props) => {
     const { lineId, lines, characters } = props;
-    //states
-    const line = lines.filter((line) => { return line.id == lineId })[0] || null;
+
+    const line = lines.byIds[lineId];
+
     const [isSaved, setIsSaved] = useState(false);
     //to autoSize the textarea
     const [textareaHeight, setTextareaHeight] = useState('40px');
@@ -23,20 +24,30 @@ const EditableLine = (props) => {
                 setIsSaved(false);
             }, 500);
         }
-    },
-        [isSaved])
+    }, [isSaved])
 
+    //handle change in line text, resize the textarea and set a timer to save the new input after 1s if no new input.
     function handleChange(event) {
         var text = event.target.value;
+        props.updateText(text, lineId);
+
         setTextareaHeight(textareaRef.current.scrollHeight + "px");
         if (initialRender == true) { setInitRender(false); return; }
         if (timer != null) {
             clearTimeout(timer);
             setTimer(null);
         }
+
         setTimer(setTimeout(() => {
-            props.updateText(text, lineId);
-            setIsSaved(true);
+            const token = $('.csrfToken').data('csrf-token');
+            const params = {
+                _csrf: token,
+                text: text,
+                lineId: lineId
+            };
+            $.post('/line/updateText', params, function (data) {
+                setIsSaved(true);
+            });
         }, 1000));
     }
 
@@ -58,7 +69,6 @@ const EditableLine = (props) => {
             };
 
             $.post('/line/splitAText/', params, function (data) {
-                console.log(data);
                 props.setLines([]);
                 props.setLines(data.lines);
             })
@@ -70,20 +80,19 @@ const EditableLine = (props) => {
     return (
         <>
             <div className="field has-addons m-0">
-                <div className="field has-addons m-0" >
-                    <CharacterSelect line={line} characterSelected={line.character} characters={characters} />
-                    <div className="control">
-                        {line.position == 0 ?? <NewLineButton scene={scene} afterPosition={line.position} />}
-                        <div className={isSaved ? "saved" : ""}>
-                            <textarea ref={textareaRef} onKeyDown={splitContent} onInput={handleChange} value={line.text} className="lineText textarea" style={textareaStyle} cols="30" rows="1"></textarea>
-                        </div>
-                        <NewLineButton afterPosition={line.position} />
+                <CharacterSelect lineId={lineId} />
+                <div className="control">
+
+                    {line.position == 0 && <div style={{ height: 0 }}><NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={-1} /></div>}
+                    <div className={isSaved ? "saved" : ""}>
+                        <textarea ref={textareaRef} onKeyDown={splitContent} onInput={handleChange} value={line.text} className="lineText textarea" style={textareaStyle} cols="30" rows="1"></textarea>
                     </div>
-
+                    <NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={line.position} />
                 </div>
-                <button onClick={deleteLine} className="button is-danger"><span className="icon fas fa-trash"></span></button>
+                <div className="control">
+                    <button onClick={() => { props.deleteLine(line.id) }} className="button is-danger"><span className="icon fas fa-trash"></span></button>
+                </div>
             </div>
-
         </>
     )
 }
@@ -103,8 +112,8 @@ const mapDispatchToProps = (dispatch) => {
         deleteLine: (lineId) => {
             dispatch(deleteLine(lineId));
         },
-        addLine: (afterLinePos) => {
-            dispatch(addLine(afterLinePos));
+        addLine: (afterLinePos, sceneId) => {
+            dispatch(addLine(afterLinePos, sceneId));
         },
         updateText: (text, lineId) => {
             dispatch(updateText(text, lineId));

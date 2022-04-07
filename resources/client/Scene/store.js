@@ -13,8 +13,8 @@ export default createStore(
         scene
     }),
     {
-        lines: [],
-        characters: [],
+        lines: { byIds: {}, ids: [] },
+        characters: { byIds: {}, ids: [] },
         scene: {}
     },
     applyMiddleware(logger, thunk)

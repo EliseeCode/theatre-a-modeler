@@ -1,29 +1,38 @@
 
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import NewCharacterModal from './NewCharacterModal';
+import { selectCharacter } from "../actions/characterAction";
+import { connect } from "react-redux"
+import listenForOutsideClick from '../helper/listenerOutsideClick';
 
-export default function CharacterSelect(props) {
-    const [isDropdownActive, setDropdownActive] = useState(false);
-    const [characterSelected, setCharacterSelected] = useState(props.characterSelected);
+const CharacterSelect = (props) => {
+    const { lineId, lines, characters } = props;
+    const line = lines.byIds[lineId];
 
     const [showCharacterModal, setShowCharacterModal] = useState(false);
+
+    const [isDropdownActive, setDropdownActive] = useState(false);
+    // Hide Dropdown on Outside Click
+    const menuRef = useRef(null)
+    const [listening, setListening] = useState(false)
+    useEffect(listenForOutsideClick(listening, setListening, menuRef, setDropdownActive))
+
+
     function toggleModal() {
         setShowCharacterModal(!showCharacterModal);
     }
     return (
-
-        <div className="control">
-
-            <div className={(isDropdownActive ? "is-active" : "") + ' dropdown'} style={{ height: "38px" }}>
+        <div className="control" >
+            <div ref={menuRef} className={(isDropdownActive ? "is-active" : "") + ' dropdown'} style={{ height: "38px" }}>
                 <div onClick={() => setDropdownActive(!isDropdownActive)} className="dropdown-trigger button" aria-haspopup="true" aria-controls="dropdown-menu" style={{ width: '300px' }}>
                     <div className="level" style={{ width: '300px' }}>
                         <div className="level-left">
                             <div className="level-item">
-                                {characterSelected?.image ?? <img className="image-character" src={characterSelected?.image?.publicPath} />}
+                                {characters.byIds[line.character_id]?.image && <img className="image-character" src={characters.byIds[line.character_id]?.image?.public_path} />}
                             </div>
                         </div>
                         <div className="level-item">
-                            {characterSelected?.name || 'Choisir un personnage'}
+                            {characters.byIds[line.character_id]?.name || 'Choisir un personnage'}
                         </div>
                         <div className="level-right">
                             <div className="level-item">
@@ -36,11 +45,11 @@ export default function CharacterSelect(props) {
                 <div className='dropdown-menu' id="dropdown-menu" role="menu">
                     <div className="dropdown-content">
                         {
-                            props.characters.map((character, index) => {
+                            characters.ids.map((characterId, index) => {
                                 return (
-                                    <div key={index} className="dropdown-item">
-                                        {character?.image ?? <img className="image-character" src={character?.image?.publicPath} />}
-                                        {character.name}
+                                    <div key={index} className="dropdown-item" onClick={() => props.selectCharacter(characterId, lineId)}>
+                                        {characters.byIds[characterId]?.image && <img className="image-character" src={characters.byIds[characterId]?.image?.public_path} />}
+                                        {characters.byIds[characterId].name}
                                     </div>
                                 );
                             })
@@ -51,13 +60,33 @@ export default function CharacterSelect(props) {
 
                 </div>
             </div>
-            {showCharacterModal && <NewCharacterModal
-                closeModal={toggleModal}
-                showCharacterModal={showCharacterModal}
-                setCharacterSelected={setCharacterSelected}
-                setLine={props.setLine}
-                line={props.line}
-            />}
+            {
+                showCharacterModal && <NewCharacterModal
+                    toggleModal={toggleModal}
+                    lineId={lineId}
+                />
+            }
         </div>
     )
 }
+
+
+const mapStateToProps = (state) => {
+    return {
+        sceneId: state.scene.id,
+        lines: state.lines,
+        characters: state.characters
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        selectCharacter: (characterId, lineId) => {
+            dispatch(selectCharacter(characterId, lineId));
+        }
+    };
+};
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(CharacterSelect);

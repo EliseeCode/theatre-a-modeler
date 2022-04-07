@@ -93,9 +93,9 @@ export default class ScenesController {
     await scene.load("image");
     await scene.load("play");
 
-    scene.characters = await characterFetcher.getCharactersFromScene(scene);
+    const characters = await characterFetcher.getCharactersFromScene(scene);
 
-    for (const character of scene.characters) {
+    for (const character of characters) {
       await character.load("image");
       character.versions =
         await lineVersionFetcher.getVersionsFromCharacterOnScene(character); // Why this doesn't automatically updates referenced parameter? Why do we have to restore it in scene.characters?
@@ -221,9 +221,6 @@ export default class ScenesController {
     const lines = await Line.query()
       .where('lines.version_id', versionId)
       .andWhere('lines.scene_id', sceneId)
-      .preload("character", (characterQuery) => {
-        characterQuery.preload("image");
-      })
       .orderBy("lines.position", "asc");
 
     const characterFetcher = new CharacterFetcher();

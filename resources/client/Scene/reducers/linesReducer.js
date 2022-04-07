@@ -1,31 +1,73 @@
-import { reducer } from "redux"
+const refactor_lines = (lines) => {
+    console.log(lines);
+    let byIds = {};
+    let ids = [];
+    console.log(lines);
+    lines.sort((a, b) => { a.position - b.position });
 
+    lines.forEach(element => {
+        byIds = { ...byIds, [element.id]: element };
+        ids.push(element.id);
+    });
+    return { byIds, ids };
+}
 const linesReducer = (state = [], action) => {
     switch (action.type) {
         case "ADD_LINE":
-            state = [
-                ...state,
-                action.payload
-            ]
+
+            state = refactor_lines(action.payload.lines)
             break
         case "DELETE_LINE":
-            state = {
-                ...state,
-                lines: [...state.lines.filter((line) => { return line.id != action.payload.lineId })]
-            }
+            console.log(action.payload);
+            state = refactor_lines(action.payload.lines)
             break
         case "UPDATE_TEXT":
+            action.payload;
             state = {
                 ...state,
-                lines: [...state.lines, action.payload]
+                byIds: {
+                    ...state.byIds,
+                    [action.payload.lineId]: { ...state.byIds[action.payload.lineId], text: action.payload.text }
+                }
             }
             break
-        case "LOAD_LINE":
-            console.log('payload.lines:' + action.payload.lines)
-            state = [
+        case "CHARACTER_SELECT":
+            const { characterId, lineId } = action.payload;
+            state = {
                 ...state,
-                ...action.payload.lines,
-            ];
+                byIds: {
+                    ...state.byIds,
+                    [lineId]: { ...state.byIds[lineId], character_id: characterId }
+                }
+            }
+            break;
+        case "DETACH_CHARACTER":
+            const byIds = Object.values(state.byIds).reduce((acc, curr) => {
+                console.log("currCharacterAvant=", curr);
+                if (curr.character_id == action.payload.characterId) {
+                    curr = { ...curr, character_id: null };
+                }
+                console.log("currCharacterApres=", curr);
+                return { ...acc, [curr.id]: curr }
+            }, {})
+            console.log("final", byIds);
+            state = {
+                ...state,
+                byIds: byIds
+            };
+            break
+        case "ADD_CHARACTER":
+            state = {
+                ...state,
+                byIds: {
+                    ...state.byIds,
+                    [action.payload.lineId]: { ...state.byIds[action.payload.lineId], character_id: action.payload.character.id }
+                }
+            }
+            break
+        case "LOAD_LINES":
+            console.log('payload.lines:' + action.payload.lines)
+            state = refactor_lines(action.payload.lines)
             break
     }
     return state

@@ -26,6 +26,7 @@
     .image-character{
     width:40px;
     height:40px;
+    object-fit:contain;
     }
     .buttonAddLine{
         
@@ -47,17 +48,14 @@
         font-size:1em;
         transition:0.5s;
         position:relative;
-        top:-14px;
+        top:-21px;
         z-index:30;
-    }
-    .buttonAddLineFirst{
-        bottom:auto;
-        top:-7px;
     }
     .buttonAddLine:hover button{
         opacity:1;
     }
     .lineContainer{position:relative;}
+    .imagePreviewNewCharacter{width:120px;height:120px;object-fit: contain;}
 </style>
 <div class="container mt-3">
 <div class="level">
@@ -114,7 +112,7 @@
         {{scene.description}}
     </h2>
     <hr>
-    <div class="lineContainer" style="text-align:center;"> 
+    {{--  <div class="lineContainer" style="text-align:center;"> 
     @if(scene.lines.length==0)
         <form action="/scenes/{{scene.id}}/line/create/-1" method="POST">
             {{ csrfField() }}
@@ -128,7 +126,7 @@
             @endif    
         @endeach
     @endif
-    </div>
+    </div>  --}}
 
 
 
