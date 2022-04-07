@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import CharacterSelect from './CharacterSelect'
 import { connect } from "react-redux"
 import NewLineButton from './NewLineButton'
-import { deleteLine, addLine, updateText } from "../actions/lineAction";
+import { deleteLine, addLine, updateText, splitContent } from "../actions/linesAction";
 
 const EditableLine = (props) => {
     const { lineId, lines, characters } = props;
@@ -16,6 +16,7 @@ const EditableLine = (props) => {
     const textareaRef = useRef();
     //timer to save text change only 1s after last keydown
     const [timer, setTimer] = useState(null);
+    const [text, setText] = useState(line.text);
 
 
     useEffect(() => {
@@ -27,17 +28,13 @@ const EditableLine = (props) => {
     }, [isSaved])
 
     //handle change in line text, resize the textarea and set a timer to save the new input after 1s if no new input.
-    function handleChange(event) {
-        var text = event.target.value;
-        props.updateText(text, lineId);
-
-        setTextareaHeight(textareaRef.current.scrollHeight + "px");
+    useEffect(() => {
         if (initialRender == true) { setInitRender(false); return; }
+
         if (timer != null) {
             clearTimeout(timer);
             setTimer(null);
         }
-
         setTimer(setTimeout(() => {
             const token = $('.csrfToken').data('csrf-token');
             const params = {
@@ -49,32 +46,20 @@ const EditableLine = (props) => {
                 setIsSaved(true);
             });
         }, 1000));
+
+        props.updateText(text, lineId);
+        setTextareaHeight(textareaRef.current.scrollHeight + "px");
+    }, [text]);
+
+    function handleChange(event) {
+        var newText = event.target.value;
+        setText(newText);
     }
-
-    function splitContent(event) {
-        if (event.ctrlKey && event.keyCode === 13) {
-            var text = event.target.value;
-            let curs = event.target.selectionStart;
-            var firstPart = text.substr(0, curs);
-            //setLine({ ...line, ['text']: firstPart })
-            var secondPart = text.substr(curs);
-            console.log(firstPart, secondPart);
-
-            const token = $('.csrfToken').data('csrf-token');
-            const params = {
-                _csrf: token,
-                firstPart,
-                secondPart,
-                prevLine: line,
-            };
-
-            $.post('/line/splitAText/', params, function (data) {
-                props.setLines([]);
-                props.setLines(data.lines);
-            })
+    function checkForSplitText(event, lineId) {
+        if (event?.ctrlKey && event?.keyCode === 13) {
+            props.splitContent(event, lineId)
         }
     }
-
     const textareaStyle = { 'height': textareaHeight }
 
     return (
@@ -85,7 +70,7 @@ const EditableLine = (props) => {
 
                     {line.position == 0 && <div style={{ height: 0 }}><NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={-1} /></div>}
                     <div className={isSaved ? "saved" : ""}>
-                        <textarea ref={textareaRef} onKeyDown={splitContent} onInput={handleChange} value={line.text} className="lineText textarea" style={textareaStyle} cols="30" rows="1"></textarea>
+                        <textarea ref={textareaRef} onKeyDown={(event) => { checkForSplitText(event, lineId) }} onInput={handleChange} value={line.text} className="lineText textarea" style={textareaStyle} cols="30" rows="1"></textarea>
                     </div>
                     <NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={line.position} />
                 </div>
@@ -101,7 +86,7 @@ const EditableLine = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        sceneId: state.scene.id,
+        sceneId: state.scenes.selectedId,
         lines: state.lines,
         characters: state.characters
     };
@@ -117,6 +102,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         updateText: (text, lineId) => {
             dispatch(updateText(text, lineId));
+        },
+        splitContent: (event, lineId) => {
+            dispatch(splitContent(event, lineId));
         }
     };
 };

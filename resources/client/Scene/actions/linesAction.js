@@ -15,6 +15,7 @@ export function updateText(text, lineId) {
 }
 
 export function addLine(afterLinePos, sceneId) {
+    console.log(afterLinePos, sceneId);
     let params = getParams();
     params = {
         ...params,
@@ -34,7 +35,7 @@ export function addLine(afterLinePos, sceneId) {
 }
 
 export function deleteLine(lineId) {
-    const params = getParams();
+    let params = getParams();
 
     return dispatch => {
         $.post('/line/' + lineId + '/destroy', params, function (lines) {
@@ -59,4 +60,28 @@ export function initialLoadLine(sceneId) {
             });
         })
     }
+}
+
+export function splitContent(event, lineId) {
+    var text = event.target.value;
+    let curs = event.target.selectionStart;
+    var firstPart = text.substr(0, curs);
+    var secondPart = text.substr(curs);
+    let params = getParams();
+    params = {
+        ...params,
+        firstPart,
+        secondPart,
+        lineId: lineId,
+    };
+    return dispatch => {
+        $.post('/line/splitAText', params, function (data) {
+            console.log("data from post", data);
+            dispatch({
+                type: "SPLIT_LINE",
+                payload: { ...params, newLine: data.newLine }
+            })
+        })
+    }
+
 }

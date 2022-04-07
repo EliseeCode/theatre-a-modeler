@@ -69,6 +69,26 @@ const linesReducer = (state = [], action) => {
             console.log('payload.lines:' + action.payload.lines)
             state = refactor_lines(action.payload.lines)
             break
+        case "SPLIT_LINE":
+            console.log(action.payload);
+            let newLine = action.payload.newLine;
+            let newLineId = newLine.id;
+            let ids = [...state.ids];
+            ids.splice(ids.indexOf(lineId) + 1, 0, newLineId);
+            state = {
+                ...state,
+                byIds: {
+                    ...state.byIds,
+                    [action.payload.lineId]: {
+                        ...state.byIds[action.payload.lineId],
+                        text: action.payload.firstPart
+                    },
+                    [newLineId]: newLine
+                },
+                ids: ids
+            };
+            break
+
     }
     return state
 }

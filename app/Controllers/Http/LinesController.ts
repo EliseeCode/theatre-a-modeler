@@ -143,24 +143,23 @@ export default class LinesController {
   public async splitAText({ auth, request }: HttpContextContract) {
 
     const user = await auth.authenticate();
-    const { firstPart, secondPart, prevLine } = request.body();
-    let line = await Line.findOrFail(prevLine.id);
+    const { firstPart, secondPart, lineId } = request.body();
+    let line = await Line.findOrFail(lineId);
     line.text = firstPart || "";
     await line.save();
     let position = line.position;
     let sceneId = line.sceneId;
 
     await Line.query().where('sceneId', sceneId).andWhere('position', ">", position).increment("position", 1);
-    await Line.create({
+    const newLine = await Line.create({
       text: secondPart || "",
       sceneId: sceneId,
       position: position + 1,
       versionId: 1,
       creatorId: user.id
     });
-    const lines = await Line.query().where('scene_id', sceneId)
-      .andWhere('version_id', 1).orderBy("position", "asc");
-    return { lines };
+
+    return { newLine, status: "success" };
   }
 
   public async destroy({ params }: HttpContextContract) {

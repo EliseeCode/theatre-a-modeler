@@ -1,0 +1,294 @@
+@layout('layouts/master')
+@section('css')
+<link rel="stylesheet" href="/css/selectize.css">
+@endsection
+@section('js')
+<script src="/js/bulma-dropdown.js"></script>
+<script src="/js/bulma-modal.js"></script>
+@endsection
+@section('content')
+<style>
+    .selectAudioVersion{
+        display:none;
+    }
+    .selectAudioVersion select{
+        background-color:transparent;
+    }
+    .actionLineContainer:hover .selectAudioVersion{
+        display:inline-block;
+    }
+
+    .selectLineVersion{
+        display:none;
+    }
+    .textContainer:hover .selectLineVersion{
+        display:inline-block;
+    }
+    .saved textarea{
+        background-color:#00FF8050;
+        position:relative;
+    }
+    .saved::after{
+        content:"Enregistré";
+        color:green;
+        position:absolute;
+        bottom:5px;
+        right:5px;}
+    
+    .lineText{
+        margin-bottom:3px;
+        overflow:hidden;
+    }
+    .lineText:read-only{
+        border:none;
+        box-shadow:none;
+    }
+    .image-character{
+    width:40px;
+    height:40px;
+    }
+   
+    .lineContainer{position:relative;
+    display:flex;
+    flex-direction: column;}
+    @keyframes glowing {
+  0% {
+    background-color: #fde0e6;
+    box-shadow: 0 0 10px #fde0e6;
+  }
+  50% {
+    background-color: #ff0000;
+    box-shadow: 0 0 30px #ff0000;
+  }
+  100% {
+    background-color: #fde0e6;
+    box-shadow: 0 0 10px #fde0e6;
+  }
+}
+
+  .glowing {
+    animation: glowing 1300ms infinite;
+  }
+.audioPlayer {
+    display: flex;
+    justify-content: center;
+  align-items: center;
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   height: 7vh;
+   background-color: red;
+   color: white;
+   text-align: center;
+}
+.audioPlayer .controls *     {
+    display: inline;
+}
+
+.controls .play, .controls .pause {
+  margin: 15px 25px;
+  color: #6e946c;
+}
+.controls .volume {
+  margin-right: 30px;
+  font-size: 0.8em;
+}
+.inline {
+  display: inline-block;
+}
+.vertically-centered {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+.lineContainer{
+    min-width:80%;
+    text-align:center;
+    margin-bottom:200px;
+}
+.line{display:inline-block;width:100%;}
+.selectAudioVersion select{
+    border:none;
+    font-size:1em;}
+.selectLineVersion select{
+    border:none;
+    font-size:1em;}
+.selectLineVersion,.selectAudioVersion{
+    font-size: 0.8em;
+    color:grey;
+    width: fit-content;
+}    
+.grid-character-display{
+    display: inline-grid; 
+    grid-template-columns: 150px 140px; 
+    align-items: center;
+    position:relative;
+    left:60px;
+    height:2.5em
+}
+.line-grid
+{   width:100%;
+    display: grid; 
+    grid-template-columns: auto 200px; 
+}   
+.characterName{
+    text-transform: uppercase;
+} 
+.actionLineContainer{
+    position:relative;
+}
+.audioVersionSelectContainer{
+    display:none;
+    position:absolute;
+    top:5px;
+    width:100%;
+    text-align:center;
+}
+.actionLineContainer:hover .audioVersionSelectContainer{
+    display:block;
+}
+.btnActionContainer{margin-top:40px;}
+.line{margin:0;margin-top:-10px;}
+.textContainer{background-color:white;padding:0 10px; border-radius:5px;}
+</style>
+
+
+
+
+
+<div class="container mt-3">
+<div class="level">
+        <div class="level-item">
+            <div>
+            <h1 class="title">
+                {{scene.play.name}}
+            </h1>
+            </div>
+        </div>
+</div>    
+{{--  Select other scene from this play  --}}
+<div class="level">
+    <div class="level-item">
+        <div>
+            <h2 class="subtitle">
+                <div class="select">
+                    <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value">
+                        @each(sceneFromPlay in scene.play.scenes)
+                        <option value="{{sceneFromPlay.id}}" {{sceneFromPlay.id==scene.id?'selected':''}}>{{sceneFromPlay.name}}</option>
+                        @endeach
+                    </select>
+                </div>
+            </h2>
+        </div>
+    </div>
+</div>    
+    
+
+    <h2 class="subtitle">
+        {{scene.description}}
+    </h2>
+</div>    
+    <hr>
+    <div class="columns has-text-centered is-centered">
+        <div class="column">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoPlay">
+                <span class="icon">
+                    <i class="fa fa-solid fa-comments"></i>
+                </span>
+                <span>Start !</span>
+            </button> 
+        </div>
+        <div class="column" style="display: none">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoPause">
+                <span class="icon">
+                    <i class="fa fa-solid fa-pause"></i>
+                </span>
+                <span>Pause !</span>
+            </button> 
+        </div>
+        <div class="column" style="display: none">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoResume">
+                <span class="icon">
+                    <i class="fa fa-solid fa-play"></i>
+                </span>
+                <span>Resume !</span>
+            </button> 
+        </div>
+        <div class="column" style="display: none">
+            <button class="button is-primary is-light is-large is-inverted is-focused" id="btnAutoReplay">
+                <span class="icon">
+                    <i class="fa fa-solid fa-backward"></i>
+                </span>
+                <span>Replay !</span>
+            </button> 
+        </div>
+    </div>
+    <hr>
+    
+    {{--  LineContainer  --}}
+    
+    <div class="level" style="align-items:flex-start;">
+        <div class="level-item" style="border-left:2px white solid;">
+            <div class="lineContainer"> 
+                @set('position',null)
+                
+                @each((line,indexLine) in scene.lines)
+                        @if(line.position!=position)
+
+                            {{--  @include('partials/scenes/show/newLine')    --}}
+                            {{--  @set('newLine',{...line,versionId:'New',text:''})  --}}
+                            @!component('partials/scenes/show/line', {
+                                newLine:true,
+                                line:line,
+                                characters:characters
+                            })
+                        @endif
+                        @set('position',line.position)
+                            @!component('partials/scenes/show/line', {
+                                newLine:false,
+                                line:line,
+                                characters:characters
+                            })
+                            {{--  @include('partials/scenes/show/line')      --}}
+                @endeach
+            </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+    <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
+    <audio id="player"></audio>
+
+
+
+
+    <div class="" style="text-align:center;"> 
+        <div id="root"></div>
+    </div>
+
+    <script src={{asset('assets/scene.js')}}></script>
+
+
+
+    <script>
+        ////////////////////
+        // GLOBALS
+        ////////////////////
+        const globalAudios = new Array(parseInt("{{sceneLength}}")).fill(0); // for robot
+        const characterToAudioVersion = {};
+        let isRecording, isPaused = false;
+        let globalSynthesedSpeech; // this is for accessing the contents of playing text2speech.
+
+        let mediaRecorder;
+        let characterIds=new Set();
+        const sceneID = {{scene.id}};
+    </script>
+    <script src="/js/sceneShow.js"></script>
+    
+    
+@endsection

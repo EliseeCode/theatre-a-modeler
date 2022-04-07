@@ -3,9 +3,17 @@ import Play from "App/Models/Play";
 import Status from "Contracts/enums/Status";
 import CharacterFetcher from "../helperClass/CharacterFetcher";
 import Role from "Contracts/enums/Role";
+import Scene from "App/Models/Scene";
 
 export default class PlaysController {
   public dataName = "plays";
+
+  public async getScenes({ params }: HttpContextContract) {
+    const sceneId = params.sceneId;
+    const myScene = await Scene.findOrFail(sceneId);
+    const scenes = await Scene.query().where('play_id', myScene.playId);
+    return { scenes, status: "success" };
+  }
 
   public async index({ view }: HttpContextContract) {
     const plays = await Play.query()

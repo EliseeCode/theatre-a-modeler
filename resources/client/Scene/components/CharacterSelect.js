@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import NewCharacterModal from './NewCharacterModal';
-import { selectCharacter } from "../actions/characterAction";
+import { selectCharacter } from "../actions/charactersAction";
 import { connect } from "react-redux"
 import listenForOutsideClick from '../helper/listenerOutsideClick';
 
@@ -73,7 +73,7 @@ const CharacterSelect = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        sceneId: state.scene.id,
+        sceneId: state.scenes.selectedId,
         lines: state.lines,
         characters: state.characters
     };

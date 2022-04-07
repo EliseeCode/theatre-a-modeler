@@ -7,14 +7,14 @@ import {
 } from "react-router-dom";
 
 import EditScene from './EditScene';
-import Scene from './Scene';
+import ShowScene from './ShowScene';
 
 ReactDOM.render(
     <Router>
         <Routes>
             <Route path="/scene/:sceneId/edit" element={<EditScene />}>
             </Route>
-            <Route path="/scene/:sceneId" element={<Scene />}>
+            <Route path="/scene/:sceneId" element={<ShowScene />}>
             </Route>
         </Routes>
     </Router>,

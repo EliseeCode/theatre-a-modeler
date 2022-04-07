@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux";
-import { addCharacter } from "../actions/characterAction";
+import { addCharacter } from "../actions/charactersAction";
 import linesReducer from '../reducers/linesReducer';
 
 

@@ -4,18 +4,21 @@ import thunk from "redux-thunk";
 
 import lines from "./reducers/linesReducer";
 import characters from "./reducers/charactersReducer";
-import scene from "./reducers/sceneReducer";
+import play from "./reducers/playReducer";
+import scenes from "./reducers/scenesReducer";
 
 export default createStore(
     combineReducers({
         lines,
         characters,
-        scene
+        scenes,
+        play
     }),
     {
         lines: { byIds: {}, ids: [] },
         characters: { byIds: {}, ids: [] },
-        scene: {}
+        scenes: { byIds: {}, ids: [], selectedId: null },
+        play: {}
     },
     applyMiddleware(logger, thunk)
 );
