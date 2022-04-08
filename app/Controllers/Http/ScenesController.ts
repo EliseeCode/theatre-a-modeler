@@ -3,6 +3,7 @@ import Scene from "App/Models/Scene";
 import Play from "App/Models/Play";
 import Line from "App/Models/Line";
 import CharacterFetcher from "App/Controllers/helperClass/CharacterFetcher";
+import Audio from "App/Models/Audio";
 
 export default class ScenesController {
   public async show({ view }: HttpContextContract) {
@@ -83,20 +84,33 @@ export default class ScenesController {
     const versionId = params.versionId;
     const scene = await Scene.findOrFail(sceneId);
     //get all the lines from a scene and version
-    const lines = await Line.query()
-      .where('lines.version_id', versionId)
-      .andWhere('lines.scene_id', sceneId)
-      .orderBy("lines.position", "asc");
-
+    if (versionId) {
+      var lines = await Line.query()
+        .where('lines.version_id', versionId)
+        .andWhere('lines.scene_id', sceneId)
+        .orderBy("lines.position", "asc");
+    }
+    else {
+      var lines = await Line.query()
+        .where('lines.scene_id', sceneId)
+        .orderBy("lines.position", "asc");
+    }
     const characterFetcher = new CharacterFetcher();
     const characters = await characterFetcher.getCharactersFromScene(scene);
     return { lines, characters }
   }
-  public async getplay({ params }: HttpContextContract) {
+
+  public async getPlay({ params }: HttpContextContract) {
     const { sceneId } = params;
     const scene = await Scene.findOrFail(sceneId);
     const play = await Play.findOrFail(scene.playId);
     return play;
+  }
+  public async getAudios({ params }: HttpContextContract) {
+    const { sceneId } = params;
+    const audios = await Audio.query().join('lines', 'audios.line_id', '=', 'lines.id').where('lines.scene_id', sceneId);
+    console.log(audios);
+    return audios;
   }
   public async update({ request, params, response }: HttpContextContract) {
     const name = request.all().name;

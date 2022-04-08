@@ -56,10 +56,12 @@ Route.post("group/:group_id/scene/:scene_id/change", "ScenesController.change");
 Route.get("group/:group_id/scene/:scene_id/select", "ScenesController.select");
 Route.put("play/:id/scene/createNew", "ScenesController.createNew");
 Route.get("play/getScenes/:sceneId", "PlaysController.getScenes");
-Route.get("scene/getPlay/:sceneId", "ScenesController.getplay");
+Route.get("scene/getPlay/:sceneId", "ScenesController.getPlay");
+Route.get("scene/getAudios/:sceneId", "ScenesController.getAudios");
 //WITHOUT GROUP
 Route.resource("scene", "ScenesController");
-Route.get("api/scene/:sceneId/version/:versionId/lines", "ScenesController.lines");
+Route.get("scene/:sceneId/version/:versionId/lines", "ScenesController.lines");
+Route.get("scene/:sceneId/lines", "ScenesController.lines");
 //CHARACTER
 
 Route.post("/character/detach", "CharactersController.detach");
@@ -83,10 +85,7 @@ Route.post("api/line/create/:afterLineId", "LinesController.create");
 Route.post("/audio/upload", "AudiosController.upload");
 Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions");
 Route.post("/audios/createNewVersion", "AudiosController.createNewVersion");
-Route.get(
-  "/audio/getAudiosFromAudioVersion",
-  "AudiosController.getAudiosFromAudioVersion"
-);
+Route.get("/audio/getAudiosFromAudioVersion", "AudiosController.getAudiosFromAudioVersion");
 
 //PROFILE
 Route.get("/profile", "UsersController.profile").middleware("auth");

@@ -47,9 +47,25 @@ export function deleteLine(lineId) {
     }
 }
 
-export function initialLoadLine(sceneId) {
+export function initialLoadOfficialLines(sceneId) {
     return dispatch => {
-        $.get('/api/scene/' + sceneId + '/version/1/lines', function (data) {
+        $.get('/scene/' + sceneId + '/version/1/lines', function (data) {
+            dispatch({
+                type: "LOAD_LINES",
+                payload: data
+            });
+            dispatch({
+                type: "LOAD_CHARACTER",
+                payload: data
+            });
+        })
+    }
+}
+
+export function initialLoadLines(sceneId) {
+    console.log("initialLoadLines");
+    return dispatch => {
+        $.get('/scene/' + sceneId + '/lines', function (data) {
             dispatch({
                 type: "LOAD_LINES",
                 payload: data

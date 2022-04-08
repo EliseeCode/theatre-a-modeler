@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import EditableLine from './EditableLine.js'
 import Character from './Character.js'
 import { useParams } from 'react-router';
-import { initialLoadLine, addLine } from "../actions/linesAction";
+import { initialLoadOfficialLines, addLine } from "../actions/linesAction";
 import { initialLoadSceneId } from "../actions/sceneAction";
 import { detachCharacter } from "../actions/charactersAction";
 import { connect } from "react-redux";
@@ -14,7 +14,7 @@ const LinesContainer = (props) => {
 
     useEffect(() => {
         props.initialLoadSceneId(sceneId);
-        props.initialLoadLine(sceneId);
+        props.initialLoadOfficialLines(sceneId);
     }, [])
 
 
@@ -54,8 +54,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        initialLoadLine: (sceneId) => {
-            dispatch(initialLoadLine(sceneId));
+        initialLoadOfficialLines: (sceneId) => {
+            dispatch(initialLoadOfficialLines(sceneId));
         },
         initialLoadSceneId: (sceneId) => {
             dispatch(initialLoadSceneId(sceneId));

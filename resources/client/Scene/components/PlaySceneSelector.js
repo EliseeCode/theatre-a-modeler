@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { connect } from "react-redux"
-import { initialLoadLine } from "../actions/linesAction"
-import { initialLoadSceneId } from "../actions/sceneAction"
 import { getPlay } from "../actions/playAction"
 import { getScenes } from "../actions/scenesAction"
 
@@ -14,10 +12,8 @@ const PlaySceneSelector = (props) => {
     const { sceneId } = useParams();
     const { scenes, play, lines, characters } = props;
     useEffect(() => {
-        // props.initialLoadPlay(sceneId);
         props.getScenes(sceneId);
         props.getPlay(sceneId);
-        props.initialLoadLine(sceneId);
     }, [])
     return (
         <div className="notification is-primary">
@@ -27,7 +23,7 @@ const PlaySceneSelector = (props) => {
                 <div className="level-item">
                     <h2 className="subtitle">
                         <div className="select">
-                            <select name="scene" value={sceneId} id="" onChange={(e) => { window.location.href = '/scenes/' + e.target.value; }}>
+                            <select name="scene" value={sceneId} id="" onChange={(e) => { window.location.href = '/scene/' + e.target.value; }}>
                                 {scenes?.ids.map((id, index) => {
                                     return (<option key={index} value={id}>{scenes.byIds[id].name}</option>)
                                 })
@@ -36,12 +32,7 @@ const PlaySceneSelector = (props) => {
                         </div>
                     </h2>
                 </div>
-
             </div>
-
-
-
-
         </div>
     )
 }
@@ -58,12 +49,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        initialLoadLine: (sceneId) => {
-            dispatch(initialLoadLine(sceneId));
-        },
-        initialLoadSceneId: (sceneId) => {
-            dispatch(initialLoadSceneId(sceneId));
-        },
         getScenes: (sceneId) => {
             dispatch(getScenes(sceneId));
         },
