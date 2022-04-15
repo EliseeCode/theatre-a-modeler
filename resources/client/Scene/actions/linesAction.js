@@ -55,7 +55,7 @@ export function initialLoadOfficialLines(sceneId) {
                 payload: data
             });
             dispatch({
-                type: "LOAD_CHARACTER",
+                type: "LOAD_CHARACTERS",
                 payload: data
             });
         })
@@ -71,7 +71,7 @@ export function initialLoadLines(sceneId) {
                 payload: data
             });
             dispatch({
-                type: "LOAD_CHARACTER",
+                type: "LOAD_CHARACTERS",
                 payload: data
             });
         })

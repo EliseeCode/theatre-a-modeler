@@ -1,28 +1,22 @@
 import React, { useEffect } from 'react'
-import { initialLoadLines } from "../actions/linesAction";
+import { removeAudio } from "../actions/audiosAction";
 import { connect } from "react-redux";
+import Line from "./Line";
 
 const LinesShowContainer = (props) => {
     const { lines, audios } = props;
-    return (
-        <div className="box block">
 
+    return (<>
+
+        <div className="box block">
             {
                 lines.ids.map((lineId) => {
-                    return (<div key={lineId}>
-                        {lines.byIds[lineId].text}
-                    </div>)
+                    return (<Line key={lineId} lineId={lineId} />)
                 })
             }
-            {
-                JSON.stringify(audios)
-                // audios.ids.map((audioId) => {
-                //     return (<div key={audioId}>
-                //         {audios.byIds[audioId].id}
-                //     </div>)
-                // })
-            }
         </div >
+
+    </>
     )
 }
 
@@ -36,9 +30,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // initialLoadLines: (sceneId) => {
-        //     dispatch(initialLoadLines(sceneId));
-        // }
+        removeAudio: (audioId) => {
+            dispatch(removeAudio(audioId));
+        }
     };
 };
 

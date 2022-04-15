@@ -3,7 +3,7 @@ const refactor_lines = (lines) => {
     let byIds = {};
     let ids = [];
     console.log(lines);
-    lines.sort((a, b) => { a.position - b.position });
+    lines.sort((a, b) => { return (a.position - b.position) });
 
     lines.forEach(element => {
         byIds = { ...byIds, [element.id]: element };

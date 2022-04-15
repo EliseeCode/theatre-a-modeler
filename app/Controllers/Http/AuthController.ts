@@ -41,10 +41,14 @@ export default class AuthController {
     const loginId = payload.loginId;
     const password = payload.password;
     const remember = payload.remember;
-    console.log("shema ok");
+    //console.log(loginId, password);
     try {
+      // await auth.use("api").attempt(loginId, password, {
+      //   expiresIn: "10 days",
+      // });
+      //return token.toJSON();
       await auth.use("web").attempt(loginId, password, remember);
-      console.log("attempt succeed");
+      // console.log("attempt succeed");
     }
     catch {
       console.log("error");
@@ -52,7 +56,7 @@ export default class AuthController {
       return response.redirect("/login");
     }
     //return token.toJSON();
-    return response.redirect().toRoute("/dashboard");
+    return response.redirect().back();
   }
 
 
@@ -207,6 +211,6 @@ export default class AuthController {
   public async logout({ auth, response }: HttpContextContract) {
     await auth.use('web').logout();
     Logger.info("logout");
-    response.redirect('/');
+    response.redirect().back();
   }
 }

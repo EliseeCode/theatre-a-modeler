@@ -7,7 +7,8 @@
 <script src="/js/bulma-modal.js"></script>
 @endsection
 @section('content')
-
+    <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
+    <div class="user_id" data-user-id="{{ user_id }}"></div>
     <div class="" style="text-align:center;"> 
         <div id="root"></div>
     </div>

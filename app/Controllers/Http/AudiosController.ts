@@ -7,7 +7,6 @@ import Version from "App/Models/Version";
 import Line from "App/Models/Line";
 import ObjectType from "Contracts/enums/ObjectType";
 import Database from "@ioc:Adonis/Lucid/Database";
-import Group from "App/Models/Group";
 
 export default class AudiosController {
   public dataName = "audios";
@@ -29,18 +28,13 @@ export default class AudiosController {
   public async create({ }: HttpContextContract) { }
 
   public async store({
-    bouncer,
     request,
     response,
     auth,
   }: HttpContextContract) {
     const user = await auth.authenticate();
-    const versionId = request.body().versionId;
-    const audioVersion = await Version.findOrFail(versionId);
-    const groupId = request.body().groupId;
-    const group = await Group.find(groupId);
-    await bouncer.with("AudioPolicy").authorize("create", audioVersion, group);
-    const audioFile = await request.file("audio");
+    const { lineId, versionId } = request.body();
+    const audioFile = await request.file('Blob');
 
     if (!audioFile)
       return response.json({
@@ -48,12 +42,6 @@ export default class AudiosController {
         message: "No audio file specified for upload...",
       });
 
-    const lineId = request.body().lineId;
-
-    // Won't use a custom name instead Adonis will auto-generate a random name
-    /*const fileName = `${user.id}_${lineId}_${await Hash.make(
-      new Date().getTime().toString()
-    )}.${audioFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
     let message: string;
     try {
       await audioFile?.moveToDisk(
@@ -70,14 +58,16 @@ export default class AudiosController {
       Logger.error(message);
       return response.json({ status: 0, message });
     }
-
-    if (!audioFile.fileName) {
-      message = `An error occured during the save of the audio file.\nHere's the details: audioFile.fileName is not defined.`;
-      Logger.error(message);
-      return response.json({ status: 0, message });
+    //creation de la version si necessaire
+    var newVersionId = versionId;
+    if (versionId == -1) {
+      const newVersion = await Version.create({ name: user.username, creatorId: user.id });
+      newVersionId = newVersion.id;
     }
+    const version = await Version.findOrFail(newVersionId);
 
     const locationOrigin = new URL(request.completeUrl()).origin;
+
     const newAudio = await Audio.create({
       name: audioFile.fileName,
       publicPath: `${locationOrigin}/uploads/audios/${audioFile.fileName}`,
@@ -87,15 +77,11 @@ export default class AudiosController {
       lineId: lineId,
       size: audioFile.size,
       type: audioFile.extname,
-      versionId: versionId,
-      // mimeType: request.header("Content-Type"), // It's getting as multipart/form-data
+      versionId: newVersionId,
       mimeType: `${audioFile.fieldName}/${audioFile.extname}`,
     });
-    return response.json({
-      id: newAudio.id,
-      version: versionId,
-      public_path: newAudio.publicPath,
-    });
+    await newAudio.load("line");
+    return { audio: newAudio, status: "success", version }
   }
 
   public async show({ view, params }: HttpContextContract) {
@@ -152,42 +138,39 @@ export default class AudiosController {
 
   public async destroy({
     request,
-    response,
-    params,
-    bouncer,
+    auth
   }: HttpContextContract) {
-    // Need an authorization (permission) check for delete
-    const groupId = request.all().groupId;
-    const group = await Group.findOrFail(groupId);
-    const audioId = params.id;
+    const user = await auth.authenticate();
+    const audioId = request.body().audioId;
     const audio = await Audio.findOrFail(audioId);
-    await bouncer.with("AudioPolicy").authorize("delete", audio, group);
-    await Drive.delete(audio.name)
-      .then(() => {
-        let message = `Successfully deleted the file with id of ${params.id} from drive.`;
-        Logger.info(message);
-      })
-      .catch((err) => {
-        let message = `Couldn't delete the file with id of ${params.id} from drive. \n Here's the error log: ${err}`;
-        Logger.error(message);
-      });
-    await Audio.query()
-      .where("id", params.id)
-      .delete()
-      .then((status) => {
-        let message;
-        if (status)
-          message = `Successfully deleted the row with id of ${params.id} from audios table.`;
-        else
-          message = `No records found with id of ${params.id} in audios table. So, the deletion couldn't happen.`;
-        Logger.info(message);
-        response.json({ status, message });
-      })
-      .catch((err) => {
-        let message = `Couldn't delete the row with id of ${params.id} from audios table. \n Here's the error log: ${err}`;
-        Logger.error(message);
-        response.json({ status: 0, message });
-      });
+    if (audio.creatorId == user.id) {
+      await Drive.delete(audio.name)
+        .then(() => {
+          let message = `Successfully deleted the file with id of ${audioId} from drive.`;
+          Logger.info(message);
+        })
+        .catch((err) => {
+          let message = `Couldn't delete the file with id of ${audioId} from drive. \n Here's the error log: ${err}`;
+          Logger.error(message);
+          return { status: "error", message };
+        });
+      await Audio.query()
+        .where("id", audioId)
+        .delete()
+        .then((status) => {
+          let message;
+          if (!status) {
+            message = `No records found with id of ${audioId} in audios table. So, the deletion couldn't happen.`;
+            return { status: "error", message };
+          }
+        })
+        .catch((err) => {
+          let message = `Couldn't delete the row with id of ${audioId} from audios table. \n Here's the error log: ${err}`;
+          Logger.error(message);
+          return { status: "error", message };
+        });
+    }
+    return { status: "success" };
   }
 
   public async getAudioVersions({

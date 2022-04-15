@@ -32,6 +32,7 @@ const LinesContainer = (props) => {
                         }
                     </div>
                 </div>)}
+
             {props.lines.ids.length == 0 && <NewLineButton addLine={props.addLine} sceneId={sceneId} afterLinePos={-1} />}
             {
                 props.lines?.ids.map((lineId) => {

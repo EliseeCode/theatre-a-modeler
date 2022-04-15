@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import { initialLoadLines } from "../actions/linesAction";
 import { initialLoadSceneId } from "../actions/sceneAction";
 import { initialLoadAudios } from "../actions/audiosAction";
+import { initialLoadCSRF, initialLoadUserData } from "../actions/miscellaneousAction";
 import { connect } from "react-redux";
 
 const DataLoaderSceneShow = (props) => {
@@ -13,7 +14,9 @@ const DataLoaderSceneShow = (props) => {
         props.initialLoadSceneId(sceneId);
         props.initialLoadLines(sceneId);
         props.initialLoadAudios(sceneId);
-        //props.initialLoadVoiceActor(sceneId);
+        props.initialLoadCSRF();
+        props.initialLoadUserData();
+
     }, [])
 
 
@@ -34,6 +37,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         initialLoadAudios: (sceneId) => {
             dispatch(initialLoadAudios(sceneId));
+        },
+        initialLoadCSRF: () => {
+            dispatch(initialLoadCSRF());
+        },
+        initialLoadUserData: () => {
+            dispatch(initialLoadUserData());
         }
     };
 };

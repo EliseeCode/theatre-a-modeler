@@ -3,16 +3,20 @@ import Scene from "App/Models/Scene";
 import Play from "App/Models/Play";
 import Line from "App/Models/Line";
 import CharacterFetcher from "App/Controllers/helperClass/CharacterFetcher";
-import Audio from "App/Models/Audio";
+import Database from "@ioc:Adonis/Lucid/Database";
+import Version from "App/Models/Version";
 
 export default class ScenesController {
-  public async show({ view }: HttpContextContract) {
-    return view.render("scene/show");
+  public async show({ view, auth }: HttpContextContract) {
+    const user = auth?.user;
+    console.log("test", user?.id);
+    return view.render("scene/show", { user_id: user?.id });
   }
 
 
-  public async select({ params, view }: HttpContextContract) {
-    return view.render("scene/", {});
+  public async select({ view }: HttpContextContract) {
+
+    return view.render("scene",);
   }
 
   public async index({ }: HttpContextContract) { }
@@ -106,11 +110,20 @@ export default class ScenesController {
     const play = await Play.findOrFail(scene.playId);
     return play;
   }
-  public async getAudios({ params }: HttpContextContract) {
+  public async getAudios({ response, params }: HttpContextContract) {
     const { sceneId } = params;
-    const audios = await Audio.query().join('lines', 'audios.line_id', '=', 'lines.id').where('lines.scene_id', sceneId);
-    console.log(audios);
-    return audios;
+    const audios = await Database.from("audios")
+      .select("audios.*")
+      .select("versions.name as versionName")
+      .join('versions', 'audios.version_id', '=', 'versions.id')
+      .join('lines', 'audios.line_id', '=', 'lines.id')
+      .where('lines.scene_id', sceneId);
+
+    const versions = await Version.query().whereIn('id', audios.map((audio) => { return audio.version_id }));
+
+    console.log(audios.map((aud) => { return aud.id }));
+    return response.json({ audios, versions });
+
   }
   public async update({ request, params, response }: HttpContextContract) {
     const name = request.all().name;

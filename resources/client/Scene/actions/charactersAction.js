@@ -65,3 +65,11 @@ export function addCharacter(data) {
         });
     }
 }
+
+export function selectCharacterAudioVersion(characterId, audioVersionId) {
+    return ({
+        type: "SELECT_CHARACTER_AUDIO_VERSION",
+        payload: { characterId, audioVersionId }
+    })
+}
+

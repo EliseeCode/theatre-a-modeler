@@ -21,18 +21,18 @@ import Route from "@ioc:Adonis/Core/Route";
 
 Route.on("/").render("index");
 
-// Route.resource("formation", "FormationsController").middleware({
-//   create: ["auth"],
-//   store: ["auth"],
-//   destroy: ["auth"],
-// });
-
 Route.get("groups/:code/join", "GroupsController.join");
 Route.get("groups/join", "GroupsController.join");
 
-Route.resource("plays", "PlaysController");
+Route.resource("plays", "PlaysController").middleware(
+  {
+    show: ['urlCatcher'],
+  });
 Route.resource("audios", "AudiosController");
-Route.resource("groups", "GroupsController");
+Route.resource("groups", "GroupsController").middleware(
+  {
+    show: ['urlCatcher'],
+  });
 Route.resource("lines", "LinesController");
 Route.resource("images", "ImagesController");
 Route.resource("characters", "CharactersController");
@@ -49,7 +49,7 @@ Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
 //ROUTES FOR SCENES
 
 Route.resource("group/:group_id/scene", "ScenesController");
-Route.resource("scenes", "ScenesController");
+Route.resource("scenes", "ScenesController").middleware({ show: ['urlCatcher'] });;
 Route.get("group/:group_id/scene/:scene_id/action", "ScenesController.action");
 Route.post("group/:group_id/scene/:scene_id/change", "ScenesController.change");
 
@@ -59,7 +59,11 @@ Route.get("play/getScenes/:sceneId", "PlaysController.getScenes");
 Route.get("scene/getPlay/:sceneId", "ScenesController.getPlay");
 Route.get("scene/getAudios/:sceneId", "ScenesController.getAudios");
 //WITHOUT GROUP
-Route.resource("scene", "ScenesController");
+Route.resource("scene", "ScenesController").middleware(
+  {
+    show: ['urlCatcher'],
+    edit: ['auth']
+  });
 Route.get("scene/:sceneId/version/:versionId/lines", "ScenesController.lines");
 Route.get("scene/:sceneId/lines", "ScenesController.lines");
 //CHARACTER
@@ -83,6 +87,7 @@ Route.post("api/line/create/:afterLineId", "LinesController.create");
 
 
 Route.post("/audio/upload", "AudiosController.upload");
+Route.post("/audio/delete", "AudiosController.destroy");
 Route.get("/audio/getAudioVersions", "AudiosController.getAudioVersions");
 Route.post("/audios/createNewVersion", "AudiosController.createNewVersion");
 Route.get("/audio/getAudiosFromAudioVersion", "AudiosController.getAudiosFromAudioVersion");
@@ -106,11 +111,13 @@ Route.get(
   "AuthController.loginWithSignedUrl"
 ).as("loginWithSignedUrl");
 
-Route.get("/login", async ({ response, view, auth }) => {
+Route.get("/login", async ({ session, response, view, auth }) => {
   if (auth.isGuest) {
     return view.render("auth/login");
   } else {
-    response.redirect("/profile");
+    let redirectionUrl = session.get('originalUrl') || '/profile';
+    console.log(redirectionUrl);
+    response.redirect().toPath(redirectionUrl);
   }
 }).middleware("silentAuth");
 Route.get("/register", async ({ response, view, auth }) => {

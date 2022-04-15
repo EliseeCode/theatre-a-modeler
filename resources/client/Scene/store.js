@@ -7,6 +7,8 @@ import characters from "./reducers/charactersReducer";
 import play from "./reducers/playReducer";
 import scenes from "./reducers/scenesReducer";
 import audios from "./reducers/audiosReducer";
+import versions from "./reducers/versionsReducer";
+import miscellaneous from "./reducers/miscellaneousReducer";
 
 export default createStore(
     combineReducers({
@@ -14,7 +16,9 @@ export default createStore(
         characters,
         scenes,
         play,
-        audios
+        audios,
+        versions,
+        miscellaneous
     }),
     {
         lines: { byIds: {}, ids: [] },
@@ -22,6 +26,8 @@ export default createStore(
         scenes: { byIds: {}, ids: [], selectedId: null },
         play: {},
         audios: { byIds: {}, ids: [] },
+        versions: { byIds: {}, ids: [] },
+        miscellaneous: { csfr: '', user_id: 'undefined' }
     },
     applyMiddleware(logger, thunk)
 );

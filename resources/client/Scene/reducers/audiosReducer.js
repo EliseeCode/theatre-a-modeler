@@ -2,7 +2,6 @@ const refactor_audios = (audios) => {
     console.log(audios);
     let byIds = {};
     let ids = [];
-    audios.sort((a, b) => { a.position - b.position });
 
     audios.forEach(element => {
         byIds = { ...byIds, [element.id]: element };
@@ -13,7 +12,25 @@ const refactor_audios = (audios) => {
 const audiosReducer = (state = null, action) => {
     switch (action.type) {
         case "LOAD_AUDIO":
-            state = action.payload
+            var state = refactor_audios(action.payload.audios);
+            break
+        case "ADD_AUDIO":
+            var newAudio = action.payload.audio;
+            console.log(action);
+            var state = {
+                ...state,
+                byIds: { ...state.byIds, [newAudio.id]: newAudio },
+                ids: [...state.ids, newAudio.id]
+            }
+            break
+        case "REMOVE_AUDIO":
+
+            var state = {
+                ...state,
+                ids: [...state.ids.filter((id) => { return id != action.payload.audioId })],
+            }
+            delete state.byIds[action.payload.audioId];
+            console.log(state);
             break
     }
     return state

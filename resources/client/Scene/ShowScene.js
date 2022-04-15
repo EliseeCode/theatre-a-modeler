@@ -7,6 +7,8 @@ import store from "./store";
 import React from "react";
 
 export default function ShowScene(props) {
+
+
     return (
         <Provider store={store}>
             <div className="container mt-3 mb-3">
@@ -16,5 +18,7 @@ export default function ShowScene(props) {
                 <LinesShowContainer />
             </div>
         </Provider>
-    )
+    );
+
+
 }

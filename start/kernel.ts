@@ -25,7 +25,7 @@ Server.middleware.register([
   () => import('@ioc:Adonis/Addons/Shield'),
   () => import('App/Middleware/SilentAuth'),
   () => import('App/Middleware/DetectUserLocale'),
-  
+
 ])
 
 /*
@@ -47,4 +47,5 @@ Server.middleware.register([
 Server.middleware.registerNamed({
   auth: "App/Middleware/Auth",
   silentAuth: "App/Middleware/SilentAuth",
+  urlCatcher: 'App/Middleware/UrlCatcher'
 })
