@@ -24,7 +24,7 @@ export default class LinesController {
     });
   }
 
-  public async create({ auth, request, params }: HttpContextContract) {
+  public async create({ auth, request }: HttpContextContract) {
     const user = await auth.authenticate();
     const afterLinePos = parseInt(request.body().afterLinePos);
     const sceneId = parseInt(request.body().sceneId);
