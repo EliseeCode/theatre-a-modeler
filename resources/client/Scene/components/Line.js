@@ -9,15 +9,15 @@ const Line = (props) => {
     const line = lines.byIds[lineId];
     const character = characters.byIds[line.character_id];
     const selectedVersion = parseInt(character?.selectedAudioVersion);
-    const audio = Object.values(audios.byIds).filter((audio) => { return (audio.line_id == lineId && audio.version_id == selectedVersion) });
     const audioElem = useRef();
     const [isPlaying, setIsPlaying] = useState(false);
-
-    const [audioSrc, setAudioSrc] = useState(audio[0]?.public_path);
+    const [audioCreatorId, setAudioCreatorId] = useState("undefined");
+    const [audioSrc, setAudioSrc] = useState(null);
 
     useEffect(() => {
         let audio = Object.values(audios.byIds).filter((audio) => { return (audio.line_id == lineId && audio.version_id == selectedVersion) });
         setAudioSrc(audio[0]?.public_path);
+        setAudioCreatorId(audio[0]?.creator_id);
     }, [character, audios])
 
     function onStop(blobUrl, Blob) {
@@ -65,9 +65,8 @@ const Line = (props) => {
                         )}
 
                         {audioSrc && <button onClick={playPause} className="button"><span className={"fas " + (!isPlaying ? "fa-play" : "fa-pause")}></span></button>}
-                        {(audioSrc && audio[0]?.creator_id == userId) && (<button onClick={() => { props.removeAudio(audio[0].id) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
+                        {(audioSrc && audioCreatorId == userId) && (<button onClick={() => { props.removeAudio(audio[0].id) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
                         <audio ref={audioElem} src={audioSrc} />
-                        {/* <span>versionId:{selectedVersion + " " + versions.byIds[selectedVersion]?.name}</span> */}
                     </div>
                 </div>
                 <hr />
@@ -84,7 +83,7 @@ const mapStateToProps = (state) => {
         characters: state.characters,
         audios: state.audios,
         versions: state.versions,
-        userId: state.miscellaneous.user.userId
+        userId: state.miscellaneous?.user?.userId
     };
 };
 

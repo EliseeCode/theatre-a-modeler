@@ -12,6 +12,8 @@ const refactor_lines = (lines) => {
     return { byIds, ids };
 }
 const linesReducer = (state = [], action) => {
+    let lineId;
+    let characterId;
     switch (action.type) {
         case "ADD_LINE":
 
@@ -32,7 +34,7 @@ const linesReducer = (state = [], action) => {
             }
             break
         case "CHARACTER_SELECT":
-            const { characterId, lineId } = action.payload;
+            let { characterId, lineId } = action.payload;
             state = {
                 ...state,
                 byIds: {
@@ -72,6 +74,7 @@ const linesReducer = (state = [], action) => {
         case "SPLIT_LINE":
             console.log(action.payload);
             let newLine = action.payload.newLine;
+            lineId = action.payload.lineId;
             let newLineId = newLine.id;
             let ids = [...state.ids];
             ids.splice(ids.indexOf(lineId) + 1, 0, newLineId);

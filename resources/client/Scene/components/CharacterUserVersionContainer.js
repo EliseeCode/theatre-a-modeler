@@ -8,11 +8,13 @@ const CharacterUserVersionContainer = (props) => {
     const { lineId, lines, characters, audios } = props;
 
     return (<div className="box block">
-        CharacterUserVersionContainer
-        {characters.ids.map((characterId) => {
-            return <CharacterUserVersion key={characterId} audios={audios} character={characters} characterId={characterId} />
-        })}
-    </div>)
+        <div style={{ maxWidth: '500px', display: "inline-block" }}>
+            <h2 className="subtitle">Choix des interprètes</h2>
+            {characters.ids.map((characterId) => {
+                return <CharacterUserVersion key={characterId} audios={audios} character={characters} characterId={characterId} />
+            })}
+        </div>
+    </div >)
 }
 
 

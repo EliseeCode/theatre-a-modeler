@@ -16,7 +16,6 @@ const DataLoaderSceneShow = (props) => {
         props.initialLoadAudios(sceneId);
         props.initialLoadCSRF();
         props.initialLoadUserData();
-
     }, [])
 
 

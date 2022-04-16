@@ -95,7 +95,7 @@ export function splitContent(event, lineId) {
             console.log("data from post", data);
             dispatch({
                 type: "SPLIT_LINE",
-                payload: { ...params, newLine: data.newLine }
+                payload: { ...params, newLine: data.newLine, lineId }
             })
         })
     }

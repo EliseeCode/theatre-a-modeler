@@ -57,68 +57,10 @@
     .lineContainer{position:relative;}
     .imagePreviewNewCharacter{width:120px;height:120px;object-fit: contain;}
 </style>
-<div class="container mt-3">
-<div class="level">
-        <div class="level-item">
-            <div>
-            <h1 class="title">
-                {{scene.play.name}}
-            </h1>
-            </div>
-        </div>
-</div>    
-{{--  SCENE MANAGEMENT  --}}
-    <div class="level">
-            <div class="level-item">
-                <h2 class="subtitle">
-                    <div class="select">
-                        <select name="scene" id="" oninput="window.location.href = '/scenes/'+this.value+'/edit';">
-                            @each(sceneFromPlay in scene.play.scenes)
-                            <option value="{{sceneFromPlay.id}}" {{sceneFromPlay.id==scene.id?'selected':''}}>{{sceneFromPlay.name}}</option>
-                            @endeach
-                        </select>
-                    </div>
-                </h2>
-                <div class="level" style="width:0;">
-                    <div class="level-item">
-                        <div>
-                            <a href=# 
-                                    class="icon-text js-modal-trigger" 
-                                    data-target="edit-scene-modal" 
-                                    onclick="document.getElementById(this.dataset.target).classList.add('is-active');loadSceneInfoInModal({id:{{scene.id}},name:'{{scene.name}}'})" >
-                                    <span class="icon fas fa-edit" >
-                                    </span>
-                                    <span>
-                                        Modifier la scene
-                                    </span>
-                            </a>
-                            <br>
-                            <a href='/scene/{{scene.id}}' 
-                                    class="icon-text">
-                                    <span class="icon fas fa-eye" >
-                                    </span>
-                                    <span>
-                                        Visualiser la scene
-                                    </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-    </div>
-    
-    <h2 class="subtitle">
-        {{scene.description}}
-    </h2>
-    <hr>
-    
-    <div class="lineContainer" style="text-align:center;"> 
+
+    <div style="text-align:center;"> 
         <div id="root"></div>
     </div>
-
-    
-</div>
 
 <script src={{asset('assets/scene.js')}}></script>
 

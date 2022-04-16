@@ -13,7 +13,7 @@ export default function ShowScene(props) {
         <Provider store={store}>
             <div className="container mt-3 mb-3">
                 <DataLoaderSceneShow />
-                <PlaySceneSelector />
+                <PlaySceneSelector editContext={false} />
                 <CharacterUserVersionContainer />
                 <LinesShowContainer />
             </div>

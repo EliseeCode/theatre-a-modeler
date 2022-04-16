@@ -9,14 +9,10 @@ import Version from "App/Models/Version";
 export default class ScenesController {
   public async show({ view, auth }: HttpContextContract) {
     const user = auth?.user;
-    console.log("test", user?.id);
     return view.render("scene/show", { user_id: user?.id });
   }
-
-
-  public async select({ view }: HttpContextContract) {
-
-    return view.render("scene",);
+  public async edit({ view }: HttpContextContract) {
+    return view.render("scene/edit");
   }
 
   public async index({ }: HttpContextContract) { }
@@ -58,31 +54,9 @@ export default class ScenesController {
     return scene;
   }
 
-  public async edit({ params, view }: HttpContextContract) {
-    const scene = await Scene.findOrFail(params.id);
 
-    await scene.load("play", (playQuery) => {
-      playQuery.preload("scenes");
-    });
-    const play = await Play.findOrFail(scene.playId);
-    const characterFetcher = new CharacterFetcher();
-    //scene.characters = await this.getCharactersFromScene(scene);
-    await characterFetcher.getCharactersFromPlay(play);
 
-    //get all the lines from a scene
-    await scene.load("lines", (linesQuery) => {
-      linesQuery
-        .preload("character", (characterQuery) => {
-          characterQuery.preload("image");
-        })
-        .orderBy("lines.position", "asc");
-    });
 
-    return view.render("scene/edit", {
-      scene,
-      play,
-    });
-  }
   public async lines({ params }: HttpContextContract) {
     const sceneId = params.sceneId;
     const versionId = params.versionId;

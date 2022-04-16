@@ -5,7 +5,6 @@ export default class UrlCatcher {
 
     // code for middleware goes here. ABOVE THE NEXT CALL
     session.put('originalUrl', request.url());
-    console.log('UrlCatcher:' + request.url())
     await next()
   }
 }

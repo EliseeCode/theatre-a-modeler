@@ -10,7 +10,8 @@ import { getScenes } from "../actions/scenesAction"
 const PlaySceneSelector = (props) => {
 
     const { sceneId } = useParams();
-    const { scenes, play, lines, characters } = props;
+    const { scenes, play, lines, characters, editContext } = props;
+    const sceneCreatorId = scenes.byIds[sceneId]?.creator_id;
     useEffect(() => {
         props.getScenes(sceneId);
         props.getPlay(sceneId);
@@ -33,17 +34,47 @@ const PlaySceneSelector = (props) => {
                     </h2>
                 </div>
             </div>
-        </div>
+            {editContext ?
+                (<div className="level-right">
+                    <div className="level-item">
+                        <a href={`/scene/${sceneId}`}
+                            className="button is-small icon-text"
+                            style={{ color: "black" }}>
+                            <span className="icon fas fa-eye" >
+                            </span>
+                            <span>
+                                Visualiser la scene
+                            </span>
+                        </a>
+                    </div>
+                </div>) :
+                sceneCreatorId == props.userId && (
+                    <div className="level-right">
+                        <div className="level-item">
+                            <a href={`/scene/${sceneId}/edit`}
+                                className="button is-small icon-text"
+                                style={{ color: "black" }}>
+                                <span className="icon fas fa-edit" >
+                                </span>
+                                <span>
+                                    Editer la scene
+                                </span>
+                            </a>
+                        </div>
+                    </div>)}
+        </div >
     )
 }
 
 
 const mapStateToProps = (state) => {
+    console.log(state.miscellaneous)
     return {
         play: state.play,
         scenes: state.scenes,
         lines: state.lines,
-        characters: state.characters
+        characters: state.characters,
+        userId: state.miscellaneous.user?.userId
     };
 };
 

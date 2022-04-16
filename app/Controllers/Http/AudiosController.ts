@@ -41,7 +41,6 @@ export default class AudiosController {
         status: 0,
         message: "No audio file specified for upload...",
       });
-
     let message: string;
     try {
       await audioFile?.moveToDisk(
@@ -49,19 +48,40 @@ export default class AudiosController {
         { contentType: request.header("Content-Type") },
         "local"
       );
-
       message = `The audio file has been successfully saved!`;
-      Logger.info(message);
     } catch (err) {
-
       message = `An error occured during the save of the audio file.\nHere's the details: ${err} `;
-      Logger.error(message);
       return response.json({ status: 0, message });
     }
     //creation de la version si necessaire
     var newVersionId = versionId;
     if (versionId == -1) {
-      const newVersion = await Version.create({ name: user.username, creatorId: user.id });
+      const userId = user.id
+      const characterId = (await Line.findOrFail(lineId)).characterId;
+
+      const result = await Database.query()
+        .from("versions")
+        .select("*")
+        .join("audios", "audios.version_id", "versions.id")
+        .join("lines", "lines.id", "audios.line_id")
+        .where("versions.creator_id", userId)
+        .andWhere("versions.type", ObjectType.AUDIO)
+        .andWhere("lines.character_id", characterId)
+        .countDistinct("versions.id as nbreVersion");
+      //console.log(result);
+      //return;
+      let nbreVersion = 0;
+      if (result.length > 0) {
+        nbreVersion = result[0].nbreVersion;
+      }
+      const newNumVersion = nbreVersion++;
+      const versionName = user.username + "-" + newNumVersion;
+
+      const newVersion = await Version.create({
+        name: versionName,
+        creatorId: user.id,
+        type: ObjectType.AUDIO
+      });
       newVersionId = newVersion.id;
     }
     const version = await Version.findOrFail(newVersionId);

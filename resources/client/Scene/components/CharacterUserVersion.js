@@ -38,15 +38,11 @@ const CharacterUserVersion = (props) => {
         props.selectCharacterAudioVersion(characterId, audioVersionId);
     }
     return (<div className="level">{character.name}
-        {<div style={{ width: "500px", textAlign: "left" }}>
-            {/* <pre>{JSON.stringify(versions, null, 2)}</pre>
-            <pre>{JSON.stringify(character, null, 2)}</pre> */}
-        </div>}
         <div className="select">
             <select value={selectedVersion} onChange={(e) => { handleVersionChange(e) }}>
                 {userId != "undefined" && <option value={-1}>Enregistrer</option>}
                 <option value={-2}>Voix robotisé</option>
-                {Object.values(data.versions).map((v) => { return (<option key={v.id} value={v.id}>{v.name + " - " + v.audios}</option>) })}
+                {Object.values(data.versions).map((v) => { return (<option key={v.id} value={v.id}>{`${v.name} (${v.audios} audios)`}</option>) })}
             </select>
         </div>
     </div>)

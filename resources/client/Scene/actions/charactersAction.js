@@ -57,9 +57,10 @@ export function addCharacter(data) {
             processData: false,
             contentType: false,
             success: function (res) {
+                let { character } = res;
                 dispatch({
                     type: "ADD_CHARACTER",
-                    payload: { character: res, lineId: data.lineId }
+                    payload: { character, lineId: data.lineId }
                 })
             }
         });

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Line from "./Line";
 
 const LinesShowContainer = (props) => {
-    const { lines, audios } = props;
+    const { lines } = props;
 
     return (<>
 
@@ -23,8 +23,7 @@ const LinesShowContainer = (props) => {
 const mapStateToProps = (state) => {
     return {
         lines: state.lines,
-        characters: state.characters,
-        audios: state.audios
+        characters: state.characters
     };
 };
 
