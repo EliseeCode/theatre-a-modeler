@@ -33,7 +33,7 @@ jobs:
 
             # Build the api
 
-            npm run build
+            npm run build --ignore-ts-errors
             cp .env build/.env
 
             # Run migrations
