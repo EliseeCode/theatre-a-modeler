@@ -25,8 +25,8 @@ jobs:
             rm -rf theatre-a-modeler-new
             cp -r theatre-a-modeler theatre-a-modeler-new
             cd theatre-a-modeler-new
-            git checkout main
-            git reset --hard origin/main
+            git checkout prod
+            git reset --hard origin/prod
             git pull
             npm rebuild
             npm install
