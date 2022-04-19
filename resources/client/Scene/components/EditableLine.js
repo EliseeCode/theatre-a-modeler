@@ -29,7 +29,10 @@ const EditableLine = (props) => {
 
     //handle change in line text, resize the textarea and set a timer to save the new input after 1s if no new input.
     useEffect(() => {
-        if (initialRender == true) { setInitRender(false); return; }
+        if (initialRender == true) {
+            setTextareaHeight(textareaRef.current.scrollHeight + "px");
+            setInitRender(false); return;
+        }
 
         if (timer != null) {
             clearTimeout(timer);
@@ -70,7 +73,7 @@ const EditableLine = (props) => {
 
                     {line.position == 0 && <div style={{ height: 0 }}><NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={-1} /></div>}
                     <div className={isSaved ? "saved" : ""}>
-                        <textarea ref={textareaRef} onKeyDown={(event) => { checkForSplitText(event, lineId) }} onInput={handleChange} value={line.text} className="lineText textarea" style={textareaStyle} cols="30" rows="1"></textarea>
+                        <textarea ref={textareaRef} onKeyDown={(event) => { checkForSplitText(event, lineId) }} onInput={handleChange} value={line.text} className="lineText textarea" style={textareaStyle} cols="60" rows="1"></textarea>
                     </div>
                     <NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={line.position} />
                 </div>

@@ -8,16 +8,19 @@ const Line = (props) => {
 
     const line = lines.byIds[lineId];
     const character = characters.byIds[line.character_id];
-    const selectedVersion = parseInt(character?.selectedAudioVersion);
+    const selectedVersion = parseInt(character?.selectedAudioVersion || -1);
     const audioElem = useRef();
     const [isPlaying, setIsPlaying] = useState(false);
     const [audioCreatorId, setAudioCreatorId] = useState("undefined");
     const [audioSrc, setAudioSrc] = useState(null);
+    const [audioId, setAudioId] = useState(null);
 
     useEffect(() => {
         let audio = Object.values(audios.byIds).filter((audio) => { return (audio.line_id == lineId && audio.version_id == selectedVersion) });
         setAudioSrc(audio[0]?.public_path);
+        setAudioId(audio[0]?.id);
         setAudioCreatorId(audio[0]?.creator_id);
+
     }, [character, audios])
 
     function onStop(blobUrl, Blob) {
@@ -42,6 +45,7 @@ const Line = (props) => {
         mediaBlobUrl,
     } = useReactMediaRecorder({ audio: true, onStop, askPermissionOnMount: true });
 
+    const lineStyle = { whiteSpace: 'pre-wrap' };
     return (
         <>
             <div className="levels mb-3">
@@ -50,7 +54,7 @@ const Line = (props) => {
                         <div>
                             <i>{character?.name}</i>
                         </div>
-                        <div>
+                        <div style={lineStyle}>
                             {line.text}
                         </div>
                     </div>
@@ -65,7 +69,7 @@ const Line = (props) => {
                         )}
 
                         {audioSrc && <button onClick={playPause} className="button"><span className={"fas " + (!isPlaying ? "fa-play" : "fa-pause")}></span></button>}
-                        {(audioSrc && audioCreatorId == userId) && (<button onClick={() => { props.removeAudio(audio[0].id) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
+                        {(audioSrc && audioCreatorId == userId) && (<button onClick={() => { props.removeAudio(audioId) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
                         <audio ref={audioElem} src={audioSrc} />
                     </div>
                 </div>

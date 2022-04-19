@@ -33,7 +33,8 @@ export default class AudiosController {
     auth,
   }: HttpContextContract) {
     const user = await auth.authenticate();
-    const { lineId, versionId } = request.body();
+    const { lineId } = request.body();
+    var versionId = request.body().versionId;
     const audioFile = await request.file('Blob');
 
     if (!audioFile)
@@ -54,11 +55,18 @@ export default class AudiosController {
       return response.json({ status: 0, message });
     }
     //creation de la version si necessaire
-    var newVersionId = versionId;
+    var version;
+    //If there is a versionNumber, I check if this version has been made by user
+    if (versionId != -1) {
+      version = await Version.findOrFail(versionId);
+      if (version.creatorId != user.id) {
+        versionId = -1;
+      }
+    }
     if (versionId == -1) {
+      //creation d'une nouvelle version
       const userId = user.id
       const characterId = (await Line.findOrFail(lineId)).characterId;
-
       const result = await Database.query()
         .from("versions")
         .select("*")
@@ -68,23 +76,22 @@ export default class AudiosController {
         .andWhere("versions.type", ObjectType.AUDIO)
         .andWhere("lines.character_id", characterId)
         .countDistinct("versions.id as nbreVersion");
-      //console.log(result);
+      console.log(result);
       //return;
       let nbreVersion = 0;
       if (result.length > 0) {
         nbreVersion = result[0].nbreVersion;
       }
+      console.log(nbreVersion);
       const newNumVersion = nbreVersion++;
       const versionName = user.username + "-" + newNumVersion;
 
-      const newVersion = await Version.create({
+      version = await Version.create({
         name: versionName,
         creatorId: user.id,
         type: ObjectType.AUDIO
       });
-      newVersionId = newVersion.id;
     }
-    const version = await Version.findOrFail(newVersionId);
 
     const locationOrigin = new URL(request.completeUrl()).origin;
 
@@ -97,7 +104,7 @@ export default class AudiosController {
       lineId: lineId,
       size: audioFile.size,
       type: audioFile.extname,
-      versionId: newVersionId,
+      versionId: version.id,
       mimeType: `${audioFile.fieldName}/${audioFile.extname}`,
     });
     await newAudio.load("line");
