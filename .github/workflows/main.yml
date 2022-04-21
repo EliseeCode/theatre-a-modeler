@@ -44,6 +44,7 @@ jobs:
             # Replace current version with the new one
 
             cd ..
+            rm -rf theatre-a-modeler-old
             mv theatre-a-modeler theatre-a-modeler-old
             mv theatre-a-modeler-new theatre-a-modeler
 
