@@ -7,7 +7,7 @@ const refactor_characters = (characters) => {
     characters.sort((a, b) => { a.position - b.position });
 
     characters.forEach(element => {
-        byIds = { ...byIds, [element.id]: { ...element, selectedAudioVersion: -1 } };
+        byIds = { ...byIds, [element.id]: { ...element, selectedAudioVersion: -2 } };
         ids.push(element.id);
     });
     return { byIds, ids };

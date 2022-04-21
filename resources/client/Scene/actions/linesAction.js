@@ -78,6 +78,50 @@ export function initialLoadLines(sceneId) {
     }
 }
 
+
+export function selectPreviousLine(lineId, lines) {
+    const linePos = lines.ids.indexOf(lineId) == -1 ? 0 : lines.ids.indexOf(lineId);
+    const newLineId = lines.ids[(linePos - 1 + lines.ids.length) % lines.ids.length];
+    return {
+        type: "SELECT_LINE",
+        payload: { lineId: newLineId }
+    }
+}
+export function selectNextLine(lineId, lines) {
+    const linePos = lines.ids.indexOf(lineId) == -1 ? 0 : lines.ids.indexOf(lineId);
+    const newLineId = lines.ids[(linePos + 1) % lines.ids.length];
+    return {
+        type: "SELECT_LINE",
+        payload: { lineId: newLineId }
+    }
+}
+export function playNextLine(lineId, lines) {
+    const linePos = lines.ids.indexOf(lineId) == -1 ? 0 : lines.ids.indexOf(lineId);
+    // if (linePos == lines.ids.length) {
+    //     return {
+    //         type: "END_AUTOPLAY",
+    //         payload: { lineId }
+    //     }
+    // }
+    const newLineId = lines.ids[(linePos + 1) % lines.ids.length];
+    return {
+        type: "PLAY_LINE",
+        payload: { lineId: newLineId }
+    }
+}
+export function selectLine(lineId) {
+    return {
+        type: "SELECT_LINE",
+        payload: { lineId }
+    }
+}
+export function setLineAction(lineId, action) {
+    return {
+        type: "SET_LINE_ACTION",
+        payload: { lineId, action }
+    }
+}
+
 export function splitContent(event, lineId) {
     var text = event.target.value;
     let curs = event.target.selectionStart;

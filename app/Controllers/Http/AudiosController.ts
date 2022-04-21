@@ -57,13 +57,13 @@ export default class AudiosController {
     //creation de la version si necessaire
     var version;
     //If there is a versionNumber, I check if this version has been made by user
-    if (versionId != -1) {
+    if (versionId >= 0) {
       version = await Version.findOrFail(versionId);
       if (version.creatorId != user.id) {
         versionId = -1;
       }
     }
-    if (versionId == -1) {
+    if (versionId < 0) {
       //creation d'une nouvelle version
       const userId = user.id
       const characterId = (await Line.findOrFail(lineId)).characterId;
@@ -82,7 +82,7 @@ export default class AudiosController {
       if (result.length > 0) {
         nbreVersion = result[0].nbreVersion;
       }
-      console.log(nbreVersion);
+
       const newNumVersion = nbreVersion++;
       const versionName = user.username + "-" + newNumVersion;
 
@@ -101,7 +101,7 @@ export default class AudiosController {
       relativePath: `/uploads/audios/${audioFile.fileName}`,
       langId: 1,
       creatorId: user.id,
-      lineId: lineId,
+      lineId: parseInt(lineId),
       size: audioFile.size,
       type: audioFile.extname,
       versionId: version.id,
@@ -121,42 +121,6 @@ export default class AudiosController {
         dataName: this.dataName,
       });
     } else return view.render("errors/not-found");
-  }
-
-  public async createNewVersion({
-    auth,
-    request,
-    response,
-  }: HttpContextContract) {
-    console.log("creating new version");
-    const characterId = request.body().characterId;
-    const user = await auth.authenticate();
-
-    const result = await Database.query()
-      .from("versions")
-      .select("*")
-      .join("audios", "audios.version_id", "versions.id")
-      .join("lines", "lines.id", "audios.line_id")
-      .where("versions.creator_id", user.id)
-      .andWhere("versions.type", ObjectType.AUDIO)
-      .andWhere("lines.character_id", characterId)
-      .countDistinct("versions.id as nbreVersion");
-    // .toSQL();
-
-    let nbreVersion = 0;
-    if (result.length > 0) {
-      nbreVersion = result[0].nbreVersion;
-    }
-    const newNumVersion = nbreVersion++;
-    const versionName = user.username + "-" + newNumVersion;
-    //version creation
-    const version = await Version.create({
-      name: versionName,
-      type: ObjectType.AUDIO,
-      creatorId: user.id,
-    });
-
-    return response.json(version);
   }
 
   public async edit({ }: HttpContextContract) { }

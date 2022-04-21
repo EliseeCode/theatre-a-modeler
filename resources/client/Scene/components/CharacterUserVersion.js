@@ -2,9 +2,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { connect } from "react-redux"
 import { selectCharacterAudioVersion } from "../actions/charactersAction"
+import Speech from 'speak-tts'
 
 const CharacterUserVersion = (props) => {
     const { characters, characterId, audios, lines, versions, userId } = props;
+    const speech = new Speech();
+    const robotIsSupported = speech.hasBrowserSupport();
     const character = characters.byIds[characterId];
 
     var data = { versions: {} };
@@ -31,11 +34,15 @@ const CharacterUserVersion = (props) => {
             }
         }
     }
-    const selectedVersion = character.selectedAudioVersion;
+    const [selectedVersion, setSelectedVersion] = useState(character?.selectedAudioVersion);
+    useEffect(() => {
+        setSelectedVersion(character?.selectedAudioVersion);
+    }, [characters])
 
     function handleVersionChange(e) {
         var audioVersionId = e.target.value;
         props.selectCharacterAudioVersion(characterId, audioVersionId);
+        setSelectedVersion(audioVersionId);
     }
     return (<div className="level">{character.name}
         <div className="select">

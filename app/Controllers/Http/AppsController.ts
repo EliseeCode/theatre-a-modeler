@@ -10,6 +10,11 @@ export default class AppsController {
       return response.redirect().toRoute("/plays");
     }
     const user = await auth.authenticate();
+
+    await user.load("groups", (Query) => {
+      Query.preload("users").preload("creator").preload("plays");
+    });
+
     await user.load("plays", (Query) => {
       Query.preload("groups")
         .preload("creator")
@@ -20,9 +25,7 @@ export default class AppsController {
         });
     });
 
-    await user.load("groups", (Query) => {
-      Query.preload("creator").preload("plays").preload("users");
-    });
+
     return view.render("dashboard/index", { user, Role });
   }
 }

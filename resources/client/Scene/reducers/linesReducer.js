@@ -91,6 +91,23 @@ const linesReducer = (state = [], action) => {
                 ids: ids
             };
             break
+        case "SELECT_LINE":
+            state = { ...state, selectedId: action.payload.lineId }
+            break
+        case "PLAY_LINE":
+            state = {
+                ...state,
+                selectedId: action.payload.lineId,
+                action: "play"
+            }
+            break
+        case "SET_LINE_ACTION":
+            state = {
+                ...state,
+                action: action.payload.action,
+                selectedId: action.payload.lineId
+            }
+            break
 
     }
     return state

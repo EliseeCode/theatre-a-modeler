@@ -53,7 +53,7 @@ export default class ScenePolicy extends BasePolicy {
 	}
 
 	public async update(user: User, scene: Scene) {
-		if (scene.creatorId == user.id || scene.play.creatorId == user.id) {
+		if (scene.creatorId == user.id) {
 			return true;
 		}
 		else {
@@ -62,7 +62,6 @@ export default class ScenePolicy extends BasePolicy {
 				.from('group_play')
 				.join('group_user', 'group_play.group_id', 'group_user.group_id')
 				.where("group_user.user_id", user.id)
-				.andWhere("group_play.play_id", scene.play.id)
 				.andWhere("group_play.status", Status.CHANGEABLE).count('* as total');
 
 			if (total[0]?.total > 0) {

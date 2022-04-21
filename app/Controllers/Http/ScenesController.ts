@@ -11,7 +11,9 @@ export default class ScenesController {
     const user = auth?.user;
     return view.render("scene/show", { user_id: user?.id });
   }
-  public async edit({ view }: HttpContextContract) {
+  public async edit({ view, bouncer, params }: HttpContextContract) {
+    const scene = await Scene.findOrFail(params.id);
+    await bouncer.with("ScenePolicy").authorize("update", scene);
     return view.render("scene/edit");
   }
 

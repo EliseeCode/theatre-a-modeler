@@ -73,7 +73,7 @@ const EditableLine = (props) => {
 
                     {line.position == 0 && <div style={{ height: 0 }}><NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={-1} /></div>}
                     <div className={isSaved ? "saved" : ""}>
-                        <textarea ref={textareaRef} onKeyDown={(event) => { checkForSplitText(event, lineId) }} onInput={handleChange} value={line.text} className="lineText textarea" style={textareaStyle} cols="60" rows="1"></textarea>
+                        <textarea ref={textareaRef} onKeyDown={(event) => { checkForSplitText(event, lineId) }} onInput={handleChange} value={text} className="lineText textarea" style={textareaStyle} cols="60" rows="1"></textarea>
                     </div>
                     <NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={line.position} />
                 </div>

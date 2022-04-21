@@ -21,11 +21,11 @@ export default createStore(
         miscellaneous
     }),
     {
-        lines: { byIds: {}, ids: [] },
+        lines: { byIds: {}, ids: [], selectedId: null, action: null },
         characters: { byIds: {}, ids: [] },
         scenes: { byIds: {}, ids: [], selectedId: null },
         play: {},
-        audios: { byIds: {}, ids: [] },
+        audios: { byIds: {}, ids: [], selectedId: null },
         versions: { byIds: {}, ids: [] },
         miscellaneous: { csfr: '', user_id: 'undefined' }
     },

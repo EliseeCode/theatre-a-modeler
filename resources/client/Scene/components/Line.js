@@ -2,26 +2,48 @@ import React, { useState, useEffect, useRef } from 'react'
 import { connect } from "react-redux"
 import { useReactMediaRecorder } from "react-media-recorder";
 import { removeAudio, uploadAudio } from "../actions/audiosAction"
+import { selectLine, setLineAction } from "../actions/linesAction"
+import Speech from 'speak-tts'
 
 const Line = (props) => {
-    const { lineId, lines, characters, uploadAudio, audios, versions, userId } = props;
+    const { selectedLineId, lineId, lines, characters, uploadAudio, audios, versions, userId } = props;
 
-    const line = lines.byIds[lineId];
-    const character = characters.byIds[line.character_id];
-    const selectedVersion = parseInt(character?.selectedAudioVersion || -1);
+    const [line, setLine] = useState(lines.byIds[lineId]);
+    const [character, setCharacter] = useState(null);
+    const [selectedVersion, setSelectedVersion] = useState(character?.selectedAudioVersion);
     const audioElem = useRef();
     const [isPlaying, setIsPlaying] = useState(false);
     const [audioCreatorId, setAudioCreatorId] = useState("undefined");
     const [audioSrc, setAudioSrc] = useState(null);
     const [audioId, setAudioId] = useState(null);
+    const speech = new Speech();
+    const robotIsSupported = speech.hasBrowserSupport();
+    useEffect(() => {
+        setLine(lines.byIds[lineId]);
+        setCharacter(characters.byIds[line.character_id]);
+    }, [characters, lines]);
+
+    useEffect(() => {
+        setSelectedVersion(character?.selectedAudioVersion);
+    }, [character])
 
     useEffect(() => {
         let audio = Object.values(audios.byIds).filter((audio) => { return (audio.line_id == lineId && audio.version_id == selectedVersion) });
         setAudioSrc(audio[0]?.public_path);
         setAudioId(audio[0]?.id);
         setAudioCreatorId(audio[0]?.creator_id);
+    }, [selectedVersion, audios])
 
-    }, [character, audios])
+    useEffect(() => {
+        if (lines.selectedId == lineId) {
+            if (lines.action == 'play' && !isPlaying) {
+                playPause();
+            }
+            else if (lines.action == 'pause' && isPlaying) {
+                playPause();
+            }
+        }
+    }, [lines])
 
     function onStop(blobUrl, Blob) {
         console.log(blobUrl, Blob);
@@ -31,11 +53,48 @@ const Line = (props) => {
 
     function playPause() {
         if (!isPlaying) {
-            audioElem.current.play();
+            (selectedVersion == -2 || !audioSrc) ? playRobot() : playAudio()
+            props.setLineAction(lineId, "play");
         } else {
-            audioElem.current.pause();
+            (selectedVersion == -2 || !audioSrc) ? pauseRobot() : pauseAudio()
+            props.setLineAction(lineId, "pause");
         }
         setIsPlaying(!isPlaying);
+    }
+
+    function playRobot() {
+        if (robotIsSupported) { // returns a boolean
+            console.log("speech synthesis supported")
+
+            speech.init({
+                'lang': 'fr-FR',
+            }).then((data) => {
+                speech.speak({
+                    text: line.text,
+                    queue: false,
+                    listeners: {
+                        onend: () => {
+                            audioEnded();
+                        }
+                    }
+                })
+                    .then((data) => { })
+                    .catch(e => { })
+            })
+        }
+    }
+    function pauseRobot() {
+        speech.pause();
+    }
+    function playAudio() {
+        audioElem.current.play();
+    }
+    function pauseAudio() {
+        audioElem.current.pause();
+    }
+    function audioEnded() {
+        setIsPlaying(false);
+        props.setLineAction(lineId, "ended");
     }
 
     const {
@@ -46,9 +105,10 @@ const Line = (props) => {
     } = useReactMediaRecorder({ audio: true, onStop, askPermissionOnMount: true });
 
     const lineStyle = { whiteSpace: 'pre-wrap' };
+    const isActiveStyle = { boxShadow: '0 0 5px #c0c0c0', zIndex: 2 }
     return (
         <>
-            <div className="levels mb-3">
+            <div className="levels p-3" onClick={() => { props.selectLine(lineId); }} style={selectedLineId == lineId ? isActiveStyle : {}}>
                 <div className="level-item">
                     <div>
                         <div>
@@ -62,7 +122,8 @@ const Line = (props) => {
 
                 <div className="level-right">
                     <div className="level-item">
-                        {userId != 'undefined' && (
+                        {((!selectedVersion || selectedVersion < 0) && robotIsSupported) && <button onClick={playPause} className="button"><span className="fas fa-robot"></span></button>}
+                        {(userId != 'undefined' && !!selectedVersion) && (
                             status != 'recording' ?
                                 <button onClick={startRecording} className="button"><span className="fas fa-microphone"></span></button>
                                 : <button onClick={stopRecording} className="button" style={{ color: "red" }}><span className="fas fa-microphone"></span></button>
@@ -70,10 +131,9 @@ const Line = (props) => {
 
                         {audioSrc && <button onClick={playPause} className="button"><span className={"fas " + (!isPlaying ? "fa-play" : "fa-pause")}></span></button>}
                         {(audioSrc && audioCreatorId == userId) && (<button onClick={() => { props.removeAudio(audioId) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
-                        <audio ref={audioElem} src={audioSrc} />
+                        <audio ref={audioElem} onEnded={audioEnded} src={audioSrc} />
                     </div>
                 </div>
-                <hr />
             </div>
         </>
     )
@@ -87,7 +147,8 @@ const mapStateToProps = (state) => {
         characters: state.characters,
         audios: state.audios,
         versions: state.versions,
-        userId: state.miscellaneous?.user?.userId
+        userId: state.miscellaneous?.user?.userId,
+        selectedLineId: state.lines.selectedId
     };
 };
 
@@ -99,6 +160,12 @@ const mapDispatchToProps = (dispatch) => {
         uploadAudio: (lineId, versionId, blob) => {
             dispatch(uploadAudio(lineId, versionId, blob));
         },
+        selectLine: (lineId) => {
+            dispatch(selectLine(lineId));
+        },
+        setLineAction: (lineId, action) => {
+            dispatch(setLineAction(lineId, action))
+        }
     };
 };
 
