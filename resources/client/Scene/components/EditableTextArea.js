@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
-import CharacterSelect from './CharacterSelect'
 import { connect } from "react-redux"
-import NewLineButton from './NewLineButton'
-import { deleteLine, addLine, updateText, splitContent } from "../actions/linesAction";
+import { updateText } from "../actions/linesAction";
 
-const EditableLine = (props) => {
-    const { lineId, lines, characters } = props;
-
-    const line = lines.byIds[lineId];
-
+const EditableTextArea = (props) => {
+    const { lineId, lines } = props;
+    const [line, setLine] = useState(lines.byIds[lineId]);
     const [isSaved, setIsSaved] = useState(false);
     //to autoSize the textarea
     //const [textareaHeight, setTextareaHeight] = useState('40px');
@@ -65,28 +61,11 @@ const EditableLine = (props) => {
         var newText = event.target.value;
         setText(newText);
     }
-    function checkForSplitText(event, lineId) {
-        if (event?.ctrlKey && event?.keyCode === 13) {
-            props.splitContent(event, lineId)
-        }
-    }
-    //const textareaStyle = { 'height': textareaHeight }
 
     return (
         <>
-            <div className="field has-addons m-0">
-                <CharacterSelect lineId={lineId} />
-                <div className="control">
-
-                    {line.position == 0 && <div style={{ height: 0 }}><NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={-1} /></div>}
-                    <div className={isSaved ? "saved" : ""}>
-                        <textarea ref={textareaRef} onKeyDown={(event) => { checkForSplitText(event, lineId) }} onInput={handleChange} value={text} className="lineText textarea" cols="60" rows="1"></textarea>
-                    </div>
-                    <NewLineButton addLine={props.addLine} sceneId={props.sceneId} afterLinePos={line.position} />
-                </div>
-                <div className="control">
-                    <button onClick={() => { props.deleteLine(line.id) }} className="button is-danger"><span className="icon fas fa-trash"></span></button>
-                </div>
+            <div className={isSaved ? "saved" : ""} style={{ position: "relative" }}>
+                <textarea ref={textareaRef} onInput={handleChange} value={text} className="lineText textarea" cols="60" rows="1"></textarea>
             </div>
         </>
     )
@@ -96,29 +75,18 @@ const EditableLine = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        sceneId: state.scenes.selectedId,
         lines: state.lines,
-        characters: state.characters
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        deleteLine: (lineId) => {
-            dispatch(deleteLine(lineId));
-        },
-        addLine: (afterLinePos, sceneId) => {
-            dispatch(addLine(afterLinePos, sceneId));
-        },
         updateText: (text, lineId) => {
             dispatch(updateText(text, lineId));
         },
-        splitContent: (event, lineId) => {
-            dispatch(splitContent(event, lineId));
-        }
     };
 };
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditableLine);
+export default connect(mapStateToProps, mapDispatchToProps)(EditableTextArea);

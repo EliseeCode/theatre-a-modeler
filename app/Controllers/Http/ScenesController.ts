@@ -5,9 +5,11 @@ import Line from "App/Models/Line";
 import CharacterFetcher from "App/Controllers/helperClass/CharacterFetcher";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Version from "App/Models/Version";
+import ImageUploader from "../helperClass/ImageUploader";
 
 export default class ScenesController {
-  public async show({ view, auth }: HttpContextContract) {
+  public async show({ view, auth, params }: HttpContextContract) {
+    await Scene.findOrFail(params.id);
     const user = auth?.user;
     return view.render("scene/show", { user_id: user?.id });
   }
@@ -36,6 +38,8 @@ export default class ScenesController {
     await play.load("scenes");
     const user = await auth.authenticate();
     const name = request.body().name || "Scène sans nom";
+    const { imageFile, imageId } = request.body();
+
     const scene = await Scene.create({
       name: name,
       position: play.scenes.length,
@@ -43,6 +47,21 @@ export default class ScenesController {
       creatorId: user.id,
       playId: play.id,
     });
+
+    if (imageId) {
+      scene.imageId = imageId;
+      await scene.save();
+    }
+    if (imageFile) {
+      const newImage = await (new ImageUploader()).uploadImage(imageFile, request, user);
+      if (newImage) {
+        scene.imageId = newImage.id;
+        await scene.save();
+        // await scene.related('image').associate(newImage);
+        // await scene.load('image');
+      }
+    }
+
     return response.redirect("/scene/" + scene.id + "/edit");
   }
 
@@ -77,7 +96,8 @@ export default class ScenesController {
     }
     const characterFetcher = new CharacterFetcher();
     const characters = await characterFetcher.getCharactersFromScene(scene);
-    return { lines, characters }
+    const textVersions = await Database.query().select('versions.*').select('lines.character_id').from('versions').join("lines", "versions.id", "lines.version_id").where("lines.scene_id", sceneId);
+    return { lines, characters, textVersions }
   }
 
   public async getPlay({ params }: HttpContextContract) {
@@ -86,6 +106,7 @@ export default class ScenesController {
     const play = await Play.findOrFail(scene.playId);
     return play;
   }
+
   public async getAudios({ response, params }: HttpContextContract) {
     const { sceneId } = params;
     const audios = await Database.from("audios")
@@ -101,18 +122,44 @@ export default class ScenesController {
     return response.json({ audios, versions });
 
   }
-  public async update({ request, params, response }: HttpContextContract) {
-    const name = request.all().name;
-    const scene_id = params.id;
-    var scene = await Scene.findOrFail(scene_id);
-    scene.name = name;
+
+  public async update({ request, auth }: HttpContextContract) {
+
+
+    console.log('store or update scene');
+    const user = await auth.authenticate();
+    const { sceneId, playId, name, imageId, description } = request.body();
+    const imageScene = request.file('imageScene');
+
+    const scene = await Scene.updateOrCreate({ id: sceneId },
+      {
+        name,
+        description,
+        imageId,
+        playId
+      });
+    //check if create Or Update
     await scene.save();
-    return response.redirect().back();
+
+    //if new scene=>associate_it
+    if (imageScene && !imageId) {
+      const newImage = await (new ImageUploader()).uploadImage(imageScene, request, user);
+      if (newImage) {
+        scene.imageId = newImage.id;
+        await scene.save();
+        //await scene.related('image').associate(newImage);
+        await scene.load('image');
+      }
+    }
+    console.log('sceneImage', JSON.stringify(scene.image))
+    return { scene, status: "success" };
+    //return { character };
   }
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
     const sceneId = params.id;
     var scene = await Scene.findOrFail(sceneId);
+    await bouncer.with("ScenePolicy").authorize("delete", scene);
     await scene.delete();
     return response.redirect().back();
   }

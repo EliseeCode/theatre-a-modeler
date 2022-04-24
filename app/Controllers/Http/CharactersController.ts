@@ -1,74 +1,47 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
+import Audio from "App/Models/Audio";
 import Character from "App/Models/Character";
-import Image from "App/Models/Image";
 import Line from "App/Models/Line";
 import Scene from "App/Models/Scene";
+import Version from "App/Models/Version";
 import ObjectType from "Contracts/enums/ObjectType";
-import { URL } from 'url'
+import ImageUploader from '../helperClass/ImageUploader';
+import Drive from "@ioc:Adonis/Core/Drive";
 
 export default class CharactersController {
   public dataName = "characters";
 
-  public async store({ auth, request, response }: HttpContextContract) {
+  public async store({ auth, request }: HttpContextContract) {
     console.log('store Character');
     const user = await auth.authenticate();
     const lineId = request.body().lineId;
-    const { name, gender, description } = request.body();
-    const imageCharacter = request.file('imageCharacter')
-    const character = await Character.create(
+    const { name, gender, description, characterId = -1 } = request.body();
+    const imageCharacter = request.file('imageCharacter');
+
+    console.log(characterId);
+    const character = await Character.updateOrCreate({ id: characterId },
       {
         name,
         gender,
         description,
       });
     const line = await Line.findOrFail(lineId)
-    await line.related('character').associate(character);
-    await (await (Scene.findOrFail(line.sceneId))).related('characters').attach([character.id]);
-
-    console.log(imageCharacter)
-    if (imageCharacter) {
-      console.log("Image à uploader");
-
-      let message: string;
-      try {
-        await imageCharacter?.moveToDisk(
-          "./images/",
-          { contentType: request.header("Content-Type") },
-          "local"
-        );
-        message = `The image file has been successfully saved!`;
-        console.log(message);
-      } catch (err) {
-        message = `An error occured during the save of the image file.\nHere's the details: ${err} `;
-        console.log(message);
-        return response.json({ status: 0, message });
-      }
-
-      if (!imageCharacter.fileName) {
-        message = `An error occured during the save of the image file.\nHere's the details: imageFile.fileName is not defined.`;
-        console.log(message);
-        return response.json({ status: 0, message });
-      }
-
-      const locationOrigin = new URL(request.completeUrl()).origin;
-      // eval(entityType) -> Play is not defined... Why can't we use import aliases in eval? #FIXME
-
-      const newImage = await Image.create({
-        name: imageCharacter.fileName,
-        publicPath: `${locationOrigin}/uploads/images/${imageCharacter.fileName}`,
-        relativePath: `/uploads/images/${imageCharacter.fileName}`,
-        creatorId: user.id,
-        size: imageCharacter.size,
-        type: imageCharacter.extname,
-        // mimeType: request.header("Content-Type"), // It's getting as multipart/form-data
-        mimeType: `${imageCharacter.fieldName}/${imageCharacter.extname}`,
-      });
-      console.log(newImage.publicPath);
-      character.imageId = newImage.id;
-      await character.related('image').associate(newImage);
+    //if new character=>associate_it
+    if (characterId < 0) {
+      await line.related('character').associate(character);
+      await (await (Scene.findOrFail(line.sceneId))).related('characters').attach([character.id]);
     }
-
+    if (imageCharacter) {
+      const newImage = await (new ImageUploader()).uploadImage(imageCharacter, request, user);
+      if (newImage) {
+        character.imageId = newImage.id;
+        //await character.save();
+        await character.related('image').associate(newImage);
+        await character.load('image');
+      }
+    }
+    console.log('characterImage', JSON.stringify(character.image))
     return { character, status: "success" };
     //return { character };
   }
@@ -81,7 +54,75 @@ export default class CharactersController {
     return { status: "success" };
   }
 
+  public async createTextVersion({ request, auth }: HttpContextContract) {
+    const sceneId = request.body().sceneId;
+    const characterId = request.body().characterId;
 
+    const user = await auth.authenticate();
+    const result = await Database.query()
+      .from('versions')
+      .select('*')
+      .join('lines', 'lines.version_id', 'versions.id')
+      .where("versions.creator_id", user.id)
+      .andWhere("lines.character_id", characterId)
+      .countDistinct('lines.version_id as nbreVersion');
+    console.log(result);
+    let nbreVersion = 0;
+    if (result.length > 0) {
+      nbreVersion = result[0].nbreVersion;
+    }
+    const newNumVersion = nbreVersion++;
+    const versionName = user.username + "-" + newNumVersion;
+    //version creation
+    const version = await Version.create({
+      name: versionName,
+      creatorId: user.id,
+      type: ObjectType.CHARACTER
+    })
+    //collect all line on this scene with this character to grab position
+    const lines = await Line.query()
+      .where('sceneId', sceneId)
+      .andWhere('character_id', characterId)
+      .distinct('lines.position');
+    //create blueprint for createmany Line
+    let newLines: any[] = [];
+    for (let line of lines) {
+      newLines.push({
+        text: "",
+        sceneId: sceneId,
+        position: line.position,
+        versionId: version.id,
+        characterId: characterId
+      })
+    }
+
+
+    const created_lines = await Line.createMany(newLines);
+
+    return { lines: created_lines, version: version, characterId };
+  }
+
+  public async removeTextVersion({ request, bouncer }: HttpContextContract) {
+    const { textVersionId } = request.body();
+    if (textVersionId == 1) { return; }
+    var version = await Version.findOrFail(textVersionId);
+    await bouncer.with("VersionPolicy").authorize("delete", version);
+    await version.delete();
+    return { status: 'success' }
+  }
+  public async removeAudioVersion({ request, bouncer }: HttpContextContract) {
+    const { audioVersionId } = request.body();
+    var version = await Version.findOrFail(audioVersionId);
+    await bouncer.with("VersionPolicy").authorize("delete", version);
+    const audios = await Audio.query().where("version_id", audioVersionId);
+    for (let k in audios) {
+      let audio = audios[k];
+      await Drive.delete(audio.name)
+      await audio.delete();
+    }
+    await version.delete();
+    return { status: 'success' }
+  }
 
   public async show({ view, params }: HttpContextContract) {
     const characterId = params.id;

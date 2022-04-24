@@ -27,10 +27,25 @@ function changeCharacterAudioVersion(state, characterId, audioVersionId) {
     console.log("state", state);
     return state;
 }
+function changeCharacterTextVersion(state, characterId, textVersionId) {
+    console.log("inside", characterId, textVersionId);
+    var state = {
+        ...state,
+        byIds: {
+            ...state.byIds,
+            [characterId]: {
+                ...state.byIds[characterId],
+                selectedTextVersion: textVersionId
+            }
+        }
+    }
+    console.log("state", state);
+    return state;
+}
 
 const charactersReducer = (state = null, action) => {
     let characterId;
-    let audioVersionId;
+    let audioVersionId, textVersionId;
     switch (action.type) {
         case "DETACH_CHARACTER":
             state = {
@@ -38,24 +53,39 @@ const charactersReducer = (state = null, action) => {
                 ids: [...state.ids.filter((character_id) => { return action.payload.characterId != character_id; })]
             };
             break
-        case "ADD_CHARACTER":
+        case "UPDATE_CHARACTER":
             state = {
                 ...state,
                 byIds: {
                     ...state.byIds,
                     [action.payload.character.id]: { ...action.payload.character, selectedAudioVersion: -1 }
-                },
-                ids: [...state.ids, action.payload.character.id]
+                }
+            }
+            if (state.ids.indexOf(action.payload.character.id) == -1) {
+                state = {
+                    ...state,
+                    ids: [...state.ids, action.payload.character.id]
+                }
             }
             break
 
         case "LOAD_CHARACTERS":
-            state = refactor_characters(action.payload.characters)
+            state = { ...state, ...refactor_characters(action.payload.characters) }
             break
         case "SELECT_CHARACTER_AUDIO_VERSION":
             characterId = action.payload.characterId;
             audioVersionId = action.payload.audioVersionId;
             state = changeCharacterAudioVersion(state, characterId, audioVersionId)
+            break
+        case "SELECT_CHARACTER_TEXT_VERSION":
+            characterId = action.payload.characterId;
+            textVersionId = action.payload.textVersionId;
+            state = changeCharacterTextVersion(state, characterId, textVersionId)
+            break
+        case "CREATE_CHARACTER_TEXT_VERSION":
+            characterId = action.payload.characterId;
+            textVersionId = action.payload.version.id;
+            state = changeCharacterTextVersion(state, characterId, textVersionId)
             break
         case "ADD_AUDIO":
             characterId = action.payload.audio.line.character_id;

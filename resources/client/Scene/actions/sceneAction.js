@@ -6,14 +6,23 @@ export function initialLoadSceneId(sceneId) {
         payload: sceneId
     };
 }
-// export function initialLoadScene(sceneId) {
-//     return dispatch => {
-//         $.post('/line/splitAText', params, function (data) {
-//             console.log("data from post", data);
-//             dispatch({
-//                 type: "LOAD_SCENE",
-//                 payload: { ...params, newLine: data.newLine }
-//             })
-//         })
-//     };
-// }
+
+export function updateScene(data) {
+    console.log('data', data);
+    return dispatch => {
+        $.ajax({
+            url: '/scene/update',
+            data: data.form,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                let { scene } = res;
+                dispatch({
+                    type: "UPDATE_SCENE",
+                    payload: { scene }
+                })
+            }
+        });
+    }
+}

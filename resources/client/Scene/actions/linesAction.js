@@ -67,6 +67,10 @@ export function initialLoadLines(sceneId) {
     return dispatch => {
         $.get('/scene/' + sceneId + '/lines', function (data) {
             dispatch({
+                type: "LOAD_TEXT_VERSIONS",
+                payload: data
+            });
+            dispatch({
                 type: "LOAD_LINES",
                 payload: data
             });

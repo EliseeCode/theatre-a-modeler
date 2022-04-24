@@ -47,6 +47,7 @@ Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
 
 //ROUTES FOR SCENES
+Route.post("scene/update", "ScenesController.update");
 
 Route.resource("group/:group_id/scene", "ScenesController");
 Route.resource("scenes", "ScenesController").middleware({ show: ['urlCatcher'] });;
@@ -68,6 +69,9 @@ Route.get("scene/:sceneId/version/:versionId/lines", "ScenesController.lines");
 Route.get("scene/:sceneId/lines", "ScenesController.lines");
 //CHARACTER
 
+Route.post("/character/createTextVersion", "CharactersController.createTextVersion");
+Route.post("/character/removeTextVersion", "CharactersController.removeTextVersion");
+Route.post("/character/removeAudioVersion", "CharactersController.removeAudioVersion");
 Route.post("/character/detach", "CharactersController.detach");
 Route.post("line/:lineId/characters/create", "CharactersController.store");
 Route.post("line/updateCharacter", "LinesController.updateCharacter");

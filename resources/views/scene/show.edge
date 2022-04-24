@@ -7,6 +7,18 @@
 <script src="/js/bulma-modal.js"></script>
 @endsection
 @section('content')
+<style>
+    .saved textarea{
+        background-color:#00FF8050;
+        position:relative;
+    }
+    .saved::after{
+        content:"Enregistré";
+        color:green;
+        position:absolute;
+        bottom:5px;
+        right:5px;}
+</style>    
     <div class="csrfToken" data-csrf-token="{{ csrfToken }}"></div>
     <div class="user_id" data-user-id="{{ user_id }}"></div>
     <div class="" style="text-align:center;"> 

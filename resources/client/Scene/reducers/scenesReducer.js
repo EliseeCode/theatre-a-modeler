@@ -15,7 +15,7 @@ const scenesReducer = (state = [], action) => {
 
         case "LOAD_SCENES":
             console.log('payload.lines:' + action.payload.scenes)
-            state = refactor_scenes(action.payload.scenes)
+            state = { ...state, ...refactor_scenes(action.payload.scenes) }
             break
 
         case "LOAD_SCENEID":
@@ -24,6 +24,21 @@ const scenesReducer = (state = [], action) => {
                 selectedId: action.payload
             };
             break
+        case "UPDATE_SCENE":
+            state = {
+                ...state,
+                byIds: {
+                    ...state.byIds,
+                    [action.payload.scene.id]: { ...action.payload.scene }
+                }
+            }
+            if (state.ids.indexOf(action.payload.scene.id) == -1) {
+                state = {
+                    ...state,
+                    ids: [...state.ids, action.payload.scene.id]
+                }
+            }
+            break;
     }
     return state
 }

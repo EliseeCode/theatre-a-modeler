@@ -11,7 +11,7 @@ export default class PlaysController {
   public async getScenes({ params }: HttpContextContract) {
     const sceneId = params.sceneId;
     const myScene = await Scene.findOrFail(sceneId);
-    const scenes = await Scene.query().where('play_id', myScene.playId);
+    const scenes = await Scene.query().where('play_id', myScene.playId).preload("image");
     return { scenes, status: "success" };
   }
 

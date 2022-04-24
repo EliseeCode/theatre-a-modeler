@@ -2,22 +2,28 @@ const refactor_lines = (lines) => {
     console.log(lines);
     let byIds = {};
     let ids = [];
+    let officialLine;
     console.log(lines);
-    lines.sort((a, b) => { return (a.position - b.position) });
+    officialLine = lines.filter((line) => { return line.version_id == 1; });
+    officialLine.sort((a, b) => { return (a.position - b.position) });
 
     lines.forEach(element => {
         byIds = { ...byIds, [element.id]: element };
+    });
+    officialLine.forEach(element => {
         ids.push(element.id);
     });
     return { byIds, ids };
 }
 const linesReducer = (state = [], action) => {
-    let lineId;
-    let characterId;
+    let lineId, newLine, newLineId;
+    let ids, byIds;
+    let characterId, textVersionId;
+    let newLines;
     switch (action.type) {
         case "ADD_LINE":
 
-            state = refactor_lines(action.payload.lines)
+            state = { ...state, ...refactor_lines(action.payload.lines) }
             break
         case "DELETE_LINE":
             console.log(action.payload);
@@ -34,7 +40,7 @@ const linesReducer = (state = [], action) => {
             }
             break
         case "CHARACTER_SELECT":
-            let { characterId, lineId } = action.payload;
+            ({ characterId, lineId } = action.payload);
             state = {
                 ...state,
                 byIds: {
@@ -44,7 +50,7 @@ const linesReducer = (state = [], action) => {
             }
             break;
         case "DETACH_CHARACTER":
-            const byIds = Object.values(state.byIds).reduce((acc, curr) => {
+            byIds = Object.values(state.byIds).reduce((acc, curr) => {
                 console.log("currCharacterAvant=", curr);
                 if (curr.character_id == action.payload.characterId) {
                     curr = { ...curr, character_id: null };
@@ -69,14 +75,14 @@ const linesReducer = (state = [], action) => {
             break
         case "LOAD_LINES":
             console.log('payload.lines:' + action.payload.lines)
-            state = refactor_lines(action.payload.lines)
+            state = { ...state, ...refactor_lines(action.payload.lines) }
             break
         case "SPLIT_LINE":
             console.log(action.payload);
-            let newLine = action.payload.newLine;
+            newLine = action.payload.newLine;
             lineId = action.payload.lineId;
-            let newLineId = newLine.id;
-            let ids = [...state.ids];
+            newLineId = newLine.id;
+            ids = [...state.ids];
             ids.splice(ids.indexOf(lineId) + 1, 0, newLineId);
             state = {
                 ...state,
@@ -106,6 +112,39 @@ const linesReducer = (state = [], action) => {
                 ...state,
                 action: action.payload.action,
                 selectedId: action.payload.lineId
+            }
+            break
+        case "CREATE_CHARACTER_TEXT_VERSION":
+            characterId = action.payload.characterId;
+            textVersionId = action.payload.version.id;
+            newLines = action.payload.lines;
+            byIds = {
+                ...state.byIds,
+                ...newLines.reduce((acc, line) => { return { ...acc, [line.id]: line }; }, {})
+            }
+            //replace line by the position of the new one.
+            ids = [...state.ids];
+            newLines.forEach((line) => {
+                ids.splice(line.position, 1, line.id);
+            })
+            state = {
+                ...state,
+                ids: ids,
+                byIds: byIds
+            }
+            break
+        case "SELECT_CHARACTER_TEXT_VERSION":
+            characterId = action.payload.characterId;
+            textVersionId = action.payload.textVersionId;
+            newLines = Object.values(state.byIds).filter((line) => { return (line.character_id == characterId && line.version_id == textVersionId) });
+            //replace line by the position of the new one.
+            ids = [...state.ids];
+            newLines.forEach((line) => {
+                ids.splice(line.position, 1, line.id);
+            })
+            state = {
+                ...state,
+                ids: ids
             }
             break
 

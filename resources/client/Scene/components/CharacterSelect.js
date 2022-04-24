@@ -1,14 +1,13 @@
 
 import React, { useState, useRef, useEffect } from 'react'
-import NewCharacterModal from './NewCharacterModal';
+import CharacterModal from './modal/CharacterModal';
 import { selectCharacter } from "../actions/charactersAction";
 import { connect } from "react-redux"
 import listenForOutsideClick from '../helper/listenerOutsideClick';
 
 const CharacterSelect = (props) => {
     const { lineId, lines, characters } = props;
-    const line = lines.byIds[lineId];
-
+    const [line, setLine] = useState(lines.byIds[lineId]);
     const [showCharacterModal, setShowCharacterModal] = useState(false);
 
     const [isDropdownActive, setDropdownActive] = useState(false);
@@ -16,10 +15,16 @@ const CharacterSelect = (props) => {
     const menuRef = useRef(null)
     const [listening, setListening] = useState(false)
     useEffect(listenForOutsideClick(listening, setListening, menuRef, setDropdownActive))
+    useEffect(() => { setLine(lines.byIds[lineId]) }, [lines, lineId, characters])
 
-
-    function toggleModal() {
-        setShowCharacterModal(!showCharacterModal);
+    function closeCharacterModal() {
+        setShowCharacterModal(false);
+    }
+    function openNewCharacterModal() {
+        setShowCharacterModal("new");
+    }
+    function openUpdateCharacterModal() {
+        setShowCharacterModal("update");
     }
     return (
         <div className="control" >
@@ -31,7 +36,7 @@ const CharacterSelect = (props) => {
                                 {characters.byIds[line.character_id]?.image && <img className="image-character" src={characters.byIds[line.character_id]?.image?.public_path} />}
                             </div>
                         </div>
-                        <div className="level-item">
+                        <div className="level-item" onClick={openUpdateCharacterModal}>
                             {characters.byIds[line.character_id]?.name || 'Choisir un personnage'}
                         </div>
                         <div className="level-right">
@@ -54,16 +59,19 @@ const CharacterSelect = (props) => {
                                 );
                             })
                         }
-                        <div className="dropdown-item" onClick={toggleModal}>Nouveau personnage</div>
+                        <div className="dropdown-item" onClick={openNewCharacterModal}>Nouveau personnage</div>
                     </div>
 
 
                 </div>
             </div>
             {
-                showCharacterModal && <NewCharacterModal
-                    toggleModal={toggleModal}
+                showCharacterModal && <CharacterModal
+                    closeCharacterModal={closeCharacterModal}
                     lineId={lineId}
+                    characterId={line.character_id}
+                    characters={characters}
+                    showCharacterModal={showCharacterModal}
                 />
             }
         </div>

@@ -9,10 +9,10 @@ const refactor_versions = (versions) => {
     });
     return { byIds, ids };
 }
-const versionsReducer = (state = null, action) => {
+const audioVersionsReducer = (state = null, action) => {
     switch (action.type) {
         case "LOAD_AUDIO":
-            var state = refactor_versions(action.payload.versions);
+            var state = { ...state, ...refactor_versions(action.payload.versions) };
             break
         case "ADD_AUDIO":
             var newVersion = action.payload.version;
@@ -23,10 +23,10 @@ const versionsReducer = (state = null, action) => {
                 ids: [...state.ids, newVersion.id]
             }
             break
-        case "REMOVE_VERSION":
-            var state = {
+        case "REMOVE_CHARACTER_AUDIO_VERSION":
+            state = {
                 ...state,
-                ids: [...state.ids.filter((id) => { return id != action.payload.versionId })],
+                ids: [...state.ids.filter((id) => { return id != action.payload.audioVersionId })],
             }
             console.log(state);
             break
@@ -34,4 +34,4 @@ const versionsReducer = (state = null, action) => {
     return state
 }
 
-export default versionsReducer;
+export default audioVersionsReducer;

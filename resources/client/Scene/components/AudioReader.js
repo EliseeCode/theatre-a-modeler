@@ -8,22 +8,17 @@ const AudioReader = (props) => {
     //const line = lines.byIds[lineId];
     // const character = characters.byIds[line.character_id];
     // const selectedVersion = parseInt(character?.selectedAudioVersion || -1);
-    const [isPlaying, setIsPlaying] = useState(false);
     const [isAutoPlaying, setIsAutoPlaying] = useState(false);
     const [lineId, setLineId] = useState(null);
     const [audioId, setAudioId] = useState(null);
-    const audioReaderStyle = {
-        position: "fixed",
-        backgroundColor: "white",
-        bottom: "0px",
-        width: '100%',
-        zIndex: 3
-    }
+
     useEffect(() => {
         //synchronize selectedLineId 
         lines.selectedId ? setLineId(lines.selectedId) : setLineId(lines.ids[0]);
         //initial upload of selectedLineId
-        !lines.selectedId && props.selectLine(lines.ids[0]);
+        if (lines.ids[0]) {
+            !lines.selectedId && props.selectLine(lines.ids[0]);
+        }
         //autoPlay
         if (lines.action == "ended" && isAutoPlaying) {
             if (lines.selectedId != lines.ids[lines.ids.length - 1]) {
@@ -55,16 +50,23 @@ const AudioReader = (props) => {
         setIsAutoPlaying(false);
     }
 
-
+    const audioReaderStyle = {
+        position: "fixed",
+        backgroundColor: "",
+        bottom: "20px",
+        right: "20px",
+        width: '200px',
+        zIndex: 3,
+        transform: 'scale(1.5)'
+    }
     return (
-        <div className="box container" style={audioReaderStyle}>
-            <h3>Lecteur audio</h3>
+        <div className="" style={audioReaderStyle}>
             <div className="levels mb-3">
                 <div className="level-item">
-                    <button className="button" disabled={(lines.ids.indexOf(lineId) == 0)} onClick={selectPreviousLine}><span className="fas fa-step-backward"></span></button>
-                    <button className="button" onClick={autoPlay}><span className="fas fa-play"></span></button>
-                    <button className="button" onClick={autoPause}><span className="fas fa-pause"></span></button>
-                    <button className="button" disabled={(lines.ids.indexOf(lineId) == (lines.ids.length - 1))} onClick={selectNextLine}><span className="fas fa-step-forward"></span></button>
+                    <div className="" disabled={(lines.ids.indexOf(lineId) == 0)} onClick={selectPreviousLine}><span className="fas fa-step-backward"></span></div>
+                    {!isAutoPlaying ? <button className="button is-rounded" onClick={autoPlay}><span className="fas fa-play"></span></button> :
+                        <button className="button is-rounded" onClick={autoPause}><span className="fas fa-pause"></span></button>}
+                    <div className="" disabled={(lines.ids.indexOf(lineId) == (lines.ids.length - 1))} onClick={selectNextLine}><span className="fas fa-step-forward"></span></div>
                 </div>
             </div>
         </div>

@@ -94,9 +94,8 @@
                     
                                       
                     <div class="block">
-                        @set('students',group.users.filter((user)=>{return true;a=user.$extras.pivot_role_id==Role.STUDENT}))
+                        @set('students',group.users.filter((user)=>{return user.$extras.pivot_role_id==Role.STUDENT}))
                         @set('teachers',group.users.filter((user)=>{return user.$extras.pivot_role_id==Role.TEACHER}))
-                        {{inspect(group.users)}}
                         <div class="box">
                             <h3>Professeurs</h3>
                             @each(user in teachers)

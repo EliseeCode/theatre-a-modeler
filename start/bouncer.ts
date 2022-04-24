@@ -60,4 +60,5 @@ export const { policies } = Bouncer.registerPolicies({
   ScenePolicy: () => import("App/Policies/ScenePolicy"),
   AudioPolicy: () => import("App/Policies/AudioPolicy"),
   LinePolicy: () => import("App/Policies/LinePolicy"),
+  VersionPolicy: () => import("App/Policies/VersionPolicy"),
 });

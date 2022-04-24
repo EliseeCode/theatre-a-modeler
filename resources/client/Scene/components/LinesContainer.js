@@ -17,9 +17,17 @@ const LinesContainer = (props) => {
         props.initialLoadOfficialLines(sceneId);
     }, [])
 
-
+    const lineContainerStyle = {
+        display: 'inline-block',
+        position: "relative",
+        top: "-150px",
+        backgroundColor: '#f4f4f4',
+        borderRadius: '20px 20px 0 0',
+        paddingBottom: '30px',
+        overflow: 'hidden'
+    }
     return (
-        <div style={{ display: 'inline-block' }}>
+        <div style={lineContainerStyle}>
             {props.characters?.ids.length != 0 && (
                 <div className="box mb-1">
                     <div className="subtitle block">Personnages :</div>

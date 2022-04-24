@@ -9,13 +9,18 @@ import AudioReader from "./components/AudioReader";
 
 export default function ShowScene(props) {
 
-
+    const lineContainerStyle = {
+        backgroundColor: '#f4f4f4',
+    }
     return (
         <Provider store={store}>
-            <div className="container mt-3 mb-3">
+            <AudioReader />
+            <PlaySceneSelector editContext={false} />
+
+            <div className="container" style={lineContainerStyle}>
                 <DataLoaderSceneShow />
-                <PlaySceneSelector editContext={false} />
-                <AudioReader />
+
+
                 <CharacterUserVersionContainer />
                 <LinesShowContainer />
             </div>

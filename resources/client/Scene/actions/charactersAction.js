@@ -47,7 +47,7 @@ export function detachCharacter(characterId, sceneId) {
     }
 }
 
-export function addCharacter(data) {
+export function updateCharacter(data) {
     console.log(data);
     return dispatch => {
         $.ajax({
@@ -59,7 +59,7 @@ export function addCharacter(data) {
             success: function (res) {
                 let { character } = res;
                 dispatch({
-                    type: "ADD_CHARACTER",
+                    type: "UPDATE_CHARACTER",
                     payload: { character, lineId: data.lineId }
                 })
             }
@@ -72,5 +72,65 @@ export function selectCharacterAudioVersion(characterId, audioVersionId) {
         type: "SELECT_CHARACTER_AUDIO_VERSION",
         payload: { characterId, audioVersionId }
     })
+}
+export function removeCharacterAudioVersion(characterId, audioVersionId) {
+    let params = getParams();
+    params = {
+        ...params,
+        audioVersionId
+    };
+    return dispatch => {
+        $.post('/character/removeAudioVersion', params, function (data) {
+            console.log(data);
+            dispatch({
+                type: "REMOVE_CHARACTER_AUDIO_VERSION",
+                payload: { characterId, audioVersionId }
+            });
+        })
+    }
+}
+export function selectCharacterTextVersion(characterId, textVersionId) {
+
+    return ({
+        type: "SELECT_CHARACTER_TEXT_VERSION",
+        payload: { characterId, textVersionId }
+    })
+}
+export function removeCharacterTextVersion(characterId, textVersionId) {
+    let params = getParams();
+    params = {
+        ...params,
+        textVersionId
+    };
+    return dispatch => {
+        $.post('/character/removeTextVersion', params, function (data) {
+            console.log(data);
+            dispatch({
+                type: "REMOVE_CHARACTER_TEXT_VERSION",
+                payload: { characterId, textVersionId }
+            });
+        })
+    }
+}
+
+export function createCharacterTextVersion(characterId, sceneId) {
+    console.log(characterId, sceneId);
+    let params = getParams();
+    params = {
+        ...params,
+        characterId: characterId,
+        sceneId: sceneId
+    };
+
+    return dispatch => {
+        $.post('/character/createTextVersion', params, function (data) {
+            console.log(data);
+            dispatch({
+                type: "CREATE_CHARACTER_TEXT_VERSION",
+                payload: { characterId, ...data, sceneId }
+            });
+        })
+    }
+
 }
 
