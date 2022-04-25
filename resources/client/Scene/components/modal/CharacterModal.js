@@ -11,10 +11,11 @@ const CharacterModal = (props) => {
     const [previewImage, setPreviewImage] = useState(null);
     const csrfValue = $('.csrfToken').data('csrf-token');
     useEffect(() => {
+        console.log("showCharacterModal", showCharacterModal);
         if (showCharacterModal == 'new') {
             setCharacter({ name: "Bob", gender: "Male", description: "" })
         }
-        else {
+        else if (showCharacterModal == 'update') {
             let { name, gender, description, image } = props.characters.byIds[characterId];
             setCharacter({ name, gender, description });
             if (image) { console.log("image", image?.public_path); setPreviewImage(image?.public_path); }
@@ -36,8 +37,8 @@ const CharacterModal = (props) => {
     }
 
     function handleCharacterChange(event) {
-        console.log(event.target.name, event.target.value);
-        setCharacter({ ...character, [event.target.name]: event.target.value });
+        console.log(event.target?.name, event.target?.value);
+        setCharacter({ ...character, [event.target?.name]: event.target.value });
     }
 
     function removeImage() {
@@ -70,7 +71,8 @@ const CharacterModal = (props) => {
                     <form id="characterForm" className="form" onSubmit={submitForm} action='/characters' method='POST' encType="multipart/form-data">
                         <input type="hidden" name="_csrf" value={csrfValue} />
                         <input type="hidden" name="lineId" value={props.lineId} />
-                        <input type="hidden" name="characterId" value={props.characterId} />
+                        <input type="hidden" name="characterId" value={props.characterId || ""} />
+                        <input type="hidden" name="action" value={props.showCharacterModal || ""} />
 
                         <div className="card-image p-3 has-text-centered">
 
@@ -98,7 +100,7 @@ const CharacterModal = (props) => {
 
                             <div className="field">
                                 <div className="control">
-                                    <input onInput={handleCharacterChange} type="text" placeholder="Nom du personnage" className="input subtitle has-text-centered" name='name' value={character.name} />
+                                    <input onInput={handleCharacterChange} type="text" placeholder="Nom du personnage" className="input subtitle has-text-centered" name='name' value={character?.name} />
                                 </div>
                             </div>
                         </div>

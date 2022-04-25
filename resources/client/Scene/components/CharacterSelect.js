@@ -36,10 +36,13 @@ const CharacterSelect = (props) => {
                                 {characters.byIds[line.character_id]?.image && <img className="image-character" src={characters.byIds[line.character_id]?.image?.public_path} />}
                             </div>
                         </div>
-                        <div className="level-item" onClick={openUpdateCharacterModal}>
+                        <div className="level-item">
                             {characters.byIds[line.character_id]?.name || 'Choisir un personnage'}
                         </div>
                         <div className="level-right">
+                            {line.character_id && (<div className="level-item">
+                                <i className="fas fa-edit" onClick={openUpdateCharacterModal}></i>
+                            </div>)}
                             <div className="level-item">
                                 <i className="fas fa-angle-down" aria-hidden="true"></i>
                             </div>

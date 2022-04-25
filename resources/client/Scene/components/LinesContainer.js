@@ -20,11 +20,10 @@ const LinesContainer = (props) => {
     const lineContainerStyle = {
         display: 'inline-block',
         position: "relative",
-        top: "-150px",
         backgroundColor: '#f4f4f4',
         borderRadius: '20px 20px 0 0',
         paddingBottom: '30px',
-        overflow: 'hidden'
+
     }
     return (
         <div style={lineContainerStyle}>

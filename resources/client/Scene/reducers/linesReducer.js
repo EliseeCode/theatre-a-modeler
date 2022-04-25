@@ -64,7 +64,7 @@ const linesReducer = (state = [], action) => {
                 byIds: byIds
             };
             break
-        case "ADD_CHARACTER":
+        case "UPDATE_CHARACTER":
             state = {
                 ...state,
                 byIds: {

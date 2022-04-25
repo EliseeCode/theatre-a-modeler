@@ -16,16 +16,33 @@ export default class CharactersController {
     console.log('store Character');
     const user = await auth.authenticate();
     const lineId = request.body().lineId;
-    const { name, gender, description, characterId = -1 } = request.body();
+    const { name, gender, description, action } = request.body();
+    var characterId = request.body().characterId || -1;
     const imageCharacter = request.file('imageCharacter');
 
+    if (action == "new") {
+      characterId = -1;
+    }
     console.log(characterId);
-    const character = await Character.updateOrCreate({ id: characterId },
-      {
-        name,
-        gender,
-        description,
+
+    // const character = await Character.updateOrCreate({ id: characterId },
+    //   {
+    //     name,
+    //     gender,
+    //     description,
+    //   });
+    var character = await Character.find(characterId) || null;
+    if (character) {
+      character.name = name;
+      character.gender = gender;
+      character.description = description;
+      await character.save();
+    }
+    else {
+      character = await Character.create({
+        name, gender, description
       });
+    };
     const line = await Line.findOrFail(lineId)
     //if new character=>associate_it
     if (characterId < 0) {
