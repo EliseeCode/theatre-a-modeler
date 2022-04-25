@@ -54,7 +54,7 @@ const CharacterSelect = (props) => {
                                 return (
                                     <div key={index} className="dropdown-item" onClick={() => props.selectCharacter(characterId, lineId)}>
                                         {characters.byIds[characterId]?.image && <img className="image-character" src={characters.byIds[characterId]?.image?.public_path} />}
-                                        {characters.byIds[characterId].name}
+                                        {characters.byIds[characterId]?.name}
                                     </div>
                                 );
                             })

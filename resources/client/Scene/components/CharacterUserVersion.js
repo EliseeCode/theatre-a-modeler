@@ -98,14 +98,14 @@ const CharacterUserVersion = (props) => {
         {/* <pre>{JSON.stringify(Object.keys(data.textVersions), null, 2)}</pre> */}
         <div className="level">
             {character?.image?.public_path && <div className="level-item"></div>}
-            <div className="level-item" style={{ width: "200px" }}>{character?.image?.public_path && <img src={character?.image?.public_path} style={characterSmallImageStyle} />}<span className="ml-3">{character.name}</span></div>
+            <div className="level-item" style={{ width: "200px" }}>{character?.image?.public_path && <img src={character?.image?.public_path} style={characterSmallImageStyle} />}<span className="ml-3">{character?.name}</span></div>
             <div className="level-item" style={{ width: "300px" }}>
                 <div className="field has-addons">
                     <div className="control">
                         <div className="select">
                             <select value={selectedTextVersion} onChange={(e) => { handleTextVersionChange(e) }}>
                                 <option value={1}>Version officielle</option>
-                                {Object.values(data.textVersions).map((v, index) => { return (<option key={index} value={v.id}>{v.name}</option>) })}
+                                {Object.values(data.textVersions).map((v, index) => { return (<option key={index} value={v.id}>{v?.name}</option>) })}
                                 {userId != "undefined" && <option value={-1}>Nouvelle version</option>}
                             </select>
                         </div>
@@ -122,7 +122,7 @@ const CharacterUserVersion = (props) => {
                             <select value={selectedAudioVersion} onChange={(e) => { handleAudioVersionChange(e) }}>
                                 {userId != "undefined" && <option value={-1}>Enregistrer</option>}
                                 <option value={-2}>Voix robotisé</option>
-                                {Object.values(data.audioVersions).map((v) => { return (<option key={v.id} value={v.id}>{`${v.name} (${v.audios} audios)`}</option>) })}
+                                {Object.values(data.audioVersions).map((v) => { return (<option key={v.id} value={v.id}>{`${v?.name} (${v.audios} audios)`}</option>) })}
                             </select>
                         </div>
                     </div>
