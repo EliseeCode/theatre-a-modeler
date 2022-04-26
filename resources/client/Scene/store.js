@@ -7,6 +7,7 @@ import characters from "./reducers/charactersReducer";
 import play from "./reducers/playReducer";
 import scenes from "./reducers/scenesReducer";
 import audios from "./reducers/audiosReducer";
+import images from "./reducers/imagesReducer";
 import audioVersions from "./reducers/audioVersionsReducer";
 import textVersions from "./reducers/textVersionsReducer";
 import miscellaneous from "./reducers/miscellaneousReducer";
@@ -20,6 +21,7 @@ export default createStore(
         audios,
         audioVersions,
         textVersions,
+        images,
         miscellaneous
     }),
     {
@@ -27,9 +29,10 @@ export default createStore(
         characters: { byIds: {}, ids: [] },
         scenes: { byIds: {}, ids: [], selectedId: null },
         play: {},
-        audios: { byIds: {}, ids: [], selectedId: null },
+        audios: { byIds: {}, ids: [], selectedId: null, autoplay: true },
         audioVersions: { byIds: {}, ids: [] },
         textVersions: { byIds: {}, ids: [] },
+        images: { coverImages: [], characterImages: [] },
         miscellaneous: { csfr: '', user: { userId: 'undefined' } }
     },
     applyMiddleware(logger, thunk)

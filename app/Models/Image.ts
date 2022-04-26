@@ -28,6 +28,9 @@ export default class Image extends BaseModel {
   public type: string;
 
   @column({ meta: { type: "string" } })
+  public status: string;
+
+  @column({ meta: { type: "string" } })
   public mimeType: string;
 
   @column.dateTime({ autoCreate: true })

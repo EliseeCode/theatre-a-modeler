@@ -1,35 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from "react-redux"
 import { selectPreviousLine, selectNextLine, selectLine, setLineAction, playNextLine } from "../actions/linesAction"
+import { setAutoplay } from "../actions/audiosAction"
 
 const AudioReader = (props) => {
-    const { lines, characters, audios, versions } = props;
+    const { lines } = props;
 
-    //const line = lines.byIds[lineId];
-    // const character = characters.byIds[line.character_id];
-    // const selectedVersion = parseInt(character?.selectedAudioVersion || -1);
     const [isAutoPlaying, setIsAutoPlaying] = useState(false);
     const [lineId, setLineId] = useState(null);
-    const [audioId, setAudioId] = useState(null);
 
     useEffect(() => {
-        //synchronize selectedLineId 
-        lines.selectedId ? setLineId(lines.selectedId) : setLineId(lines.ids[0]);
-        //initial upload of selectedLineId
         if (lines.ids[0]) {
             !lines.selectedId && props.selectLine(lines.ids[0]);
         }
-        //autoPlay
-        if (lines.action == "ended" && isAutoPlaying) {
-            if (lines.selectedId != lines.ids[lines.ids.length - 1]) {
-                props.playNextLine(lineId, lines);
-            }
-            else {
-                setIsAutoPlaying(false);
-            }
-        }
-
+        //synchronize selectedLineId 
+        lines.selectedId ? setLineId(lines.selectedId) : setLineId(lines.ids[0]);
     }, [lines])
+
+    useEffect(() => { props.setAutoplay(isAutoPlaying) }, [isAutoPlaying])
 
     function selectPreviousLine() {
         props.selectPreviousLine(lineId, lines);
@@ -100,6 +88,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         setLineAction: (lineId, action) => {
             dispatch(setLineAction(lineId, action))
+        },
+        setAutoplay: (isAutoplay) => {
+            dispatch(setAutoplay(isAutoplay))
         }
     };
 };

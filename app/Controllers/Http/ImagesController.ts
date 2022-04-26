@@ -8,6 +8,7 @@ import Logger from "@ioc:Adonis/Core/Logger";
 import Drive from "@ioc:Adonis/Core/Drive";
 import { URL } from "url";
 import ObjectType from "Contracts/enums/ObjectType";
+import Role from "Contracts/enums/Role";
 
 export default class ImagesController {
   public async index({ }: HttpContextContract) { }
@@ -150,5 +151,68 @@ export default class ImagesController {
         Logger.error(message);
         response.json({ status: 0, message });
       });
+  }
+
+
+  public async getOfficial({ }: HttpContextContract) {
+    console.log("getOfficialImage");
+    const coverImages = await Image.query().where("status", "coverOfficial");
+    const characterImages = await Image.query().where("status", "characterOfficial");
+    return { status: "success", coverImages, characterImages }
+  }
+
+  public async official({ request, response, auth }: HttpContextContract) {
+    const imageFile = await request.file("image");
+    const type = await request.body().type;
+    if (!imageFile)
+      return response.json({
+        status: 0,
+        message: "No image file specified for upload...",
+      });
+
+    const user = await auth.authenticate();
+    if (user.roleId != Role.ADMIN) {
+      return 'Vous n\etes pas reconnu comme admin'
+    }
+
+    // Won't use a custom name instead Adonis will auto-generate a random name
+    /*const fileName = `${user.id}_${lineId}_${await Hash.make(
+      new Date().getTime().toString()
+    )}.${imageFile?.extname}`; */ // Audio file naming: {owner_id}_{line_id}_{hashed(timestamp)}
+    await imageFile?.moveToDisk(
+      "./images/",
+      { contentType: request.header("Content-Type") },
+      "local"
+    );
+    const locationOrigin = new URL(request.completeUrl()).origin;
+    // eval(entityType) -> Play is not defined... Why can't we use import aliases in eval? #FIXME
+
+    await Image.create({
+      name: imageFile.fileName,
+      publicPath: `${locationOrigin}/uploads/images/${imageFile.fileName}`,
+      relativePath: `/uploads/images/${imageFile.fileName}`,
+      creatorId: user.id,
+      size: imageFile.size,
+      type: imageFile.extname,
+      mimeType: `${imageFile.fieldName}/${imageFile.extname}`,
+      status: type + "Official"
+    });
+
+    return response.redirect().back();
+  }
+
+  public async nonOfficial({ response, request, auth }: HttpContextContract) {
+
+    const user = await auth.authenticate();
+    if (user.roleId != Role.ADMIN) {
+      return 'Vous n\etes pas reconnu comme admin'
+    }
+
+    const imageId = await request.body().imageId
+    var image = await Image.findOrFail(imageId);
+    image.status = "";
+    await image.save();
+
+    return response.redirect().back();
   }
 }

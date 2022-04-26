@@ -17,7 +17,7 @@ const CharacterUserVersion = (props) => {
         for (let k in textVersions.ids) {
             let textVersionId = textVersions.ids[k];
             let textVersion = textVersions.byIds[textVersionId];
-            if (textVersion.character_id == characterId) {
+            if (textVersion.character_id == characterId || textVersion.id == 1) {
                 //textVersion
                 dataTmp = {
                     ...dataTmp,
@@ -104,7 +104,7 @@ const CharacterUserVersion = (props) => {
                     <div className="control">
                         <div className="select">
                             <select value={selectedTextVersion} onChange={(e) => { handleTextVersionChange(e) }}>
-                                <option value={1}>Version officielle</option>
+                                {/* <option value={1}>Version officielle</option> */}
                                 {Object.values(data.textVersions).map((v, index) => { return (<option key={index} value={v.id}>{v?.name}</option>) })}
                                 {userId != "undefined" && <option value={-1}>Nouvelle version</option>}
                             </select>
@@ -120,9 +120,10 @@ const CharacterUserVersion = (props) => {
                     <div className="control">
                         <div className="select">
                             <select value={selectedAudioVersion} onChange={(e) => { handleAudioVersionChange(e) }}>
-                                {userId != "undefined" && <option value={-1}>Enregistrer</option>}
-                                <option value={-2}>Voix robotisé</option>
+                                {userId != "undefined" && <option value={-1}>Enregistrer une nouvelle version</option>}
+
                                 {Object.values(data.audioVersions).map((v) => { return (<option key={v.id} value={v.id}>{`${v?.name} (${v.audios} audios)`}</option>) })}
+                                <option value={-2}>Voix robotisé</option>
                             </select>
                         </div>
                     </div>

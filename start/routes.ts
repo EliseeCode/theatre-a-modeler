@@ -35,10 +35,15 @@ Route.resource("groups", "GroupsController").middleware(
   });
 Route.resource("lines", "LinesController");
 Route.resource("images", "ImagesController");
+Route.get("/image/official", "ImagesController.getOfficial");
+Route.post("/image/official", "ImagesController.official");
+Route.post("/image/official/remove", "ImagesController.nonOfficial");
 Route.resource("characters", "CharactersController");
 
 
 Route.get("dashboard", "AppsController.index");
+
+Route.get("admin", "AppsController.admin");
 
 Route.get("groups/:id/leave", "GroupsController.leave");
 

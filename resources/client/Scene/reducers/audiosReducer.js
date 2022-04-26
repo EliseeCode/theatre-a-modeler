@@ -32,6 +32,9 @@ const audiosReducer = (state = null, action) => {
             delete state.byIds[action.payload.audioId];
             console.log(state);
             break
+        case "SET_AUTOPLAY":
+            state = { ...state, autoplay: action.payload.isAutoplay }
+            break
     }
     return state
 }

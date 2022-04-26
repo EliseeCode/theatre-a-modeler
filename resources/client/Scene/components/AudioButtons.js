@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from "react-redux"
 import { useReactMediaRecorder } from "react-media-recorder";
-import { removeAudio, uploadAudio } from "../actions/audiosAction"
+import { removeAudio, uploadAudio, AudioEnded } from "../actions/audiosAction"
 import { selectLine, setLineAction } from "../actions/linesAction"
 import Speech from 'speak-tts'
 
 const AudioButtons = (props) => {
 
-    const { lineId, userId, uploadAudio, audios, audioVersions, lines, characters } = props;
+    const { autoplay, lineId, userId, uploadAudio, audios, lines, characters } = props;
     const [line, setLine] = useState(lines.byIds[lineId]);
     const [character, setCharacter] = useState(null);
     const audioElem = useRef();
@@ -96,6 +96,7 @@ const AudioButtons = (props) => {
     function audioEnded() {
         setIsPlaying(false);
         props.setLineAction(lineId, "ended");
+        props.AudioEnded(lineId, lines, autoplay);
     }
 
     const {
@@ -130,7 +131,8 @@ const mapStateToProps = (state) => {
         audios: state.audios,
         audioVersions: state.audioVersions,
         userId: state.miscellaneous?.user?.userId,
-        selectedLineId: state.lines.selectedId
+        selectedLineId: state.lines.selectedId,
+        autoplay: state.audios?.autoplay
     };
 };
 
@@ -147,6 +149,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         setLineAction: (lineId, action) => {
             dispatch(setLineAction(lineId, action))
+        },
+        AudioEnded: (lineId, lines, autoplay) => {
+            dispatch(AudioEnded(lineId, lines, autoplay))
         }
     };
 };

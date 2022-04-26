@@ -13,10 +13,11 @@ export default class ScenesController {
     const user = auth?.user;
     return view.render("scene/show", { user_id: user?.id });
   }
-  public async edit({ view, bouncer, params }: HttpContextContract) {
+  public async edit({ view, bouncer, params, auth }: HttpContextContract) {
     const scene = await Scene.findOrFail(params.id);
+    const user = auth?.user;
     await bouncer.with("ScenePolicy").authorize("update", scene);
-    return view.render("scene/edit");
+    return view.render("scene/edit", { user_id: user?.id });
   }
 
   public async index({ }: HttpContextContract) { }
@@ -38,7 +39,7 @@ export default class ScenesController {
     await play.load("scenes");
     const user = await auth.authenticate();
     const name = request.body().name || "Scène sans nom";
-    const { imageFile, imageId } = request.body();
+    const { imageFile, imageId, officialImageId } = request.body();
 
     const scene = await Scene.create({
       name: name,
@@ -51,6 +52,11 @@ export default class ScenesController {
     if (imageId) {
       scene.imageId = imageId;
       await scene.save();
+    }
+    if (officialImageId) {
+      scene.imageId = officialImageId;
+      await scene.save();
+      await scene.load('image');
     }
     if (imageFile) {
       const newImage = await (new ImageUploader()).uploadImage(imageFile, request, user);
@@ -128,7 +134,7 @@ export default class ScenesController {
 
     console.log('store or update scene');
     const user = await auth.authenticate();
-    const { sceneId, playId, name, imageId, description } = request.body();
+    const { sceneId, playId, name, imageId, description, officialImageId } = request.body();
     const imageScene = request.file('imageScene');
 
     const scene = await Scene.updateOrCreate({ id: sceneId },
@@ -142,6 +148,12 @@ export default class ScenesController {
     await scene.save();
 
     //if new scene=>associate_it
+    if (officialImageId) {
+      scene.imageId = officialImageId;
+      await scene.save();
+      await scene.load('image');
+    }
+
     if (imageScene && !imageId) {
       const newImage = await (new ImageUploader()).uploadImage(imageScene, request, user);
       if (newImage) {

@@ -13,7 +13,7 @@ export default class InitialisationSeeder extends BaseSeeder {
     }),
       await Version.create({
         id: 1,
-        name: "Official",
+        name: "Version Officiel",
         creatorId: 1
       });
 

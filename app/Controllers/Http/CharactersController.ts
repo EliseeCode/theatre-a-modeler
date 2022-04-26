@@ -16,7 +16,7 @@ export default class CharactersController {
     console.log('store Character');
     const user = await auth.authenticate();
     const lineId = request.body().lineId;
-    const { name, gender, description, action } = request.body();
+    const { name, gender, description, action, officialImageId } = request.body();
     var characterId = request.body().characterId || -1;
     const imageCharacter = request.file('imageCharacter');
 
@@ -24,13 +24,6 @@ export default class CharactersController {
       characterId = -1;
     }
     console.log(characterId);
-
-    // const character = await Character.updateOrCreate({ id: characterId },
-    //   {
-    //     name,
-    //     gender,
-    //     description,
-    //   });
     var character = await Character.find(characterId) || null;
     if (character) {
       character.name = name;
@@ -48,6 +41,11 @@ export default class CharactersController {
     if (characterId < 0) {
       await line.related('character').associate(character);
       await (await (Scene.findOrFail(line.sceneId))).related('characters').attach([character.id]);
+    }
+    if (officialImageId) {
+      character.imageId = officialImageId;
+      await character.save();
+      await character.load('image');
     }
     if (imageCharacter) {
       const newImage = await (new ImageUploader()).uploadImage(imageCharacter, request, user);

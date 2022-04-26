@@ -8,7 +8,7 @@ const LinesShowContainer = (props) => {
     const constainerStyle = { marginBottom: "200px" }
     return (<>
 
-        <div className="block" style={constainerStyle}>
+        <div className="block container is-max-desktop" style={constainerStyle}>
             {
                 lines.ids.map((lineId) => {
                     return (<Line key={lineId} lineId={lineId} />)

@@ -5,10 +5,12 @@ import { updateScene } from "../../actions/sceneAction";
 
 const SceneModal = (props) => {
 
-    const { showSceneModal, sceneId } = props;
+    const { showSceneModal, sceneId, images } = props;
     const [scene, setScene] = useState({ name: "Nouvelle scene", description: "" })
     const [selectedImage, setSelectedImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
+    const [selectedOfficialImage, setSelectedOfficialImage] = useState(null);
+    const [imageSelectorOpen, setImageSelectorOpen] = useState(true);
     const csrfValue = $('.csrfToken').data('csrf-token');
 
     useEffect(() => {
@@ -18,7 +20,13 @@ const SceneModal = (props) => {
         else {
             let { name, description, image } = props.scenes.byIds[sceneId];
             setScene({ name, description });
-            if (image) { console.log("image", image?.public_path); setPreviewImage(image?.public_path); }
+            if (image) {
+                console.log("image", image?.public_path);
+                setPreviewImage(image?.public_path);
+                if (images.map((img) => { return img.id; }).includes(image.id)) {
+                    setSelectedOfficialImage(image.id);
+                }
+            }
         }
     }, [])
     useEffect(() => {
@@ -27,6 +35,15 @@ const SceneModal = (props) => {
             setPreviewImage(objectUrl);
         }
     }, [selectedImage])
+
+    useEffect(() => {
+        if (selectedOfficialImage) {
+            let image = images.filter((image) => { return image.id == selectedOfficialImage })[0];
+            if (image) {
+                setPreviewImage(image.public_path);
+            }
+        }
+    }, [selectedOfficialImage])
 
     function submitForm(event) {
         event.preventDefault();
@@ -45,6 +62,7 @@ const SceneModal = (props) => {
     function removeImage() {
         setSelectedImage(null);
         setPreviewImage(null);
+        setSelectedOfficialImage(null);
     }
 
     function ChangeImage(event) {
@@ -53,13 +71,42 @@ const SceneModal = (props) => {
             return;
         }
         setSelectedImage(event.target.files[0]);
+        setSelectedOfficialImage(null);
     }
 
     function chooseImage() {
         $("#imageSceneFile").click();
     }
 
-
+    function toggleSelectedOfficialImage(imageId) {
+        if (selectedOfficialImage != imageId) { setSelectedOfficialImage(imageId); }
+        else {
+            setPreviewImage(null); setSelectedOfficialImage(null);
+        }
+    }
+    const imageOfficialStyle = {
+        width: "160px",
+        height: "80px",
+        objectFit: "cover",
+        borderRadius: "5px",
+    }
+    const SelectorImageofficialItem = {
+        margin: "10px",
+        padding: "5px",
+        border: "1px grey solid",
+        borderRadius: "8px",
+        display: "inline-block"
+    }
+    const SelectorImageofficialItemActive = {
+        margin: "10px",
+        padding: "4px",
+        border: "2px lime solid",
+        borderRadius: "8px",
+        display: "inline-block"
+    }
+    const officialImageContainer = {
+        width: "100%",
+    }
     return (
         <div className="is-active modal" >
             <div className="modal-background" onClick={props.closeSceneModal}></div>
@@ -73,6 +120,7 @@ const SceneModal = (props) => {
                         <input type="hidden" name="_csrf" value={csrfValue} />
                         <input type="hidden" name="sceneId" value={props.sceneId} />
                         <input type="hidden" name="playId" value={props.playId} />
+                        <input type="hidden" name="officialImageId" value={selectedOfficialImage || ""} />
 
                         <div className="card-image p-3 has-text-centered">
 
@@ -86,8 +134,24 @@ const SceneModal = (props) => {
                                 }
 
                                 <div className={`hasNoImage ${!selectedImage && "hidden"}`} >
-                                    <input name="imageScene" id="imageSceneFile" onChange={ChangeImage} type="file" hidden />
-                                    <label className="has-text-centered button btnUpload" onClick={chooseImage}>Choisir une image</label>
+                                    <input name="imageCharacter" id="imageCharacterFile" onChange={ChangeImage} type="file" hidden />
+                                    {imageSelectorOpen ? (<div>
+                                        <h2 className="subtitle">Choix de l'image</h2>
+                                        <label htmlFor="imageCharacter" className="has-text-centered button btnUpload" onClick={chooseImage}>Depuis l'ordinateur</label>
+                                        <div style={officialImageContainer}>
+                                            {images.map((image, index) => {
+                                                return (
+                                                    <div key={index} onClick={() => { toggleSelectedOfficialImage(image.id) }} style={selectedOfficialImage == image.id ? SelectorImageofficialItemActive : SelectorImageofficialItem}>
+                                                        <img src={image.public_path} style={imageOfficialStyle} />
+                                                    </div>)
+                                            })}
+                                        </div>
+                                    </div>
+                                    ) : (
+                                        <button className="has-text-centered button btnUpload" onClick={() => { setImageSelectorOpen(true) }}>Choisir une image</button>
+                                    )}
+
+
                                 </div>
 
 
@@ -124,7 +188,8 @@ const SceneModal = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        scenes: state.scenes
+        scenes: state.scenes,
+        images: state.images.coverImages
     };
 };
 

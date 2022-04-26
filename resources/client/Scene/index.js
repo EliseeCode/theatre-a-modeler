@@ -14,7 +14,11 @@ ReactDOM.render(
         <Routes>
             <Route path="/scene/:sceneId/edit" element={<EditScene />}>
             </Route>
+            <Route path="/group/:groupId/scene/:sceneId/edit" element={<EditScene />}>
+            </Route>
             <Route path="/scene/:sceneId" element={<ShowScene />}>
+            </Route>
+            <Route path="/group/:groupId/scene/:sceneId" element={<ShowScene />}>
             </Route>
         </Routes>
     </Router>,

@@ -58,7 +58,6 @@ const linesReducer = (state = [], action) => {
                 console.log("currCharacterApres=", curr);
                 return { ...acc, [curr.id]: curr }
             }, {})
-            console.log("final", byIds);
             state = {
                 ...state,
                 byIds: byIds
@@ -74,7 +73,6 @@ const linesReducer = (state = [], action) => {
             }
             break
         case "LOAD_LINES":
-            console.log('payload.lines:' + action.payload.lines)
             state = { ...state, ...refactor_lines(action.payload.lines) }
             break
         case "SPLIT_LINE":

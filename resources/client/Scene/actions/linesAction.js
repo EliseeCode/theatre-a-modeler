@@ -64,6 +64,7 @@ export function initialLoadOfficialLines(sceneId) {
 
 export function initialLoadLines(sceneId) {
     console.log("initialLoadLines");
+
     return dispatch => {
         $.get('/scene/' + sceneId + '/lines', function (data) {
             dispatch({
@@ -101,18 +102,13 @@ export function selectNextLine(lineId, lines) {
 }
 export function playNextLine(lineId, lines) {
     const linePos = lines.ids.indexOf(lineId) == -1 ? 0 : lines.ids.indexOf(lineId);
-    // if (linePos == lines.ids.length) {
-    //     return {
-    //         type: "END_AUTOPLAY",
-    //         payload: { lineId }
-    //     }
-    // }
     const newLineId = lines.ids[(linePos + 1) % lines.ids.length];
     return {
         type: "PLAY_LINE",
         payload: { lineId: newLineId }
     }
 }
+
 export function selectLine(lineId) {
     return {
         type: "SELECT_LINE",

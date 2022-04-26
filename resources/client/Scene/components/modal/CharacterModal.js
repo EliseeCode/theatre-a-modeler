@@ -5,10 +5,13 @@ import { updateCharacter } from "../../actions/charactersAction";
 
 const CharacterModal = (props) => {
 
-    const { showCharacterModal, characterId } = props;
+    const { showCharacterModal, characterId, images } = props;
     const [character, setCharacter] = useState({ name: "Bob", gender: "Male", description: "" })
     const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedOfficialImage, setSelectedOfficialImage] = useState(null);
+    const [imageSelectorOpen, setImageSelectorOpen] = useState(true);
     const [previewImage, setPreviewImage] = useState(null);
+
     const csrfValue = $('.csrfToken').data('csrf-token');
     useEffect(() => {
         console.log("showCharacterModal", showCharacterModal);
@@ -18,7 +21,13 @@ const CharacterModal = (props) => {
         else if (showCharacterModal == 'update') {
             let { name, gender, description, image } = props.characters.byIds[characterId];
             setCharacter({ name, gender, description });
-            if (image) { console.log("image", image?.public_path); setPreviewImage(image?.public_path); }
+            if (image) {
+                console.log("image", image?.public_path);
+                setPreviewImage(image?.public_path);
+                if (images.map((img) => { return img.id; }).includes(image.id)) {
+                    setSelectedOfficialImage(image.id);
+                }
+            }
         }
     }, [])
     useEffect(() => {
@@ -28,6 +37,14 @@ const CharacterModal = (props) => {
         }
     }, [selectedImage])
 
+    useEffect(() => {
+        if (selectedOfficialImage) {
+            let image = images.filter((image) => { return image.id == selectedOfficialImage })[0];
+            if (image) {
+                setPreviewImage(image.public_path);
+            }
+        }
+    }, [selectedOfficialImage])
     function submitForm(event) {
         event.preventDefault();
         var form = new FormData(event.target);
@@ -44,18 +61,52 @@ const CharacterModal = (props) => {
     function removeImage() {
         setSelectedImage(null);
         setPreviewImage(null);
+        setSelectedOfficialImage(null);
     }
 
     function ChangeImage(event) {
         if (!event.target.files || event.target.files.length === 0) {
             setSelectedImage(null);
+            setSelectedOfficialImage(null);
             return;
         }
         setSelectedImage(event.target.files[0]);
+        setSelectedOfficialImage(null);
     }
 
     function chooseImage() {
         $("#imageCharacterFile").click();
+    }
+
+    function toggleSelectedOfficialImage(imageId) {
+        if (selectedOfficialImage != imageId) { setSelectedOfficialImage(imageId); }
+        else {
+            setPreviewImage(null); setSelectedOfficialImage(null);
+        }
+    }
+
+    const imageOfficialStyle = {
+        width: "80px",
+        height: "80px",
+        objectFit: "cover",
+        borderRadius: "5px",
+    }
+    const SelectorImageofficialItem = {
+        margin: "10px",
+        padding: "5px",
+        border: "1px grey solid",
+        borderRadius: "8px",
+        display: "inline-block"
+    }
+    const SelectorImageofficialItemActive = {
+        margin: "10px",
+        padding: "4px",
+        border: "2px lime solid",
+        borderRadius: "8px",
+        display: "inline-block"
+    }
+    const officialImageContainer = {
+        width: "100%",
     }
 
 
@@ -72,6 +123,7 @@ const CharacterModal = (props) => {
                         <input type="hidden" name="_csrf" value={csrfValue} />
                         <input type="hidden" name="lineId" value={props.lineId} />
                         <input type="hidden" name="characterId" value={props.characterId || ""} />
+                        <input type="hidden" name="officialImageId" value={selectedOfficialImage || ""} />
                         <input type="hidden" name="action" value={props.showCharacterModal || ""} />
 
                         <div className="card-image p-3 has-text-centered">
@@ -87,7 +139,23 @@ const CharacterModal = (props) => {
 
                                 <div className={`hasNoImage ${!selectedImage && "hidden"}`} >
                                     <input name="imageCharacter" id="imageCharacterFile" onChange={ChangeImage} type="file" hidden />
-                                    <label className="has-text-centered button btnUpload" onClick={chooseImage}>Choisir une image</label>
+                                    {imageSelectorOpen ? (<div>
+                                        <h2 className="subtitle">Choix de l'image</h2>
+                                        <label htmlFor="imageCharacter" className="has-text-centered button btnUpload" onClick={chooseImage}>Depuis l'ordinateur</label>
+                                        <div style={officialImageContainer}>
+                                            {images.map((image, index) => {
+                                                return (
+                                                    <div key={index} onClick={() => { toggleSelectedOfficialImage(image.id) }} style={selectedOfficialImage == image.id ? SelectorImageofficialItemActive : SelectorImageofficialItem}>
+                                                        <img src={image.public_path} style={imageOfficialStyle} />
+                                                    </div>)
+                                            })}
+                                        </div>
+                                    </div>
+                                    ) : (
+                                        <button className="has-text-centered button btnUpload" onClick={() => { setImageSelectorOpen(true) }}>Choisir une image</button>
+                                    )}
+
+
                                 </div>
 
 
@@ -111,7 +179,7 @@ const CharacterModal = (props) => {
                     <button className="button" type="button" onClick={props.closeCharacterModal}>Annuler</button>
                 </footer>
             </div>
-        </div>
+        </div >
 
     )
 }
@@ -119,7 +187,9 @@ const CharacterModal = (props) => {
 
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        images: state.images.characterImages
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {

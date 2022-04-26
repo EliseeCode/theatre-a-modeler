@@ -60,4 +60,26 @@ export function uploadAudio(lineId, versionId, blob) {
             })
     }
 }
+export function setAutoplay(isAutoplay) {
+    return {
+        type: "SET_AUTOPLAY",
+        payload: { isAutoplay: isAutoplay }
+    }
+}
+export function AudioEnded(lineId, lines, isAutoPlay) {
+    //getLinePosition
+    const linePos = lines.ids.indexOf(lineId) == -1 ? 0 : lines.ids.indexOf(lineId);
+    const newLineId = lines.ids[(linePos + 1) % lines.ids.length];
+    if (lines.selectedId != lines.ids[lines.ids.length - 1]) {
+        return {
+            type: "PLAY_LINE",
+            payload: { lineId: newLineId }
+        }
+    }
+    return {
+        type: "AUDIO_REACH_END",
+        payload: {}
+    }
+
+}
 

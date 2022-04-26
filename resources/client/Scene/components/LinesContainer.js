@@ -23,7 +23,6 @@ const LinesContainer = (props) => {
         backgroundColor: '#f4f4f4',
         borderRadius: '20px 20px 0 0',
         paddingBottom: '30px',
-
     }
     return (
         <div style={lineContainerStyle}>

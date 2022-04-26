@@ -1,0 +1,63 @@
+@layout('layouts/master')
+
+@section('content')
+  <div class="container mt-3">
+      
+    
+    <h1>Images de couverture</h1>
+    <div class="block">       
+        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
+            @each((image,index) in coverImages)
+            <div>
+            <img src='{{image.publicPath}}' style="width:300px;height:100px;object-fit:cover">
+            <form action='/image/official/remove' method='POST' enctype="multipart/form-data">
+                {{ csrfField() }}
+                <input name="imageId" type="hidden" value="{{image.id}}"/>
+                <button class="button">Remove</button>
+            </form>
+            </div>
+            @endeach
+        </div>
+        <form action='/image/official' method='POST' enctype="multipart/form-data">
+            {{ csrfField() }}
+            <input name="type" type="hidden" value="cover"/>
+            <input name="image" type="file"/>
+            <button class="button is-primary" type="submit">Enregistrer</button>
+    </form>
+    </div>
+    <hr>
+    <h1>Images de personnages</h1>
+    <div class="block">       
+        <div class="columns is-multiline is-variable is-1-mobile is-1-tablet is-2-desktop is-6-widescreen" style="text-align: -webkit-center;">
+            @each((image,index) in characterImages)
+            <div>
+            <img src='{{image.publicPath}}' style="width:100px;height:100px;">
+            <form action='/image/official/remove' method='POST' enctype="multipart/form-data">
+                {{ csrfField() }}
+                <input name="imageId" type="hidden" value="{{image.id}}"/>
+                <button class="button">Remove</button>
+            </form>
+            </div>
+            @endeach
+            
+        </div>
+        <form action='/image/official' method='POST' enctype="multipart/form-data">
+            {{ csrfField() }}
+            <input name="type" type="hidden" value="character"/>
+            <input name="image" type="file"/>
+            <button class="button is-primary" type="submit">Enregistrer</button>
+    </form>
+    </div>   
+</div>
+
+
+
+
+
+
+
+<script>
+   
+
+</script>
+@endsection

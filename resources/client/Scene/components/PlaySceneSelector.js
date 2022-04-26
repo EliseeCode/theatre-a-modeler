@@ -9,7 +9,7 @@ const PlaySceneSelector = (props) => {
 
 
     const { sceneId } = useParams();
-    const { scenes, play, lines, characters, editContext } = props;
+    const { scenes, play, editContext } = props;
     const sceneCreatorId = scenes.byIds[sceneId]?.creator_id;
     const [showSceneModal, setShowSceneModal] = useState(false);
     useEffect(() => {
@@ -21,9 +21,6 @@ const PlaySceneSelector = (props) => {
         setShowSceneModal(false);
     }
 
-    function openUpdateSceneModal() {
-        setShowSceneModal("update");
-    }
     const coverStyle = {
         backgroundImage: `url(${scenes.byIds[sceneId]?.image?.public_path || '/img/fondTheatre.png'})`,
         backgroundPosition: "center center",
@@ -50,7 +47,7 @@ const PlaySceneSelector = (props) => {
                 </div>
             </div>)}
         </div>
-        <div className="box container" style={{
+        <div className="box container is-max-desktop" style={{
             marginTop: "-100px", borderRadius: '20px 20px 0 0',
             overflow: 'hidden'
         }}>
