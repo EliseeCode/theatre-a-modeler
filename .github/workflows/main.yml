@@ -47,7 +47,7 @@ jobs:
             rm -rf theatre-a-modeler-old
             mv theatre-a-modeler theatre-a-modeler-old
             mv theatre-a-modeler-new theatre-a-modeler
-            cp -r theatre-a-modeler-old/uploads theatre-a-modeler/uploads
+            cp -r theatre-a-modeler-old/build/uploads theatre-a-modeler/build/uploads
             # Restart server
 
             cd theatre-a-modeler
