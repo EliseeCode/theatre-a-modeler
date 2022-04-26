@@ -29,7 +29,7 @@ export default createStore(
         characters: { byIds: {}, ids: [] },
         scenes: { byIds: {}, ids: [], selectedId: null },
         play: {},
-        audios: { byIds: {}, ids: [], selectedId: null, autoplay: true },
+        audios: { byIds: {}, ids: [], selectedId: null, autoplay: false },
         audioVersions: { byIds: {}, ids: [] },
         textVersions: { byIds: {}, ids: [] },
         images: { coverImages: [], characterImages: [] },

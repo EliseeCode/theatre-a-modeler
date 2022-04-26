@@ -70,7 +70,7 @@ export function AudioEnded(lineId, lines, isAutoPlay) {
     //getLinePosition
     const linePos = lines.ids.indexOf(lineId) == -1 ? 0 : lines.ids.indexOf(lineId);
     const newLineId = lines.ids[(linePos + 1) % lines.ids.length];
-    if (lines.selectedId != lines.ids[lines.ids.length - 1]) {
+    if (lines.selectedId != lines.ids[lines.ids.length - 1] && isAutoPlay) {
         return {
             type: "PLAY_LINE",
             payload: { lineId: newLineId }
