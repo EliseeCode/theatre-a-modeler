@@ -15,7 +15,7 @@ const Line = (props) => {
     }, [characters, lines]);
 
     const lineTextStyle = { whiteSpace: 'pre-wrap' };
-    const lineStyle = { position: 'relative', padding: "0 50px" };
+    const lineStyle = { position: 'relative', padding: "0 50px 0 120px" };
     const characterImageStyle = { position: 'absolute', top: 0, left: 0, width: '100px', height: '100px', objectFit: 'contain' };
     const isActiveStyle = { boxShadow: '0 0 5px #c0c0c0', zIndex: 2, fontSize: '1.2em' }
     return (
