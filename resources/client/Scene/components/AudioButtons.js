@@ -69,12 +69,14 @@ const AudioButtons = (props) => {
 
             speech.init({
                 'lang': 'fr-FR',
+                'splitSentences': false
             }).then((data) => {
                 speech.speak({
                     text: line.text,
                     queue: false,
                     listeners: {
-                        onend: () => {
+                        onend: (e) => {
+                            console.log(e);
                             audioEnded();
                         }
                     }
