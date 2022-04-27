@@ -4,7 +4,7 @@ export const newUserSchema = schema.create({
   username: schema.string({}, [
     rules.maxLength(50),
     rules.minLength(3),
-    // rules.unique({ table: 'users', column: 'username' })
+    rules.unique({ table: 'users', column: 'username' })
   ]),
   email: schema.string({ trim: true }, [
     // rules.unique({ table: 'users', column: 'email' }),

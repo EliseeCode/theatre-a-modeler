@@ -15,12 +15,12 @@ const Line = (props) => {
     }, [characters, lines]);
 
     const lineTextStyle = { whiteSpace: 'pre-wrap' };
-    const lineStyle = { position: 'relative', padding: "0 50px 0 130px" };
+    const lineStyle = { position: 'relative', padding: "10px 50px 10px 130px" };
     const characterImageStyle = { position: 'absolute', top: 0, left: 0, width: '100px', height: '100px', objectFit: 'contain' };
     const isActiveStyle = { boxShadow: '0 0 5px #c0c0c0', zIndex: 2, fontSize: '1.2em' }
     return (
         <>
-            <div className="box levels p-3" onClick={() => { props.selectLine(lineId); }} style={selectedLineId == lineId ? { ...lineStyle, ...isActiveStyle } : { ...lineStyle }}>
+            <div className="box levels" onClick={() => { props.selectLine(lineId); }} style={selectedLineId == lineId ? { ...lineStyle, ...isActiveStyle } : { ...lineStyle }}>
                 {character?.image?.public_path && <img src={character?.image?.public_path} style={characterImageStyle} />}
                 <div className="level-item">
                     <div>

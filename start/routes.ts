@@ -50,6 +50,7 @@ Route.get("groups/:id/leave", "GroupsController.leave");
 Route.get("/groups/:groupId/plays/create", "PlaysController.create");
 Route.get("/groups/:groupId/plays/:playId/detach", "PlaysController.detach");
 Route.post("/profile/updateRole", "UsersController.RoleUpdateByUser");
+Route.post("/profile/updateUsername", "UsersController.updateUsername");
 
 //ROUTES FOR SCENES
 Route.post("scene/update", "ScenesController.update");

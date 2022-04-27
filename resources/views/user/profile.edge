@@ -27,6 +27,21 @@
                       <p class="subtitle is-6">{{user.email || ""}}</p>
                     </div>
                   </div>
+                  <form action="/profile/updateUsername" method="POST">
+                    {{ csrfField() }}
+                    <p>Changer l'identifiant</p>
+                    <p class="control has-icons-left" id="usernameInput">
+                      <input class="input" type="text" name="username" placeholder="identifiant" value='{{user.username}}''>
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    </p>
+                    @if(flashMessages.has('errors.username'))
+                      <p> {{ flashMessages.get('errors.username') }} </p>
+                    @end
+                  <button type="submit" class="button is-primary">Enregistrer</button>
+                  </form>
+
                   <form action="/profile/updateRole" method="POST">
                     {{ csrfField() }}
                   <div class="field">

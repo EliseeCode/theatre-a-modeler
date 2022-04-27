@@ -1,6 +1,8 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import User from "App/Models/User";
 import Role from "Contracts/enums/Role";
+import { schema, rules } from "@ioc:Adonis/Core/Validator";
+
 
 export default class UsersController {
   public async index({ view }: HttpContextContract) {
@@ -45,6 +47,31 @@ export default class UsersController {
     return response.internalServerError(
       "Regex check failed, invalid email form..."
     );
+  }
+  public async updateUsername({ request, auth, response }: HttpContextContract) {
+    const user = await auth.authenticate();
+    const username = request.all().username;
+    const newUsernameSchema = schema.create({
+      username: schema.string({}, [
+        rules.maxLength(50),
+        rules.minLength(2),
+        rules.unique({ table: 'users', column: 'username' })
+      ])
+    })
+
+    const payload = await request.validate({
+      schema: newUsernameSchema, messages: {
+        'username.unique': 'Cet identifiant est déjà attribué. Vous devez en choisir un autre',
+        'username.minLength': 'identifiant trop court',
+        'username.maxLength': 'identifiant trop long'
+      }
+    })
+
+    user.username = payload.username;
+    await user.save();
+    return response.redirect().back();
+
+
   }
 
   public async RoleUpdateByUser({
