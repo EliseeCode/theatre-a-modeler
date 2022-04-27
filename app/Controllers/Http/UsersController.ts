@@ -50,7 +50,6 @@ export default class UsersController {
   }
   public async updateUsername({ request, auth, response }: HttpContextContract) {
     const user = await auth.authenticate();
-    const username = request.all().username;
     const newUsernameSchema = schema.create({
       username: schema.string({}, [
         rules.maxLength(50),
