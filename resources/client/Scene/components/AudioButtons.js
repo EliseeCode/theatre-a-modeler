@@ -112,7 +112,7 @@ const AudioButtons = (props) => {
     return (
         <div className="level-right">
             <div className="level-item">
-                {((!selectedAudioVersion || selectedAudioVersion < 0) && robotIsSupported) && <button onClick={playPause} className="button"><span className="fas fa-robot"></span></button>}
+                {(false && (!selectedAudioVersion || selectedAudioVersion < 0) && robotIsSupported) && <button onClick={playPause} className="button"><span className="fas fa-robot"></span></button>}
                 {(userId != 'undefined') && (
                     status != 'recording' ?
                         <button onClick={startRecording} className="button"><span className="fas fa-microphone"></span></button>
