@@ -6,18 +6,24 @@
         <div class="card-header-title">Enregistrement</div>
       </div>
       <div class="card-content">
+        <div class="block">
         @include('partials/auth/registerForm')
-
-        <div style="" class="subtitle" > 
-          <a href="{{ route('social.login')}}" style="text-decoration:none;" class="button   is-outlined">
+        </div>
+        <div style="" class="subtitle block mb-3" > 
+          <a href="{{ route('social.login')}}" style="text-decoration:none;" class="button is-outlined block">
             <span class="icon">
               <i class="fab fa-google"></i>
             </span>
             <span>Créer un compte avec Google</span>
           </a> 
         </div>
-
-        <p>Vous avez déjà un compte ? <a href="/login">cliquez ici.</a></p>
+        <div class="notification block">
+          <p style="max-width:500px;">
+            En créant un compte vous acceptez que toutes les productions que vous créerez sur ce site (audios et écrites) seront visible par tous et vous renoncez à vos droits sur celles-ci.<br>
+            La plateforme "théatre à modeler" est en développement, elle ne pourra être tenu responsable du contenu se trouvant sur ce site ou en cas de perte de données.
+          </p>
+        </div>
+        <p class="block">Vous avez déjà un compte ? <a href="/login">cliquez ici.</a></p>
       </div>  
     </div>
 @endsection
