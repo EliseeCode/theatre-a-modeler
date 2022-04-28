@@ -45,6 +45,7 @@ const CharacterModal = (props) => {
             }
         }
     }, [selectedOfficialImage])
+
     function submitForm(event) {
         event.preventDefault();
         var form = new FormData(event.target);

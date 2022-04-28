@@ -16,7 +16,7 @@ const AudioButtons = (props) => {
     const [audioSrc, setAudioSrc] = useState(null);
     const [audioId, setAudioId] = useState(null);
     const [selectedAudioVersion, setSelectedAudioVersion] = useState(characters.byIds[lines.byIds[lineId]?.character_id]?.selectedAudioVersion || -1);
-    const speech = new Speech();
+    const [speech, setSpeech] = useState(new Speech());
     const robotIsSupported = speech.hasBrowserSupport();
 
     useEffect(() => {
@@ -37,12 +37,16 @@ const AudioButtons = (props) => {
 
     useEffect(() => {
         if (lines.selectedId == lineId) {
+            console.log("lines.selectedId == lineId", lines.action, isPlaying);
             if (lines.action == 'play' && !isPlaying) {
                 playPause();
             }
             else if (lines.action == 'pause' && isPlaying) {
                 playPause();
             }
+        }
+        else {
+            if (isPlaying) { playPause() };
         }
     }, [lines])
 
@@ -53,20 +57,27 @@ const AudioButtons = (props) => {
     }
 
     function playPause() {
+        console.log("playPause", isPlaying);
         if (!isPlaying) {
             (selectedAudioVersion == -2 || !audioSrc) ? playRobot() : playAudio()
-            props.setLineAction(lineId, "play");
         } else {
             (selectedAudioVersion == -2 || !audioSrc) ? pauseRobot() : pauseAudio()
+        }
+        //setIsPlaying(!isPlaying);
+    }
+
+    function playPauseAction() {
+        if (!isPlaying) {
+            props.setLineAction(lineId, "play");
+        } else {
             props.setLineAction(lineId, "pause");
         }
-        setIsPlaying(!isPlaying);
     }
 
     function playRobot() {
+        console.log('playRobot');
+        setIsPlaying(true);
         if (robotIsSupported) { // returns a boolean
-            console.log("speech synthesis supported")
-
             speech.init({
                 'lang': 'fr-FR',
                 'splitSentences': false
@@ -76,8 +87,8 @@ const AudioButtons = (props) => {
                     queue: false,
                     listeners: {
                         onend: (e) => {
-                            console.log(e);
-                            audioEnded();
+                            console.log('ONEND ROBOT', e);
+                            //audioJustEnded();
                         }
                     }
                 })
@@ -88,17 +99,23 @@ const AudioButtons = (props) => {
     }
     function pauseRobot() {
         speech.pause();
+        setIsPlaying(false);
     }
     function playAudio() {
         audioElem.current.play();
+        setIsPlaying(true);
     }
     function pauseAudio() {
         audioElem.current.pause();
-    }
-    function audioEnded() {
         setIsPlaying(false);
-        props.setLineAction(lineId, "ended");
+    }
+    function audioJustEnded() {
+        console.log('audioEnded', isPlaying);
+        //if (isPlaying) {
+        setIsPlaying(false);
+        //props.setLineAction(lineId, "ended");
         props.AudioEnded(lineId, lines, autoplay);
+        //}
     }
 
     const {
@@ -111,16 +128,18 @@ const AudioButtons = (props) => {
 
     return (
         <div className="level-right">
+            {isPlaying ? "isPlaying" : "isNotPlayng"}-{autoplay ? "autoplay" : 'NotAuto'}
             <div className="level-item">
-                {(false && (!selectedAudioVersion || selectedAudioVersion < 0) && robotIsSupported) && <button onClick={playPause} className="button"><span className="fas fa-robot"></span></button>}
+                {((!selectedAudioVersion || selectedAudioVersion < 0) && robotIsSupported && !isPlaying) && <button onClick={playPauseAction} className="button"><span className="fas fa-robot"></span></button>}
+                {((!selectedAudioVersion || selectedAudioVersion < 0) && robotIsSupported && isPlaying) && <button onClick={playPauseAction} className="button"><span className="fas fa-pause"></span></button>}
                 {(userId != 'undefined') && (
                     status != 'recording' ?
                         <button onClick={startRecording} className="button"><span className="fas fa-microphone"></span></button>
                         : <button onClick={stopRecording} className="button" style={{ color: "red" }}><span className="fas fa-microphone"></span></button>
                 )}
-                {audioSrc && <button onClick={playPause} className="button"><span className={"fas " + (!isPlaying ? "fa-play" : "fa-pause")}></span></button>}
+                {audioSrc && <button onClick={playPauseAction} className="button"><span className={"fas " + (!isPlaying ? "fa-play" : "fa-pause")}></span></button>}
                 {(audioSrc && audioCreatorId == userId) && (<button onClick={() => { props.removeAudio(audioId) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
-                <audio ref={audioElem} onEnded={audioEnded} src={audioSrc} />
+                <audio ref={audioElem} onEnded={audioJustEnded} src={audioSrc} />
             </div>
         </div>
     )

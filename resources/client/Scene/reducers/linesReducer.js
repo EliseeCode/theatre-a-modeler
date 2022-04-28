@@ -96,7 +96,9 @@ const linesReducer = (state = [], action) => {
             };
             break
         case "SELECT_LINE":
-            state = { ...state, selectedId: action.payload.lineId }
+            if (state.selectedId != action.payload.lineId) {
+                state = { ...state, selectedId: action.payload.lineId }
+            }
             break
         case "PLAY_LINE":
             state = {
@@ -106,10 +108,11 @@ const linesReducer = (state = [], action) => {
             }
             break
         case "SET_LINE_ACTION":
+
             state = {
                 ...state,
                 action: action.payload.action,
-                selectedId: action.payload.lineId
+                //selectedId: action.payload.lineId
             }
             break
         case "CREATE_CHARACTER_TEXT_VERSION":

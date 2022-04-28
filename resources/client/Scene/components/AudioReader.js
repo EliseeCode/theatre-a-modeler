@@ -17,7 +17,8 @@ const AudioReader = (props) => {
         lines.selectedId ? setLineId(lines.selectedId) : setLineId(lines.ids[0]);
     }, [lines])
 
-    useEffect(() => { props.setAutoplay(isAutoPlaying) }, [isAutoPlaying])
+    useEffect(() => { props.setAutoplay(isAutoPlaying) },
+        [isAutoPlaying])
 
     function selectPreviousLine() {
         props.selectPreviousLine(lineId, lines);
@@ -52,7 +53,7 @@ const AudioReader = (props) => {
             <div className="levels mb-3">
                 <div className="level-item">
                     <div className="" disabled={(lines.ids.indexOf(lineId) == 0)} onClick={selectPreviousLine}><span className="fas fa-step-backward"></span></div>
-                    {!isAutoPlaying ? <button className="button is-rounded" onClick={autoPlay}><span className="fas fa-play"></span></button> :
+                    {lines.action != "play" ? <button className="button is-rounded" onClick={autoPlay}><span className="fas fa-play"></span></button> :
                         <button className="button is-rounded" onClick={autoPause}><span className="fas fa-pause"></span></button>}
                     <div className="" disabled={(lines.ids.indexOf(lineId) == (lines.ids.length - 1))} onClick={selectNextLine}><span className="fas fa-step-forward"></span></div>
                 </div>
