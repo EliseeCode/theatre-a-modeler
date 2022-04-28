@@ -128,7 +128,7 @@ const AudioButtons = (props) => {
 
     return (
         <div className="level-right">
-            {isPlaying ? "isPlaying" : "isNotPlayng"}-{autoplay ? "autoplay" : 'NotAuto'}
+            {/* {isPlaying ? "isPlaying" : "isNotPlayng"}-{autoplay ? "autoplay" : 'NotAuto'} */}
             <div className="level-item">
                 {((!selectedAudioVersion || selectedAudioVersion < 0) && robotIsSupported && !isPlaying) && <button onClick={playPauseAction} className="button"><span className="fas fa-robot"></span></button>}
                 {((!selectedAudioVersion || selectedAudioVersion < 0) && robotIsSupported && isPlaying) && <button onClick={playPauseAction} className="button"><span className="fas fa-pause"></span></button>}
