@@ -24,7 +24,6 @@ const audiosReducer = (state = null, action) => {
             }
             break
         case "REMOVE_AUDIO":
-
             var state = {
                 ...state,
                 ids: [...state.ids.filter((id) => { return id != action.payload.audioId })],

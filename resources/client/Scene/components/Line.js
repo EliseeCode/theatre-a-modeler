@@ -12,7 +12,7 @@ const Line = (props) => {
     useEffect(() => {
         setLine(lines.byIds[lineId]);
         setCharacter(characters.byIds[line.character_id]);
-    }, [characters, lines]);
+    }, [characters, lines, line]);
 
     const lineTextStyle = { whiteSpace: 'pre-wrap' };
     const lineStyle = { position: 'relative', padding: "10px 50px 10px 130px" };
@@ -27,6 +27,7 @@ const Line = (props) => {
                         <div>
                             <i>{character?.name}</i>
                         </div>
+                        {lineId + "-" + line.version_id}
                         {(userId == textVersions.byIds[line.version_id].creator_id && line.version_id != 1) ?
                             <EditableTextArea lineId={lineId} lines={lines} /> :
                             (<div style={lineTextStyle}>

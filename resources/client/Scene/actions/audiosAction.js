@@ -21,7 +21,7 @@ export function initialLoadAudios(sceneId) {
         })
     };
 }
-export function removeAudio(audioId) {
+export function removeAudio(audioId, audios) {
     let params = getParams();
     params = {
         ...params,
@@ -29,11 +29,10 @@ export function removeAudio(audioId) {
     };
 
     return dispatch => {
-        $.post('/audio/delete/', params, function (lines) {
-            console.log(lines);
+        $.post('/audio/delete/', params, function (data) {
             dispatch({
                 type: "REMOVE_AUDIO",
-                payload: { audioId }
+                payload: { audioId, audios, characterId: data.characterId }
             })
         })
     }

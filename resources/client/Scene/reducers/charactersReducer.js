@@ -46,6 +46,8 @@ function changeCharacterTextVersion(state, characterId, textVersionId) {
 const charactersReducer = (state = null, action) => {
     let characterId;
     let audioVersionId, textVersionId;
+    let audios;
+    let audio_id;
     switch (action.type) {
         case "DETACH_CHARACTER":
             state = {
@@ -92,6 +94,24 @@ const charactersReducer = (state = null, action) => {
             audioVersionId = parseInt(action.payload.version.id);
             console.log("addAudioUpdateVersion", characterId, audioVersionId);
             state = changeCharacterAudioVersion(state, characterId, audioVersionId)
+            break;
+        case "REMOVE_AUDIO":
+            let audio_id = action.payload.audioId;
+            let audios = action.payload.audios;
+            let audio = audios.byIds[audio_id];
+            let characterId = action.payload.characterId;
+
+            let versionAudio = audios.byIds[audio_id].version_id;
+            var listAudioVersionId = Object.values(audios.byIds)
+                .filter((audio) => { return audio.id != audio_id })
+                .map((audio) => { return audio.version_id });
+            if (!listAudioVersionId.includes(versionAudio)) {
+                state = changeCharacterAudioVersion(state, characterId, -2)
+            }
+            break
+        case "REMOVE_CHARACTER_AUDIO_VERSION":
+            characterId = action.payload.characterId;
+            state = changeCharacterAudioVersion(state, characterId, -2)
             break;
     }
     return state

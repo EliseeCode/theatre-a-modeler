@@ -60,13 +60,21 @@ const CharacterUserVersion = (props) => {
     }, [textVersions, characters, audioVersions, audios, lines])
 
 
-    const [selectedAudioVersion, setSelectedAudioVersion] = useState(character?.selectedAudioVersion);
-    const [selectedTextVersion, setSelectedTextVersion] = useState(character?.selectedTextVersion || 1);
+    const [selectedAudioVersion, setSelectedAudioVersion] = useState(0);
+    const [selectedTextVersion, setSelectedTextVersion] = useState(0);
 
     useEffect(() => {
         setSelectedAudioVersion(character?.selectedAudioVersion);
         setSelectedTextVersion(character?.selectedTextVersion || 1);
     }, [character])
+
+    // useEffect(() => {
+    //     var listAudioVersionId = [...Object.values(audios.byIds).map((audio) => { return audio.version_id })];
+    //     console.log(listAudioVersionId, parseInt(selectedAudioVersion), listAudioVersionId.includes(parseInt(selectedAudioVersion)));
+    //     if (!(listAudioVersionId.includes(parseInt(selectedAudioVersion))) && selectedAudioVersion > 0) {
+    //         setSelectedAudioVersion(-2);
+    //     }
+    // }, [audios])
 
     useEffect(() => {
         setCharacter(characters.byIds[characterId]);
@@ -127,7 +135,6 @@ const CharacterUserVersion = (props) => {
                             </select>
                         </div>
                     </div>
-
                     {(selectedAudioVersion > 0 && audioVersions.byIds[selectedAudioVersion]?.creator_id == userId) && (<div className="control">
                         <button className="button is-danger" onClick={removeCharacterAudioVersion}><span className="fas fa-trash"></span></button>
                     </div>)}

@@ -138,7 +138,7 @@ const AudioButtons = (props) => {
                         : <button onClick={stopRecording} className="button" style={{ color: "red" }}><span className="fas fa-microphone"></span></button>
                 )}
                 {audioSrc && <button onClick={playPauseAction} className="button"><span className={"fas " + (!isPlaying ? "fa-play" : "fa-pause")}></span></button>}
-                {(audioSrc && audioCreatorId == userId) && (<button onClick={() => { props.removeAudio(audioId) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
+                {(audioSrc && audioCreatorId == userId) && (<button onClick={() => { props.removeAudio(audioId, audios) }} className="button is-danger ml-3"><span className="fas fa-trash"></span></button>)}
                 <audio ref={audioElem} onEnded={audioJustEnded} src={audioSrc} />
             </div>
         </div>
@@ -159,8 +159,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        removeAudio: (lineId, versionId) => {
-            dispatch(removeAudio(lineId, versionId));
+        removeAudio: (lineId, versionId, audios) => {
+            dispatch(removeAudio(lineId, versionId, audios));
         },
         uploadAudio: (lineId, versionId, blob) => {
             dispatch(uploadAudio(lineId, versionId, blob));

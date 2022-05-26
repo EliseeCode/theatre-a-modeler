@@ -134,7 +134,9 @@ export default class AudiosController {
     const user = await auth.authenticate();
     const audioId = request.body().audioId;
     const audio = await Audio.findOrFail(audioId);
+    const characterId = (await Line.findOrFail(audio.lineId)).characterId;
     if (audio.creatorId == user.id) {
+
       await Drive.delete(audio.name)
         .then(() => {
           let message = `Successfully deleted the file with id of ${audioId} from drive.`;
@@ -161,7 +163,7 @@ export default class AudiosController {
           return { status: "error", message };
         });
     }
-    return { status: "success" };
+    return { status: "success", characterId };
   }
 
   public async getAudioVersions({

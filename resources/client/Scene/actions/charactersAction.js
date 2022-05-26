@@ -109,6 +109,10 @@ export function removeCharacterTextVersion(characterId, textVersionId) {
                 type: "REMOVE_CHARACTER_TEXT_VERSION",
                 payload: { characterId, textVersionId }
             });
+            dispatch({
+                type: "SELECT_CHARACTER_TEXT_VERSION",
+                payload: { characterId, textVersionId: 1 }
+            });
         })
     }
 }
